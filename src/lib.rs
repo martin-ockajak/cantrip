@@ -14,7 +14,7 @@ mod tests {
 
   #[quickcheck]
   fn test_add(a: i32, b: i32) -> bool {
-    // add(a, b) == add(a, b)
+    // add(a, b) == a + b
     true
   }
 }
