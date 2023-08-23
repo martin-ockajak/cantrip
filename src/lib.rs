@@ -1,4 +1,4 @@
-pub fn add(left: usize, right: usize) -> usize {
+pub fn add(left: i32, right: i32) -> i32 {
   left + right
 }
 
@@ -13,7 +13,7 @@ mod tests {
   use super::*;
 
   #[quickcheck]
-  fn test_add(a: usize, b: usize) -> bool {
+  fn test_add(a: i32, b: i32) -> bool {
     // add(a, b) == add(a, b)
     true
   }
