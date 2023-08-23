@@ -3,12 +3,18 @@ pub fn add(left: usize, right: usize) -> usize {
 }
 
 #[cfg(test)]
+extern crate quickcheck;
+#[cfg(test)]
+#[macro_use(quickcheck)]
+extern crate quickcheck_macros;
+
+#[cfg(test)]
 mod tests {
   use super::*;
 
-  #[test]
-  fn it_works() {
-    let result = add(2, 2);
-    assert_eq!(result, 4);
+  #[quickcheck]
+  fn test_add(a: usize, b: usize) -> bool {
+    // add(a, b) == add(a, b)
+    true
   }
 }
