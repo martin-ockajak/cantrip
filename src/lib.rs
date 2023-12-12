@@ -11,6 +11,22 @@ extern crate quickcheck_macros;
 use std::collections::HashMap;
 use std::hash::Hash;
 
+trait Functor<A, R> {
+  type T<X>;
+  fn map<F>(self, f: F) -> Self::T<R>
+    where
+      F: Fn(&A) -> R;
+}
+
+impl<A, R> Functor<A, R> for &Vec<A> {
+  type T<X> = Vec<R>;
+  fn map<F>(self, f: F) -> Self::T<R>
+    where
+      F: Fn(&A) -> R
+  {
+    self.iter().map(f).collect()
+  }
+}
 
 pub fn add_vec<T>(values: &[T], value: &T) -> Vec<T>
   where
@@ -88,8 +104,15 @@ mod tests {
   use super::*;
 
   #[quickcheck]
-  fn test_add(a: i32, b: i32) -> bool {
-    // add(a, b) == a + b
-    true
+  fn test_functor_vec(data: Vec<i32>) -> bool {
+    // let function = |x| *x as i64;
+    let result = data.map(|x| *x as i64);
+    let expected = data.iter().map(|x| *x as i64).collect::<Vec<i64>>();
+    result == expected
+  }
+
+  #[test]
+  fn test_x() {
+    assert_eq!(1, 1)
   }
 }
