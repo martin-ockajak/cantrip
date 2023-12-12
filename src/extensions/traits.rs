@@ -43,7 +43,9 @@ pub trait Functor<A, R> {
       F: Fn(&A) -> R;
 }
 
-pub trait Collection<A> {
-  type C<X>;
-
+pub trait Iterable<A> {
+  fn filter<F>(self, f: F) -> Self
+    where
+      F: Fn(&&A) -> bool,
+      A: Clone;
 }

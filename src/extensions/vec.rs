@@ -1,12 +1,15 @@
-use crate::extensions::traits::Functor;
+use crate::extensions::traits::{Functor, Iterable};
 
-impl<A, R> Functor<A, R> for &Vec<A> {
+impl<A, R> Functor<A, R> for Vec<A> {
   type C<X> = Vec<R>;
-  fn map<F>(self, f: F) -> Self::C<R>
-    where
-      F: Fn(&A) -> R
-  {
+  fn map<F>(self, f: F) -> Self::C<R> where F: Fn(&A) -> R {
     self.iter().map(f).collect()
+  }
+}
+
+impl<A> Iterable<A> for Vec<A> {
+  fn filter<F>(self, f: F) -> Self where F: Fn(&&A) -> bool, A: Clone {
+    self.iter().filter(f).map(|x| x.clone()).collect()
   }
 }
 
@@ -40,9 +43,9 @@ mod tests {
 
   #[quickcheck]
   fn test_functor_vec(data: Vec<i32>) -> bool {
-    // let function = |x| *x as i64;
-    let result = data.map(|x| *x as i64);
-    let expected = data.iter().map(|x| *x as i64).collect::<Vec<i64>>();
+    let function = |x: &i32| *x as i64;
+    let result = data.clone().map(function);
+    let expected = data.clone().iter().map(function).collect::<Vec<i64>>();
     result == expected
   }
 
