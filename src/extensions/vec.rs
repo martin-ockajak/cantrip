@@ -8,8 +8,8 @@ impl<A, R> Functor<A, R> for Vec<A> {
 }
 
 impl<A> Iterable<A> for Vec<A> {
-  fn filter<F>(self, f: F) -> Self where F: Fn(&&A) -> bool, A: Clone {
-    self.iter().filter(f).map(|x| x.clone()).collect()
+  fn filter<F>(self, f: F) -> Self where F: Fn(&A) -> bool, A: Clone {
+    self.iter().filter(|&x| f(x)).map(|x| x.clone()).collect()
   }
 }
 
@@ -46,6 +46,14 @@ mod tests {
     let function = |x: &i32| *x as i64;
     let result = data.clone().map(function);
     let expected = data.clone().iter().map(function).collect::<Vec<i64>>();
+    result == expected
+  }
+
+  #[quickcheck]
+  fn test_iterable_vec(data: Vec<i32>) -> bool {
+    let function = |x: &i32| x % 2 == 0;
+    let result = data.clone().filter(function);
+    let expected = data.clone().iter().filter(|&x| function(x)).map(|x| x.clone()).collect::<Vec<i32>>();
     result == expected
   }
 

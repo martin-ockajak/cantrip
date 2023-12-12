@@ -46,6 +46,6 @@ pub trait Functor<A, R> {
 pub trait Iterable<A> {
   fn filter<F>(self, f: F) -> Self
     where
-      F: Fn(&&A) -> bool,
+      F: Fn(&A) -> bool,
       A: Clone;
 }
