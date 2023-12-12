@@ -55,11 +55,15 @@ pub trait Iterable<A> {
 }
 
 pub trait Collection<A> {
-  fn add(&self, item: A) -> Self
+  fn add(&self, value: A) -> Self
     where
       A: Clone;
 
-  fn remove(&self, item: A) -> Self
+  fn remove(&self, value: A) -> Self
+    where
+      A: Clone + PartialEq;
+
+  fn merge(&self, values: &Self) -> Self
     where
       A: Clone;
 }

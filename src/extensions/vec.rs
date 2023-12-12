@@ -1,4 +1,4 @@
-use crate::extensions::traits::{Functor, Iterable};
+use crate::extensions::traits::{Collection, Functor, Iterable};
 
 impl<A, R> Functor<A, R> for Vec<A> {
   type C<X> = Vec<R>;
@@ -17,27 +17,20 @@ impl<A> Iterable<A> for Vec<A> {
   }
 }
 
-pub fn add_vec<T>(values: &[T], value: &T) -> Vec<T>
-  where
-    T: Clone,
-{
-  let mut result = values.to_vec();
-  result.push(value.clone());
-  result
-}
+impl<A> Collection<A> for Vec<A> {
+  fn add(&self, value: A) -> Self where A: Clone {
+    let mut result = self.clone();
+    result.push(value.clone());
+    result
+  }
 
-pub fn remove_vec<T>(values: &[T], value: &T) -> Vec<T>
-  where
-    T: Clone + PartialEq,
-{
-  values.iter().filter(|x| x != &value).cloned().collect()
-}
+  fn remove(&self, value: A) -> Self where A: Clone + PartialEq {
+    self.iter().filter(|&x| x != &value).cloned().collect()
+  }
 
-pub fn merge_vec<T>(values1: &[T], values2: &[T]) -> Vec<T>
-  where
-    T: Clone,
-{
-  [values1, values2].concat().to_vec()
+  fn merge(&self, values: &Self) -> Self where A: Clone {
+    self.iter().chain(values.iter()).cloned().collect()
+  }
 }
 
 
