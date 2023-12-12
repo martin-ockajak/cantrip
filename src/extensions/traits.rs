@@ -57,7 +57,7 @@ pub trait Iterable<A> {
 pub trait Collection<A: Clone> {
   fn add(&self, value: A) -> Self;
 
-  fn add_all<I>(&self, values: &I) -> Self
+  fn add_seq<I>(&self, values: &I) -> Self
     where
       I: Clone + IntoIterator<Item = A>;
 
@@ -65,7 +65,7 @@ pub trait Collection<A: Clone> {
     where
       A: PartialEq;
 
-  fn remove_all<I>(&self, values: &I) -> Self
+  fn remove_seq<I>(&self, values: &I) -> Self
     where
       A: PartialEq,
       I: Clone + IntoIterator<Item = A>;
