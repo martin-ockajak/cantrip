@@ -1,7 +1,7 @@
-use std::collections::HashSet;
-use std::iter;
-
-use crate::extensions::traits::{Collection, Functor, Iterable};
+// use std::collections::HashSet;
+// use std::iter;
+//
+// use crate::extensions::traits::{Collection, Functor, Iterable};
 //
 // impl<A, R> Functor<A, R> for HashSet<A> {
 //   type C<X> = HashSet<R>;

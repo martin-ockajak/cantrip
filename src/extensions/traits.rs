@@ -1,3 +1,6 @@
+use std::iter::Cycle;
+use std::slice::Iter;
+
 /// The `Functor` trait represents an ability to map over parametric types with single type parameter.
 ///
 /// # Type Parameters
@@ -6,10 +9,11 @@
 /// * `R` - type parameter of the resulting type after mapping
 pub trait Functor<A, R> {
   type C<X>;
+
   /// Applies the given closure `f` to each element in the container.
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
-  /// The resulting values are collected into a new container of the same type.
+  /// The resulting other are collected into a new container of the same type.
   ///
   /// # Arguments
   ///
@@ -18,7 +22,7 @@ pub trait Functor<A, R> {
   ///
   /// # Returns
   ///
-  /// A new container of the same type, containing the mapped values.
+  /// A new container of the same type, containing the mapped other.
   ///
   /// # Type Parameters
   ///
@@ -44,6 +48,8 @@ pub trait Functor<A, R> {
 }
 
 pub trait Iterable<A> {
+  type C<X>;
+
   fn all<P>(&self, predicate: P) -> bool
     where
       P: Fn(&A) -> bool;
@@ -52,7 +58,23 @@ pub trait Iterable<A> {
     where
       P: Fn(&A) -> bool;
 
+  fn cycle(&self) -> Cycle<Iter<A>>;
+
+  fn zip<I>(&self, other: &I) -> Self::C<(A, I::Item)>
+    where
+      I: Clone + IntoIterator,
+      A: Clone;
+
+  fn zip_with_index(&self) -> Self::C<(A, usize)>
+    where
+      A: Clone;
+
   fn filter<P>(&self, predicate: P) -> Self
+    where
+      P: Fn(&A) -> bool,
+      A: Clone;
+
+  fn find<P>(&self, predicate: P) -> Option<&A>
     where
       P: Fn(&A) -> bool,
       A: Clone;
@@ -60,12 +82,16 @@ pub trait Iterable<A> {
   fn fold<B, F>(&self, init: B, function: F) -> B
     where
       F: Fn(B, &A) -> B;
+
+  fn rfold<B, F>(&self, init: B, function: F) -> B
+    where
+      F: Fn(B, &A) -> B;
 }
 
 pub trait Collection<A: Clone> {
   fn add(&self, value: A) -> Self;
 
-  fn add_seq<I>(&self, values: &I) -> Self
+  fn add_seq<I>(&self, other: &I) -> Self
     where
       I: Clone + IntoIterator<Item = A>;
 
@@ -73,8 +99,8 @@ pub trait Collection<A: Clone> {
     where
       A: PartialEq;
 
-  fn remove_seq<I>(&self, values: &I) -> Self
+  fn remove_seq<I>(&self, other: &I) -> Self
     where
-      A: PartialEq,
-      I: Clone + IntoIterator<Item = A>;
+      I: Clone + IntoIterator<Item = A>,
+      A: PartialEq;
 }

@@ -1,14 +1,20 @@
 use std::iter;
+use std::iter::Cycle;
+use std::slice::Iter;
+
 use crate::extensions::traits::{Collection, Functor, Iterable};
 
 impl<A, R> Functor<A, R> for Vec<A> {
-  type C<X> = Vec<R>;
+  type C<X> = Vec<X>;
+
   fn map<F>(&self, function: F) -> Self::C<R> where F: Fn(&A) -> R {
     self.iter().map(function).collect()
   }
 }
 
 impl<A> Iterable<A> for Vec<A> {
+  type C<X> = Vec<X>;
+
   fn all<P>(&self, predicate: P) -> bool where P: Fn(&A) -> bool {
     self.iter().all(predicate)
   }
@@ -17,12 +23,32 @@ impl<A> Iterable<A> for Vec<A> {
     self.iter().any(predicate)
   }
 
+  fn cycle(&self) -> Cycle<Iter<A>> {
+    self.iter().cycle()
+  }
+
+  fn zip<I>(&self, other: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator, A: Clone {
+    self.iter().cloned().zip(other.clone().into_iter()).collect()
+  }
+
+  fn zip_with_index(&self) -> Self::C<(A, usize)> where A: Clone {
+    self.iter().cloned().zip(0..self.len()).collect()
+  }
+
   fn filter<P>(&self, predicate: P) -> Self where P: Fn(&A) -> bool, A: Clone {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
+  fn find<P>(&self, predicate: P) -> Option<&A> where P: Fn(&A) -> bool, A: Clone {
+    self.iter().find(|&x| predicate(x))
+  }
+
   fn fold<B, F>(&self, init: B, function: F) -> B where F: Fn(B, &A) -> B {
     self.iter().fold(init, function)
+  }
+
+  fn rfold<B, F>(&self, init: B, function: F) -> B where F: Fn(B, &A) -> B {
+    self.iter().rfold(init, function)
   }
 }
 
@@ -31,16 +57,16 @@ impl<A: Clone> Collection<A> for Vec<A> {
     self.iter().chain(iter::once(&value)).cloned().collect()
   }
 
-  fn add_seq<I>(&self, values: &I) -> Self where I: Clone + IntoIterator<Item = A> {
-    self.iter().cloned().chain(values.clone().into_iter()).collect()
+  fn add_seq<I>(&self, other: &I) -> Self where I: Clone + IntoIterator<Item = A> {
+    self.iter().cloned().chain(other.clone().into_iter()).collect()
   }
 
   fn remove(&self, value: A) -> Self where A: PartialEq {
     self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
-  fn remove_seq<I>(&self, values: &I) -> Self where A: PartialEq, I: Clone + IntoIterator<Item = A> {
-    let removed = values.clone().into_iter().collect::<Vec<A>>();
+  fn remove_seq<I>(&self, other: &I) -> Self where I: Clone + IntoIterator<Item = A>, A: PartialEq {
+    let removed = other.clone().into_iter().collect::<Vec<A>>();
     self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
 }
