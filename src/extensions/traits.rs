@@ -53,7 +53,7 @@ pub trait EqFunctor<A: Eq + Hash, R: Eq + Hash> {
 pub trait Monad<A, R> {
   type C<X>;
 
-  fn unit(self, value: A) -> Self::C<A>
+  fn unit(value: A) -> Self::C<A>
     where
       A: Clone;
 
@@ -63,7 +63,7 @@ pub trait Monad<A, R> {
 pub trait EqMonad<A: Eq + Hash, R: Eq + Hash> {
   type C<X>;
 
-  fn unit(self, value: A) -> Self::C<A>
+  fn unit(value: A) -> Self::C<A>
     where
       A: Clone;
 

@@ -15,7 +15,7 @@ impl<A: Eq + Hash, R: Eq + Hash> EqFunctor<A, R> for HashSet<A> {
 impl<A: Eq + Hash, R: Eq + Hash> EqMonad<A, R> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn unit(self, value: A) -> Self::C<A> where A: Clone {
+  fn unit(value: A) -> Self::C<A> where A: Clone {
     iter::once(value).collect()
   }
 
