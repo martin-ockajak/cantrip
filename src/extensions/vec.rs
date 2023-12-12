@@ -1,3 +1,4 @@
+use std::iter;
 use crate::extensions::traits::{Collection, Functor, Iterable};
 
 impl<A, R> Functor<A, R> for Vec<A> {
@@ -19,9 +20,7 @@ impl<A> Iterable<A> for Vec<A> {
 
 impl<A> Collection<A> for Vec<A> {
   fn add(&self, value: A) -> Self where A: Clone {
-    let mut result = self.clone();
-    result.push(value.clone());
-    result
+    self.iter().chain(iter::once(&value)).cloned().collect()
   }
 
   fn remove(&self, value: A) -> Self where A: Clone + PartialEq {
