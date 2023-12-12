@@ -28,11 +28,11 @@ impl<A> Iterable<A> for Vec<A> {
   type Item = A;
   type C<X> = Vec<X>;
 
-  fn all<P>(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
-  fn any<P>(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn any(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().any(predicate)
   }
 

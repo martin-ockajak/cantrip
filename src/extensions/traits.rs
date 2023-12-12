@@ -60,13 +60,13 @@ pub trait Iterable<A> {
   type Item;
   type C<X>;
 
-  fn all<P>(&self, predicate: impl Fn(&A) -> bool) -> bool;
+  fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
-  fn any<P>(&self, predicate: impl Fn(&A) -> bool) -> bool;
+  fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
   fn cycle(&self) -> Cycle<Iter<A>>;
 
-  fn zip<I>(&self, other: &I) -> Self::C<(A, I::Item)>
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
       I: IntoIterator + Clone,
       A: Clone;
