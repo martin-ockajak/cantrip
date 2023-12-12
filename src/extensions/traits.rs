@@ -44,6 +44,14 @@ pub trait Functor<A, R> {
 }
 
 pub trait Iterable<A> {
+  fn all<P>(&self, predicate: P) -> bool
+    where
+      P: Fn(&A) -> bool;
+
+  fn any<P>(&self, predicate: P) -> bool
+    where
+      P: Fn(&A) -> bool;
+
   fn filter<P>(&self, predicate: P) -> Self
     where
       P: Fn(&A) -> bool,

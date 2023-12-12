@@ -9,6 +9,14 @@ impl<A, R> Functor<A, R> for Vec<A> {
 }
 
 impl<A> Iterable<A> for Vec<A> {
+  fn all<P>(&self, predicate: P) -> bool where P: Fn(&A) -> bool {
+    self.iter().all(predicate)
+  }
+
+  fn any<P>(&self, predicate: P) -> bool where P: Fn(&A) -> bool {
+    self.iter().any(predicate)
+  }
+
   fn filter<P>(&self, predicate: P) -> Self where P: Fn(&A) -> bool, A: Clone {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
