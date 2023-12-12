@@ -51,6 +51,6 @@ pub fn merge_map<K, V>(values1: &HashMap<K, V>, values2: &HashMap<K, V>) -> Hash
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+  use crate::extensions::traits::*;
 
 }

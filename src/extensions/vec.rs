@@ -2,14 +2,18 @@ use crate::extensions::traits::{Functor, Iterable};
 
 impl<A, R> Functor<A, R> for Vec<A> {
   type C<X> = Vec<R>;
-  fn map<F>(self, f: F) -> Self::C<R> where F: Fn(&A) -> R {
+  fn map<F>(&self, f: F) -> Self::C<R> where F: Fn(&A) -> R {
     self.iter().map(f).collect()
   }
 }
 
 impl<A> Iterable<A> for Vec<A> {
-  fn filter<F>(self, f: F) -> Self where F: Fn(&A) -> bool, A: Clone {
-    self.iter().filter(|&x| f(x)).map(|x| x.clone()).collect()
+  fn filter<F>(&self, f: F) -> Self where F: Fn(&A) -> bool, A: Clone {
+    self.iter().filter(|&x| f(x)).cloned().collect()
+  }
+
+  fn fold<B, F>(&self, init: B, f: F) -> B where F: Fn(B, &A) -> B {
+    self.iter().fold(init, f)
   }
 }
 
@@ -39,7 +43,7 @@ pub fn merge_vec<T>(values1: &[T], values2: &[T]) -> Vec<T>
 
 #[cfg(test)]
 mod tests {
-  use super::*;
+  use crate::extensions::traits::*;
 
   #[quickcheck]
   fn test_functor_vec(data: Vec<i32>) -> bool {
@@ -52,8 +56,8 @@ mod tests {
   #[quickcheck]
   fn test_iterable_vec(data: Vec<i32>) -> bool {
     let function = |x: &i32| x % 2 == 0;
-    let result = data.clone().filter(function);
-    let expected = data.clone().iter().filter(|&x| function(x)).map(|x| x.clone()).collect::<Vec<i32>>();
+    let result = data.filter(function);
+    let expected = data.iter().filter(|&x| function(x)).cloned().collect::<Vec<i32>>();
     result == expected
   }
 

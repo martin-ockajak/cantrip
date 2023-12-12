@@ -38,13 +38,24 @@ pub trait Functor<A, R> {
   /// ```
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<F>(self, f: F) -> Self::C<R>
+  fn map<F>(&self, f: F) -> Self::C<R>
     where
       F: Fn(&A) -> R;
 }
 
 pub trait Iterable<A> {
-  fn filter<F>(self, f: F) -> Self
+  fn filter<F>(&self, f: F) -> Self
+    where
+      F: Fn(&A) -> bool,
+      A: Clone;
+
+  fn fold<B, F>(&self, init: B, f: F) -> B
+    where
+      F: Fn(B, &A) -> B;
+}
+
+pub trait Collection<A> {
+  fn reduce<F>(&self, f: F) -> Self
     where
       F: Fn(&A) -> bool,
       A: Clone;
