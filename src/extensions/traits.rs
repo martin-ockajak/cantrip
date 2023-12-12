@@ -47,10 +47,3 @@ pub trait Collection<A> {
   type C<X>;
 
 }
-
-// pub trait Functor<A, R> {
-//   type C<X>;
-//   fn map<F>(self, f: F) -> Self::C<R>
-//     where
-//       F: Fn(&A) -> R;
-// }
