@@ -1,6 +1,11 @@
-/// The `Functor` trait represents types that can be mapped over.
+/// The `Functor` trait represents an ability to map over parametric types with single type parameter.
+///
+/// # Type Parameters
+///
+/// * `A` - type parameter of the implementing type
+/// * `R` - type parameter of the resulting type after mapping
 pub trait Functor<A, R> {
-  type T<X>;
+  type C<X>;
   /// Applies the given closure `f` to each element in the container.
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
@@ -31,9 +36,21 @@ pub trait Functor<A, R> {
   /// # Examples
   ///
   /// ```
-  /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
+  /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<F>(self, f: F) -> Self::T<R>
+  fn map<F>(self, f: F) -> Self::C<R>
     where
       F: Fn(&A) -> R;
 }
+
+pub trait Collection<A> {
+  type C<X>;
+
+}
+
+// pub trait Functor<A, R> {
+//   type C<X>;
+//   fn map<F>(self, f: F) -> Self::C<R>
+//     where
+//       F: Fn(&A) -> R;
+// }

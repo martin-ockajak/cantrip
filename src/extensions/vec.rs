@@ -1,8 +1,8 @@
 use crate::extensions::traits::Functor;
 
 impl<A, R> Functor<A, R> for &Vec<A> {
-  type T<X> = Vec<R>;
-  fn map<F>(self, f: F) -> Self::T<R>
+  type C<X> = Vec<R>;
+  fn map<F>(self, f: F) -> Self::C<R>
     where
       F: Fn(&A) -> R
   {
