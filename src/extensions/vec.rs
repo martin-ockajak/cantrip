@@ -27,7 +27,7 @@ impl<A> Collection<A> for Vec<A> {
     self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
-  fn merge(&self, values: &Self) -> Self where A: Clone {
+  fn add_all(&self, values: &Self) -> Self where A: Clone {
     self.iter().chain(values.iter()).cloned().collect()
   }
 }

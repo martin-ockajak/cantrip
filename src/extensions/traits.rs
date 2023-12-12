@@ -63,7 +63,7 @@ pub trait Collection<A> {
     where
       A: Clone + PartialEq;
 
-  fn merge(&self, values: &Self) -> Self
+  fn add_all(&self, values: &Self) -> Self
     where
       A: Clone;
 }
