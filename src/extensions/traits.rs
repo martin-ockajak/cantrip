@@ -55,7 +55,6 @@ pub trait Monad<A, R> {
   fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R>;
 }
 
-
 pub trait Iterable<A> {
   type C<X>;
 
