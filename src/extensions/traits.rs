@@ -91,13 +91,13 @@ pub trait Iterable<A> {
 pub trait Collection<A: Clone> {
   fn add(&self, value: A) -> Self;
 
-  fn add_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+  fn add_seq(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 
   fn remove(&self, value: A) -> Self
     where
       A: PartialEq;
 
-  fn remove_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self
+  fn remove_seq(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
     where
       A: PartialEq;
 }

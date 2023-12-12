@@ -40,8 +40,8 @@ impl<A> Iterable<A> for Vec<A> {
     self.iter().cycle()
   }
 
-  fn zip<I>(&self, other: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator, A: Clone {
-    self.iter().cloned().zip(other.clone().into_iter()).collect()
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator, A: Clone {
+    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
   }
 
   fn zip_with_index(&self) -> Self::C<(A, usize)> where A: Clone {
@@ -70,16 +70,16 @@ impl<A: Clone> Collection<A> for Vec<A> {
     self.iter().chain(iter::once(&value)).cloned().collect()
   }
 
-  fn add_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    self.iter().cloned().chain(other.clone().into_iter()).collect()
+  fn add_seq(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
+    self.iter().cloned().chain(iterable.clone().into_iter()).collect()
   }
 
   fn remove(&self, value: A) -> Self where A: PartialEq {
     self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
-  fn remove_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
-    let removed = other.clone().into_iter().collect::<Vec<A>>();
+  fn remove_seq(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
+    let removed = iterable.clone().into_iter().collect::<Vec<A>>();
     self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
 }
