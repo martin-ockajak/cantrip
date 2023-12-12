@@ -47,6 +47,19 @@ pub trait Functor<A, R> {
       F: Fn(&A) -> R;
 }
 
+pub trait Monad<A, R> {
+  type C<X>;
+
+  fn unit(self, value: A) -> Self::C<A>
+    where
+      A: Clone;
+
+  fn flat_map<F>(&self, function: F) -> Self::C<R>
+    where
+      F: Fn(&A) -> Self::C<R>;
+}
+
+
 pub trait Iterable<A> {
   type C<X>;
 

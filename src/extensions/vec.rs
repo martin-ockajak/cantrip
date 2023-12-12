@@ -2,13 +2,25 @@ use std::iter;
 use std::iter::Cycle;
 use std::slice::Iter;
 
-use crate::extensions::traits::{Collection, Functor, Iterable};
+use crate::extensions::traits::{Collection, Functor, Iterable, Monad};
 
 impl<A, R> Functor<A, R> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn map<F>(&self, function: F) -> Self::C<R> where F: Fn(&A) -> R {
     self.iter().map(function).collect()
+  }
+}
+
+impl<A, R> Monad<A, R> for Vec<A> {
+  type C<X> = Vec<X>;
+
+  fn unit(self, value: A) -> Self::C<A> where A: Clone {
+    iter::once(value).collect()
+  }
+
+  fn flat_map<F>(&self, function: F) -> Self::C<R> where F: Fn(&A) -> Self::C<R> {
+    self.iter().flat_map(function).collect()
   }
 }
 
