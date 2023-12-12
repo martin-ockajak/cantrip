@@ -1,45 +1,60 @@
-// use std::collections::HashSet;
-// use std::iter;
-//
-// use crate::extensions::traits::{Collection, Functor, Iterable};
-//
-// impl<A, R> Functor<A, R> for HashSet<A> {
-//   type C<X> = HashSet<R>;
-//   fn map<F>(&self, function: F) -> Self::C<R> where F: Fn(&A) -> R {
-//     self.iter().map(function).collect()
-//   }
-// }
-//
-// impl<A> Iterable<A> for HashSet<A> {
-//   fn filter<P>(&self, predicate: P) -> Self where P: Fn(&A) -> bool, A: Clone {
-//     self.iter().filter(|&x| predicate(x)).cloned().collect()
-//   }
-//
-//   fn fold<B, F>(&self, init: B, function: F) -> B where F: Fn(B, &A) -> B {
-//     self.iter().fold(init, function)
-//   }
-// }
-//
-// impl<A: Clone> Collection<A> for HashSet<A> {
-//   fn add(&self, value: A) -> Self {
-//     self.iter().chain(iter::once(&value)).cloned().collect()
-//   }
-//
-//   fn add_all<I>(&self, values: &I) -> Self where I: Clone + IntoIterator<Item = A> {
-//     self.iter().cloned().chain(values.clone().into_iter()).collect()
-//   }
-//
-//   fn remove(&self, value: A) -> Self where A: PartialEq {
-//     self.iter().filter(|&x| x != &value).cloned().collect()
-//   }
-//
-//   fn remove_all<I>(&self, values: &I) -> Self where A: PartialEq, I: Clone + IntoIterator<Item = A> {
-//     let removed = values.clone().into_iter().collect::<Vec<A>>();
-//     self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
-//   }
-// }
-//
-//
+use std::collections::HashSet;
+use std::hash::Hash;
+use std::iter;
+
+use crate::extensions::traits::{EqFunctor, EqMonad, AggregateIterable, EqIterable};
+
+impl<A: Eq + Hash, R: Eq + Hash> EqFunctor<A, R> for HashSet<A> {
+  type C<X> = HashSet<R>;
+
+  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R> {
+    self.iter().map(function).collect()
+  }
+}
+
+impl<A: Eq + Hash, R: Eq + Hash> EqMonad<A, R> for Vec<A> {
+  type C<X> = Vec<X>;
+
+  fn unit(self, value: A) -> Self::C<A> where A: Clone {
+    iter::once(value).collect()
+  }
+
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R> {
+    self.iter().flat_map(function).collect()
+  }
+}
+
+impl<A> AggregateIterable<A> for HashSet<A> {
+  fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
+    self.iter().all(predicate)
+  }
+
+  fn any(&self, predicate: impl Fn(&A) -> bool) -> bool {
+    self.iter().any(predicate)
+  }
+
+  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> where A: Clone {
+    self.iter().find(|&x| predicate(x))
+  }
+
+  fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+    self.iter().fold(init, function)
+  }
+
+  fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+    let values = self.iter().collect::<Vec<&A>>();
+    values.iter().rfold(init, |r, x| function(r, x))
+  }
+}
+
+impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
+  type C<X> = HashSet<X>;
+
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
+    self.iter().filter(|&x| predicate(x)).cloned().collect()
+  }
+}
+
 // #[cfg(test)]
 // mod tests {
 //   use std::collections::HashSet;

@@ -1,8 +1,6 @@
 use std::iter;
-use std::iter::Cycle;
-use std::slice::Iter;
 
-use crate::extensions::traits::{Collection, Functor, Iterable, Monad};
+use crate::extensions::traits::{Collection, Functor, AggregateIterable, Monad, Iterable};
 
 impl<A, R> Functor<A, R> for Vec<A> {
   type C<X> = Vec<X>;
@@ -24,31 +22,13 @@ impl<A, R> Monad<A, R> for Vec<A> {
   }
 }
 
-impl<A> Iterable<A> for Vec<A> {
-  type C<X> = Vec<X>;
-
+impl<A> AggregateIterable<A> for Vec<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
   fn any(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().any(predicate)
-  }
-
-  fn cycle(&self) -> Cycle<Iter<A>> {
-    self.iter().cycle()
-  }
-
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator, A: Clone {
-    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
-  }
-
-  fn zip_with_index(&self) -> Self::C<(A, usize)> where A: Clone {
-    self.iter().cloned().zip(0..self.len()).collect()
-  }
-
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self where A: Clone {
-    self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
   fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> where A: Clone {
@@ -61,6 +41,22 @@ impl<A> Iterable<A> for Vec<A> {
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
+  }
+}
+
+impl<A: Clone> Iterable<A> for Vec<A> {
+  type C<X> = Vec<X>;
+
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
+    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
+  }
+
+  fn zip_with_index(&self) -> Self::C<(A, usize)> {
+    self.iter().cloned().zip(0..self.len()).collect()
+  }
+
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
+    self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 }
 

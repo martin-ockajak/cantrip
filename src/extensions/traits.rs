@@ -1,5 +1,4 @@
-use std::iter::Cycle;
-use std::slice::Iter;
+use std::hash::Hash;
 
 /// The `Functor` trait represents an ability to map over parametric types with single type parameter.
 ///
@@ -45,6 +44,12 @@ pub trait Functor<A, R> {
   fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R>;
 }
 
+pub trait EqFunctor<A: Eq + Hash, R: Eq + Hash> {
+  type C<X>;
+
+  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R>;
+}
+
 pub trait Monad<A, R> {
   type C<X>;
 
@@ -55,27 +60,20 @@ pub trait Monad<A, R> {
   fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R>;
 }
 
-pub trait Iterable<A> {
+pub trait EqMonad<A: Eq + Hash, R: Eq + Hash> {
   type C<X>;
 
+  fn unit(self, value: A) -> Self::C<A>
+    where
+      A: Clone;
+
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R>;
+}
+
+pub trait AggregateIterable<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
   fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;
-
-  fn cycle(&self) -> Cycle<Iter<A>>;
-
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
-    where
-      I: IntoIterator + Clone,
-      A: Clone;
-
-  fn zip_with_index(&self) -> Self::C<(A, usize)>
-    where
-      A: Clone;
-
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self
-    where
-      A: Clone;
 
   fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>
     where
@@ -84,6 +82,24 @@ pub trait Iterable<A> {
   fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
+}
+
+pub trait Iterable<A: Clone> {
+  type C<X>;
+
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
+    where
+      I: IntoIterator + Clone;
+
+  fn zip_with_index(&self) -> Self::C<(A, usize)>;
+
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
+}
+
+pub trait EqIterable<A: Eq + Hash + Clone> {
+  type C<X>;
+
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 }
 
 pub trait Collection<A: Clone> {
