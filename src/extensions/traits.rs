@@ -54,16 +54,19 @@ pub trait Iterable<A> {
       F: Fn(B, &A) -> B;
 }
 
-pub trait Collection<A> {
-  fn add(&self, value: A) -> Self
+pub trait Collection<A: Clone> {
+  fn add(&self, value: A) -> Self;
+
+  fn add_all<I>(&self, values: &I) -> Self
     where
-      A: Clone;
+      I: Clone + IntoIterator<Item = A>;
 
   fn remove(&self, value: A) -> Self
     where
-      A: Clone + PartialEq;
+      A: PartialEq;
 
-  fn add_all(&self, values: &Self) -> Self
+  fn remove_all<I>(&self, values: &I) -> Self
     where
-      A: Clone;
+      A: PartialEq,
+      I: Clone + IntoIterator<Item = A>;
 }

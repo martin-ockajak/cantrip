@@ -1,22 +1,6 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 
-// pub fn add_set<T>(values: &HashSet<T>, value: &T) -> HashSet<T>
-// where
-//   T: Clone + Eq + Hash,
-// {
-//   let mut result = values.clone();
-//   result.insert(value.clone());
-//   result
-// }
-//
-// pub fn remove_set<T>(values: &HashSet<T>, value: &T) -> HashSet<T>
-// where
-//   T: Clone + Eq + Hash,
-// {
-//   values.iter().filter(|x| x != &value).cloned().collect()
-// }
-//
 // pub fn add_map<K, V>(values: &HashMap<K, V>, key: &K, value: &V) -> HashMap<K, V>
 // where
 //   K: Clone + Eq + Hash,

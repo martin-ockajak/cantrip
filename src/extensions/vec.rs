@@ -18,17 +18,22 @@ impl<A> Iterable<A> for Vec<A> {
   }
 }
 
-impl<A> Collection<A> for Vec<A> {
-  fn add(&self, value: A) -> Self where A: Clone {
+impl<A: Clone> Collection<A> for Vec<A> {
+  fn add(&self, value: A) -> Self {
     self.iter().chain(iter::once(&value)).cloned().collect()
   }
 
-  fn remove(&self, value: A) -> Self where A: Clone + PartialEq {
+  fn add_all<I>(&self, values: &I) -> Self where I: Clone + IntoIterator<Item = A> {
+    self.iter().cloned().chain(values.clone().into_iter()).collect()
+  }
+
+  fn remove(&self, value: A) -> Self where A: PartialEq {
     self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
-  fn add_all(&self, values: &Self) -> Self where A: Clone {
-    self.iter().chain(values.iter()).cloned().collect()
+  fn remove_all<I>(&self, values: &I) -> Self where A: PartialEq, I: Clone + IntoIterator<Item = A> {
+    let removed = values.clone().into_iter().collect::<Vec<A>>();
+    self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
 }
 
