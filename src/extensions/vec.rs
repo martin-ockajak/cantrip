@@ -7,7 +7,7 @@ use crate::extensions::traits::{Collection, Functor, Iterable, Monad};
 impl<A, R> Functor<A, R> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn map<F>(&self, function: F) -> Self::C<R> where F: Fn(&A) -> R {
+  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R> {
     self.iter().map(function).collect()
   }
 }
@@ -19,19 +19,20 @@ impl<A, R> Monad<A, R> for Vec<A> {
     iter::once(value).collect()
   }
 
-  fn flat_map<F>(&self, function: F) -> Self::C<R> where F: Fn(&A) -> Self::C<R> {
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R> {
     self.iter().flat_map(function).collect()
   }
 }
 
 impl<A> Iterable<A> for Vec<A> {
+  type Item = A;
   type C<X> = Vec<X>;
 
-  fn all<P>(&self, predicate: P) -> bool where P: Fn(&A) -> bool {
+  fn all<P>(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
-  fn any<P>(&self, predicate: P) -> bool where P: Fn(&A) -> bool {
+  fn any<P>(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().any(predicate)
   }
 
@@ -47,19 +48,19 @@ impl<A> Iterable<A> for Vec<A> {
     self.iter().cloned().zip(0..self.len()).collect()
   }
 
-  fn filter<P>(&self, predicate: P) -> Self where P: Fn(&A) -> bool, A: Clone {
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self where A: Clone {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
-  fn find<P>(&self, predicate: P) -> Option<&A> where P: Fn(&A) -> bool, A: Clone {
+  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> where A: Clone {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B, F>(&self, init: B, function: F) -> B where F: Fn(B, &A) -> B {
+  fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
     self.iter().fold(init, function)
   }
 
-  fn rfold<B, F>(&self, init: B, function: F) -> B where F: Fn(B, &A) -> B {
+  fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
   }
 }
@@ -69,7 +70,7 @@ impl<A: Clone> Collection<A> for Vec<A> {
     self.iter().chain(iter::once(&value)).cloned().collect()
   }
 
-  fn add_seq<I>(&self, other: &I) -> Self where I: Clone + IntoIterator<Item = A> {
+  fn add_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self {
     self.iter().cloned().chain(other.clone().into_iter()).collect()
   }
 
@@ -77,7 +78,7 @@ impl<A: Clone> Collection<A> for Vec<A> {
     self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
-  fn remove_seq<I>(&self, other: &I) -> Self where I: Clone + IntoIterator<Item = A>, A: PartialEq {
+  fn remove_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
     let removed = other.clone().into_iter().collect::<Vec<A>>();
     self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }

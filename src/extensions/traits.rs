@@ -42,9 +42,7 @@ pub trait Functor<A, R> {
   /// ```
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<F>(&self, function: F) -> Self::C<R>
-    where
-      F: Fn(&A) -> R;
+  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R>;
 }
 
 pub trait Monad<A, R> {
@@ -54,66 +52,52 @@ pub trait Monad<A, R> {
     where
       A: Clone;
 
-  fn flat_map<F>(&self, function: F) -> Self::C<R>
-    where
-      F: Fn(&A) -> Self::C<R>;
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R>;
 }
 
 
 pub trait Iterable<A> {
+  type Item;
   type C<X>;
 
-  fn all<P>(&self, predicate: P) -> bool
-    where
-      P: Fn(&A) -> bool;
+  fn all<P>(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
-  fn any<P>(&self, predicate: P) -> bool
-    where
-      P: Fn(&A) -> bool;
+  fn any<P>(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
   fn cycle(&self) -> Cycle<Iter<A>>;
 
   fn zip<I>(&self, other: &I) -> Self::C<(A, I::Item)>
     where
-      I: Clone + IntoIterator,
+      I: IntoIterator + Clone,
       A: Clone;
 
   fn zip_with_index(&self) -> Self::C<(A, usize)>
     where
       A: Clone;
 
-  fn filter<P>(&self, predicate: P) -> Self
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self
     where
-      P: Fn(&A) -> bool,
       A: Clone;
 
-  fn find<P>(&self, predicate: P) -> Option<&A>
+  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>
     where
-      P: Fn(&A) -> bool,
       A: Clone;
 
-  fn fold<B, F>(&self, init: B, function: F) -> B
-    where
-      F: Fn(B, &A) -> B;
+  fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 
-  fn rfold<B, F>(&self, init: B, function: F) -> B
-    where
-      F: Fn(B, &A) -> B;
+  fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 }
 
 pub trait Collection<A: Clone> {
   fn add(&self, value: A) -> Self;
 
-  fn add_seq<I>(&self, other: &I) -> Self
-    where
-      I: Clone + IntoIterator<Item = A>;
+  fn add_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 
   fn remove(&self, value: A) -> Self
     where
       A: PartialEq;
 
-  fn remove_seq<I>(&self, other: &I) -> Self
+  fn remove_seq(&self, other: &(impl IntoIterator<Item = A> + Clone)) -> Self
     where
-      I: Clone + IntoIterator<Item = A>,
       A: PartialEq;
 }
