@@ -57,7 +57,6 @@ pub trait Monad<A, R> {
 
 
 pub trait Iterable<A> {
-  type Item;
   type C<X>;
 
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;

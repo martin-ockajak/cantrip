@@ -25,7 +25,6 @@ impl<A, R> Monad<A, R> for Vec<A> {
 }
 
 impl<A> Iterable<A> for Vec<A> {
-  type Item = A;
   type C<X> = Vec<X>;
 
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
