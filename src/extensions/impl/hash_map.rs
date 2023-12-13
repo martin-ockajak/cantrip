@@ -70,6 +70,26 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     result
   }
 
+  fn diff(&self, iterable: &(impl IntoIterator<Item = K> + Clone)) -> Self {
+    let mut result = self.clone();
+    for item in iterable.clone().into_iter() {
+      result.remove(&item);
+    }
+    result
+  }
+
+  fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self {
+    self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
+  }
+
+  fn filter_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Self::C<B> {
+    self.iter().filter_map(function).collect()
+  }
+
+  fn find_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B> {
+    self.iter().find_map(function)
+  }
+
   fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self {
     let mut result = self.clone();
     result.extend(iterable.clone().into_iter());

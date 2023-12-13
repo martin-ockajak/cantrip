@@ -46,13 +46,13 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
 
   fn delete(&self, key: &K) -> Self;
 
-  // fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
-  //
-  // fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
-  //
-  // fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
-  //
-  // fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
+  fn diff(&self, iterable: &(impl IntoIterator<Item = K> + Clone)) -> Self;
+
+  fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
+
+  fn filter_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Self::C<B>;
+
+  fn find_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self;
 }
