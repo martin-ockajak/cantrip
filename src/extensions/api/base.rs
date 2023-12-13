@@ -1,5 +1,3 @@
-use std::hash::Hash;
-
 /// The `Functor` trait represents an ability to map over parametric types with single type parameter.
 ///
 /// # Type Parameters
@@ -51,7 +49,9 @@ pub trait Monad<A, B> {
     where
       A: Clone;
 
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
+  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+    where
+      R: IntoIterator<Item = B> + Clone;
 }
 
 pub trait Iterable<A> {

@@ -18,8 +18,8 @@ impl<A, B> Monad<A, B> for Vec<A> {
     iter::once(value).collect()
   }
 
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B> {
-    self.iter().flat_map(function).collect()
+  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B> where R: IntoIterator<Item = B> + Clone {
+    self.iter().flat_map(|x| function(x).into_iter()).collect()
   }
 }
 
