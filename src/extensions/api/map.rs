@@ -1,6 +1,4 @@
-use std::collections::HashMap;
 use std::hash::Hash;
-use std::iter;
 use crate::extensions::ListCollection;
 
 pub trait MapFunctor<K, V, L: Eq + Hash, W> {

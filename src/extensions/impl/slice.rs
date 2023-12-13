@@ -1,4 +1,5 @@
 use crate::extensions::api::iterable::Iterable;
+use crate::extensions::Ordered;
 
 impl<A> Iterable<A> for [A] {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
@@ -24,6 +25,12 @@ impl<A> Iterable<A> for [A] {
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
+  }
+}
+
+impl<A: Clone> Ordered<A> for [A] {
+  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
   }
 }
 

@@ -16,3 +16,7 @@ pub trait Iterable<A> {
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 }
+
+pub trait Ordered<A> {
+  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize>;
+}

@@ -65,6 +65,8 @@ pub trait ListCollection<A: Clone> {
     where
       A: PartialEq;
 
+  fn enumerate(&self) -> Self::C<(usize, A)>;
+
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
@@ -72,18 +74,10 @@ pub trait ListCollection<A: Clone> {
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
-}
-
-pub trait Ordered<A: Clone> {
-  type C<X>;
-
-  fn enumerate(&self) -> Self::C<(usize, A)>;
 
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
   fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
-
-  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize>;
 
   fn repeat(&self, n: usize) -> Self;
 

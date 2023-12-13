@@ -70,6 +70,10 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
 
+  fn enumerate(&self) -> Self::C<(usize, A)> {
+    (0..self.len()).zip(self.iter().cloned()).collect()
+  }
+
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
@@ -87,14 +91,6 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     result.extend(iterable.clone().into_iter());
     result
   }
-}
-
-impl<A: Clone> Ordered<A> for Vec<A> {
-  type C<X> = Vec<X>;
-
-  fn enumerate(&self) -> Self::C<(usize, A)> {
-    (0..self.len()).zip(self.iter().cloned()).collect()
-  }
 
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
     self.iter().map_while(predicate).collect()
@@ -102,10 +98,6 @@ impl<A: Clone> Ordered<A> for Vec<A> {
 
   fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized {
     self.iter().cloned().partition(predicate)
-  }
-
-  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
   }
 
   fn repeat(&self, n: usize) -> Self {
@@ -127,6 +119,12 @@ impl<A: Clone> Ordered<A> for Vec<A> {
 
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
     self.iter().cloned().zip(iterable.clone().into_iter()).collect()
+  }
+}
+
+impl<A: Clone> Ordered<A> for Vec<A> {
+  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
   }
 }
 
