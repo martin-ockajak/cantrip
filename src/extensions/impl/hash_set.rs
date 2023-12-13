@@ -94,38 +94,33 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
   }
 }
 
-// #[cfg(test)]
-// mod tests {
-//   use std::collections::HashSet;
-//   use crate::extensions::*;
-//
-//   #[quickcheck]
-//   fn test_map_hash_set(data: HashSet<i32>) -> bool {
-//     let function = |x: &i32| *x as i64;
-//     let result = data.map(function);
-//     let expected = data.iter().map(function).collect::<HashSet<i64>>();
-//     result == expected
-//   }
-//
-//   #[quickcheck]
-//   fn test_filter_hash_set(data: HashSet<i32>) -> bool {
-//     let predicate = |x: &i32| x % 2 == 0;
-//     let function = |i: i32, x: &i32| i.saturating_add(*x);
-//     let result = data.filter(predicate);
-//     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<HashSet<i32>>();
-//     result == expected
-//   }
-//
-//   #[quickcheck]
-//   fn test_fold_hash_set(data: HashSet<i32>) -> bool {
-//     let function = |i: i32, x: &i32| i.saturating_add(*x);
-//     let result = data.fold(0, function);
-//     let expected = data.iter().fold(0, function);
-//     result == expected
-//   }
-//
-//   #[test]
-//   fn test_x() {
-//     assert_eq!(1, 1)
-//   }
-// }
+#[cfg(test)]
+mod tests {
+  use std::collections::HashSet;
+  use crate::extensions::*;
+
+  #[quickcheck]
+  fn test_map_hash_set(data: HashSet<i32>) -> bool {
+    let function = |x: &i32| *x as i64;
+    let result = data.map(function);
+    let expected = data.iter().map(function).collect::<HashSet<i64>>();
+    result == expected
+  }
+
+  #[quickcheck]
+  fn test_filter_hash_set(data: HashSet<i32>) -> bool {
+    let predicate = |x: &i32| x % 2 == 0;
+    let function = |i: i32, x: &i32| i.saturating_add(*x);
+    let result = data.filter(predicate);
+    let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<HashSet<i32>>();
+    result == expected
+  }
+
+  #[quickcheck]
+  fn test_fold_hash_set(data: HashSet<i32>) -> bool {
+    let function = |i: i32, x: &i32| i.saturating_add(*x);
+    let result = data.fold(0, function);
+    let expected = data.iter().fold(0, function);
+    result == expected
+  }
+}
