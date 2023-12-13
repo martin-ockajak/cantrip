@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
-use crate::extensions::api::map::{MapFunctor, MapMonad};
+use crate::extensions::api::map::{MapFunctor, MapIterable, MapMonad};
 
 impl<K, V, L: Eq + Hash, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
@@ -20,6 +20,26 @@ impl<K, V, L: Eq + Hash, W> MapMonad<K, V, L, W> for HashMap<K, V> {
 
   fn flat_map(&self, function: impl Fn((&K, &V)) -> Self::C<L, W>) -> Self::C<L, W> {
     self.iter().flat_map(function).collect()
+  }
+}
+
+impl<K, V> MapIterable<K, V> for HashMap<K, V> {
+  fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {
+    self.iter().fold(init, function)
+  }
+
+  fn reduce(&self, function: impl Fn((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)> where K: Clone, V: Clone {
+    let mut iterator = self.iter();
+    iterator.next().and_then(|head| {
+      let init = (head.0.clone(), head.1.clone());
+      Some(iterator.fold(init, |r, x| function((&r.0, &r.1), x)))
+    })
+  }
+
+  fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {
+    todo!()
+    // let values = self.iter().collect::<Vec<(&K, &V)>>();
+    // values.iter().rfold(init, |r, x| function(r, x))
   }
 }
 
