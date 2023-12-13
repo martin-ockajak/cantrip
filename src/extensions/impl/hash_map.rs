@@ -70,6 +70,12 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     result
   }
 
+  fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self {
+    let mut result = self.clone();
+    result.extend(iterable.clone().into_iter());
+    result
+  }
+
   // fn delete(&self, value: A) -> Self where A: PartialEq {
   //   self.iter().filter(|&x| x != &value).cloned().collect()
   // }
@@ -89,10 +95,6 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
   //
   // fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
   //   self.iter().find_map(function)
-  // }
-  //
-  // fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-  //   self.iter().cloned().chain(iterable.clone().into_iter()).collect()
   // }
 }
 

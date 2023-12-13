@@ -53,6 +53,6 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
   // fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
   //
   // fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
-  //
-  // fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+
+  fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self;
 }
