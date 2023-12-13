@@ -2,7 +2,8 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::traits::{SetFunctor, SetMonad, Iterable, SetCollection};
+use crate::extensions::api::base::Iterable;
+use crate::extensions::api::set::{SetFunctor, SetMonad, SetCollection};
 
 impl<A: Eq + Hash, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;

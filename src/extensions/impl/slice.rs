@@ -1,4 +1,4 @@
-use crate::extensions::api::traits::Iterable;
+use crate::extensions::api::base::Iterable;
 
 impl<A> Iterable<A> for [A] {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {

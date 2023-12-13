@@ -1,7 +1,7 @@
 use std::iter;
-use crate::extensions::Ordered;
 
-use crate::extensions::api::traits::{Collection, Functor, Iterable, Monad};
+use crate::extensions::api::base::{Collection, Functor, Iterable, Monad};
+use crate::extensions::Ordered;
 
 impl<A, B> Functor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
