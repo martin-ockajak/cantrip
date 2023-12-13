@@ -104,6 +104,10 @@ impl<A: Clone> Ordered<A> for Vec<A> {
     self.iter().cloned().partition(predicate)
   }
 
+  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
+  }
+
   fn repeat(&self, n: usize) -> Self {
     let mut result: Vec<A> = Vec::new();
     for _ in 0..n {
