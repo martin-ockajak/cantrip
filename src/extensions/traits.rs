@@ -91,6 +91,8 @@ pub trait Iterable<A: Clone> {
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
+  fn filter_map<R>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R>;
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
       I: IntoIterator + Clone;
@@ -100,6 +102,8 @@ pub trait EqIterable<A: Eq + Hash + Clone> {
   type C<X>;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
+
+  fn filter_map<R: Eq + Hash>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R>;
 }
 
 pub trait Collection<A: Clone> {

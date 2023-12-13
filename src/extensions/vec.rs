@@ -51,6 +51,10 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
+  fn filter_map<R>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R> {
+    self.iter().filter_map(function).collect()
+  }
+
   fn enumerate(&self) -> Self::C<(usize, A)> {
     (0..self.len()).zip(self.iter().cloned()).collect()
   }

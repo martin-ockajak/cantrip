@@ -53,6 +53,10 @@ impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
+
+  fn filter_map<R: Eq + Hash>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R> {
+    self.iter().filter_map(function).collect()
+  }
 }
 
 // #[cfg(test)]
