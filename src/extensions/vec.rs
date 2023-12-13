@@ -1,7 +1,7 @@
 use std::iter;
 use crate::extensions::Ordered;
 
-use crate::extensions::api::traits::{Collection, Functor, Iterable, Monad, Adaptable};
+use crate::extensions::api::traits::{Collection, Functor, Iterable, Monad};
 
 impl<A, B> Functor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
@@ -50,11 +50,20 @@ impl<A> Iterable<A> for Vec<A> {
   }
 }
 
-impl<A: Clone> Adaptable<A> for Vec<A> {
+impl<A: Clone> Collection<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn add(&self, value: A) -> Self {
     self.iter().chain(iter::once(&value)).cloned().collect()
+  }
+
+  fn delete(&self, value: A) -> Self where A: PartialEq {
+    self.iter().filter(|&x| x != &value).cloned().collect()
+  }
+
+  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
+    let removed = iterable.clone().into_iter().collect::<Vec<A>>();
+    self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
@@ -69,8 +78,8 @@ impl<A: Clone> Adaptable<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
-  fn remove(&self, value: A) -> Self where A: PartialEq {
-    self.iter().filter(|&x| x != &value).cloned().collect()
+  fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
+    self.iter().cloned().chain(iterable.clone().into_iter()).collect()
   }
 }
 
@@ -108,17 +117,6 @@ impl<A: Clone> Ordered<A> for Vec<A> {
 
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
     self.iter().cloned().zip(iterable.clone().into_iter()).collect()
-  }
-}
-
-impl<A: Clone> Collection<A> for Vec<A> {
-  fn union(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    self.iter().cloned().chain(iterable.clone().into_iter()).collect()
-  }
-
-  fn difference(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
-    let removed = iterable.clone().into_iter().collect::<Vec<A>>();
-    self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
 }
 

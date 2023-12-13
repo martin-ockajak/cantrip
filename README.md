@@ -10,6 +10,7 @@ Practical extensions for standard Rust collections
 | *add*        | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *all*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *any*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *delete*     | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *difference* | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *enumerate*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *filter*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
@@ -18,16 +19,15 @@ Practical extensions for standard Rust collections
 | *find*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *flat_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *fold*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *merge*      | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *partition*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *reduce*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
-| *remove*     | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *repeat*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *rfold*      | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *map*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *map_while*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *skip*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *take*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
-| *union*      | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *unit*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *zip*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 

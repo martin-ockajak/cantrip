@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::traits::{SetFunctor, SetMonad, Iterable, SetAdaptable};
+use crate::extensions::api::traits::{SetFunctor, SetMonad, Iterable, SetCollection};
 
 impl<A: Eq + Hash, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;
@@ -52,11 +52,23 @@ impl<A> Iterable<A> for HashSet<A> {
   }
 }
 
-impl<A: Eq + Hash + Clone> SetAdaptable<A> for HashSet<A> {
+impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
   type C<X> = HashSet<X>;
 
   fn add(&self, value: A) -> Self {
     self.iter().chain(iter::once(&value)).cloned().collect()
+  }
+
+  fn delete(&self, value: A) -> Self {
+    self.iter().filter(|&x| x != &value).cloned().collect()
+  }
+
+  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
+    let mut result = self.clone();
+    for item in iterable.clone().into_iter() {
+      result.remove(&item);
+    }
+    result
   }
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
@@ -71,9 +83,10 @@ impl<A: Eq + Hash + Clone> SetAdaptable<A> for HashSet<A> {
     self.iter().find_map(function)
   }
 
-  fn remove(&self, value: A) -> Self {
-    self.iter().filter(|&x| x != &value).cloned().collect()
-  }
+  // fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
+  //   let other = iterable.clone().into_iter().collect();
+  //   self.union(&other).collect()
+  // }
 }
 
 // #[cfg(test)]

@@ -88,10 +88,14 @@ pub trait Iterable<A> {
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 }
 
-pub trait Adaptable<A: Clone> {
+pub trait Collection<A: Clone> {
   type C<X>;
 
   fn add(&self, value: A) -> Self;
+
+  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
+    where
+      A: PartialEq;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
@@ -99,15 +103,19 @@ pub trait Adaptable<A: Clone> {
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
-  fn remove(&self, value: A) -> Self
+  fn delete(&self, value: A) -> Self
     where
       A: PartialEq;
+
+  fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }
 
-pub trait SetAdaptable<A: Eq + Hash + Clone> {
+pub trait SetCollection<A: Eq + Hash + Clone> {
   type C<X>;
 
   fn add(&self, value: A) -> Self;
+
+  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
@@ -115,7 +123,9 @@ pub trait SetAdaptable<A: Eq + Hash + Clone> {
 
   fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
-  fn remove(&self, value: A) -> Self;
+  fn delete(&self, value: A) -> Self;
+
+  // fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }
 
 pub trait Ordered<A: Clone> {
@@ -136,12 +146,4 @@ pub trait Ordered<A: Clone> {
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
       I: IntoIterator + Clone;
-}
-
-pub trait Collection<A: Clone> {
-  fn difference(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
-    where
-      A: PartialEq;
-
-  fn union(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }
