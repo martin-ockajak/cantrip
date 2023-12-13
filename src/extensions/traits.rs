@@ -70,7 +70,7 @@ pub trait EqMonad<A: Eq + Hash, B: Eq + Hash> {
   fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
 }
 
-pub trait AggregateIterable<A> {
+pub trait ReadIterable<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
   fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;

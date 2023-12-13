@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::traits::{EqFunctor, EqMonad, AggregateIterable, EqIterable};
+use crate::extensions::traits::{EqFunctor, EqMonad, ReadIterable, EqIterable};
 
 impl<A: Eq + Hash, B: Eq + Hash> EqFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;
@@ -24,7 +24,7 @@ impl<A: Eq + Hash, B: Eq + Hash> EqMonad<A, B> for Vec<A> {
   }
 }
 
-impl<A> AggregateIterable<A> for HashSet<A> {
+impl<A> ReadIterable<A> for HashSet<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }

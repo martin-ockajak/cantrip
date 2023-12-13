@@ -1,6 +1,6 @@
 use std::iter;
 
-use crate::extensions::traits::{Collection, Functor, AggregateIterable, Monad, Iterable};
+use crate::extensions::traits::{Collection, Functor, ReadIterable, Monad, Iterable};
 
 impl<A, B> Functor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
@@ -22,7 +22,7 @@ impl<A, B> Monad<A, B> for Vec<A> {
   }
 }
 
-impl<A> AggregateIterable<A> for Vec<A> {
+impl<A> ReadIterable<A> for Vec<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
