@@ -54,27 +54,7 @@ pub trait ListMonad<A, B> {
       R: IntoIterator<Item = B> + Clone;
 }
 
-pub trait Ordered<A: Clone> {
-  type C<X>;
-
-  fn enumerate(&self) -> Self::C<(usize, A)>;
-
-  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
-
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
-
-  fn repeat(&self, n: usize) -> Self;
-
-  fn skip(&self, n: usize) -> Self;
-
-  fn take(&self, n: usize) -> Self;
-
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
-    where
-      I: IntoIterator + Clone;
-}
-
-pub trait Collection<A: Clone> {
+pub trait SetCollection<A: Clone> {
   type C<X>;
 
   fn add(&self, value: A) -> Self;
@@ -94,4 +74,24 @@ pub trait Collection<A: Clone> {
       A: PartialEq;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+}
+
+pub trait Ordered<A: Clone> {
+  type C<X>;
+
+  fn enumerate(&self) -> Self::C<(usize, A)>;
+
+  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+
+  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
+
+  fn repeat(&self, n: usize) -> Self;
+
+  fn skip(&self, n: usize) -> Self;
+
+  fn take(&self, n: usize) -> Self;
+
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
+    where
+      I: IntoIterator + Clone;
 }
