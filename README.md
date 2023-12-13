@@ -11,7 +11,7 @@ Practical extensions for standard Rust collections
 | *all*        | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *any*        | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *delete*     | Python      | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
-| *difference* | Native      | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *difference* | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *enumerate*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *filter*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *filter_map* | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
@@ -19,7 +19,7 @@ Practical extensions for standard Rust collections
 | *find*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *flat_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *fold*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
-| *merge*      | Native      | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *merge*      | Custom      | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *partition*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *reduce*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *repeat*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
