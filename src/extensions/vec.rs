@@ -76,6 +76,14 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().cloned().partition(predicate)
   }
 
+  fn skip(&self, n: usize) -> Self {
+    self.iter().skip(n).cloned().collect()
+  }
+
+  fn take(&self, n: usize) -> Self {
+    self.iter().take(n).cloned().collect()
+  }
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
     self.iter().cloned().zip(iterable.clone().into_iter()).collect()
   }

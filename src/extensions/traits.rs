@@ -103,6 +103,10 @@ pub trait Iterable<A: Clone> {
 
   fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
 
+  fn skip(&self, n: usize) -> Self;
+
+  fn take(&self, n: usize) -> Self;
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
       I: IntoIterator + Clone;
