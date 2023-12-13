@@ -31,13 +31,15 @@ Practical extensions for standard Rust collections
 | *unit*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
 | *zip*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
 
-Data type categories
+## Data type categories
+
 - Sequence - Vec, VecDeque, LinkedList
 - Set - HashSet, BTreeSet
 - Map - HashMap, BTreeMap
 - View - Slice, Array
 
-Method sources:
+## Methdod sources
+
 - Rust
   - [Iterator](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
   - [Slice](https://doc.rust-lang.org/std/primitive.slice.html)
