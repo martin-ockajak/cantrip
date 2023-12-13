@@ -54,7 +54,7 @@ pub trait ListMonad<A, B> {
       R: IntoIterator<Item = B> + Clone;
 }
 
-pub trait SetCollection<A: Clone> {
+pub trait ListCollection<A: Clone> {
   type C<X>;
 
   fn add(&self, value: A) -> Self;

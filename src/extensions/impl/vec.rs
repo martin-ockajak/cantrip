@@ -1,7 +1,7 @@
 use std::iter;
 
 use crate::extensions::api::iterable::Iterable;
-use crate::extensions::{SetCollection, ListFunctor, ListMonad, Ordered};
+use crate::extensions::{ListCollection, ListFunctor, ListMonad, Ordered};
 
 impl<A, B> ListFunctor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
@@ -50,7 +50,7 @@ impl<A> Iterable<A> for Vec<A> {
   }
 }
 
-impl<A: Clone> SetCollection<A> for Vec<A> {
+impl<A: Clone> ListCollection<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn add(&self, value: A) -> Self {
