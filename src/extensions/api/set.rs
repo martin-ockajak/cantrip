@@ -13,7 +13,9 @@ pub trait SetMonad<A: Eq + Hash, B: Eq + Hash> {
     where
       A: Clone;
 
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
+  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+    where
+      R: IntoIterator<Item = B> + Clone;
 }
 
 pub trait SetCollection<A: Eq + Hash + Clone> {
