@@ -5,7 +5,7 @@ Practical extensions for standard Rust collections
 
 # API
 
-| Method       | Inspiration | List               | Set                | Map                | View               |
+| Method       | Inspiration | List               | Set                | Map                | Slice              |
 |--------------|-------------|--------------------|--------------------|--------------------|--------------------|
 | *add*        | Python      | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *all*        | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
