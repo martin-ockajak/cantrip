@@ -1,12 +1,25 @@
 use std::collections::HashMap;
 use std::hash::Hash;
-use crate::extensions::api::map::Functor;
+use std::iter;
+use crate::extensions::api::map::{MapFunctor, MapMonad};
 
-impl<K, V, L: Eq + Hash, W: Eq + Hash> Functor<K, V, L, W> for HashMap<K, V> {
+impl<K, V, L: Eq + Hash, W: Eq + Hash> MapFunctor<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
   fn map(&self, function: impl Fn((&K, &V)) -> (L, W)) -> Self::C<L, W> {
     self.iter().map(function).collect()
+  }
+}
+
+impl<K, V, L: Eq + Hash, W: Eq + Hash> MapMonad<K, V, L, W> for HashMap<K, V> {
+  type C<X, Y> = HashMap<X, Y>;
+
+  fn unit(key: K, value: V) -> Self::C<K, V> {
+    iter::once((key, value)).collect()
+  }
+
+  fn flat_map(&self, function: impl Fn((&K, &V)) -> Self::C<L, W>) -> Self::C<L, W> {
+    self.iter().flat_map(function).collect()
   }
 }
 
