@@ -17,13 +17,14 @@ pub trait MapMonad<K, V, L: Eq + Hash, W> {
 }
 
 pub trait MapIterable<K, V> {
-  // fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;
-  //
-  // fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;
-  //
-  // fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>
-  //   where
-  //     A: Clone;
+  fn all(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool;
+
+  fn any(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool;
+
+  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)>
+    where
+      K: Clone,
+      V: Clone;
 
   fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 

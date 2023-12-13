@@ -24,6 +24,18 @@ impl<K, V, L: Eq + Hash, W> MapMonad<K, V, L, W> for HashMap<K, V> {
 }
 
 impl<K, V> MapIterable<K, V> for HashMap<K, V> {
+  fn all(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool {
+    self.iter().all(predicate)
+  }
+
+  fn any(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool {
+    self.iter().any(predicate)
+  }
+
+  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)> where K: Clone, V: Clone {
+    self.iter().find(|&x| predicate(x))
+  }
+
   fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {
     self.iter().fold(init, function)
   }
