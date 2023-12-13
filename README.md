@@ -18,14 +18,14 @@ Practical extensions for standard Rust collections
 | *find_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *find*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
 | *flat_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *fold*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
+| *fold*       | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *map*        | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *map_while*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *merge*      | Cantrip     | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *partition*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *reduce*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
 | *repeat*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
-| *rfold*      | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
+| *rfold*      | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *skip*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *take*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *unit*       | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |

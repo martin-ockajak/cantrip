@@ -37,9 +37,8 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
   }
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {
-    todo!()
-    // let values = self.iter().collect::<Vec<(&K, &V)>>();
-    // values.iter().rfold(init, |r, x| function(r, x))
+    let values = self.iter().collect::<Vec<(&K, &V)>>();
+    values.iter().rfold(init, |r, &x| function(r, x))
   }
 }
 
