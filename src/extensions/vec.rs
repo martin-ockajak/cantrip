@@ -40,7 +40,8 @@ impl<A> AggregateIterable<A> for Vec<A> {
   }
 
   fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A> where A: Clone {
-    self.clone().into_iter().reduce(|r, x| function(&r, &x))
+    let mut iterator = self.iter();
+    iterator.next().and_then(|init| Some(iterator.fold(init.clone(), |r, x| function(&r, x))))
   }
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
