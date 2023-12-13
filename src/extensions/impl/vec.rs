@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+use std::hash::Hash;
 use std::iter;
 
 use crate::extensions::api::iterable::Iterable;
@@ -65,9 +67,10 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     result
   }
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
-    let removed = iterable.clone().into_iter().collect::<Vec<A>>();
-    self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
+  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: Eq + Hash {
+    let mut removed: HashSet<A> = HashSet::new();
+    removed.extend(iterable.clone().into_iter());
+    self.iter().filter(|x| removed.contains(x)).cloned().collect()
   }
 
   fn enumerate(&self) -> Self::C<(usize, A)> {

@@ -1,3 +1,5 @@
+use std::hash::Hash;
+
 /// The `Functor` trait represents an ability to map over parametric types with single type parameter.
 ///
 /// # Type Parameters
@@ -63,7 +65,7 @@ pub trait ListCollection<A: Clone> {
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
     where
-      A: PartialEq;
+      A: Eq + Hash;
 
   fn enumerate(&self) -> Self::C<(usize, A)>;
 
