@@ -11,10 +11,10 @@ impl<K, V, L: Eq + Hash, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
   }
 }
 
-impl<K: Eq + Hash, V, L: Eq + Hash, W> MapMonad<K, V, L, W> for HashMap<K, V> {
+impl<K, V, L: Eq + Hash, W> MapMonad<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
-  fn unit(key: K, value: V) -> Self::C<K, V> {
+  fn unit(key: K, value: V) -> Self::C<K, V> where K: Eq + Hash {
     iter::once((key, value)).collect()
   }
 

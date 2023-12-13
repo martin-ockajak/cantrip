@@ -5,7 +5,7 @@ use std::iter;
 use crate::extensions::api::base::Iterable;
 use crate::extensions::api::set::{SetFunctor, SetMonad, SetCollection};
 
-impl<A: Eq + Hash, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
+impl<A, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;
 
   fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
@@ -13,10 +13,10 @@ impl<A: Eq + Hash, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
   }
 }
 
-impl<A: Eq + Hash, B: Eq + Hash> SetMonad<A, B> for Vec<A> {
+impl<A, B: Eq + Hash> SetMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn unit(value: A) -> Self::C<A> where A: Clone {
+  fn unit(value: A) -> Self::C<A> where A: Clone + Eq + Hash {
     iter::once(value).collect()
   }
 
