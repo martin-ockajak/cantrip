@@ -28,7 +28,7 @@ impl<A> Iterable<A> for [A] {
   }
 }
 
-impl<A: Clone> Ordered<A> for [A] {
+impl<A> Ordered<A> for [A] {
   fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }

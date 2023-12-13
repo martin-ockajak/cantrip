@@ -122,7 +122,7 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
   }
 }
 
-impl<A: Clone> Ordered<A> for Vec<A> {
+impl<A> Ordered<A> for Vec<A> {
   fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }
