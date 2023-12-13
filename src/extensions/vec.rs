@@ -82,7 +82,7 @@ impl<A: Clone> Collection<A> for Vec<A> {
 
 #[cfg(test)]
 mod tests {
-  use crate::extensions::traits::*;
+  use crate::extensions::*;
 
   #[quickcheck]
   fn test_map_vec(data: Vec<i32>) -> bool {

@@ -3,3 +3,5 @@ pub mod hash_set;
 pub mod traits;
 pub mod vec;
 mod test;
+
+pub use traits::*;
