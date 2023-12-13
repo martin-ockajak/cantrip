@@ -5,6 +5,8 @@ Practical extensions for standard Rust collections
 
 # API
 
+-
+
 | Method | Source | Sequence | Set | Map | View |
 -----------------------------------------------------------------
 | map | Rust | :heavy_check_mark: | :heavy_check_mark: |  | :x: |
