@@ -58,7 +58,7 @@ impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
 // #[cfg(test)]
 // mod tests {
 //   use std::collections::HashSet;
-//   use crate::extensions::traits::*;
+//   use crate::extensions::*;
 //
 //   #[quickcheck]
 //   fn test_map_hash_set(data: HashSet<i32>) -> bool {
