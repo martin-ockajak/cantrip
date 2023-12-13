@@ -57,11 +57,15 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
   type C<X> = HashSet<X>;
 
   fn add(&self, value: A) -> Self {
-    self.iter().chain(iter::once(&value)).cloned().collect()
+    let mut result = self.clone();
+    result.insert(value);
+    result
   }
 
-  fn delete(&self, value: A) -> Self {
-    self.iter().filter(|&x| x != &value).cloned().collect()
+  fn delete(&self, value: &A) -> Self {
+    let mut result = self.clone();
+    result.remove(value);
+    result
   }
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {

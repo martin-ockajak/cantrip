@@ -54,11 +54,15 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn add(&self, value: A) -> Self {
-    self.iter().chain(iter::once(&value)).cloned().collect()
+    let mut result = self.clone();
+    result.push(value);
+    result
   }
 
-  fn delete(&self, value: A) -> Self where A: PartialEq {
-    self.iter().filter(|&x| x != &value).cloned().collect()
+  fn delete(&self, value: &A) -> Self where A: PartialEq {
+    let mut result = self.clone();
+    result.iter().position(|x| x == value).map(|index| result.remove(index));
+    result
   }
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {

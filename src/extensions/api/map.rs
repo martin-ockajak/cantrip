@@ -1,4 +1,7 @@
+use std::collections::HashMap;
 use std::hash::Hash;
+use std::iter;
+use crate::extensions::ListCollection;
 
 pub trait MapFunctor<K, V, L: Eq + Hash, W> {
   type C<X, Y>;
@@ -34,4 +37,22 @@ pub trait MapIterable<K, V> {
       V: Clone;
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
+}
+
+pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
+  type C<X>;
+
+  fn add(&self, key: K, value: V) -> Self;
+
+  fn delete(&self, key: &K) -> Self;
+
+  // fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+  //
+  // fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
+  //
+  // fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+  //
+  // fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
+  //
+  // fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }

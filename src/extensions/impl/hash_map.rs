@@ -2,6 +2,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 use crate::extensions::api::map::{MapFunctor, MapIterable, MapMonad};
+use crate::extensions::MapCollection;
 
 impl<K, V, L: Eq + Hash, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
@@ -52,6 +53,47 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
     let values = self.iter().collect::<Vec<(&K, &V)>>();
     values.iter().rfold(init, |r, &x| function(r, x))
   }
+}
+
+impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
+  type C<X> = Vec<X>;
+
+  fn add(&self, key: K, value: V) -> Self {
+    let mut result = self.clone();
+    result.insert(key, value);
+    result
+  }
+
+  fn delete(&self, key: &K) -> Self {
+    let mut result = self.clone();
+    result.remove(key);
+    result
+  }
+
+  // fn delete(&self, value: A) -> Self where A: PartialEq {
+  //   self.iter().filter(|&x| x != &value).cloned().collect()
+  // }
+  //
+  // fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
+  //   let removed = iterable.clone().into_iter().collect::<Vec<A>>();
+  //   self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
+  // }
+  //
+  // fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
+  //   self.iter().filter(|&x| predicate(x)).cloned().collect()
+  // }
+  //
+  // fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+  //   self.iter().filter_map(function).collect()
+  // }
+  //
+  // fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
+  //   self.iter().find_map(function)
+  // }
+  //
+  // fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
+  //   self.iter().cloned().chain(iterable.clone().into_iter()).collect()
+  // }
 }
 
 // pub fn add_map<K, V>(values: &HashMap<K, V>, key: &K, value: &V) -> HashMap<K, V>

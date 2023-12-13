@@ -57,7 +57,9 @@ pub trait ListMonad<A, B> {
 pub trait ListCollection<A: Clone> {
   type C<X>;
 
-  fn add(&self, value: A) -> Self;
+  fn delete(&self, value: &A) -> Self
+    where
+      A: PartialEq; fn add(&self, value: A) -> Self;
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
     where
@@ -69,9 +71,6 @@ pub trait ListCollection<A: Clone> {
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
-  fn delete(&self, value: A) -> Self
-    where
-      A: PartialEq;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }
