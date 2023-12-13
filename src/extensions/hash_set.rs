@@ -65,6 +65,10 @@ impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
   fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
     self.iter().map_while(predicate).collect()
   }
+
+  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized {
+    self.iter().cloned().partition(predicate)
+  }
 }
 
 // #[cfg(test)]

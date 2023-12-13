@@ -63,12 +63,16 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
-    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
-  }
-
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
     self.iter().map_while(predicate).collect()
+  }
+
+  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized {
+    self.iter().cloned().partition(predicate)
+  }
+
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
+    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
   }
 }
 
