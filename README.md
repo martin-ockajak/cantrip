@@ -67,10 +67,13 @@ Practical extensions for standard Rust collections
 
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - Vec
-  - HashSet
-  - Slice
+  - VecDeque
   - LinkedList
+  - HashSet
+  - BTreeSet
   - HashMap
+  - BTreeMap
+  - Slice
   - String
 
 
