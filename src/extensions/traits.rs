@@ -93,6 +93,8 @@ pub trait Iterable<A: Clone> {
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
+  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
+
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
@@ -106,6 +108,8 @@ pub trait EqIterable<A: Eq + Hash + Clone> {
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
   fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+
+  fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
   fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 }

@@ -58,6 +58,10 @@ impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
     self.iter().filter_map(function).collect()
   }
 
+  fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
+    self.iter().find_map(function)
+  }
+
   fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
     self.iter().map_while(predicate).collect()
   }

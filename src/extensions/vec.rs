@@ -59,6 +59,10 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().filter_map(function).collect()
   }
 
+  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
+    self.iter().find_map(function)
+  }
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
     self.iter().cloned().zip(iterable.clone().into_iter()).collect()
   }
