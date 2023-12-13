@@ -2,22 +2,22 @@ use std::iter;
 
 use crate::extensions::traits::{Collection, Functor, AggregateIterable, Monad, Iterable};
 
-impl<A, R> Functor<A, R> for Vec<A> {
+impl<A, B> Functor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R> {
+  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
     self.iter().map(function).collect()
   }
 }
 
-impl<A, R> Monad<A, R> for Vec<A> {
+impl<A, B> Monad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn unit(value: A) -> Self::C<A> where A: Clone {
     iter::once(value).collect()
   }
 
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R> {
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B> {
     self.iter().flat_map(function).collect()
   }
 }
@@ -51,16 +51,20 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
-  fn filter_map<R>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R> {
-    self.iter().filter_map(function).collect()
-  }
-
   fn enumerate(&self) -> Self::C<(usize, A)> {
     (0..self.len()).zip(self.iter().cloned()).collect()
   }
 
+  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+    self.iter().filter_map(function).collect()
+  }
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
     self.iter().cloned().zip(iterable.clone().into_iter()).collect()
+  }
+
+  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+    self.iter().map_while(predicate).collect()
   }
 }
 

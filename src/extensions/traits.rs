@@ -6,7 +6,7 @@ use std::hash::Hash;
 ///
 /// * `A` - type parameter of the implementing type
 /// * `R` - type parameter of the resulting type after mapping
-pub trait Functor<A, R> {
+pub trait Functor<A, B> {
   type C<X>;
 
   /// Applies the given closure `f` to each element in the container.
@@ -41,33 +41,33 @@ pub trait Functor<A, R> {
   /// ```
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R>;
+  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>;
 }
 
-pub trait EqFunctor<A: Eq + Hash, R: Eq + Hash> {
+pub trait EqFunctor<A: Eq + Hash, B: Eq + Hash> {
   type C<X>;
 
-  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R>;
+  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>;
 }
 
-pub trait Monad<A, R> {
-  type C<X>;
-
-  fn unit(value: A) -> Self::C<A>
-    where
-      A: Clone;
-
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R>;
-}
-
-pub trait EqMonad<A: Eq + Hash, R: Eq + Hash> {
+pub trait Monad<A, B> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>
     where
       A: Clone;
 
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R>;
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
+}
+
+pub trait EqMonad<A: Eq + Hash, B: Eq + Hash> {
+  type C<X>;
+
+  fn unit(value: A) -> Self::C<A>
+    where
+      A: Clone;
+
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
 }
 
 pub trait AggregateIterable<A> {
@@ -91,7 +91,9 @@ pub trait Iterable<A: Clone> {
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
-  fn filter_map<R>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R>;
+  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+
+  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
@@ -103,7 +105,9 @@ pub trait EqIterable<A: Eq + Hash + Clone> {
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
-  fn filter_map<R: Eq + Hash>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R>;
+  fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+
+  fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 }
 
 pub trait Collection<A: Clone> {

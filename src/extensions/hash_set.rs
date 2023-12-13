@@ -4,22 +4,22 @@ use std::iter;
 
 use crate::extensions::traits::{EqFunctor, EqMonad, AggregateIterable, EqIterable};
 
-impl<A: Eq + Hash, R: Eq + Hash> EqFunctor<A, R> for HashSet<A> {
-  type C<X> = HashSet<R>;
+impl<A: Eq + Hash, B: Eq + Hash> EqFunctor<A, B> for HashSet<A> {
+  type C<X> = HashSet<B>;
 
-  fn map(&self, function: impl Fn(&A) -> R) -> Self::C<R> {
+  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
     self.iter().map(function).collect()
   }
 }
 
-impl<A: Eq + Hash, R: Eq + Hash> EqMonad<A, R> for Vec<A> {
+impl<A: Eq + Hash, B: Eq + Hash> EqMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn unit(value: A) -> Self::C<A> where A: Clone {
     iter::once(value).collect()
   }
 
-  fn flat_map(&self, function: impl Fn(&A) -> Self::C<R>) -> Self::C<R> {
+  fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B> {
     self.iter().flat_map(function).collect()
   }
 }
@@ -54,8 +54,12 @@ impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
-  fn filter_map<R: Eq + Hash>(&self, function: impl Fn(&A) -> Option<R>) -> Self::C<R> {
+  fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
     self.iter().filter_map(function).collect()
+  }
+
+  fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+    self.iter().map_while(predicate).collect()
   }
 }
 
