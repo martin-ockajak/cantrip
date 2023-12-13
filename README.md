@@ -17,7 +17,7 @@ Practical extensions for standard Rust collections
 | *filter_map* | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *find_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *find*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
-| *flat_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
+| *flat_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *fold*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
 | *map*        | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *map_while*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
@@ -28,7 +28,7 @@ Practical extensions for standard Rust collections
 | *rfold*      | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
 | *skip*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *take*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
-| *unit*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
+| *unit*       | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *zip*        | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 
 ## Data type categories
