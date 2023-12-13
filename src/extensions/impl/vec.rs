@@ -83,7 +83,11 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
   }
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    self.iter().cloned().chain(iterable.clone().into_iter()).collect()
+    let mut result = self.clone();
+    for item in iterable.clone().into_iter() {
+      result.push(item);
+    }
+    result
   }
 }
 
