@@ -33,7 +33,7 @@ Practical extensions for standard Rust collections
 
 ## Data type categories
 
-- Sequence - Vec, VecDeque, LinkedList
+- List - Vec, VecDeque, LinkedList
 - Set - HashSet, BTreeSet
 - Map - HashMap, BTreeMap
 - View - Slice, Array
