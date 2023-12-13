@@ -7,12 +7,6 @@ Practical extensions for standard Rust collections
 
 | Method       | Source | Sequence           | Set                | Map | View            |
 |--------------|--------|--------------------|--------------------|-----|-----------------|
-| *[]* (get)   | Python |                    |                    |     | :ok:            |
-| *+*          | Python |                    |                    |     | :x:             |
-| *-*          | Python |                    |                    |     | :x:             |
-| *\**         | Python |                    |                    |     | :x:             |
-| */*          | Python |                    |                    |     | :x:             |
-| *%*          | Python |                    |                    |     | :x:             |
 | *add*        | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:             |
 | *all*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *any*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
