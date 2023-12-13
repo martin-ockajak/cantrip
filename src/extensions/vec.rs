@@ -65,7 +65,7 @@ impl<A: Clone> Collection<A> for Vec<A> {
     self.iter().chain(iter::once(&value)).cloned().collect()
   }
 
-  fn add_seq(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
+  fn add_all(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
     self.iter().cloned().chain(iterable.clone().into_iter()).collect()
   }
 
@@ -73,7 +73,7 @@ impl<A: Clone> Collection<A> for Vec<A> {
     self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
-  fn remove_seq(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
+  fn remove_all(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {
     let removed = iterable.clone().into_iter().collect::<Vec<A>>();
     self.iter().filter(|&x| removed.contains(&x)).cloned().collect()
   }
