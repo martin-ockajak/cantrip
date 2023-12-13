@@ -85,8 +85,9 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
   }
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    let other = iterable.clone().into_iter().collect();
-    self.union(&other).collect()
+    // let other = iterable.clone().into_iter().collect();
+    // self.union(&other).collect()
+    todo!()
   }
 }
 
