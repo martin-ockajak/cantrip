@@ -135,13 +135,13 @@ pub trait Ordered<A: Clone> {
 pub trait Collection<A: Clone> {
   fn add(&self, value: A) -> Self;
 
-  fn add_all(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+  fn difference(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
+    where
+      A: PartialEq;
 
   fn remove(&self, value: A) -> Self
     where
       A: PartialEq;
 
-  fn remove_all(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
-    where
-      A: PartialEq;
+  fn union(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }
