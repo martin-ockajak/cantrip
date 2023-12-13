@@ -23,7 +23,7 @@ Practical extensions for standard Rust collections
 | *map_while*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *merge*      | Cantrip     | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *partition*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
-| *reduce*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :heavy_check_mark: |
+| *reduce*     | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *repeat*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
 | *rfold*      | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *skip*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |                    | :x:                |
