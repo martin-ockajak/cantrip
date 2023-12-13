@@ -95,7 +95,6 @@ mod tests {
   #[quickcheck]
   fn test_filter_vec(data: Vec<i32>) -> bool {
     let predicate = |x: &i32| x % 2 == 0;
-    let function = |i: i32, x: &i32| i.saturating_add(*x);
     let result = data.filter(predicate);
     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
     result == expected
