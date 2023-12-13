@@ -1,6 +1,6 @@
 use std::iter;
 
-use crate::extensions::api::base::Iterable;
+use crate::extensions::api::iterable::Iterable;
 use crate::extensions::{Collection, ListFunctor, ListMonad, Ordered};
 
 impl<A, B> ListFunctor<A, B> for Vec<A> {

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::base::Iterable;
+use crate::extensions::api::iterable::Iterable;
 use crate::extensions::api::set::{SetFunctor, SetMonad, SetCollection};
 
 impl<A, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
