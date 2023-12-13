@@ -2,9 +2,9 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::traits::{EqFunctor, EqMonad, Readable, EqIterable};
+use crate::extensions::api::traits::{SetFunctor, SetMonad, Iterable, SetAdaptable};
 
-impl<A: Eq + Hash, B: Eq + Hash> EqFunctor<A, B> for HashSet<A> {
+impl<A: Eq + Hash, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;
 
   fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
@@ -12,7 +12,7 @@ impl<A: Eq + Hash, B: Eq + Hash> EqFunctor<A, B> for HashSet<A> {
   }
 }
 
-impl<A: Eq + Hash, B: Eq + Hash> EqMonad<A, B> for Vec<A> {
+impl<A: Eq + Hash, B: Eq + Hash> SetMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn unit(value: A) -> Self::C<A> where A: Clone {
@@ -24,7 +24,7 @@ impl<A: Eq + Hash, B: Eq + Hash> EqMonad<A, B> for Vec<A> {
   }
 }
 
-impl<A> Readable<A> for HashSet<A> {
+impl<A> Iterable<A> for HashSet<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -52,8 +52,12 @@ impl<A> Readable<A> for HashSet<A> {
   }
 }
 
-impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
+impl<A: Eq + Hash + Clone> SetAdaptable<A> for HashSet<A> {
   type C<X> = HashSet<X>;
+
+  fn add(&self, value: A) -> Self {
+    self.iter().chain(iter::once(&value)).cloned().collect()
+  }
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
@@ -67,12 +71,8 @@ impl<A: Eq + Hash + Clone> EqIterable<A> for HashSet<A> {
     self.iter().find_map(function)
   }
 
-  fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
-    self.iter().map_while(predicate).collect()
-  }
-
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized {
-    self.iter().cloned().partition(predicate)
+  fn remove(&self, value: A) -> Self {
+    self.iter().filter(|&x| x != &value).cloned().collect()
   }
 }
 

@@ -1,6 +1,6 @@
-use crate::extensions::traits::Readable;
+use crate::extensions::api::traits::Iterable;
 
-impl<A> Readable<A> for [A] {
+impl<A> Iterable<A> for [A] {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }

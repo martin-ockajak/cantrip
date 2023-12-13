@@ -1,7 +1,7 @@
 use std::iter;
 use crate::extensions::Ordered;
 
-use crate::extensions::traits::{Collection, Functor, Readable, Monad, Iterable};
+use crate::extensions::api::traits::{Collection, Functor, Iterable, Monad, Adaptable};
 
 impl<A, B> Functor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
@@ -23,7 +23,7 @@ impl<A, B> Monad<A, B> for Vec<A> {
   }
 }
 
-impl<A> Readable<A> for Vec<A> {
+impl<A> Iterable<A> for Vec<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -50,8 +50,12 @@ impl<A> Readable<A> for Vec<A> {
   }
 }
 
-impl<A: Clone> Iterable<A> for Vec<A> {
+impl<A: Clone> Adaptable<A> for Vec<A> {
   type C<X> = Vec<X>;
+
+  fn add(&self, value: A) -> Self {
+    self.iter().chain(iter::once(&value)).cloned().collect()
+  }
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
@@ -63,6 +67,10 @@ impl<A: Clone> Iterable<A> for Vec<A> {
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
+  }
+
+  fn remove(&self, value: A) -> Self where A: PartialEq {
+    self.iter().filter(|&x| x != &value).cloned().collect()
   }
 }
 
@@ -104,16 +112,8 @@ impl<A: Clone> Ordered<A> for Vec<A> {
 }
 
 impl<A: Clone> Collection<A> for Vec<A> {
-  fn add(&self, value: A) -> Self {
-    self.iter().chain(iter::once(&value)).cloned().collect()
-  }
-
   fn union(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
     self.iter().cloned().chain(iterable.clone().into_iter()).collect()
-  }
-
-  fn remove(&self, value: A) -> Self where A: PartialEq {
-    self.iter().filter(|&x| x != &value).cloned().collect()
   }
 
   fn difference(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: PartialEq {

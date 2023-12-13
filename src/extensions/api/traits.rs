@@ -44,7 +44,7 @@ pub trait Functor<A, B> {
   fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>;
 }
 
-pub trait EqFunctor<A: Eq + Hash, B: Eq + Hash> {
+pub trait SetFunctor<A: Eq + Hash, B: Eq + Hash> {
   type C<X>;
 
   fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>;
@@ -60,7 +60,7 @@ pub trait Monad<A, B> {
   fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
 }
 
-pub trait EqMonad<A: Eq + Hash, B: Eq + Hash> {
+pub trait SetMonad<A: Eq + Hash, B: Eq + Hash> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>
@@ -70,7 +70,7 @@ pub trait EqMonad<A: Eq + Hash, B: Eq + Hash> {
   fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
 }
 
-pub trait Readable<A> {
+pub trait Iterable<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
   fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;
@@ -88,18 +88,26 @@ pub trait Readable<A> {
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 }
 
-pub trait Iterable<A: Clone> {
+pub trait Adaptable<A: Clone> {
   type C<X>;
+
+  fn add(&self, value: A) -> Self;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
+
+  fn remove(&self, value: A) -> Self
+    where
+      A: PartialEq;
 }
 
-pub trait EqIterable<A: Eq + Hash + Clone> {
+pub trait SetAdaptable<A: Eq + Hash + Clone> {
   type C<X>;
+
+  fn add(&self, value: A) -> Self;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
@@ -107,9 +115,7 @@ pub trait EqIterable<A: Eq + Hash + Clone> {
 
   fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
-
-  fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+  fn remove(&self, value: A) -> Self;
 }
 
 pub trait Ordered<A: Clone> {
@@ -133,13 +139,7 @@ pub trait Ordered<A: Clone> {
 }
 
 pub trait Collection<A: Clone> {
-  fn add(&self, value: A) -> Self;
-
   fn difference(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
-    where
-      A: PartialEq;
-
-  fn remove(&self, value: A) -> Self
     where
       A: PartialEq;
 
