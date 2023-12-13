@@ -148,10 +148,10 @@ mod tests {
 
   #[test]
   fn test_x() {
-    let array = [1, 2, 3];
-    let slice = &array[0..];
-    let text = "Test";
-    let string = text.to_string();
+    [1, 2, 3];
+    &[1, 2, 3][0..];
+    "Test";
+    "Test".to_string();
     assert_eq!(1, 1)
   }
 }
