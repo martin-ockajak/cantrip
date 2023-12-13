@@ -89,11 +89,11 @@ pub trait Iterable<A: Clone> {
 
   fn enumerate(&self) -> Self::C<(usize, A)>;
 
+  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
       I: IntoIterator + Clone;
-
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 }
 
 pub trait EqIterable<A: Eq + Hash + Clone> {
