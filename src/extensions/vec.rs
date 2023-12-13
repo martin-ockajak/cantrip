@@ -148,6 +148,8 @@ mod tests {
 
   #[test]
   fn test_x() {
+    let array = [1, 2, 3];
+    let slice = &array[0..];
     assert_eq!(1, 1)
   }
 }
