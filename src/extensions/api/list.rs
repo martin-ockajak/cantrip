@@ -56,6 +56,11 @@ pub trait ListMonad<A, B> {
       R: IntoIterator<Item = B> + Clone;
 }
 
+
+pub trait ListOrdered<A> {
+  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize>;
+}
+
 pub trait ListCollection<A: Clone> {
   type C<X>;
 

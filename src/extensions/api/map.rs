@@ -1,5 +1,4 @@
 use std::hash::Hash;
-use crate::extensions::ListCollection;
 
 pub trait MapFunctor<K, V, L: Eq + Hash, W> {
   type C<X, Y>;

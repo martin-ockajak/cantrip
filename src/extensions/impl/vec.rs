@@ -106,8 +106,7 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
   fn repeat(&self, n: usize) -> Self {
     let mut result: Vec<A> = Vec::new();
     for _ in 0..n {
-      let mut part = self.clone();
-      result.append(&mut part);
+      result.extend(self.iter().cloned());
     }
     result
   }
