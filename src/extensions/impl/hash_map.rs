@@ -88,5 +88,14 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
 
 #[cfg(test)]
 mod tests {
+  use std::collections::HashMap;
+  use crate::extensions::*;
 
+  #[quickcheck]
+  fn test_map_hash_map(data: HashMap<i32, i32>) -> bool {
+    let function = |(k, v): (&i32, &i32)| (*k, *v as i64);
+    let result = data.map(function);
+    let expected = data.iter().map(function).collect::<HashMap<i32, i64>>();
+    result == expected
+  }
 }
