@@ -87,11 +87,11 @@ pub trait AggregateIterable<A> {
 pub trait Iterable<A: Clone> {
   type C<X>;
 
+  fn enumerate(&self) -> Self::C<(usize, A)>;
+
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
     where
       I: IntoIterator + Clone;
-
-  fn zip_with_index(&self) -> Self::C<(A, usize)>;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 }

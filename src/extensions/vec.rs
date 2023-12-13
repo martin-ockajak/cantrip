@@ -47,12 +47,12 @@ impl<A> AggregateIterable<A> for Vec<A> {
 impl<A: Clone> Iterable<A> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
-    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
+  fn enumerate(&self) -> Self::C<(usize, A)> {
+    (0..self.len()).zip(self.iter().cloned()).collect()
   }
 
-  fn zip_with_index(&self) -> Self::C<(A, usize)> {
-    self.iter().cloned().zip(0..self.len()).collect()
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
+    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
   }
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
