@@ -1,9 +1,9 @@
 use std::iter;
 
-use crate::extensions::api::base::{Collection, Functor, Iterable, Monad};
-use crate::extensions::Ordered;
+use crate::extensions::api::base::Iterable;
+use crate::extensions::{Collection, ListFunctor, ListMonad, Ordered};
 
-impl<A, B> Functor<A, B> for Vec<A> {
+impl<A, B> ListFunctor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
@@ -11,7 +11,7 @@ impl<A, B> Functor<A, B> for Vec<A> {
   }
 }
 
-impl<A, B> Monad<A, B> for Vec<A> {
+impl<A, B> ListMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn unit(value: A) -> Self::C<A> where A: Clone {
