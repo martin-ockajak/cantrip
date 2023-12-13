@@ -10,7 +10,7 @@ Practical extensions for standard Rust collections
 | *[]*         | Python |                    |                    |     | :ok:            |
 | *+*          | Python |                    |                    |     | :x:             |
 | *-*          | Python |                    |                    |     | :x:             |
-| ***          | Python |                    |                    |     | :x:             |
+| *\**         | Python |                    |                    |     | :x:             |
 | */*          | Python |                    |                    |     | :x:             |
 | *%*          | Python |                    |                    |     | :x:             |
 | *add*        | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:             |
