@@ -1,3 +1,15 @@
+use std::collections::HashMap;
+use std::hash::Hash;
+use crate::extensions::api::map::Functor;
+
+impl<K, V, L: Eq + Hash, W: Eq + Hash> Functor<K, V, L, W> for HashMap<K, V> {
+  type C<X, Y> = HashMap<X, Y>;
+
+  fn map(&self, function: impl Fn((&K, &V)) -> (L, W)) -> Self::C<L, W> {
+    self.iter().map(function).collect()
+  }
+}
+
 // pub fn add_map<K, V>(values: &HashMap<K, V>, key: &K, value: &V) -> HashMap<K, V>
 // where
 //   K: Clone + Eq + Hash,
