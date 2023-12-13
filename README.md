@@ -19,7 +19,7 @@ Practical extensions for standard Rust collections
 | *find*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *flat_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *fold*       | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
-| *merge*      | Native      | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *merge*      | Cantrip     | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *partition*  | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 | *reduce*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
 | *repeat*     | Rust        | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
