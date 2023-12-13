@@ -41,6 +41,10 @@ impl<A> AggregateIterable<A> for HashSet<A> {
     self.iter().fold(init, function)
   }
 
+  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A> where A: Clone {
+    self.clone().into_iter().reduce(|r, x| function(&r, &x))
+  }
+
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
     let values = self.iter().collect::<Vec<&A>>();
     values.iter().rfold(init, |r, x| function(r, x))
