@@ -76,6 +76,15 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().cloned().partition(predicate)
   }
 
+  fn repeat(&self, n: usize) -> Self {
+    let mut result: Vec<A> = Vec::new();
+    for _ in 0..n {
+      let mut part = self.clone();
+      result.append(&mut part);
+    }
+    result
+  }
+
   fn skip(&self, n: usize) -> Self {
     self.iter().skip(n).cloned().collect()
   }
