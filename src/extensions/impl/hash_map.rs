@@ -3,7 +3,7 @@ use std::hash::Hash;
 use std::iter;
 use crate::extensions::api::map::{MapFunctor, MapMonad};
 
-impl<K, V, L: Eq + Hash, W: Eq + Hash> MapFunctor<K, V, L, W> for HashMap<K, V> {
+impl<K, V, L: Eq + Hash, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
   fn map(&self, function: impl Fn((&K, &V)) -> (L, W)) -> Self::C<L, W> {
@@ -11,7 +11,7 @@ impl<K, V, L: Eq + Hash, W: Eq + Hash> MapFunctor<K, V, L, W> for HashMap<K, V> 
   }
 }
 
-impl<K, V, L: Eq + Hash, W: Eq + Hash> MapMonad<K, V, L, W> for HashMap<K, V> {
+impl<K: Eq + Hash, V, L: Eq + Hash, W> MapMonad<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
   fn unit(key: K, value: V) -> Self::C<K, V> {
