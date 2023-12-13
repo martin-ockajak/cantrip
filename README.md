@@ -36,7 +36,6 @@ Practical extensions for standard Rust collections
 - List - Vec, VecDeque, LinkedList
 - Set - HashSet, BTreeSet
 - Map - HashMap, BTreeMap
-- View - Slice, Array
 
 ## Methdod sources
 
