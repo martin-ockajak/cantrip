@@ -5,31 +5,31 @@ Practical extensions for standard Rust collections
 
 # API
 
-| Method       | Source | Sequence           | Set                | Map | View  |
-|--------------|--------|--------------------|--------------------|-----|-------|
-| *add*        | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *add_all*    | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *all*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *any*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *enumerate*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *filter*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *filter_map* | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *find_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *find*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *flat_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *fold*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *partition*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *reduce*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *remove*     | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *remove_all* | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *repeat*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *rfold*      | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *map*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *map_while*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *skip*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *take*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *unit*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
-| *zip*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| Method       | Source | Sequence           | Set                | Map | View               |
+|--------------|--------|--------------------|--------------------|-----|--------------------|
+| *add*        | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *add_all*    | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *all*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *any*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *enumerate*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *filter*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *filter_map* | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *find_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *find*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *flat_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *fold*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *partition*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *reduce*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *remove*     | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *remove_all* | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *repeat*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *rfold*      | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :heavy_check_mark: |
+| *map*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *map_while*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *skip*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *take*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *unit*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
+| *zip*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:                |
 
 ## Data type categories
 

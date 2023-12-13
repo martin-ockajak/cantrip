@@ -1,6 +1,7 @@
 use std::iter;
+use crate::extensions::Ordered;
 
-use crate::extensions::traits::{Collection, Functor, ReadIterable, Monad, Iterable};
+use crate::extensions::traits::{Collection, Functor, Readable, Monad, Iterable};
 
 impl<A, B> Functor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
@@ -22,7 +23,7 @@ impl<A, B> Monad<A, B> for Vec<A> {
   }
 }
 
-impl<A> ReadIterable<A> for Vec<A> {
+impl<A> Readable<A> for Vec<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -56,16 +57,20 @@ impl<A: Clone> Iterable<A> for Vec<A> {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
-  fn enumerate(&self) -> Self::C<(usize, A)> {
-    (0..self.len()).zip(self.iter().cloned()).collect()
-  }
-
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
     self.iter().filter_map(function).collect()
   }
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
+  }
+}
+
+impl<A: Clone> Ordered<A> for Vec<A> {
+  type C<X> = Vec<X>;
+
+  fn enumerate(&self) -> Self::C<(usize, A)> {
+    (0..self.len()).zip(self.iter().cloned()).collect()
   }
 
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {

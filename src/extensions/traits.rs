@@ -70,7 +70,7 @@ pub trait EqMonad<A: Eq + Hash, B: Eq + Hash> {
   fn flat_map(&self, function: impl Fn(&A) -> Self::C<B>) -> Self::C<B>;
 }
 
-pub trait ReadIterable<A> {
+pub trait Readable<A> {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
   fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;
@@ -91,27 +91,11 @@ pub trait ReadIterable<A> {
 pub trait Iterable<A: Clone> {
   type C<X>;
 
-  fn enumerate(&self) -> Self::C<(usize, A)>;
-
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
-
-  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
-
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
-
-  fn repeat(&self, n: usize) -> Self;
-
-  fn skip(&self, n: usize) -> Self;
-
-  fn take(&self, n: usize) -> Self;
-
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
-    where
-      I: IntoIterator + Clone;
 }
 
 pub trait EqIterable<A: Eq + Hash + Clone> {
@@ -126,6 +110,26 @@ pub trait EqIterable<A: Eq + Hash + Clone> {
   fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
 
   fn map_while<B: Eq + Hash>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+}
+
+pub trait Ordered<A: Clone> {
+  type C<X>;
+
+  fn enumerate(&self) -> Self::C<(usize, A)>;
+
+  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+
+  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
+
+  fn repeat(&self, n: usize) -> Self;
+
+  fn skip(&self, n: usize) -> Self;
+
+  fn take(&self, n: usize) -> Self;
+
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
+    where
+      I: IntoIterator + Clone;
 }
 
 pub trait Collection<A: Clone> {

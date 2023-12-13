@@ -1,9 +1,6 @@
-use std::iter;
+use crate::extensions::traits::Readable;
 
-use crate::extensions::traits::{Collection, Functor, ReadIterable, Monad, Iterable};
-
-
-impl<A> ReadIterable<A> for [A] {
+impl<A> Readable<A> for [A] {
   fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
