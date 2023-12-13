@@ -1,8 +1,5 @@
-pub mod hash_map;
-pub mod hash_set;
-pub mod slice;
 pub mod api;
-pub mod vec;
 mod test;
+mod r#impl;
 
 pub use api::traits::*;
