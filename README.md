@@ -5,15 +5,61 @@ Practical extensions for standard Rust collections
 
 # API
 
-| Method | Source | Sequence | Set | Map | View |
-|--------| ------ | -------- | --- | --- | ---- |
-| *map*  | Rust | :heavy_check_mark: | :heavy_check_mark: |  | :x: |
+| Method       | Source | Sequence           | Set                | Map | View  |
+|--------------|--------|--------------------|--------------------|-----|-------|
+| *add*        | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *add_all*    | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *all*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *any*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *enumerate*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *filter*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *filter_map* | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *find_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *find*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *flat_map*   | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *fold*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *partition*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *reduce*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *remove*     | Python | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *remove_all* | Native | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *repeat*     | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *rfold*      | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *map*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *map_while*  | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *skip*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *take*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *unit*       | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
+| *zip*        | Rust   | :heavy_check_mark: | :heavy_check_mark: |     | :x:   |
 
 Data type categories
 - Sequence - Vec, VecDeque, LinkedList
 - Set - HashSet, BTreeSet
 - Map - HashMap, BTreeMap
 - View - Slice, Array
+
+Method sources:
+- Rust
+  - [Iterator](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
+  - [Slice](https://doc.rust-lang.org/std/primitive.slice.html)
+  - [Array](https://doc.rust-lang.org/std/primitive.array.html)
+- Scala
+  - [IndexedSeq](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/IndexedSeq.html)
+  - [Set](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/Set.html)
+  - [Map](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/Map.html)
+  - [String](https://www.scala-lang.org/api/3.3.1/scala/collection/StringOps.html)
+- Python
+  - [set](https://python-reference.readthedocs.io/en/latest/docs/sets/index.html)
+  - [list](https://python-reference.readthedocs.io/en/latest/docs/list/index.html)
+  - [dict](https://python-reference.readthedocs.io/en/latest/docs/dict/index.html)
+  - [str](https://python-reference.readthedocs.io/en/latest/docs/str/index.html)
+- Qt
+  - [QVector](https://doc.qt.io/qt-6/qvector.html)
+  - [QSet](https://doc.qt.io/qt-6/qset.html)
+  - [QMap](https://doc.qt.io/qt-6/qmap.html)
+  - [QString](https://doc.qt.io/qt-6/qstring.htm)
+- Misc
+  - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
+  - [Array Tool](https://github.com/danielpclark/array_tool/tree/master)
 
 # Tasks
 
