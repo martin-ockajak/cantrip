@@ -2,23 +2,23 @@ use crate::extensions::api::iterable::Iterable;
 use crate::extensions::Ordered;
 
 impl<A> Iterable<A> for [A] {
-  fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
-  fn any(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+  fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
+  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A>
   {
     let mut iterator = self.iter();
     match iterator.next() {
@@ -34,7 +34,7 @@ impl<A> Iterable<A> for [A] {
     }
   }
 
-  fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+  fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
   }
 }
@@ -48,11 +48,11 @@ impl<A> Ordered<A> for [A] {
     self.get(self.len() - 1)
   }
 
-  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
+  fn position(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }
 
-  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+  fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().rev().find(|&x| predicate(x))
   }
 }

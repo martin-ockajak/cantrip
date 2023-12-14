@@ -8,7 +8,7 @@ use crate::extensions::{ListCollection, ListFunctor, ListMonad, Ordered};
 impl<A, B> ListFunctor<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
+  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B> {
     self.iter().map(function).collect()
   }
 }
@@ -21,7 +21,7 @@ impl<A, B> ListMonad<A, B> for Vec<A> {
     iter::once(value).collect()
   }
 
-  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+  fn flat_map<R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
   where
     R: IntoIterator<Item = B>,
   {
@@ -30,23 +30,23 @@ impl<A, B> ListMonad<A, B> for Vec<A> {
 }
 
 impl<A> Iterable<A> for Vec<A> {
-  fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
-  fn any(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+  fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
+  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A>
   {
     let mut iterator = self.iter();
     match iterator.next() {
@@ -62,7 +62,7 @@ impl<A> Iterable<A> for Vec<A> {
     }
   }
 
-  fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+  fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
   }
 }
@@ -94,15 +94,15 @@ impl<A> ListCollection<A> for Vec<A> {
     (0..self.len()).zip(self.into_iter()).collect()
   }
 
-  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self {
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B> {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
+  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
@@ -110,11 +110,11 @@ impl<A> ListCollection<A> for Vec<A> {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
 
-  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn partition(self, predicate: impl Fn(&A) -> bool) -> (Self, Self)
+  fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
   where
     Self: Sized,
   {
@@ -146,11 +146,11 @@ impl<A> Ordered<A> for Vec<A> {
     self.get(self.len() - 1)
   }
 
-  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
+  fn position(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }
 
-  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+  fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().rev().find(|&x| predicate(x))
   }
 }

@@ -7,7 +7,7 @@ use std::iter;
 impl<K, V, L, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
-  fn map(&self, function: impl Fn((&K, &V)) -> (L, W)) -> Self::C<L, W>
+  fn map(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
   where
     L: Eq + Hash,
   {
@@ -25,7 +25,7 @@ impl<K, V, L, W> MapMonad<K, V, L, W> for HashMap<K, V> {
     iter::once((key, value)).collect()
   }
 
-  fn flat_map<R>(&self, function: impl Fn((&K, &V)) -> R) -> Self::C<L, W>
+  fn flat_map<R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
     L: Eq + Hash,
@@ -35,23 +35,23 @@ impl<K, V, L, W> MapMonad<K, V, L, W> for HashMap<K, V> {
 }
 
 impl<K, V> MapIterable<K, V> for HashMap<K, V> {
-  fn all(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool {
+  fn all(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
-  fn any(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool {
+  fn any(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)> {
+  fn find(&self, mut predicate: impl FnMut((&K, &V)) -> bool) -> Option<(&K, &V)> {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {
+  fn fold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>
+  fn reduce(&self, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>
   {
     let mut iterator = self.iter();
     match iterator.next() {
@@ -67,7 +67,7 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
     }
   }
 
-  fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {
+  fn rfold<B>(&self, init: B, mut function: impl FnMut(B, (&K, &V)) -> B) -> B {
     let values = self.iter().collect::<Vec<(&K, &V)>>();
     values.iter().rfold(init, |r, &x| function(r, x))
   }
@@ -94,40 +94,40 @@ impl<K: Eq + Hash, V> MapCollection<K, V> for HashMap<K, V> {
     self.into_iter().filter(|(k, _)| removed.contains(k)).collect()
   }
 
-  fn filter(self, predicate: impl Fn((&K, &V)) -> bool) -> Self {
+  fn filter(self, mut predicate: impl FnMut((&K, &V)) -> bool) -> Self {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
-  fn filter_keys(self, predicate: impl Fn(&K) -> bool) -> Self {
+  fn filter_keys(self, mut predicate: impl FnMut(&K) -> bool) -> Self {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
-  fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
+  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
   where
     L: Eq + Hash,
   {
     self.iter().filter_map(function).collect()
   }
 
-  fn filter_values(self, predicate: impl Fn(&V) -> bool) -> Self {
+  fn filter_values(self, mut predicate: impl FnMut(&V) -> bool) -> Self {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
-  fn find_map<B>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>
+  fn find_map<B>(&self, function: impl FnMut((&K, &V)) -> Option<B>) -> Option<B>
   where
     B: Eq + Hash,
   {
     self.iter().find_map(function)
   }
 
-  fn map_keys<L>(self, function: impl Fn(&K) -> L) -> Self::C<L, V>
+  fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::C<L, V>
   where
     L: Eq + Hash,
   {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  fn map_values<W>(self, function: impl Fn(&V) -> W) -> Self::C<K, W>
+  fn map_values<W>(self, mut function: impl FnMut(&V) -> W) -> Self::C<K, W>
   where
     W: Eq + Hash,
   {

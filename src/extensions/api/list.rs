@@ -29,7 +29,7 @@ pub trait ListFunctor<A, B> {
   ///
   /// # Constraints
   ///
-  /// * `F: Fn(&A) -> R` - the closure must be callable with a reference to an element of type `A` and return a value of type `R`.
+  /// * `F: FnMut(&A) -> R` - the closure must be callable with a reference to an element of type `A` and return a value of type `R`.
   ///
   /// # Safety
   ///
@@ -41,7 +41,7 @@ pub trait ListFunctor<A, B> {
   /// ```
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>;
+  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B>;
 }
 
 pub trait ListMonad<A, B> {
@@ -49,7 +49,7 @@ pub trait ListMonad<A, B> {
 
   fn unit(value: A) -> Self::C<A>;
 
-  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+  fn flat_map<R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
   where
     R: IntoIterator<Item = B>;
 }
@@ -69,17 +69,17 @@ pub trait ListCollection<A> {
 
   fn enumerate(self) -> Self::C<(usize, A)>;
 
-  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self;
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
-  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
 
-  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
+  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
 
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
-  fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
 
-  fn partition(self, predicate: impl Fn(&A) -> bool) -> (Self, Self)
+  fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
   where
     Self: Sized;
 

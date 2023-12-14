@@ -3,7 +3,7 @@ use std::hash::Hash;
 pub trait SetFunctor<A, B> {
   type C<X>;
 
-  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>
+  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
   where
     B: Eq + Hash;
 }
@@ -15,7 +15,7 @@ pub trait SetMonad<A, B> {
   where
     A: Eq + Hash;
 
-  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+  fn flat_map<R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
   where
     R: IntoIterator<Item = B>,
     B: Eq + Hash;
@@ -30,13 +30,13 @@ pub trait SetCollection<A: Eq + Hash> {
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
-  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self;
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
-  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>
   where
     B: Eq + Hash;
 
-  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>
+  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>
   where
     B: Eq + Hash;
 

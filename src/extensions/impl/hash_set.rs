@@ -8,7 +8,7 @@ use crate::extensions::api::set::{SetCollection, SetFunctor, SetMonad};
 impl<A, B> SetFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;
 
-  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>
+  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
   where
     B: Eq + Hash,
   {
@@ -26,7 +26,7 @@ impl<A, B> SetMonad<A, B> for Vec<A> {
     iter::once(value).collect()
   }
 
-  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+  fn flat_map<R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
   where
     R: IntoIterator<Item = B>,
     B: Eq + Hash,
@@ -36,23 +36,23 @@ impl<A, B> SetMonad<A, B> for Vec<A> {
 }
 
 impl<A> Iterable<A> for HashSet<A> {
-  fn all(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
 
-  fn any(&self, predicate: impl Fn(&A) -> bool) -> bool {
+  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+  fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
+  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A>
   {
     let mut iterator = self.iter();
     match iterator.next() {
@@ -68,7 +68,7 @@ impl<A> Iterable<A> for HashSet<A> {
     }
   }
 
-  fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {
+  fn rfold<B>(&self, init: B, mut function: impl FnMut(B, &A) -> B) -> B {
     let values = self.iter().collect::<Vec<&A>>();
     values.iter().rfold(init, |r, x| function(r, x))
   }
@@ -91,18 +91,18 @@ impl<A: Eq + Hash> SetCollection<A> for HashSet<A> {
     self.into_iter().filter(|x| removed.contains(x)).collect()
   }
 
-  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self {
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>
   where
     B: Eq + Hash,
   {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>
+  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>
     where
       B: Eq + Hash,
   {
