@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::hash::Hash;
 
 pub trait Map<K, V> {
@@ -71,6 +72,10 @@ pub trait Map<K, V> {
   where
     K: Eq + Hash,
     W: Eq + Hash;
+
+  fn max_by(&self, compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)>;
+
+  fn min_by(&self, compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)>;
 
   fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 

@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use crate::extensions::Map;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
@@ -127,6 +128,14 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     W: Eq + Hash,
   {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
+  }
+
+  fn max_by(&self, mut compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)> {
+    self.iter().max_by(|&x, &y| compare(x, y))
+  }
+
+  fn min_by(&self, mut compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)> {
+    self.iter().min_by(|&x, &y| compare(x, y))
   }
 
   fn reduce(&self, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)> {
