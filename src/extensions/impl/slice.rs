@@ -79,10 +79,6 @@ impl<A> Slice<A> for [A] {
     &self[0..max(self.len() - 1, 0)]
   }
 
-  fn skip(&self, n: usize) -> &Self {
-    &self[min(n, self.len())..self.len()]
-  }
-
   fn skip_while(&self, mut predicate: impl FnMut(&A) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[min(index, self.len())..self.len()],
@@ -113,7 +109,7 @@ mod tests {
   #[quickcheck]
   fn skip(source: Vec<i32>) -> bool {
     let data = source.as_slice();
-    data.skip(1);
+    data.skip_while(|&x| x == 0);
     true
     // let function = |x: &i32| *x as i64;
     // let result = data.map(function);
