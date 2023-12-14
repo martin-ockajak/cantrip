@@ -20,6 +20,8 @@ Practical extensions for standard Rust collections
 | *flat_map*   | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *fold*       | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *map*        | Rust        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *map_keys*   | Rust        | :x:                | :x:                | :heavy_check_mark: | :x:                |
+| *map_values* | Rust        | :x:                | :x:                | :heavy_check_mark: | :x:                |
 | *map_while*  | Rust        | :heavy_check_mark: | :x:                | :x:                | :x:                |
 | *merge* ?    | Cantrip     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *partition*  | Rust        | :heavy_check_mark: | :x:                | :x:                | :x:                |
