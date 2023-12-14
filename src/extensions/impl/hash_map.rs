@@ -1,38 +1,7 @@
-use crate::extensions::api::map::{MapFunctor, MapMonad};
 use crate::extensions::MapOps;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
-
-impl<K, V> MapFunctor<K, V> for HashMap<K, V> {
-  type C<X, Y> = HashMap<X, Y>;
-
-  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
-  where
-    L: Eq + Hash,
-  {
-    self.iter().map(function).collect()
-  }
-}
-
-impl<K, V> MapMonad<K, V> for HashMap<K, V> {
-  type C<X, Y> = HashMap<X, Y>;
-
-  fn unit(key: K, value: V) -> Self::C<K, V>
-  where
-    K: Eq + Hash,
-  {
-    iter::once((key, value)).collect()
-  }
-
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
-  where
-    L: Eq + Hash,
-    R: IntoIterator<Item = (L, W)>,
-  {
-    self.iter().flat_map(function).collect()
-  }
-}
 
 impl<K, V> MapOps<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
@@ -116,6 +85,14 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
     self.iter().find_map(function)
   }
 
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
+    where
+      L: Eq + Hash,
+      R: IntoIterator<Item = (L, W)>,
+  {
+    self.iter().flat_map(function).collect()
+  }
+
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B {
     self.iter().fold(init, function)
   }
@@ -127,6 +104,13 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
     let mut retained: HashSet<K> = HashSet::new();
     retained.extend(iterable.into_iter());
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
+  }
+
+  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
+    where
+      L: Eq + Hash,
+  {
+    self.iter().map(function).collect()
   }
 
   fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::C<L, V>
@@ -159,6 +143,13 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
   fn rfold<B>(&self, init: B, mut function: impl FnMut(B, (&K, &V)) -> B) -> B {
     let values = self.iter().collect::<Vec<(&K, &V)>>();
     values.iter().rfold(init, |r, &x| function(r, x))
+  }
+
+  fn unit(key: K, value: V) -> Self::C<K, V>
+    where
+      K: Eq + Hash,
+  {
+    iter::once((key, value)).collect()
   }
 }
 

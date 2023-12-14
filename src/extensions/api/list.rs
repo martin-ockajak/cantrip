@@ -1,12 +1,41 @@
 use std::hash::Hash;
 
-/// The `Functor` trait represents an ability to map over parametric types with single type parameter.
-///
-/// # Type Parameters
-///
-/// * `A` - type parameter of the implementing type
-pub trait ListFunctor<A> {
+pub trait ListOps<A> {
   type C<X>;
+
+  fn add(self, value: A) -> Self;
+
+  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self;
+
+  fn delete(self, value: &A) -> Self
+  where
+    A: PartialEq;
+
+  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    A: Eq + Hash;
+
+  fn distinct(self) -> Self
+  where
+    A: Eq + Hash;
+
+  fn enumerate(self) -> Self::C<(usize, A)>;
+
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
+
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
+
+  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
+
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+    where
+      R: IntoIterator<Item = B>;
+
+  fn init(self) -> Self;
+
+  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    A: Eq + Hash;
 
   /// Applies the given closure `f` to each element in the container.
   ///
@@ -41,50 +70,6 @@ pub trait ListFunctor<A> {
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>;
-}
-
-pub trait ListMonad<A> {
-  type C<X>;
-
-  fn unit(value: A) -> Self::C<A>;
-
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
-  where
-    R: IntoIterator<Item = B>;
-}
-
-pub trait ListOps<A> {
-  type C<X>;
-
-  fn add(self, value: A) -> Self;
-
-  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self;
-
-  fn delete(self, value: &A) -> Self
-  where
-    A: PartialEq;
-
-  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash;
-
-  fn distinct(self) -> Self
-  where
-    A: Eq + Hash;
-
-  fn enumerate(self) -> Self::C<(usize, A)>;
-
-  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
-
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
-
-  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
-
-  fn init(self) -> Self;
-
-  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash;
 
   fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
 
@@ -99,6 +84,8 @@ pub trait ListOps<A> {
   fn tail(self) -> Self;
 
   fn take(self, n: usize) -> Self;
+
+  fn unit(value: A) -> Self::C<A>;
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where

@@ -3,30 +3,7 @@ use std::hash::Hash;
 use std::iter;
 
 use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::{ListFunctor, ListMonad, ListOps, OrderedOps};
-
-impl<A> ListFunctor<A> for Vec<A> {
-  type C<X> = Vec<X>;
-
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B> {
-    self.iter().map(function).collect()
-  }
-}
-
-impl<A> ListMonad<A> for Vec<A> {
-  type C<X> = Vec<X>;
-
-  fn unit(value: A) -> Self::C<A> {
-    iter::once(value).collect()
-  }
-
-  fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
-  where
-    R: IntoIterator<Item = B>,
-  {
-    self.iter().flat_map(|x| function(x).into_iter()).collect()
-  }
-}
+use crate::extensions::{ListOps, OrderedOps};
 
 impl<A> IterableOps<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -95,14 +72,17 @@ impl<A> ListOps<A> for Vec<A> {
     A: PartialEq,
   {
     let mut removed = false;
-    self.into_iter().filter(|x| {
-      if removed {
-        true
-      } else {
-        removed = true;
-        x != value
-      }
-    }).collect()
+    self
+      .into_iter()
+      .filter(|x| {
+        if removed {
+          true
+        } else {
+          removed = true;
+          x != value
+        }
+      })
+      .collect()
   }
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
@@ -153,6 +133,13 @@ impl<A> ListOps<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
+  fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
+    where
+      R: IntoIterator<Item = B>,
+  {
+    self.iter().flat_map(|x| function(x).into_iter()).collect()
+  }
+
   fn init(self) -> Self {
     let mut iterator = self.into_iter().rev();
     iterator.next();
@@ -166,6 +153,10 @@ impl<A> ListOps<A> for Vec<A> {
     let mut retained: HashSet<A> = HashSet::new();
     retained.extend(iterable.into_iter());
     self.into_iter().filter(|x| retained.contains(x)).collect()
+  }
+
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B> {
+    self.iter().map(function).collect()
   }
 
   fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B> {
@@ -195,6 +186,10 @@ impl<A> ListOps<A> for Vec<A> {
 
   fn take(self, n: usize) -> Self {
     self.into_iter().take(n).collect()
+  }
+
+  fn unit(value: A) -> Self::C<A> {
+    iter::once(value).collect()
   }
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>

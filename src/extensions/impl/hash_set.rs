@@ -3,37 +3,7 @@ use std::hash::Hash;
 use std::iter;
 
 use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::api::set::{SetFunctor, SetMonad, SetOps};
-
-impl<A> SetFunctor<A> for HashSet<A> {
-  type C<X> = HashSet<X>;
-
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
-  where
-    B: Eq + Hash,
-  {
-    self.iter().map(function).collect()
-  }
-}
-
-impl<A> SetMonad<A> for Vec<A> {
-  type C<X> = Vec<X>;
-
-  fn unit(value: A) -> Self::C<A>
-  where
-    A: Eq + Hash,
-  {
-    iter::once(value).collect()
-  }
-
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
-  where
-    B: Eq + Hash,
-    R: IntoIterator<Item = B>,
-  {
-    self.iter().flat_map(function).collect()
-  }
-}
+use crate::extensions::api::set::SetOps;
 
 impl<A> IterableOps<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -125,6 +95,14 @@ impl<A> SetOps<A> for HashSet<A> {
     self.iter().find_map(function)
   }
 
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+    where
+      B: Eq + Hash,
+      R: IntoIterator<Item = B>,
+  {
+    self.iter().flat_map(function).collect()
+  }
+
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
     where
       A: Eq + Hash,
@@ -132,6 +110,20 @@ impl<A> SetOps<A> for HashSet<A> {
     let mut retained: HashSet<A> = HashSet::new();
     retained.extend(iterable.into_iter());
     self.into_iter().filter(|x| retained.contains(x)).collect()
+  }
+
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
+    where
+      B: Eq + Hash,
+  {
+    self.iter().map(function).collect()
+  }
+
+  fn unit(value: A) -> Self::C<A>
+    where
+      A: Eq + Hash,
+  {
+    iter::once(value).collect()
   }
 }
 
