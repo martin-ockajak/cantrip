@@ -63,7 +63,7 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
   where
     K: Eq + Hash,
   {
-    self.into_iter().filter_map(|(k, v)| if &k == key { Some((k, v)) } else { None }).collect()
+    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
   fn diff(self, iterable: impl IntoIterator<Item = K>) -> Self

@@ -90,7 +90,7 @@ impl<A> SetOps<A> for HashSet<A> {
   where
     A: Eq + Hash,
   {
-    self.into_iter().filter(|x| x == value).collect()
+    self.into_iter().filter(|x| x != value).collect()
   }
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
