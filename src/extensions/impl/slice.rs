@@ -1,5 +1,6 @@
+use std::cmp::{max, min};
 use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::OrderedOps;
+use crate::extensions::{OrderedOps, SliceOps};
 
 impl<A> IterableOps<A> for [A] {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -54,6 +55,16 @@ impl<A> OrderedOps<A> for [A] {
 
   fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().rev().find(|&x| predicate(x))
+  }
+}
+
+impl<A> SliceOps<A> for [A] {
+  fn init(&self) -> &Self {
+    &self[0..max(self.len() - 1, 0)]
+  }
+
+  fn tail(&self) -> &Self {
+    &self[min(1, self.len())..self.len()]
   }
 }
 

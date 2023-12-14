@@ -22,6 +22,7 @@ Practical extensions for standard Rust collections
 | *flat_map*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *fold*          | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *head*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *init*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *last*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *map_keys*      | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
@@ -34,6 +35,7 @@ Practical extensions for standard Rust collections
 | *rfind*         | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *rfold*         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *skip*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *tail*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *take*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *unit* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *zip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |

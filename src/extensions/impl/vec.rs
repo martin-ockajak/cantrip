@@ -106,6 +106,12 @@ impl<A> ListOps<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
+  fn init(self) -> Self {
+    let mut iterator = self.into_iter().rev();
+    iterator.next();
+    iterator.rev().collect()
+  }
+
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
@@ -123,6 +129,12 @@ impl<A> ListOps<A> for Vec<A> {
 
   fn skip(self, n: usize) -> Self {
     self.into_iter().skip(n).collect()
+  }
+
+  fn tail(self) -> Self {
+    let mut iterator = self.into_iter();
+    iterator.next();
+    iterator.collect()
   }
 
   fn take(self, n: usize) -> Self {

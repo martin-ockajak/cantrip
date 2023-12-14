@@ -74,6 +74,8 @@ pub trait ListOps<A> {
 
   fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
 
+  fn init(self) -> Self;
+
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
   fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
@@ -83,6 +85,8 @@ pub trait ListOps<A> {
     Self: Sized;
 
   fn skip(self, n: usize) -> Self;
+
+  fn tail(self) -> Self;
 
   fn take(self, n: usize) -> Self;
 
