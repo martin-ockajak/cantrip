@@ -77,7 +77,7 @@ pub trait ListCollection<A: Clone> {
 
   fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
 
-  fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 

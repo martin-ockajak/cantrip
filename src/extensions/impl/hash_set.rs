@@ -101,10 +101,8 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
     self.iter().find_map(function)
   }
 
-  fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    let mut result = self.clone();
-    result.extend(iterable.clone().into_iter());
-    result
+  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self {
+    self.into_iter().chain(iterable.into_iter()).collect()
   }
 }
 

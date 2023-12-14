@@ -68,5 +68,5 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
   where
     W: Eq + Hash;
 
-  fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self;
+  fn merge(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self;
 }

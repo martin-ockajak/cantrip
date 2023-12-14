@@ -40,5 +40,5 @@ pub trait SetCollection<A: Eq + Hash + Clone> {
   where
     B: Eq + Hash;
 
-  fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
 }

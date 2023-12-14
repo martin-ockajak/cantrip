@@ -100,10 +100,8 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
-  fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    let mut result = self.clone();
-    result.extend(iterable.clone().into_iter());
-    result
+  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self {
+    self.into_iter().chain(iterable.into_iter()).collect()
   }
 
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B> {

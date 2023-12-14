@@ -122,10 +122,8 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 
-  fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self {
-    let mut result = self.clone();
-    result.extend(iterable.clone().into_iter());
-    result
+  fn merge(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self {
+    self.into_iter().chain(iterable.into_iter()).collect()
   }
 }
 
