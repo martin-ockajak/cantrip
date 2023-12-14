@@ -2,7 +2,7 @@ use crate::extensions::MultiMap;
 use std::hash::Hash;
 
 pub trait List<A> {
-  type C<X>;
+  type Root<X>;
 
   fn add(self, value: A) -> Self;
 
@@ -20,26 +20,26 @@ pub trait List<A> {
   where
     A: Eq + Hash;
 
-  fn enumerate(self) -> Self::C<(usize, A)>;
+  fn enumerate(self) -> Self::Root<(usize, A)>;
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>;
 
   fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
   where
     R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::C<B>
+  fn flatten<B>(self) -> Self::Root<B>
   where
     A: IntoIterator<Item = B>;
 
-  fn group_by<K, T>(self, group_key: impl FnMut(&A) -> K) -> T
+  fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
     where
       K: Eq + Hash,
-      T: MultiMap<K, Self::C<A>> + Default;
+      M: MultiMap<K, Self::Root<A>> + Default;
 
   fn init(self) -> Self;
 
@@ -79,9 +79,9 @@ pub trait List<A> {
   /// ```
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>;
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>;
 
-  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
+  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::Root<B>;
 
   fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
   where
@@ -89,7 +89,7 @@ pub trait List<A> {
 
   fn rev(self) -> Self;
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::C<B>;
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B>;
 
   fn skip(self, n: usize) -> Self;
 
@@ -101,13 +101,13 @@ pub trait List<A> {
 
   fn take_while(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
-  fn unit(value: A) -> Self::C<A>;
+  fn unit(value: A) -> Self;
 
-  fn unzip<B, C, FromB, FromC>(self) -> (Self::C<B>, Self::C<C>)
+  fn unzip<B, C, FromB, FromC>(self) -> (Self::Root<B>, Self::Root<C>)
   where
     Self: IntoIterator<Item = (B, C)>;
 
-  fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::Root<(A, I::Item)>
   where
     I: IntoIterator;
 }

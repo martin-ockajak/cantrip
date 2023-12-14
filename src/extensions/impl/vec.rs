@@ -91,7 +91,7 @@ impl<A> Aggregable<A> for Vec<A> {
 }
 
 impl<A> List<A> for Vec<A> {
-  type C<X> = Vec<X>;
+  type Root<X> = Vec<X>;
 
   fn add(self, value: A) -> Self {
     self.into_iter().chain(iter::once(value)).collect()
@@ -151,7 +151,7 @@ impl<A> List<A> for Vec<A> {
       .collect()
   }
 
-  fn enumerate(self) -> Self::C<(usize, A)> {
+  fn enumerate(self) -> Self::Root<(usize, A)> {
     (0..self.len()).zip(self.into_iter()).collect()
   }
 
@@ -159,7 +159,7 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B> {
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B> {
     self.iter().filter_map(function).collect()
   }
 
@@ -167,29 +167,28 @@ impl<A> List<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::Root<B>
   where
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(|x| function(x).into_iter()).collect()
   }
 
-  fn flatten<B>(self) -> Self::C<B>
+  fn flatten<B>(self) -> Self::Root<B>
   where
     A: IntoIterator<Item = B>,
   {
     self.into_iter().flatten().collect()
   }
 
-  fn group_by<K, V>(self, mut group_key: impl FnMut(&A) -> K) -> V
+  fn group_by<K, M>(self, mut group_key: impl FnMut(&A) -> K) -> M
   where
     K: Eq + Hash,
-    V: MultiMap<K, Self::C<A>> + Default,
+    M: MultiMap<K, Self::Root<A>> + Default,
   {
-    let mut result: V = V::default();
+    let mut result = M::default();
     for item in self.into_iter() {
-      let key = group_key(&item);
-      result.add(key, item);
+      result.add(group_key(&item), item);
     }
     result
   }
@@ -209,11 +208,11 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B> {
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B> {
     self.iter().map(function).collect()
   }
 
-  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B> {
+  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::Root<B> {
     self.iter().map_while(predicate).collect()
   }
 
@@ -228,7 +227,7 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().rev().collect()
   }
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::C<B> {
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B> {
     self.iter().scan(init, function).collect()
   }
 
@@ -254,18 +253,18 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().take_while(predicate).collect()
   }
 
-  fn unit(value: A) -> Self::C<A> {
+  fn unit(value: A) -> Self {
     iter::once(value).collect()
   }
 
-  fn unzip<B, C, FromB, FromC>(self) -> (Self::C<B>, Self::C<C>)
+  fn unzip<B, C, FromB, FromC>(self) -> (Self::Root<B>, Self::Root<C>)
   where
     Self: IntoIterator<Item = (B, C)>,
   {
     self.into_iter().unzip()
   }
 
-  fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::Root<(A, I::Item)>
   where
     I: IntoIterator,
   {

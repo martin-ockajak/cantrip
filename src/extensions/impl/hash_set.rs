@@ -66,7 +66,7 @@ impl<A> Aggregable<A> for HashSet<A> {
 }
 
 impl<A> Set<A> for HashSet<A> {
-  type C<X> = HashSet<X>;
+  type Root<X> = HashSet<X>;
 
   fn add(self, value: A) -> Self
   where
@@ -105,7 +105,7 @@ impl<A> Set<A> for HashSet<A> {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>
   where
     A: Eq + Hash,
     B: Eq + Hash,
@@ -121,7 +121,7 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
   where
     B: Eq + Hash,
     R: IntoIterator<Item = B>,
@@ -129,7 +129,7 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().flat_map(function).collect()
   }
 
-  fn flatten<B>(self) -> Self::C<B> where A: IntoIterator<Item = B>, B: Eq + Hash {
+  fn flatten<B>(self) -> Self::Root<B> where A: IntoIterator<Item = B>, B: Eq + Hash {
     self.into_iter().flatten().collect()
   }
 
@@ -142,14 +142,14 @@ impl<A> Set<A> for HashSet<A> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
   where
     B: Eq + Hash,
   {
     self.iter().map(function).collect()
   }
 
-  fn unit(value: A) -> Self::C<A>
+  fn unit(value: A) -> Self
   where
     A: Eq + Hash,
   {

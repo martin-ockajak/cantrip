@@ -1,7 +1,7 @@
 use std::hash::Hash;
 
 pub trait Set<A> {
-  type C<X>;
+  type Root<X>;
 
   fn add(self, value: A) -> Self
   where
@@ -23,7 +23,7 @@ pub trait Set<A> {
   where
     A: Eq + Hash;
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>
   where
     A: Eq + Hash,
     B: Eq + Hash;
@@ -33,12 +33,12 @@ pub trait Set<A> {
     A: Eq + Hash,
     B: Eq + Hash;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
     where
       B: Eq + Hash,
       R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::C<B>
+  fn flatten<B>(self) -> Self::Root<B>
     where
       A: IntoIterator<Item = B>,
       B: Eq + Hash;
@@ -47,11 +47,11 @@ pub trait Set<A> {
     where
       A: Eq + Hash;
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
     where
       B: Eq + Hash;
 
-  fn unit(value: A) -> Self::C<A>
+  fn unit(value: A) -> Self
     where
       A: Eq + Hash;
 }

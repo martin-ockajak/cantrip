@@ -6,7 +6,7 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 impl<K, V> Map<K, V> for HashMap<K, V> {
-  type C<X, Y> = HashMap<X, Y>;
+  type Root<X, Y> = HashMap<X, Y>;
 
   fn add(self, key: K, value: V) -> Self
   where
@@ -64,7 +64,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
-  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
+  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::Root<L, W>
   where
     K: Eq + Hash,
     L: Eq + Hash,
@@ -91,7 +91,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::Root<L, W>
   where
     L: Eq + Hash,
     R: IntoIterator<Item = (L, W)>,
@@ -112,14 +112,14 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
+  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::Root<L, W>
   where
     L: Eq + Hash,
   {
     self.iter().map(function).collect()
   }
 
-  fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::C<L, V>
+  fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::Root<L, V>
   where
     K: Eq + Hash,
     L: Eq + Hash,
@@ -127,7 +127,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  fn map_values<W>(self, mut function: impl FnMut(&V) -> W) -> Self::C<K, W>
+  fn map_values<W>(self, mut function: impl FnMut(&V) -> W) -> Self::Root<K, W>
   where
     K: Eq + Hash,
     W: Eq + Hash,
@@ -182,7 +182,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
-  fn unit(key: K, value: V) -> Self::C<K, V>
+  fn unit(key: K, value: V) -> Self
   where
     K: Eq + Hash,
   {
