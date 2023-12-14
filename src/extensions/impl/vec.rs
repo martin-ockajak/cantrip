@@ -156,7 +156,6 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn group_by<K, M>(self, mut group_key: impl FnMut(&A) -> K) -> M where K: Eq + Hash, M: FromIterator<(K, Self::C<A>)> {
-    self.into_iter().group_by
     let mut result: HashMap<K, Self::C<A>> = HashMap::new();
     for item in self.into_iter() {
       let key = group_key(&item);
@@ -269,7 +268,6 @@ impl<A> List<A> for Vec<A> {
 
 #[cfg(test)]
 mod tests {
-  use std::collections::HashMap;
   use crate::extensions::*;
 
   #[quickcheck]

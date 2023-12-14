@@ -1,4 +1,4 @@
-use crate::extensions::{Aggregable, Map};
+use crate::extensions::Map;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
