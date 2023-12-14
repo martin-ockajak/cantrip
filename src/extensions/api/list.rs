@@ -90,6 +90,10 @@ pub trait ListOps<A> {
 
   fn take(self, n: usize) -> Self;
 
+  fn unique(self) -> Self
+  where
+    A: Eq + Hash;
+
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where
     I: IntoIterator;

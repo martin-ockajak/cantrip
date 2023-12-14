@@ -1,9 +1,10 @@
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
+use std::path::Component::ParentDir;
 
 use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::{ListOps, ListFunctor, ListMonad, OrderedOps};
+use crate::extensions::{ListFunctor, ListMonad, ListOps, OrderedOps};
 
 impl<A> ListFunctor<A> for Vec<A> {
   type C<X> = Vec<X>;
@@ -16,8 +17,7 @@ impl<A> ListFunctor<A> for Vec<A> {
 impl<A> ListMonad<A> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn unit(value: A) -> Self::C<A>
-  {
+  fn unit(value: A) -> Self::C<A> {
     iter::once(value).collect()
   }
 
@@ -46,24 +46,37 @@ impl<A> IterableOps<A> for Vec<A> {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A>
-  {
+  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A> {
     let mut iterator = self.iter();
     match iterator.next() {
-      Some(value1) => {
-        match iterator.next() {
-          Some(value2) => {
-            Some(iterator.fold(function(value1, value2), |r, x| function(&r, x)))
-          },
-          _ => None
-        }
+      Some(value1) => match iterator.next() {
+        Some(value2) => Some(iterator.fold(function(value1, value2), |r, x| function(&r, x))),
+        _ => None,
       },
-      _ => None
+      _ => None,
     }
   }
 
   fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
+  }
+}
+
+impl<A> OrderedOps<A> for Vec<A> {
+  fn head(&self) -> Option<&A> {
+    self.get(0)
+  }
+
+  fn last(&self) -> Option<&A> {
+    self.get(self.len() - 1)
+  }
+
+  fn position(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
+  }
+
+  fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
+    self.iter().rev().find(|&x| predicate(x))
   }
 }
 
@@ -141,29 +154,34 @@ impl<A> ListOps<A> for Vec<A> {
     self.into_iter().take(n).collect()
   }
 
+  fn unique(self) -> Self
+  where
+    A: Eq + Hash,
+  {
+    let mut occured: HashSet<&A> = HashSet::new();
+    let mut indices: HashSet<usize> = HashSet::new();
+    unsafe {
+      for index in 0..self.len() {
+        let value = self.get_unchecked(index);
+        if !occured.contains(value) {
+          indices.insert(index);
+        } else {
+          occured.insert(value);
+        }
+      }
+    }
+    self
+      .into_iter()
+      .enumerate()
+      .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
+      .collect()
+  }
+
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where
     I: IntoIterator,
   {
     self.into_iter().zip(iterable.into_iter()).collect()
-  }
-}
-
-impl<A> OrderedOps<A> for Vec<A> {
-  fn head(&self) -> Option<&A> {
-    self.get(0)
-  }
-
-  fn last(&self) -> Option<&A> {
-    self.get(self.len() - 1)
-  }
-
-  fn position(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
-  fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
-    self.iter().rev().find(|&x| predicate(x))
   }
 }
 

@@ -11,19 +11,19 @@ Practical extensions for standard Rust collections.
   
   data.map(|x| x + 1);                     // [1, 2, 3]: Vec<i32>
 
-  data.filter(|x| x > 0);                  // [1, 2]: Vec<i32>
-
-  data.flat_map(|x| unit(x - 1));          // [-1, 0, 1]: Vec<i32>
-
   data.fold(0, |r, x| r + x);              // 3: i32
 
-  data.any(|x| x == 0);                    // true: bool
+  data.any(|&x| x == 0);                   // true: bool
 
   data.head();                             // Some(0): Option<i32>
 
-  data.clone().add(3).delete(0).tail();    // [2, 3]: Vec<i32>
+  data.clone().filter(|&x| x > 0);         // [1, 2]: Vec<i32>
 
-  data.clone().partition(|x| x > 1);       // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
+  data.clone().delete(&0).tail();          // [2]: Vec<i32>
+
+  data.clone().add(0).unique();            // [0, 1, 2]: Vec<i32>
+
+  data.clone().partition(|&x| x > 1);      // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
 
   data.clone().zip(data);                  // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
