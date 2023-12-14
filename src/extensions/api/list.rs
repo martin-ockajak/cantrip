@@ -67,8 +67,8 @@ pub trait ListOps<A> {
     A: Eq + Hash;
 
   fn distinct(self) -> Self
-    where
-      A: Eq + Hash;
+  where
+    A: Eq + Hash;
 
   fn enumerate(self) -> Self::C<(usize, A)>;
 
@@ -79,6 +79,10 @@ pub trait ListOps<A> {
   fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
 
   fn init(self) -> Self;
+
+  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    A: Eq + Hash;
 
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
 

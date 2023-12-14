@@ -1,3 +1,4 @@
+use std::collections::HashSet;
 use std::hash::Hash;
 
 pub trait MapFunctor<K, V> {
@@ -65,6 +66,10 @@ pub trait MapOps<K, V> {
     B: Eq + Hash;
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B;
+
+  fn intersect(self, iterable: impl IntoIterator<Item = K>) -> Self
+  where
+    K: Eq + Hash;
 
   fn map_keys<L>(self, function: impl FnMut(&K) -> L) -> Self::C<L, V>
   where

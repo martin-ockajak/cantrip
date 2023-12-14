@@ -65,7 +65,7 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
   {
     let mut removed: HashSet<K> = HashSet::new();
     removed.extend(iterable.into_iter());
-    self.into_iter().filter(|(k, _)| removed.contains(k)).collect()
+    self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
   fn filter(self, mut predicate: impl FnMut((&K, &V)) -> bool) -> Self
@@ -111,6 +111,15 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B {
     self.iter().fold(init, function)
+  }
+
+  fn intersect(self, iterable: impl IntoIterator<Item = K>) -> Self
+    where
+      K: Eq + Hash,
+  {
+    let mut retained: HashSet<K> = HashSet::new();
+    retained.extend(iterable.into_iter());
+    self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
   fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::C<L, V>

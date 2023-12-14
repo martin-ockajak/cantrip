@@ -100,12 +100,12 @@ impl<A> ListOps<A> for Vec<A> {
   {
     let mut removed: HashSet<A> = HashSet::new();
     removed.extend(iterable.into_iter());
-    self.into_iter().filter(|x| removed.contains(x)).collect()
+    self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
   fn distinct(self) -> Self
-    where
-      A: Eq + Hash,
+  where
+    A: Eq + Hash,
   {
     let mut occured: HashSet<&A> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
@@ -146,6 +146,15 @@ impl<A> ListOps<A> for Vec<A> {
     let mut iterator = self.into_iter().rev();
     iterator.next();
     iterator.rev().collect()
+  }
+
+  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    A: Eq + Hash,
+  {
+    let mut retained: HashSet<A> = HashSet::new();
+    retained.extend(iterable.into_iter());
+    self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self {

@@ -50,6 +50,10 @@ pub trait SetOps<A> {
     A: Eq + Hash,
     B: Eq + Hash;
 
+  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
+    where
+      A: Eq + Hash;
+
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash;

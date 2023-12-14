@@ -92,7 +92,7 @@ impl<A> SetOps<A> for HashSet<A> {
   {
     let mut removed: HashSet<A> = HashSet::new();
     removed.extend(iterable.into_iter());
-    self.into_iter().filter(|x| removed.contains(x)).collect()
+    self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
@@ -116,6 +116,15 @@ impl<A> SetOps<A> for HashSet<A> {
     B: Eq + Hash,
   {
     self.iter().find_map(function)
+  }
+
+  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
+    where
+      A: Eq + Hash,
+  {
+    let mut retained: HashSet<A> = HashSet::new();
+    retained.extend(iterable.into_iter());
+    self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
   fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self
