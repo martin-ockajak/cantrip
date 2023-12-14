@@ -1,5 +1,5 @@
-use std::cmp::Ordering;
 use crate::extensions::{Aggregable, Map};
+use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
@@ -24,8 +24,8 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
   }
 
   fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
-    where
-      K: Eq + Hash,
+  where
+    K: Eq + Hash,
   {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
@@ -88,9 +88,9 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
   }
 
   fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
-    where
-      L: Eq + Hash,
-      R: IntoIterator<Item = (L, W)>,
+  where
+    L: Eq + Hash,
+    R: IntoIterator<Item = (L, W)>,
   {
     self.iter().flat_map(function).collect()
   }
@@ -100,8 +100,8 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
   }
 
   fn intersect(self, iterable: impl IntoIterator<Item = K>) -> Self
-    where
-      K: Eq + Hash,
+  where
+    K: Eq + Hash,
   {
     let mut retained: HashSet<K> = HashSet::new();
     retained.extend(iterable.into_iter());
@@ -109,8 +109,8 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
   }
 
   fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
-    where
-      L: Eq + Hash,
+  where
+    L: Eq + Hash,
   {
     self.iter().map(function).collect()
   }
@@ -139,11 +139,17 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
-  fn product_keys<S>(self) -> S where S: Product<K> {
+  fn product_keys<S>(self) -> K
+  where
+    K: Product,
+  {
     self.into_iter().map(|(k, _)| k).product()
   }
 
-  fn product_values<S>(self) -> S where S: Product<V> {
+  fn product_values<S>(self) -> V
+  where
+    V: Product,
+  {
     self.into_iter().map(|(_, v)| v).product()
   }
 
@@ -158,17 +164,23 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     }
   }
 
-  fn sum_keys<S>(self) -> S where S: Sum<K> {
+  fn sum_keys(self) -> K
+  where
+    K: Sum,
+  {
     self.into_iter().map(|(k, _)| k).sum()
   }
 
-  fn sum_values<S>(self) -> S where S: Sum<V> {
+  fn sum_values(self) -> V
+  where
+    V: Sum,
+  {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
   fn unit(key: K, value: V) -> Self::C<K, V>
-    where
-      K: Eq + Hash,
+  where
+    K: Eq + Hash,
   {
     iter::once((key, value)).collect()
   }

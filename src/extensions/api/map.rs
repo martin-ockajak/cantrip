@@ -78,23 +78,23 @@ pub trait Map<K, V> {
 
   fn min_by(&self, compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)>;
 
-  fn product_keys<S>(self) -> S
-    where
-      S: Product<K>;
+  fn product_keys<S>(self) -> K
+  where
+    K: Product;
 
-  fn product_values<S>(self) -> S
-    where
-      S: Product<V>;
+  fn product_values<S>(self) -> V
+  where
+    V: Product;
 
   fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 
-  fn sum_keys<S>(self) -> S
+  fn sum_keys(self) -> K
   where
-    S: Sum<K>;
+    K: Sum;
 
-  fn sum_values<S>(self) -> S
-    where
-      S: Sum<V>;
+  fn sum_values(self) -> V
+  where
+    V: Sum;
 
   fn unit(key: K, value: V) -> Self::C<K, V>
   where

@@ -71,11 +71,17 @@ impl<A> Ordered<A> for Vec<A> {
 }
 
 impl<A> Aggregable<A> for Vec<A> {
-  fn sum<S>(self) -> S where S: Sum<A> {
+  fn sum(self) -> A
+  where
+    A: Sum,
+  {
     self.into_iter().sum()
   }
 
-  fn product<S>(self) -> S where S: Product<A> {
+  fn product(self) -> A
+  where
+    A: Product,
+  {
     self.into_iter().product()
   }
 }

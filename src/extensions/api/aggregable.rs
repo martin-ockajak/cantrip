@@ -1,11 +1,11 @@
 use std::iter::{Product, Sum};
 
 pub trait Aggregable<A> {
-  fn sum<S>(self) -> S
-    where
-      S: Sum<A>;
+  fn sum(self) -> A
+  where
+    A: Sum;
 
-  fn product<S>(self) -> S
-    where
-      S: Product<A>;
+  fn product(self) -> A
+  where
+    A: Product;
 }

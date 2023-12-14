@@ -1,9 +1,9 @@
+use crate::extensions::Aggregable;
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::Aggregable;
 
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::api::set::Set;
@@ -46,11 +46,17 @@ impl<A> Iterable<A> for HashSet<A> {
 }
 
 impl<A> Aggregable<A> for HashSet<A> {
-  fn sum<S>(self) -> S where S: Sum<A> {
+  fn sum(self) -> A
+  where
+    A: Sum,
+  {
     self.into_iter().sum()
   }
 
-  fn product<S>(self) -> S where S: Product<A> {
+  fn product(self) -> A
+  where
+    A: Product,
+  {
     self.into_iter().product()
   }
 }
@@ -66,8 +72,8 @@ impl<A> Set<A> for HashSet<A> {
   }
 
   fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
-    where
-      A: Eq + Hash,
+  where
+    A: Eq + Hash,
   {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
@@ -112,16 +118,16 @@ impl<A> Set<A> for HashSet<A> {
   }
 
   fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
-    where
-      B: Eq + Hash,
-      R: IntoIterator<Item = B>,
+  where
+    B: Eq + Hash,
+    R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
   }
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-    where
-      A: Eq + Hash,
+  where
+    A: Eq + Hash,
   {
     let mut retained: HashSet<A> = HashSet::new();
     retained.extend(iterable.into_iter());
@@ -129,15 +135,15 @@ impl<A> Set<A> for HashSet<A> {
   }
 
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
-    where
-      B: Eq + Hash,
+  where
+    B: Eq + Hash,
   {
     self.iter().map(function).collect()
   }
 
   fn unit(value: A) -> Self::C<A>
-    where
-      A: Eq + Hash,
+  where
+    A: Eq + Hash,
   {
     iter::once(value).collect()
   }
