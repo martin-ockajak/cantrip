@@ -52,15 +52,19 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
   }
 
   fn reduce(&self, function: impl Fn((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>
-  where
-    K: Clone,
-    V: Clone,
   {
     let mut iterator = self.iter();
-    iterator.next().and_then(|head| {
-      let init = (head.0.clone(), head.1.clone());
-      Some(iterator.fold(init, |r, x| function((&r.0, &r.1), x)))
-    })
+    match iterator.next() {
+      Some(value1) => {
+        match iterator.next() {
+          Some(value2) => {
+            Some(iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x)))
+          },
+          _ => None
+        }
+      },
+      _ => None
+    }
   }
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B {

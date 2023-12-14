@@ -33,10 +33,7 @@ pub trait MapIterable<K, V> {
 
   fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 
-  fn reduce(&self, function: impl Fn((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>
-  where
-    K: Clone,
-    V: Clone;
+  fn reduce(&self, function: impl Fn((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 }
