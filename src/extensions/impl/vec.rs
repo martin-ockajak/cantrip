@@ -1,11 +1,11 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
+use crate::extensions::{Aggregable, GroupMap, List, Ordered};
 use crate::extensions::api::iterable::Iterable;
-use crate::extensions::{Aggregable, List, Ordered};
 
 impl<A> Iterable<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -155,13 +155,17 @@ impl<A> List<A> for Vec<A> {
     (0..self.len()).zip(self.into_iter()).collect()
   }
 
-  fn group_by<K, M>(self, mut group_key: impl FnMut(&A) -> K) -> M where K: Eq + Hash, M: FromIterator<(K, Self::C<A>)> {
-    let mut result: HashMap<K, Self::C<A>> = HashMap::new();
+  fn group_by<K, V>(self, mut group_key: impl FnMut(&A) -> K) -> V
+  where
+    K: Eq + Hash,
+    V: GroupMap<K, Self::C<A>> + Default,
+  {
+    let mut result: V = V::default();
     for item in self.into_iter() {
       let key = group_key(&item);
-      result.entry(key).and_modify(|values| values.push(item)).or_insert(Vec::new());
+      result.extend(key, item);
     }
-    FromIterator::from_iter(result.into_iter())
+    result
   }
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
@@ -183,7 +187,10 @@ impl<A> List<A> for Vec<A> {
     self.iter().flat_map(|x| function(x).into_iter()).collect()
   }
 
-  fn flatten<B>(self) -> Self::C<B> where A: IntoIterator<Item = B> {
+  fn flatten<B>(self) -> Self::C<B>
+  where
+    A: IntoIterator<Item = B>,
+  {
     self.into_iter().flatten().collect()
   }
 
@@ -268,6 +275,8 @@ impl<A> List<A> for Vec<A> {
 
 #[cfg(test)]
 mod tests {
+  use std::collections::HashMap;
+
   use crate::extensions::*;
 
   #[quickcheck]
@@ -283,6 +292,21 @@ mod tests {
     let predicate = |x: &i32| x % 2 == 0;
     let result = data.clone().filter(predicate);
     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
+    result == expected
+  }
+
+  #[quickcheck]
+  fn group(data: Vec<i32>) -> bool {
+    let key = |x: &i32| x % 2;
+    let result: HashMap<i32, Vec<i32>> = data.clone().group_by(key);
+    let expected = {
+      let mut map: HashMap<i32, Vec<i32>> = HashMap::new();
+      for item in data.into_iter() {
+        let key = key(&item);
+        map.entry(key).and_modify(|mut values| values.push(item)).or_insert(Vec::new());
+      }
+      map
+    };
     result == expected
   }
 
