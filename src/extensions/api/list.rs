@@ -58,6 +58,8 @@ pub trait ListOps<A> {
 
   fn add(self, value: A) -> Self;
 
+  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self;
+
   fn delete(self, value: &A) -> Self
   where
     A: PartialEq;
@@ -83,8 +85,6 @@ pub trait ListOps<A> {
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash;
-
-  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
   fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
 

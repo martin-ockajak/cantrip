@@ -52,6 +52,13 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
     self.iter().any(predicate)
   }
 
+  fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
+    where
+      K: Eq + Hash,
+  {
+    self.into_iter().chain(iterable.into_iter()).collect()
+  }
+
   fn delete(self, key: &K) -> Self
   where
     K: Eq + Hash,
@@ -136,13 +143,6 @@ impl<K, V> MapOps<K, V> for HashMap<K, V> {
     W: Eq + Hash,
   {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
-  }
-
-  fn merge(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
-  where
-    K: Eq + Hash,
-  {
-    self.into_iter().chain(iterable.into_iter()).collect()
   }
 
   fn reduce(&self, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)> {

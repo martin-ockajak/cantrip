@@ -36,6 +36,7 @@ Practical extensions for standard Rust collections.
 | *add*           | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *all*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *any*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *concat*        | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *delete*        | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *diff*          | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *distinct*      | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
@@ -56,7 +57,6 @@ Practical extensions for standard Rust collections.
 | *map_keys*      | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *map_values*    | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *map_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *merge* ?       | Cantrip     | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *partition*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *position*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *reduce*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |

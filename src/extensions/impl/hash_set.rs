@@ -79,6 +79,13 @@ impl<A> SetOps<A> for HashSet<A> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
+  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
+    where
+      A: Eq + Hash,
+  {
+    self.into_iter().chain(iterable.into_iter()).collect()
+  }
+
   fn delete(self, value: &A) -> Self
   where
     A: Eq + Hash,
@@ -125,13 +132,6 @@ impl<A> SetOps<A> for HashSet<A> {
     let mut retained: HashSet<A> = HashSet::new();
     retained.extend(iterable.into_iter());
     self.into_iter().filter(|x| retained.contains(x)).collect()
-  }
-
-  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-  {
-    self.into_iter().chain(iterable.into_iter()).collect()
   }
 }
 

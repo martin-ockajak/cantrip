@@ -33,6 +33,10 @@ pub trait MapOps<K, V> {
 
   fn any(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool;
 
+  fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
+    where
+      K: Eq + Hash;
+
   fn delete(self, key: &K) -> Self
   where
     K: Eq + Hash;
@@ -80,10 +84,6 @@ pub trait MapOps<K, V> {
   where
     K: Eq + Hash,
     W: Eq + Hash;
-
-  fn merge(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
-  where
-    K: Eq + Hash;
 
   fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 

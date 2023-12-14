@@ -28,6 +28,10 @@ pub trait SetOps<A> {
   where
     A: Eq + Hash;
 
+  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
+    where
+      A: Eq + Hash;
+
   fn delete(self, value: &A) -> Self
   where
     A: Eq + Hash;
@@ -53,8 +57,4 @@ pub trait SetOps<A> {
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
     where
       A: Eq + Hash;
-
-  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash;
 }
