@@ -17,15 +17,13 @@ impl<A, B> ListMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn unit(value: A) -> Self::C<A>
-  where
-    A: Clone,
   {
     iter::once(value).collect()
   }
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
   where
-    R: IntoIterator<Item = B> + Clone,
+    R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(|x| function(x).into_iter()).collect()
   }

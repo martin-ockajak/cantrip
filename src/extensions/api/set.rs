@@ -13,11 +13,11 @@ pub trait SetMonad<A, B> {
 
   fn unit(value: A) -> Self::C<A>
   where
-    A: Clone + Eq + Hash;
+    A: Eq + Hash;
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
   where
-    R: IntoIterator<Item = B> + Clone,
+    R: IntoIterator<Item = B>,
     B: Eq + Hash;
 }
 

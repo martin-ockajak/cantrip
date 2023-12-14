@@ -17,7 +17,7 @@ pub trait MapMonad<K, V, L, W> {
 
   fn flat_map<R>(&self, function: impl Fn((&K, &V)) -> R) -> Self::C<L, W>
   where
-    R: IntoIterator<Item = (L, W)> + Clone,
+    R: IntoIterator<Item = (L, W)>,
     L: Eq + Hash;
 }
 

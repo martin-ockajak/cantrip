@@ -47,13 +47,11 @@ pub trait ListFunctor<A, B> {
 pub trait ListMonad<A, B> {
   type C<X>;
 
-  fn unit(value: A) -> Self::C<A>
-  where
-    A: Clone;
+  fn unit(value: A) -> Self::C<A>;
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
   where
-    R: IntoIterator<Item = B> + Clone;
+    R: IntoIterator<Item = B>;
 }
 
 pub trait ListCollection<A> {
