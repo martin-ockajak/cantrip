@@ -96,19 +96,31 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
   }
 
-  fn filter_map<L: Eq + Hash, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W> {
+  fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
+  where
+    L: Eq + Hash,
+  {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B> {
+  fn find_map<B>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>
+  where
+    B: Eq + Hash,
+  {
     self.iter().find_map(function)
   }
 
-  fn map_keys<L: Eq + Hash>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V> {
+  fn map_keys<L>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V>
+  where
+    L: Eq + Hash,
+  {
     self.iter().map(|(k, v)| (function(k), v.clone())).collect()
   }
 
-  fn map_values<W: Eq + Hash>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W> {
+  fn map_values<W>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W>
+  where
+    W: Eq + Hash,
+  {
     self.iter().map(|(k, v)| (k.clone(), function(v))).collect()
   }
 

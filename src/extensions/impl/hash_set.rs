@@ -93,11 +93,17 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
-  fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
+  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>
+  where
+    B: Eq + Hash,
+  {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B> {
+  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>
+    where
+      B: Eq + Hash,
+  {
     self.iter().find_map(function)
   }
 

@@ -52,13 +52,21 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
 
   fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
 
-  fn filter_map<L: Eq + Hash, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>;
+  fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
+  where
+    L: Eq + Hash;
 
-  fn find_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>;
+  fn find_map<B>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>
+  where
+    B: Eq + Hash;
 
-  fn map_keys<L: Eq + Hash>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V>;
+  fn map_keys<L>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V>
+  where
+    L: Eq + Hash;
 
-  fn map_values<W: Eq + Hash>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W>;
+  fn map_values<W>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W>
+  where
+    W: Eq + Hash;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self;
 }

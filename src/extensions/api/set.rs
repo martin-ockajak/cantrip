@@ -32,9 +32,13 @@ pub trait SetCollection<A: Eq + Hash + Clone> {
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 
-  fn filter_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
+  fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>
+  where
+    B: Eq + Hash;
 
-  fn find_map<B: Eq + Hash>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>;
+  fn find_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Option<B>
+  where
+    B: Eq + Hash;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 }
