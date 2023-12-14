@@ -2,10 +2,10 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::api::set::SetOps;
+use crate::extensions::api::iterable::Iterable;
+use crate::extensions::api::set::Set;
 
-impl<A> IterableOps<A> for HashSet<A> {
+impl<A> Iterable<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -39,7 +39,7 @@ impl<A> IterableOps<A> for HashSet<A> {
   }
 }
 
-impl<A> SetOps<A> for HashSet<A> {
+impl<A> Set<A> for HashSet<A> {
   type C<X> = HashSet<X>;
 
   fn add(self, value: A) -> Self

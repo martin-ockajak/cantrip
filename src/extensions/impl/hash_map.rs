@@ -1,9 +1,9 @@
-use crate::extensions::MapOps;
+use crate::extensions::Map;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 
-impl<K, V> MapOps<K, V> for HashMap<K, V> {
+impl<K, V> Map<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
   fn add(self, key: K, value: V) -> Self

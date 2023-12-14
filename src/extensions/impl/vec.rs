@@ -2,10 +2,10 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::{ListOps, OrderedOps};
+use crate::extensions::api::iterable::Iterable;
+use crate::extensions::{List, Ordered};
 
-impl<A> IterableOps<A> for Vec<A> {
+impl<A> Iterable<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -38,7 +38,7 @@ impl<A> IterableOps<A> for Vec<A> {
   }
 }
 
-impl<A> OrderedOps<A> for Vec<A> {
+impl<A> Ordered<A> for Vec<A> {
   fn head(&self) -> Option<&A> {
     self.get(0)
   }
@@ -56,7 +56,7 @@ impl<A> OrderedOps<A> for Vec<A> {
   }
 }
 
-impl<A> ListOps<A> for Vec<A> {
+impl<A> List<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn add(self, value: A) -> Self {

@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-pub trait MapOps<K, V> {
+pub trait Map<K, V> {
   type C<X, Y>;
 
   fn add(self, key: K, value: V) -> Self

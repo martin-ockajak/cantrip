@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-pub trait ListOps<A> {
+pub trait List<A> {
   type C<X>;
 
   fn add(self, value: A) -> Self;

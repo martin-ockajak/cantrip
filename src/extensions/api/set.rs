@@ -1,6 +1,6 @@
 use std::hash::Hash;
 
-pub trait SetOps<A> {
+pub trait Set<A> {
   type C<X>;
 
   fn add(self, value: A) -> Self

@@ -1,8 +1,8 @@
 use std::cmp::{max, min};
-use crate::extensions::api::iterable::IterableOps;
-use crate::extensions::{OrderedOps, SliceOps};
+use crate::extensions::api::iterable::Iterable;
+use crate::extensions::{Ordered, Slice};
 
-impl<A> IterableOps<A> for [A] {
+impl<A> Iterable<A> for [A] {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -40,7 +40,7 @@ impl<A> IterableOps<A> for [A] {
   }
 }
 
-impl<A> OrderedOps<A> for [A] {
+impl<A> Ordered<A> for [A] {
   fn head(&self) -> Option<&A> {
     self.get(0)
   }
@@ -58,7 +58,7 @@ impl<A> OrderedOps<A> for [A] {
   }
 }
 
-impl<A> SliceOps<A> for [A] {
+impl<A> Slice<A> for [A] {
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]
   }
