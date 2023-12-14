@@ -64,9 +64,11 @@ pub trait ListOrdered<A> {
 pub trait ListCollection<A: Clone> {
   type C<X>;
 
+  fn add(&self, value: A) -> Self;
+
   fn delete(&self, value: &A) -> Self
     where
-      A: PartialEq; fn add(&self, value: A) -> Self;
+      A: PartialEq;
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
     where
