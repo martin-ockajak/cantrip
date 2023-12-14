@@ -69,7 +69,7 @@ impl<A> Iterable<A> for Vec<A> {
   }
 }
 
-impl<A: Clone> ListCollection<A> for Vec<A> {
+impl<A> ListCollection<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn add(self, value: A) -> Self {
@@ -116,19 +116,19 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self)
+  fn partition(self, predicate: impl Fn(&A) -> bool) -> (Self, Self)
   where
     Self: Sized,
   {
-    self.iter().cloned().partition(predicate)
+    self.into_iter().partition(predicate)
   }
 
-  fn skip(&self, n: usize) -> Self {
-    self.iter().skip(n).cloned().collect()
+  fn skip(self, n: usize) -> Self {
+    self.into_iter().skip(n).collect()
   }
 
-  fn take(&self, n: usize) -> Self {
-    self.iter().take(n).cloned().collect()
+  fn take(self, n: usize) -> Self {
+    self.into_iter().take(n).collect()
   }
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
