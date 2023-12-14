@@ -1,3 +1,4 @@
+pub mod aggregable;
 pub mod iterable;
 pub mod list;
 pub mod map;

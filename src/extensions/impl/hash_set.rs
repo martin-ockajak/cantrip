@@ -2,6 +2,8 @@ use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
+use std::iter::{Product, Sum};
+use crate::extensions::Aggregable;
 
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::api::set::Set;
@@ -40,6 +42,16 @@ impl<A> Iterable<A> for HashSet<A> {
       },
       _ => None,
     }
+  }
+}
+
+impl<A> Aggregable<A> for HashSet<A> {
+  fn sum<S>(self) -> S where S: Sum<A> {
+    self.into_iter().sum()
+  }
+
+  fn product<S>(self) -> S where S: Product<A> {
+    self.into_iter().product()
   }
 }
 

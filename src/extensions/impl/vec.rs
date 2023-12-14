@@ -2,9 +2,10 @@ use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
+use std::iter::{Product, Sum};
 
 use crate::extensions::api::iterable::Iterable;
-use crate::extensions::{List, Ordered};
+use crate::extensions::{Aggregable, List, Ordered};
 
 impl<A> Iterable<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -66,6 +67,16 @@ impl<A> Ordered<A> for Vec<A> {
 
   fn rposition(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
     self.iter().rposition(predicate)
+  }
+}
+
+impl<A> Aggregable<A> for Vec<A> {
+  fn sum<S>(self) -> S where S: Sum<A> {
+    self.into_iter().sum()
+  }
+
+  fn product<S>(self) -> S where S: Product<A> {
+    self.into_iter().product()
   }
 }
 

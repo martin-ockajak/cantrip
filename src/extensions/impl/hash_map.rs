@@ -1,8 +1,9 @@
 use std::cmp::Ordering;
-use crate::extensions::Map;
+use crate::extensions::{Aggregable, Map};
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
+use std::iter::{Product, Sum};
 
 impl<K, V> Map<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
@@ -138,6 +139,14 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
+  fn product_keys<S>(self) -> S where S: Product<K> {
+    self.into_iter().map(|(k, _)| k).product()
+  }
+
+  fn product_values<S>(self) -> S where S: Product<V> {
+    self.into_iter().map(|(_, v)| v).product()
+  }
+
   fn reduce(&self, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)> {
     let mut iterator = self.iter();
     match iterator.next() {
@@ -147,6 +156,14 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
       },
       _ => None,
     }
+  }
+
+  fn sum_keys<S>(self) -> S where S: Sum<K> {
+    self.into_iter().map(|(k, _)| k).sum()
+  }
+
+  fn sum_values<S>(self) -> S where S: Sum<V> {
+    self.into_iter().map(|(_, v)| v).sum()
   }
 
   fn unit(key: K, value: V) -> Self::C<K, V>

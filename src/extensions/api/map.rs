@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::hash::Hash;
+use std::iter::{Product, Sum};
 
 pub trait Map<K, V> {
   type C<X, Y>;
@@ -13,8 +14,8 @@ pub trait Map<K, V> {
   fn any(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool;
 
   fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
-    where
-      K: Eq + Hash;
+  where
+    K: Eq + Hash;
 
   fn delete(self, key: &K) -> Self
   where
@@ -49,9 +50,9 @@ pub trait Map<K, V> {
     B: Eq + Hash;
 
   fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
-    where
-      L: Eq + Hash,
-      R: IntoIterator<Item = (L, W)>;
+  where
+    L: Eq + Hash,
+    R: IntoIterator<Item = (L, W)>;
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B;
 
@@ -60,8 +61,8 @@ pub trait Map<K, V> {
     K: Eq + Hash;
 
   fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
-    where
-      L: Eq + Hash;
+  where
+    L: Eq + Hash;
 
   fn map_keys<L>(self, function: impl FnMut(&K) -> L) -> Self::C<L, V>
   where
@@ -77,9 +78,25 @@ pub trait Map<K, V> {
 
   fn min_by(&self, compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)>;
 
+  fn product_keys<S>(self) -> S
+    where
+      S: Product<K>;
+
+  fn product_values<S>(self) -> S
+    where
+      S: Product<V>;
+
   fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 
-  fn unit(key: K, value: V) -> Self::C<K, V>
+  fn sum_keys<S>(self) -> S
+  where
+    S: Sum<K>;
+
+  fn sum_values<S>(self) -> S
     where
-      K: Eq + Hash;
+      S: Sum<V>;
+
+  fn unit(key: K, value: V) -> Self::C<K, V>
+  where
+    K: Eq + Hash;
 }

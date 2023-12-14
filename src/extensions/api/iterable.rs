@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::iter::Sum;
 
 pub trait Iterable<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool;
