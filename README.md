@@ -17,7 +17,7 @@ Practical extensions for standard Rust collections.
   
   data.any(|x| x == 0);                    // bool
   
-  data.clone().zip(data.clone());          // Vec<(i32, i32)>
+  data.zip(data.clone());                  // Vec<(i32, i32)>
 ```
 
 
