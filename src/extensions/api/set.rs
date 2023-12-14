@@ -21,24 +21,36 @@ pub trait SetMonad<A> {
     R: IntoIterator<Item = B>;
 }
 
-pub trait SetOps<A: Eq + Hash> {
+pub trait SetOps<A> {
   type C<X>;
 
-  fn add(self, value: A) -> Self;
+  fn add(self, value: A) -> Self
+  where
+    A: Eq + Hash;
 
-  fn delete(self, value: &A) -> Self;
+  fn delete(self, value: &A) -> Self
+  where
+    A: Eq + Hash;
 
-  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self;
+  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    A: Eq + Hash;
 
-  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
+  where
+    A: Eq + Hash;
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>
   where
+    A: Eq + Hash,
     B: Eq + Hash;
 
   fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>
   where
+    A: Eq + Hash,
     B: Eq + Hash;
 
-  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self;
+  fn merge(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    A: Eq + Hash;
 }
