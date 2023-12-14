@@ -46,9 +46,13 @@ pub trait MapCollection<K: Eq + Hash, V> {
 
   fn filter(self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
 
+  fn filter_keys(self, predicate: impl Fn(&K) -> bool) -> Self;
+
   fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
   where
     L: Eq + Hash;
+
+  fn filter_values(self, predicate: impl Fn(&V) -> bool) -> Self;
 
   fn find_map<B>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>
   where

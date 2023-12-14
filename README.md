@@ -5,34 +5,36 @@ Practical extensions for standard Rust collections
 
 # API
 
-| Method       | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet  | HashMap, BTreeMap  | Slice              |
-|--------------|-------------|---------------------------|--------------------|--------------------|--------------------|
-| *add*        | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *all*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *any*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *delete*     | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *diff* ?     | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *enumerate*  | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *filter*     | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *filter_map* | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *find_map*   | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *find*       | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *flat_map*   | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *fold*       | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *map*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *map_keys*   | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
-| *map_values* | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
-| *map_while*  | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *merge* ?    | Cantrip     | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *partition*  | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *position*   | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
-| *reduce*     | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *rfind*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
-| *rfold*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *skip*       | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *take*       | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *unit* ?     | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *zip*        | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| Method          | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet  | HashMap, BTreeMap  | Slice              |
+|-----------------|-------------|---------------------------|--------------------|--------------------|--------------------|
+| *add*           | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *all*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *any*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *delete*        | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *diff* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *enumerate*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *filter*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *filter_keys*   | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *filter_map*    | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *filter_values* | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *find_map*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *find*          | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *flat_map*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *fold*          | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *map_keys*      | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *map_values*    | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *map_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *merge* ?       | Cantrip     | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *partition*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *position*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *reduce*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *rfind*         | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *rfold*         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *skip*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *take*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *unit* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *zip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 
 
 ## Methdod sources

@@ -98,11 +98,19 @@ impl<K: Eq + Hash, V> MapCollection<K, V> for HashMap<K, V> {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
+  fn filter_keys(self, predicate: impl Fn(&K) -> bool) -> Self {
+    self.into_iter().filter(|(k, _)| predicate(k)).collect()
+  }
+
   fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
   where
     L: Eq + Hash,
   {
     self.iter().filter_map(function).collect()
+  }
+
+  fn filter_values(self, predicate: impl Fn(&V) -> bool) -> Self {
+    self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
   fn find_map<B>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>
