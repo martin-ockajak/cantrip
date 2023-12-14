@@ -51,7 +51,7 @@ Practical extensions for standard Rust collections.
 | *flat_map*       | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *flatten*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :x:                | :x:                |
 | *fold*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *group_by*       | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *group_by*       | Scala       | :heavy_check_mark:        |                    |                    | :x:                |
 | *head*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *intersect*      | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *init*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
