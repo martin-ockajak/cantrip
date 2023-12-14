@@ -21,7 +21,7 @@ pub trait SetMonad<A> {
     R: IntoIterator<Item = B>;
 }
 
-pub trait SetCollection<A: Eq + Hash> {
+pub trait SetOps<A: Eq + Hash> {
   type C<X>;
 
   fn add(self, value: A) -> Self;

@@ -1,4 +1,4 @@
-pub trait Iterable<A> {
+pub trait IterableOps<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool;
 
   fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool;
@@ -12,7 +12,7 @@ pub trait Iterable<A> {
   fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B;
 }
 
-pub trait Ordered<A> {
+pub trait OrderedOps<A> {
   fn head(&self) -> Option<&A>;
 
   fn last(&self) -> Option<&A>;

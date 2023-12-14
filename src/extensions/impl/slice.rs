@@ -1,7 +1,7 @@
-use crate::extensions::api::iterable::Iterable;
-use crate::extensions::Ordered;
+use crate::extensions::api::iterable::IterableOps;
+use crate::extensions::OrderedOps;
 
-impl<A> Iterable<A> for [A] {
+impl<A> IterableOps<A> for [A] {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -39,7 +39,7 @@ impl<A> Iterable<A> for [A] {
   }
 }
 
-impl<A> Ordered<A> for [A] {
+impl<A> OrderedOps<A> for [A] {
   fn head(&self) -> Option<&A> {
     self.get(0)
   }

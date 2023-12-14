@@ -2,8 +2,8 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::iterable::Iterable;
-use crate::extensions::{ListCollection, ListFunctor, ListMonad, Ordered};
+use crate::extensions::api::iterable::IterableOps;
+use crate::extensions::{ListOps, ListFunctor, ListMonad, OrderedOps};
 
 impl<A> ListFunctor<A> for Vec<A> {
   type C<X> = Vec<X>;
@@ -29,7 +29,7 @@ impl<A> ListMonad<A> for Vec<A> {
   }
 }
 
-impl<A> Iterable<A> for Vec<A> {
+impl<A> IterableOps<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -67,7 +67,7 @@ impl<A> Iterable<A> for Vec<A> {
   }
 }
 
-impl<A> ListCollection<A> for Vec<A> {
+impl<A> ListOps<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn add(self, value: A) -> Self {
@@ -137,7 +137,7 @@ impl<A> ListCollection<A> for Vec<A> {
   }
 }
 
-impl<A> Ordered<A> for Vec<A> {
+impl<A> OrderedOps<A> for Vec<A> {
   fn head(&self) -> Option<&A> {
     self.get(0)
   }

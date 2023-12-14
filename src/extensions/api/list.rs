@@ -53,7 +53,7 @@ pub trait ListMonad<A> {
     R: IntoIterator<Item = B>;
 }
 
-pub trait ListCollection<A> {
+pub trait ListOps<A> {
   type C<X>;
 
   fn add(self, value: A) -> Self;

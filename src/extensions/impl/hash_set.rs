@@ -2,8 +2,8 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::api::iterable::Iterable;
-use crate::extensions::api::set::{SetCollection, SetFunctor, SetMonad};
+use crate::extensions::api::iterable::IterableOps;
+use crate::extensions::api::set::{SetOps, SetFunctor, SetMonad};
 
 impl<A> SetFunctor<A> for HashSet<A> {
   type C<X> = HashSet<X>;
@@ -35,7 +35,7 @@ impl<A> SetMonad<A> for Vec<A> {
   }
 }
 
-impl<A> Iterable<A> for HashSet<A> {
+impl<A> IterableOps<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     self.iter().all(predicate)
   }
@@ -74,7 +74,7 @@ impl<A> Iterable<A> for HashSet<A> {
   }
 }
 
-impl<A: Eq + Hash> SetCollection<A> for HashSet<A> {
+impl<A: Eq + Hash> SetOps<A> for HashSet<A> {
   type C<X> = HashSet<X>;
 
   fn add(self, value: A) -> Self {
