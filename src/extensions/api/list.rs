@@ -96,6 +96,10 @@ pub trait List<A> {
 
   fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
+  fn sorted(self) -> Self
+  where
+    A: Ord;
+
   fn step_by(self, step: usize) -> Self;
 
   fn tail(self) -> Self;

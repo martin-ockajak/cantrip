@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{BinaryHeap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -233,6 +233,12 @@ impl<A> List<A> for Vec<A> {
 
   fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self {
     self.into_iter().skip_while(predicate).collect()
+  }
+
+  fn sorted(self) -> Self where A: Ord {
+    let mut heap: BinaryHeap<A> = BinaryHeap::new();
+    heap.extend(self);
+    heap.into_sorted_vec()
   }
 
   fn step_by(self, step: usize) -> Self {
