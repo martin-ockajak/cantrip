@@ -1,4 +1,31 @@
+use std::collections::{BTreeMap, HashMap};
 use std::hash::Hash;
+use std::iter;
+
+pub trait GroupMap<K, C> {
+  fn extend<V>(&mut self, k: K, v: V)
+  where
+    C: Extend<V> + Default;
+}
+
+impl<K: Eq + Hash, C> GroupMap<K, C> for HashMap<K, C> {
+  fn extend<V>(&mut self, k: K, v: V)
+  where
+    C: Extend<V> + Default,
+  {
+    self.entry(k).and_modify(|values| values.extend(iter::once(v))).or_insert(C::default());
+  }
+}
+
+impl<K: Ord, C> GroupMap<K, C> for BTreeMap<K, C> {
+  fn extend<V>(&mut self, k: K, v: V)
+  where
+    C: Extend<V> + Default,
+  {
+    self.entry(k).and_modify(|values| values.extend(iter::once(v))).or_insert(C::default());
+  }
+}
+
 
 pub trait List<A> {
   type C<X>;
@@ -21,10 +48,10 @@ pub trait List<A> {
 
   fn enumerate(self) -> Self::C<(usize, A)>;
 
-  fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
+  fn group_by<K, V>(self, group_key: impl FnMut(&A) -> K) -> V
   where
     K: Eq + Hash,
-    M: FromIterator<(K, Self::C<A>)>;
+    V: GroupMap<K, Self::C<A>> + Default;
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
@@ -33,8 +60,8 @@ pub trait List<A> {
   fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
 
   fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
-    where
-      R: IntoIterator<Item = B>;
+  where
+    R: IntoIterator<Item = B>;
 
   fn flatten<B>(self) -> Self::C<B>
   where
@@ -103,8 +130,8 @@ pub trait List<A> {
   fn unit(value: A) -> Self::C<A>;
 
   fn unzip<B, C, FromB, FromC>(self) -> (Self::C<B>, Self::C<C>)
-    where
-      Self: IntoIterator<Item = (B, C)>;
+  where
+    Self: IntoIterator<Item = (B, C)>;
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where
