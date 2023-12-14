@@ -70,6 +70,7 @@ Practical extensions for standard Rust collections.
 | *rfind*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *rfold*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *rposition*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *scan*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *skip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *skip_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *sum*            | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :x:                | :x:                |

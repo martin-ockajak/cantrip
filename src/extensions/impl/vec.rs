@@ -208,6 +208,10 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().rev().collect()
   }
 
+  fn scan<S, B>(self, init: S, function: impl FnMut(&mut S, A) -> Option<B>) -> Self::C<B> {
+    self.into_iter().scan(init, function).collect()
+  }
+
   fn skip(self, n: usize) -> Self {
     self.into_iter().skip(n).collect()
   }
