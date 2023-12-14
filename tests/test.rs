@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-  use crate::extensions::*;
+  use cantrip::extensions::*;
 
   #[test]
   fn test_x() {

@@ -1,4 +1,4 @@
-mod extensions;
+pub mod extensions;
 
 #[cfg(test)]
 extern crate quickcheck;
