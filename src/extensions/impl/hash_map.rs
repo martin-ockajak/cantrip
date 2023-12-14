@@ -69,7 +69,7 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
 }
 
 impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
-  type C<X> = Vec<X>;
+  type C<X, Y> = HashMap<X, Y>;
 
   fn add(&self, key: K, value: V) -> Self {
     let mut result = self.clone();
@@ -95,12 +95,20 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
   }
 
-  fn filter_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Self::C<B> {
+  fn filter_map<L: Eq + Hash, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W> {
     self.iter().filter_map(function).collect()
   }
 
   fn find_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
+  }
+
+  fn map_keys<L: Eq + Hash>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V> {
+    self.iter().map(|(k, v)| (function(k), v.clone())).collect()
+  }
+
+  fn map_values<W: Eq + Hash>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W> {
+    self.iter().map(|(k, v)| (k.clone(), function(v))).collect()
   }
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self {

@@ -41,7 +41,7 @@ pub trait MapIterable<K, V> {
 }
 
 pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
-  type C<X>;
+  type C<X, Y>;
 
   fn add(&self, key: K, value: V) -> Self;
 
@@ -51,9 +51,13 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
 
   fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
 
-  fn filter_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Self::C<B>;
+  fn filter_map<L: Eq + Hash, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>;
 
   fn find_map<B: Eq + Hash>(&self, function: impl Fn((&K, &V)) -> Option<B>) -> Option<B>;
+
+  fn map_keys<L: Eq + Hash>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V>;
+
+  fn map_values<W: Eq + Hash>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W>;
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self;
 }
