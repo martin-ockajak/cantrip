@@ -22,11 +22,6 @@ pub trait List<A> {
 
   fn enumerate(self) -> Self::C<(usize, A)>;
 
-  fn group_by<K, T>(self, group_key: impl FnMut(&A) -> K) -> T
-  where
-    K: Eq + Hash,
-    T: MultiMap<K, Self::C<A>> + Default;
-
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
@@ -40,6 +35,11 @@ pub trait List<A> {
   fn flatten<B>(self) -> Self::C<B>
   where
     A: IntoIterator<Item = B>;
+
+  fn group_by<K, T>(self, group_key: impl FnMut(&A) -> K) -> T
+    where
+      K: Eq + Hash,
+      T: MultiMap<K, Self::C<A>> + Default;
 
   fn init(self) -> Self;
 

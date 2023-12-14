@@ -155,19 +155,6 @@ impl<A> List<A> for Vec<A> {
     (0..self.len()).zip(self.into_iter()).collect()
   }
 
-  fn group_by<K, V>(self, mut group_key: impl FnMut(&A) -> K) -> V
-  where
-    K: Eq + Hash,
-    V: MultiMap<K, Self::C<A>> + Default,
-  {
-    let mut result: V = V::default();
-    for item in self.into_iter() {
-      let key = group_key(&item);
-      result.add(key, item);
-    }
-    result
-  }
-
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
     self.into_iter().filter(predicate).collect()
   }
@@ -192,6 +179,19 @@ impl<A> List<A> for Vec<A> {
     A: IntoIterator<Item = B>,
   {
     self.into_iter().flatten().collect()
+  }
+
+  fn group_by<K, V>(self, mut group_key: impl FnMut(&A) -> K) -> V
+    where
+      K: Eq + Hash,
+      V: MultiMap<K, Self::C<A>> + Default,
+  {
+    let mut result: V = V::default();
+    for item in self.into_iter() {
+      let key = group_key(&item);
+      result.add(key, item);
+    }
+    result
   }
 
   fn init(self) -> Self {
