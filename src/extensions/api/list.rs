@@ -48,10 +48,10 @@ pub trait List<A> {
 
   fn enumerate(self) -> Self::C<(usize, A)>;
 
-  fn group_by<K, V>(self, group_key: impl FnMut(&A) -> K) -> V
+  fn group_by<K, T>(self, group_key: impl FnMut(&A) -> K) -> T
   where
     K: Eq + Hash,
-    V: GroupMap<K, Self::C<A>> + Default;
+    T: GroupMap<K, Self::C<A>> + Default;
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
