@@ -3,9 +3,7 @@ pub trait Iterable<A> {
 
   fn any(&self, predicate: impl Fn(&A) -> bool) -> bool;
 
-  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>
-  where
-    A: Clone;
+  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>;
 
   fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 
