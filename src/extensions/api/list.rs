@@ -92,6 +92,8 @@ pub trait ListOps<A> {
   where
     Self: Sized;
 
+  fn rev(self) -> Self;
+
   fn skip(self, n: usize) -> Self;
 
   fn tail(self) -> Self;

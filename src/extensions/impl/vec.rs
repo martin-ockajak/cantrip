@@ -172,6 +172,10 @@ impl<A> ListOps<A> for Vec<A> {
     self.into_iter().partition(predicate)
   }
 
+  fn rev(self) -> Self {
+    self.into_iter().rev().collect()
+  }
+
   fn skip(self, n: usize) -> Self {
     self.into_iter().skip(n).collect()
   }
