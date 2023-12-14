@@ -1,4 +1,3 @@
-use crate::extensions::Aggregable;
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
@@ -7,6 +6,7 @@ use std::iter::{Product, Sum};
 
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::api::set::Set;
+use crate::extensions::Aggregable;
 
 impl<A> Iterable<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -129,7 +129,11 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().flat_map(function).collect()
   }
 
-  fn flatten<B>(self) -> Self::Root<B> where A: IntoIterator<Item = B>, B: Eq + Hash {
+  fn flatten<B>(self) -> Self::Root<B>
+  where
+    A: IntoIterator<Item = B>,
+    B: Eq + Hash,
+  {
     self.into_iter().flatten().collect()
   }
 
@@ -159,8 +163,9 @@ impl<A> Set<A> for HashSet<A> {
 
 #[cfg(test)]
 mod tests {
-  use crate::extensions::*;
   use std::collections::HashSet;
+
+  use crate::extensions::*;
 
   #[quickcheck]
   fn map(data: HashSet<i32>) -> bool {

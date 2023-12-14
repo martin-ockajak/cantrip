@@ -1,5 +1,6 @@
-use crate::extensions::MultiMap;
 use std::hash::Hash;
+
+use crate::extensions::MultiMap;
 
 pub trait List<A> {
   type Root<X>;
@@ -37,9 +38,9 @@ pub trait List<A> {
     A: IntoIterator<Item = B>;
 
   fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
-    where
-      K: Eq + Hash,
-      M: MultiMap<K, Self::Root<A>>;
+  where
+    K: Eq + Hash,
+    M: MultiMap<K, Self::Root<A>>;
 
   fn init(self) -> Self;
 

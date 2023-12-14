@@ -1,6 +1,6 @@
-use std::cmp::{max, min, Ordering};
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::{Ordered, Slice};
+use std::cmp::{max, min, Ordering};
 
 impl<A> Iterable<A> for [A] {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -31,19 +31,14 @@ impl<A> Iterable<A> for [A] {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
-  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A>
-  {
+  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A> {
     let mut iterator = self.iter();
     match iterator.next() {
-      Some(value1) => {
-        match iterator.next() {
-          Some(value2) => {
-            Some(iterator.fold(function(value1, value2), |r, x| function(&r, x)))
-          },
-          _ => None
-        }
+      Some(value1) => match iterator.next() {
+        Some(value2) => Some(iterator.fold(function(value1, value2), |r, x| function(&r, x))),
+        _ => None,
       },
-      _ => None
+      _ => None,
     }
   }
 }
@@ -82,7 +77,7 @@ impl<A> Slice<A> for [A] {
   fn skip_while(&self, mut predicate: impl FnMut(&A) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[min(index, self.len())..self.len()],
-      None => &self[0..0]
+      None => &self[0..0],
     }
   }
 
@@ -97,7 +92,7 @@ impl<A> Slice<A> for [A] {
   fn take_while(&self, mut predicate: impl FnMut(&A) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[0..min(index, self.len())],
-      None => &self
+      None => &self,
     }
   }
 }

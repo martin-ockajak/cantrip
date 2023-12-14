@@ -1,9 +1,10 @@
-use crate::extensions::Map;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+
+use crate::extensions::Map;
 
 impl<K, V> Map<K, V> for HashMap<K, V> {
   type Root<X, Y> = HashMap<X, Y>;
@@ -192,8 +193,9 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
 
 #[cfg(test)]
 mod tests {
-  use crate::extensions::*;
   use std::collections::HashMap;
+
+  use crate::extensions::*;
 
   #[quickcheck]
   fn map(data: HashMap<i32, i32>) -> bool {
