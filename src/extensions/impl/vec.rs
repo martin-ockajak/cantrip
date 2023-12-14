@@ -54,6 +54,10 @@ impl<A> Ordered<A> for Vec<A> {
   fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
   }
+
+  fn rposition(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
+    self.iter().rposition(predicate)
+  }
 }
 
 impl<A> List<A> for Vec<A> {

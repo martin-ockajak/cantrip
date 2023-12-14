@@ -56,6 +56,10 @@ impl<A> Ordered<A> for [A] {
   fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().rfold(init, function)
   }
+
+  fn rposition(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
+    self.iter().rposition(predicate)
+  }
 }
 
 impl<A> Slice<A> for [A] {
