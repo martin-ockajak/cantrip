@@ -63,8 +63,8 @@ Practical extensions for standard Rust collections.
 | *skip*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *tail*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *take*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *unit* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *unique*        | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *unit* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *zip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 
 
