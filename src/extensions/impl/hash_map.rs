@@ -33,7 +33,7 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)> where K: Clone, V: Clone {
+  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)> {
     self.iter().find(|&x| predicate(x))
   }
 

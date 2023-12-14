@@ -19,4 +19,6 @@ pub trait Iterable<A> {
 
 pub trait Ordered<A> {
   fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize>;
+
+  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>;
 }

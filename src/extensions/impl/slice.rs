@@ -10,7 +10,7 @@ impl<A> Iterable<A> for [A] {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> where A: Clone {
+  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
     self.iter().find(|&x| predicate(x))
   }
 
@@ -31,6 +31,10 @@ impl<A> Iterable<A> for [A] {
 impl<A> Ordered<A> for [A] {
   fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
+  }
+
+  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+    self.iter().rev().find(|&x| predicate(x))
   }
 }
 

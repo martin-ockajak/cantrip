@@ -85,8 +85,6 @@ pub trait ListCollection<A: Clone> {
 
   fn repeat(&self, n: usize) -> Self;
 
-  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>;
-
   fn skip(&self, n: usize) -> Self;
 
   fn take(&self, n: usize) -> Self;

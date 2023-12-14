@@ -34,7 +34,7 @@ impl<A> Iterable<A> for HashSet<A> {
     self.iter().any(predicate)
   }
 
-  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> where A: Clone {
+  fn find(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
     self.iter().find(|&x| predicate(x))
   }
 
