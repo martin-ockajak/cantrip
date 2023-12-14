@@ -154,7 +154,7 @@ mod tests {
   use std::collections::HashMap;
 
   #[quickcheck]
-  fn test_map_hash_map(data: HashMap<i32, i32>) -> bool {
+  fn map(data: HashMap<i32, i32>) -> bool {
     let function = |(k, v): (&i32, &i32)| (*k, *v as i64);
     let result = data.map(function);
     let expected = data.iter().map(function).collect::<HashMap<i32, i64>>();

@@ -128,7 +128,7 @@ mod tests {
   use std::collections::HashSet;
 
   #[quickcheck]
-  fn test_map_hash_set(data: HashSet<i32>) -> bool {
+  fn map(data: HashSet<i32>) -> bool {
     let function = |x: &i32| *x as i64;
     let result = data.map(function);
     let expected = data.iter().map(function).collect::<HashSet<i64>>();
@@ -136,7 +136,7 @@ mod tests {
   }
 
   #[quickcheck]
-  fn test_filter_hash_set(data: HashSet<i32>) -> bool {
+  fn filter(data: HashSet<i32>) -> bool {
     let predicate = |x: &i32| x % 2 == 0;
     let function = |i: i32, x: &i32| i.saturating_add(*x);
     let result = data.clone().filter(predicate);
@@ -145,7 +145,7 @@ mod tests {
   }
 
   #[quickcheck]
-  fn test_fold_hash_set(data: HashSet<i32>) -> bool {
+  fn fold(data: HashSet<i32>) -> bool {
     let function = |i: i32, x: &i32| i.saturating_add(*x);
     let result = data.fold(0, function);
     let expected = data.iter().fold(0, function);

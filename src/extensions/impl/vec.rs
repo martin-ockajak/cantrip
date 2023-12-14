@@ -182,6 +182,10 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().skip(n).collect()
   }
 
+  fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self {
+    self.into_iter().skip_while(predicate).collect()
+  }
+
   fn tail(self) -> Self {
     let mut iterator = self.into_iter();
     iterator.next();
@@ -190,6 +194,10 @@ impl<A> List<A> for Vec<A> {
 
   fn take(self, n: usize) -> Self {
     self.into_iter().take(n).collect()
+  }
+
+  fn take_while(self, predicate: impl FnMut(&A) -> bool) -> Self {
+    self.into_iter().take_while(predicate).collect()
   }
 
   fn unit(value: A) -> Self::C<A> {
@@ -209,7 +217,7 @@ mod tests {
   use crate::extensions::*;
 
   #[quickcheck]
-  fn test_map_vec(data: Vec<i32>) -> bool {
+  fn map(data: Vec<i32>) -> bool {
     let function = |x: &i32| *x as i64;
     let result = data.map(function);
     let expected = data.iter().map(function).collect::<Vec<i64>>();
@@ -217,7 +225,7 @@ mod tests {
   }
 
   #[quickcheck]
-  fn test_filter_vec(data: Vec<i32>) -> bool {
+  fn filter(data: Vec<i32>) -> bool {
     let predicate = |x: &i32| x % 2 == 0;
     let result = data.clone().filter(predicate);
     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
@@ -225,7 +233,7 @@ mod tests {
   }
 
   #[quickcheck]
-  fn test_fold_vec(data: Vec<i32>) -> bool {
+  fn fold(data: Vec<i32>) -> bool {
     let function = |i: i32, x: &i32| i.saturating_add(*x);
     let result = data.fold(0, function);
     let expected = data.iter().fold(0, function);

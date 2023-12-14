@@ -67,10 +67,45 @@ impl<A> Slice<A> for [A] {
     &self[0..max(self.len() - 1, 0)]
   }
 
+  fn skip(&self, n: usize) -> &Self {
+    &self[min(n, self.len())..self.len()]
+  }
+
+  fn skip_while(&self, mut predicate: impl FnMut(&A) -> bool) -> &Self {
+    match self.iter().position(|x| !predicate(x)) {
+      Some(index) => &self[min(index, self.len())..self.len()],
+      None => &self[0..0]
+    }
+  }
+
   fn tail(&self) -> &Self {
     &self[min(1, self.len())..self.len()]
+  }
+
+  // fn take(&self, n: usize) -> &Self {
+  //   &self[0..min(n, self.len())]
+  // }
+
+  fn take_while(&self, mut predicate: impl FnMut(&A) -> bool) -> &Self {
+    match self.iter().position(|x| !predicate(x)) {
+      Some(index) => &self[0..min(index, self.len())],
+      None => &self
+    }
   }
 }
 
 #[cfg(test)]
-mod tests {}
+mod tests {
+  use crate::extensions::*;
+
+  #[quickcheck]
+  fn skip(source: Vec<i32>) -> bool {
+    let data = source.as_slice();
+    data.skip(1);
+    true
+    // let function = |x: &i32| *x as i64;
+    // let result = data.map(function);
+    // let expected = data.iter().map(function).collect::<Vec<i64>>();
+    // result == expected
+  }
+}
