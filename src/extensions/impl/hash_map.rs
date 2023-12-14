@@ -25,8 +25,9 @@ impl<K, V, L, W> MapMonad<K, V, L, W> for HashMap<K, V> {
     iter::once((key, value)).collect()
   }
 
-  fn flat_map(&self, function: impl Fn((&K, &V)) -> Self::C<L, W>) -> Self::C<L, W>
+  fn flat_map<R>(&self, function: impl Fn((&K, &V)) -> R) -> Self::C<L, W>
   where
+    R: IntoIterator<Item = (L, W)> + Clone,
     L: Eq + Hash,
   {
     self.iter().flat_map(function).collect()

@@ -4,21 +4,21 @@ pub trait SetFunctor<A, B> {
   type C<X>;
 
   fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>
-    where
-      B: Eq + Hash;
+  where
+    B: Eq + Hash;
 }
 
 pub trait SetMonad<A, B> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>
-    where
-      A: Clone + Eq + Hash;
+  where
+    A: Clone + Eq + Hash;
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
-    where
-      B: Eq + Hash,
-      R: IntoIterator<Item = B> + Clone;
+  where
+    R: IntoIterator<Item = B> + Clone,
+    B: Eq + Hash;
 }
 
 pub trait SetCollection<A: Eq + Hash + Clone> {

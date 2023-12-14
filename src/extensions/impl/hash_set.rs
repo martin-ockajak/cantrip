@@ -28,8 +28,8 @@ impl<A, B> SetMonad<A, B> for Vec<A> {
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
   where
-    B: Eq + Hash,
     R: IntoIterator<Item = B> + Clone,
+    B: Eq + Hash,
   {
     self.iter().flat_map(function).collect()
   }
