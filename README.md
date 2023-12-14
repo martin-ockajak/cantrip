@@ -108,6 +108,7 @@ Practical extensions for standard Rust collections.
   - [QMap](https://doc.qt.io/qt-6/qmap.html)
   - [QString](https://doc.qt.io/qt-6/qstring.htm)
 - Misc
+  - [Itertools](https://docs.rs/itertools/latest/itertools/index.html)
   - [Toolz](https://toolz.readthedocs.io/en/latest/api.html)
   - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
   - [Array Tool](https://github.com/danielpclark/array_tool/tree/master)

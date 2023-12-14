@@ -1,6 +1,10 @@
 use std::cmp::Ordering;
 use std::hash::Hash;
 use std::iter::{Product, Sum};
+//
+// pub trait MultiMapFromIterator<K, V>: Sized {
+//   fn from_iter<I: IntoIterator<Item = (K, V)>>(iterator: I) -> Self;
+// }
 
 pub trait Map<K, V> {
   type C<X, Y>;
