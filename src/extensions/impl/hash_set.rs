@@ -74,7 +74,7 @@ impl<A> Iterable<A> for HashSet<A> {
   }
 }
 
-impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
+impl<A: Eq + Hash> SetCollection<A> for HashSet<A> {
   type C<X> = HashSet<X>;
 
   fn add(self, value: A) -> Self {

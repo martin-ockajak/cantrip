@@ -21,7 +21,7 @@ pub trait SetMonad<A, B> {
     B: Eq + Hash;
 }
 
-pub trait SetCollection<A: Eq + Hash + Clone> {
+pub trait SetCollection<A: Eq + Hash> {
   type C<X>;
 
   fn add(self, value: A) -> Self;
