@@ -38,6 +38,11 @@ pub trait Set<A> {
       B: Eq + Hash,
       R: IntoIterator<Item = B>;
 
+  fn flatten<B>(self) -> Self::C<B>
+    where
+      A: IntoIterator<Item = B>,
+      B: Eq + Hash;
+
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
     where
       A: Eq + Hash;

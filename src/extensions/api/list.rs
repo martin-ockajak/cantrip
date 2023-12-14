@@ -31,6 +31,10 @@ pub trait List<A> {
     where
       R: IntoIterator<Item = B>;
 
+  fn flatten<B>(self) -> Self::C<B>
+  where
+    A: IntoIterator<Item = B>;
+
   fn init(self) -> Self;
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self

@@ -125,6 +125,10 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().flat_map(function).collect()
   }
 
+  fn flatten<B>(self) -> Self::C<B> where A: IntoIterator<Item = B>, B: Eq + Hash {
+    self.into_iter().flatten().collect()
+  }
+
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash,

@@ -170,6 +170,10 @@ impl<A> List<A> for Vec<A> {
     self.iter().flat_map(|x| function(x).into_iter()).collect()
   }
 
+  fn flatten<B>(self) -> Self::C<B> where A: IntoIterator<Item = B> {
+    self.into_iter().flatten().collect()
+  }
+
   fn init(self) -> Self {
     let mut iterator = self.into_iter().rev();
     iterator.next();
