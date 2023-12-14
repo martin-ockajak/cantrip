@@ -44,9 +44,9 @@ pub trait MapIterable<K, V> {
 pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
   type C<X, Y>;
 
-  fn add(&self, key: K, value: V) -> Self;
+  fn add(self, key: K, value: V) -> Self;
 
-  fn delete(&self, key: &K) -> Self;
+  fn delete(self, key: &K) -> Self;
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = K> + Clone)) -> Self;
 

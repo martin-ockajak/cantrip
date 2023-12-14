@@ -64,19 +64,15 @@ impl<A> Iterable<A> for Vec<A> {
 impl<A: Clone> ListCollection<A> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn add(&self, value: A) -> Self {
-    let mut result = self.clone();
-    result.push(value);
-    result
+  fn add(self, value: A) -> Self {
+    self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn delete(&self, value: &A) -> Self
+  fn delete(self, value: &A) -> Self
   where
     A: PartialEq,
   {
-    let mut result = self.clone();
-    result.iter().position(|x| x == value).map(|index| result.remove(index));
-    result
+    self.into_iter().filter(|x| x == value).collect()
   }
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
@@ -88,12 +84,12 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().filter(|x| removed.contains(x)).cloned().collect()
   }
 
-  fn enumerate(&self) -> Self::C<(usize, A)> {
-    (0..self.len()).zip(self.iter().cloned()).collect()
+  fn enumerate(self) -> Self::C<(usize, A)> {
+    (0..self.len()).zip(self.into_iter()).collect()
   }
 
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
-    self.iter().filter(|&x| predicate(x)).cloned().collect()
+  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self {
+    self.into_iter().filter(predicate).collect()
   }
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B> {
@@ -170,7 +166,7 @@ mod tests {
   #[quickcheck]
   fn test_filter_vec(data: Vec<i32>) -> bool {
     let predicate = |x: &i32| x % 2 == 0;
-    let result = data.filter(predicate);
+    let result = data.clone().filter(predicate);
     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
     result == expected
   }

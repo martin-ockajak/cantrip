@@ -59,9 +59,9 @@ pub trait ListMonad<A, B> {
 pub trait ListCollection<A: Clone> {
   type C<X>;
 
-  fn add(&self, value: A) -> Self;
+  fn add(self, value: A) -> Self;
 
-  fn delete(&self, value: &A) -> Self
+  fn delete(self, value: &A) -> Self
   where
     A: PartialEq;
 
@@ -69,9 +69,9 @@ pub trait ListCollection<A: Clone> {
   where
     A: Eq + Hash;
 
-  fn enumerate(&self) -> Self::C<(usize, A)>;
+  fn enumerate(self) -> Self::C<(usize, A)>;
 
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
+  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 

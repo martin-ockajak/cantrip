@@ -69,16 +69,12 @@ impl<A> Iterable<A> for HashSet<A> {
 impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
   type C<X> = HashSet<X>;
 
-  fn add(&self, value: A) -> Self {
-    let mut result = self.clone();
-    result.insert(value);
-    result
+  fn add(self, value: A) -> Self {
+    self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn delete(&self, value: &A) -> Self {
-    let mut result = self.clone();
-    result.remove(value);
-    result
+  fn delete(self, value: &A) -> Self {
+    self.into_iter().filter(|x| x == value).collect()
   }
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {

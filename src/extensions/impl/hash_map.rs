@@ -72,16 +72,16 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
 impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
-  fn add(&self, key: K, value: V) -> Self {
-    let mut result = self.clone();
-    result.insert(key, value);
-    result
+  fn add(self, key: K, value: V) -> Self {
+    self.into_iter().chain(iter::once((key, value))).collect()
   }
 
-  fn delete(&self, key: &K) -> Self {
-    let mut result = self.clone();
-    result.remove(key);
-    result
+  fn delete(self, key: &K) -> Self {
+    self.into_iter().filter_map(|(k, v)| if &k == key {
+      Some((k, v))
+    } else {
+      None
+    }).collect()
   }
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = K> + Clone)) -> Self {

@@ -24,9 +24,9 @@ pub trait SetMonad<A, B> {
 pub trait SetCollection<A: Eq + Hash + Clone> {
   type C<X>;
 
-  fn add(&self, value: A) -> Self;
+  fn add(self, value: A) -> Self;
 
-  fn delete(&self, value: &A) -> Self;
+  fn delete(self, value: &A) -> Self;
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
 
