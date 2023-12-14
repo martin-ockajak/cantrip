@@ -85,8 +85,6 @@ pub trait ListCollection<A: Clone> {
   where
     Self: Sized;
 
-  fn repeat(&self, n: usize) -> Self;
-
   fn skip(&self, n: usize) -> Self;
 
   fn take(&self, n: usize) -> Self;

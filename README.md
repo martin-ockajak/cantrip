@@ -27,7 +27,6 @@ Practical extensions for standard Rust collections
 | *partition*  | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *position*   | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *reduce*     | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *repeat*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *rfind*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *rfold*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *skip*       | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |

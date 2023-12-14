@@ -115,14 +115,6 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().cloned().partition(predicate)
   }
 
-  fn repeat(&self, n: usize) -> Self {
-    let mut result: Vec<A> = Vec::new();
-    for _ in 0..n {
-      result.extend(self.iter().cloned());
-    }
-    result
-  }
-
   fn skip(&self, n: usize) -> Self {
     self.iter().skip(n).cloned().collect()
   }
