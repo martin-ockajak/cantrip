@@ -19,11 +19,19 @@ impl<A> Iterable<A> for [A] {
   }
 
   fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
-  where
-    A: Clone,
   {
     let mut iterator = self.iter();
-    iterator.next().and_then(|init| Some(iterator.fold(init.clone(), |r, x| function(&r, x))))
+    match iterator.next() {
+      Some(value1) => {
+        match iterator.next() {
+          Some(value2) => {
+            Some(iterator.fold(function(value1, value2), |r, x| function(&r, x)))
+          },
+          _ => None
+        }
+      },
+      _ => None
+    }
   }
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B {

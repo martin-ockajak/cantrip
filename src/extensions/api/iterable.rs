@@ -7,9 +7,7 @@ pub trait Iterable<A> {
 
   fn fold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
-  where
-    A: Clone;
+  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>;
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, &A) -> B) -> B;
 }
