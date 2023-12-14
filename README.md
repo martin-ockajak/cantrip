@@ -1,6 +1,6 @@
 # Overview
 
-Practical extensions for standard Rust collections
+Practical extensions for standard Rust collections.
 
 # Example
 
