@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
@@ -20,6 +21,14 @@ impl<A> Iterable<A> for HashSet<A> {
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().fold(init, function)
+  }
+
+  fn max_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+    self.iter().max_by(|&x, &y| compare(x, y))
+  }
+
+  fn min_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+    self.iter().min_by(|&x, &y| compare(x, y))
   }
 
   fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A> {

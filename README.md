@@ -57,6 +57,8 @@ Practical extensions for standard Rust collections.
 | *map_keys*      | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *map_values*    | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *map_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *max_by*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *min_by*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *partition*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *position*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *reduce*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |

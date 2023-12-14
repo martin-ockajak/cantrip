@@ -1,4 +1,4 @@
-use std::cmp::{max, min};
+use std::cmp::{max, min, Ordering};
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::{Ordered, Slice};
 
@@ -17,6 +17,14 @@ impl<A> Iterable<A> for [A] {
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
     self.iter().fold(init, function)
+  }
+
+  fn max_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+    self.iter().max_by(|&x, &y| compare(x, y))
+  }
+
+  fn min_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+    self.iter().min_by(|&x, &y| compare(x, y))
   }
 
   fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A>
