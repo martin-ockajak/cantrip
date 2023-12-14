@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -155,6 +155,15 @@ impl<A> List<A> for Vec<A> {
     (0..self.len()).zip(self.into_iter()).collect()
   }
 
+  fn group_by<K, M>(self, mut group_key: impl FnMut(&A) -> K) -> M where K: Eq + Hash, M: FromIterator<(K, Self::C<A>)> {
+    let mut result: HashMap<K, Self::C<A>> = HashMap::new();
+    for item in self.into_iter() {
+      let key = group_key(&item);
+      result.entry(key).and_modify(|values| values.push(item)).or_insert(Vec::new());
+    }
+    FromIterator::from_iter(result.into_iter())
+  }
+
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
     self.into_iter().filter(predicate).collect()
   }
@@ -259,6 +268,7 @@ impl<A> List<A> for Vec<A> {
 
 #[cfg(test)]
 mod tests {
+  use std::collections::HashMap;
   use crate::extensions::*;
 
   #[quickcheck]

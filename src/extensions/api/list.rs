@@ -21,6 +21,11 @@ pub trait List<A> {
 
   fn enumerate(self) -> Self::C<(usize, A)>;
 
+  fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
+  where
+    K: Eq + Hash,
+    M: FromIterator<(K, Self::C<A>)>;
+
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::C<B>;
