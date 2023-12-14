@@ -5,11 +5,11 @@ Practical extensions for standard Rust collections
 # Example
 
 ```rust
-  data.map(|x| x + 1);
-  data.flat_map(|x| unit(x + 1));
-  data.fold(0, |r, x| r + x);
-  data.any(|x| x % 2 == 0);
-  data.clone().zip(&data);
+  let map: Vec<i32> = data.map(|x| x + 1);
+  let flat_map: Vec<i32> = data.flat_map(|x| unit(x + 1));
+  let fold: i32 = data.fold(0, |r, x| r + x);
+  let any: bool = data.any(|x| x % 2 == 0);
+  let zip: Vec<(i32, i32)> = data.clone().zip(&data);
 ```
 
 
