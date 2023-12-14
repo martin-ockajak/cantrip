@@ -103,6 +103,29 @@ impl<A> ListOps<A> for Vec<A> {
     self.into_iter().filter(|x| removed.contains(x)).collect()
   }
 
+  fn distinct(self) -> Self
+    where
+      A: Eq + Hash,
+  {
+    let mut occured: HashSet<&A> = HashSet::new();
+    let mut indices: HashSet<usize> = HashSet::new();
+    unsafe {
+      for index in 0..self.len() {
+        let value = self.get_unchecked(index);
+        if !occured.contains(value) {
+          indices.insert(index);
+        } else {
+          occured.insert(value);
+        }
+      }
+    }
+    self
+      .into_iter()
+      .enumerate()
+      .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
+      .collect()
+  }
+
   fn enumerate(self) -> Self::C<(usize, A)> {
     (0..self.len()).zip(self.into_iter()).collect()
   }
@@ -152,29 +175,6 @@ impl<A> ListOps<A> for Vec<A> {
 
   fn take(self, n: usize) -> Self {
     self.into_iter().take(n).collect()
-  }
-
-  fn unique(self) -> Self
-  where
-    A: Eq + Hash,
-  {
-    let mut occured: HashSet<&A> = HashSet::new();
-    let mut indices: HashSet<usize> = HashSet::new();
-    unsafe {
-      for index in 0..self.len() {
-        let value = self.get_unchecked(index);
-        if !occured.contains(value) {
-          indices.insert(index);
-        } else {
-          occured.insert(value);
-        }
-      }
-    }
-    self
-      .into_iter()
-      .enumerate()
-      .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
-      .collect()
   }
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>

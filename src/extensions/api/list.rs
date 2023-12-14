@@ -66,6 +66,10 @@ pub trait ListOps<A> {
   where
     A: Eq + Hash;
 
+  fn distinct(self) -> Self
+    where
+      A: Eq + Hash;
+
   fn enumerate(self) -> Self::C<(usize, A)>;
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
@@ -89,10 +93,6 @@ pub trait ListOps<A> {
   fn tail(self) -> Self;
 
   fn take(self, n: usize) -> Self;
-
-  fn unique(self) -> Self
-  where
-    A: Eq + Hash;
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where

@@ -38,6 +38,7 @@ Practical extensions for standard Rust collections.
 | *any*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *delete*        | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *diff* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *distinct*      | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *enumerate*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *filter*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *filter_keys*   | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
@@ -63,7 +64,6 @@ Practical extensions for standard Rust collections.
 | *skip*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *tail*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *take*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
-| *unique*        | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *unit* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *zip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 

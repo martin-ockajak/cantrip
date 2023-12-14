@@ -14,7 +14,7 @@ fn overview() {
 
   data.clone().filter(|&x| x > 0);         // [1, 2]: Vec<i32>
 
-  data.clone().add(0).unique();            // [0, 1, 2]: Vec<i32>
+  data.clone().add(0).distinct();          // [0, 1, 2]: Vec<i32>
 
   data.clone().delete(&0).tail();          // [2]: Vec<i32>
 
