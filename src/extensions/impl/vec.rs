@@ -81,7 +81,7 @@ impl<A> ListCollection<A> for Vec<A> {
     self.into_iter().filter(|x| x == value).collect()
   }
 
-  fn diff(self, iterable: (impl IntoIterator<Item = A>)) -> Self
+  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash,
   {
