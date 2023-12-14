@@ -1,4 +1,5 @@
 use std::hash::Hash;
+use crate::extensions::MultiMap;
 
 pub trait Set<A> {
   type Root<X>;
@@ -42,6 +43,11 @@ pub trait Set<A> {
   where
     A: IntoIterator<Item = B>,
     B: Eq + Hash;
+  //
+  // fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
+  //   where
+  //     K: Eq + Hash,
+  //     M: MultiMap<K, Self::Root<A>>;
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where

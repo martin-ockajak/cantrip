@@ -6,7 +6,7 @@ use std::iter::{Product, Sum};
 
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::api::set::Set;
-use crate::extensions::Aggregable;
+use crate::extensions::{Aggregable, MultiMap};
 
 impl<A> Iterable<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -136,6 +136,14 @@ impl<A> Set<A> for HashSet<A> {
   {
     self.into_iter().flatten().collect()
   }
+  //
+  // fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
+  // where
+  //   K: Eq + Hash,
+  //   M: MultiMap<K, Self::Root<A>>,
+  // {
+  //   M::from_iter(self.into_iter().map(|x| (group_key(&x), x)))
+  // }
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
