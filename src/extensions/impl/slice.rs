@@ -18,7 +18,10 @@ impl<A> Iterable<A> for [A] {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A> where A: Clone {
+  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
+  where
+    A: Clone,
+  {
     let mut iterator = self.iter();
     iterator.next().and_then(|init| Some(iterator.fold(init.clone(), |r, x| function(&r, x))))
   }
@@ -39,5 +42,4 @@ impl<A> Ordered<A> for [A] {
 }
 
 #[cfg(test)]
-mod tests {
-}
+mod tests {}

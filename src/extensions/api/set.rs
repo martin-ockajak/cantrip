@@ -1,12 +1,14 @@
 use std::hash::Hash;
 
-pub trait SetFunctor<A, B: Eq + Hash> {
+pub trait SetFunctor<A, B> {
   type C<X>;
 
-  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>;
+  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>
+    where
+      B: Eq + Hash;
 }
 
-pub trait SetMonad<A, B: Eq + Hash> {
+pub trait SetMonad<A, B> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>
@@ -15,6 +17,7 @@ pub trait SetMonad<A, B: Eq + Hash> {
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
     where
+      B: Eq + Hash,
       R: IntoIterator<Item = B> + Clone;
 }
 

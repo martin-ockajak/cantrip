@@ -1,19 +1,23 @@
 use std::hash::Hash;
 
-pub trait MapFunctor<K, V, L: Eq + Hash, W> {
+pub trait MapFunctor<K, V, L, W> {
   type C<X, Y>;
 
-  fn map(&self, function: impl Fn((&K, &V)) -> (L, W)) -> Self::C<L, W>;
+  fn map(&self, function: impl Fn((&K, &V)) -> (L, W)) -> Self::C<L, W>
+  where
+    L: Eq + Hash;
 }
 
-pub trait MapMonad<K, V, L: Eq + Hash, W> {
+pub trait MapMonad<K, V, L, W> {
   type C<X, Y>;
 
   fn unit(key: K, value: V) -> Self::C<K, V>
-    where
-     K: Eq + Hash;
+  where
+    K: Eq + Hash;
 
-  fn flat_map(&self, function: impl Fn((&K, &V)) -> Self::C<L, W>) -> Self::C<L, W>;
+  fn flat_map(&self, function: impl Fn((&K, &V)) -> Self::C<L, W>) -> Self::C<L, W>
+  where
+    L: Eq + Hash;
 }
 
 pub trait MapIterable<K, V> {
@@ -22,16 +26,16 @@ pub trait MapIterable<K, V> {
   fn any(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool;
 
   fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)>
-    where
-      K: Clone,
-      V: Clone;
+  where
+    K: Clone,
+    V: Clone;
 
   fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 
   fn reduce(&self, function: impl Fn((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>
-    where
-      K: Clone,
-      V: Clone;
+  where
+    K: Clone,
+    V: Clone;
 
   fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 }

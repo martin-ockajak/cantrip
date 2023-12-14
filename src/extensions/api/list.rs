@@ -48,12 +48,12 @@ pub trait ListMonad<A, B> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>
-    where
-      A: Clone;
+  where
+    A: Clone;
 
   fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
-    where
-      R: IntoIterator<Item = B> + Clone;
+  where
+    R: IntoIterator<Item = B> + Clone;
 }
 
 pub trait ListCollection<A: Clone> {
@@ -62,12 +62,12 @@ pub trait ListCollection<A: Clone> {
   fn add(&self, value: A) -> Self;
 
   fn delete(&self, value: &A) -> Self
-    where
-      A: PartialEq;
+  where
+    A: PartialEq;
 
   fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
-    where
-      A: Eq + Hash;
+  where
+    A: Eq + Hash;
 
   fn enumerate(&self) -> Self::C<(usize, A)>;
 
@@ -81,7 +81,9 @@ pub trait ListCollection<A: Clone> {
 
   fn map_while<B>(&self, predicate: impl Fn(&A) -> Option<B>) -> Self::C<B>;
 
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
+  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self)
+  where
+    Self: Sized;
 
   fn repeat(&self, n: usize) -> Self;
 
@@ -90,6 +92,6 @@ pub trait ListCollection<A: Clone> {
   fn take(&self, n: usize) -> Self;
 
   fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
-    where
-      I: IntoIterator + Clone;
+  where
+    I: IntoIterator + Clone;
 }

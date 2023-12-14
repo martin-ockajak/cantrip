@@ -16,11 +16,17 @@ impl<A, B> ListFunctor<A, B> for Vec<A> {
 impl<A, B> ListMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn unit(value: A) -> Self::C<A> where A: Clone {
+  fn unit(value: A) -> Self::C<A>
+  where
+    A: Clone,
+  {
     iter::once(value).collect()
   }
 
-  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B> where R: IntoIterator<Item = B> + Clone {
+  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+  where
+    R: IntoIterator<Item = B> + Clone,
+  {
     self.iter().flat_map(|x| function(x).into_iter()).collect()
   }
 }
@@ -42,7 +48,10 @@ impl<A> Iterable<A> for Vec<A> {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A> where A: Clone {
+  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
+  where
+    A: Clone,
+  {
     let mut iterator = self.iter();
     iterator.next().and_then(|head| Some(iterator.fold(head.clone(), |r, x| function(&r, x))))
   }
@@ -61,13 +70,19 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     result
   }
 
-  fn delete(&self, value: &A) -> Self where A: PartialEq {
+  fn delete(&self, value: &A) -> Self
+  where
+    A: PartialEq,
+  {
     let mut result = self.clone();
     result.iter().position(|x| x == value).map(|index| result.remove(index));
     result
   }
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self where A: Eq + Hash {
+  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
+  where
+    A: Eq + Hash,
+  {
     let mut removed: HashSet<A> = HashSet::new();
     removed.extend(iterable.clone().into_iter());
     self.iter().filter(|x| removed.contains(x)).cloned().collect()
@@ -99,7 +114,10 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized {
+  fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self)
+  where
+    Self: Sized,
+  {
     self.iter().cloned().partition(predicate)
   }
 
@@ -119,7 +137,10 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().take(n).cloned().collect()
   }
 
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)> where I: Clone + IntoIterator {
+  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
+  where
+    I: Clone + IntoIterator,
+  {
     self.iter().cloned().zip(iterable.clone().into_iter()).collect()
   }
 }
@@ -133,7 +154,6 @@ impl<A> Ordered<A> for Vec<A> {
     self.iter().rev().find(|&x| predicate(x))
   }
 }
-
 
 #[cfg(test)]
 mod tests {

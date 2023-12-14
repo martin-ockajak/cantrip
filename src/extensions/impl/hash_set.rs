@@ -3,24 +3,34 @@ use std::hash::Hash;
 use std::iter;
 
 use crate::extensions::api::iterable::Iterable;
-use crate::extensions::api::set::{SetFunctor, SetMonad, SetCollection};
+use crate::extensions::api::set::{SetCollection, SetFunctor, SetMonad};
 
-impl<A, B: Eq + Hash> SetFunctor<A, B> for HashSet<A> {
+impl<A, B> SetFunctor<A, B> for HashSet<A> {
   type C<X> = HashSet<B>;
 
-  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B> {
+  fn map(&self, function: impl Fn(&A) -> B) -> Self::C<B>
+  where
+    B: Eq + Hash,
+  {
     self.iter().map(function).collect()
   }
 }
 
-impl<A, B: Eq + Hash> SetMonad<A, B> for Vec<A> {
+impl<A, B> SetMonad<A, B> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn unit(value: A) -> Self::C<A> where A: Clone + Eq + Hash {
+  fn unit(value: A) -> Self::C<A>
+  where
+    A: Clone + Eq + Hash,
+  {
     iter::once(value).collect()
   }
 
-  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B> where R: IntoIterator<Item = B> + Clone {
+  fn flat_map<R>(&self, function: impl Fn(&A) -> R) -> Self::C<B>
+  where
+    B: Eq + Hash,
+    R: IntoIterator<Item = B> + Clone,
+  {
     self.iter().flat_map(function).collect()
   }
 }
@@ -42,7 +52,10 @@ impl<A> Iterable<A> for HashSet<A> {
     self.iter().fold(init, function)
   }
 
-  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A> where A: Clone {
+  fn reduce(&self, function: impl Fn(&A, &A) -> A) -> Option<A>
+  where
+    A: Clone,
+  {
     let mut iterator = self.iter();
     iterator.next().and_then(|head| Some(iterator.fold(head.clone(), |r, x| function(&r, x))))
   }
@@ -97,8 +110,8 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
 
 #[cfg(test)]
 mod tests {
-  use std::collections::HashSet;
   use crate::extensions::*;
+  use std::collections::HashSet;
 
   #[quickcheck]
   fn test_map_hash_set(data: HashSet<i32>) -> bool {
