@@ -18,6 +18,8 @@ Practical extensions for standard Rust collections.
   data.fold(0, |r, x| r + x);              // i32
   
   data.any(|x| x == 0);                    // bool
+
+  data.head();                             // Option<i32>
   
   data.zip(data.clone());                  // Vec<(i32, i32)>
 ```
