@@ -83,7 +83,7 @@ pub trait List<A> {
 
   fn rev(self) -> Self;
 
-  fn scan<S, B>(self, init: S, function: impl FnMut(&mut S, A) -> Option<B>) -> Self::C<B>;
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::C<B>;
 
   fn skip(self, n: usize) -> Self;
 
