@@ -147,8 +147,8 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
-    where
-      R: IntoIterator<Item = B>,
+  where
+    R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(|x| function(x).into_iter()).collect()
   }
@@ -211,6 +211,13 @@ impl<A> List<A> for Vec<A> {
 
   fn unit(value: A) -> Self::C<A> {
     iter::once(value).collect()
+  }
+
+  fn unzip<B, C, FromB, FromC>(self) -> (Self::C<B>, Self::C<C>)
+  where
+    Self: IntoIterator<Item = (B, C)>,
+  {
+    self.into_iter().unzip()
   }
 
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>

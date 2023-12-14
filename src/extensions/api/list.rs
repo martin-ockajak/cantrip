@@ -91,6 +91,10 @@ pub trait List<A> {
 
   fn unit(value: A) -> Self::C<A>;
 
+  fn unzip<B, C, FromB, FromC>(self) -> (Self::C<B>, Self::C<C>)
+    where
+      Self: IntoIterator<Item = (B, C)>;
+
   fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where
     I: IntoIterator;

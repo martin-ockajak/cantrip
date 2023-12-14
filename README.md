@@ -72,6 +72,7 @@ Practical extensions for standard Rust collections.
 | *take*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *take_while*    | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *unit* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *unzip*         | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *zip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 
 
