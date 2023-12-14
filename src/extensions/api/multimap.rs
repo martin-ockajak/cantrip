@@ -2,6 +2,10 @@ use std::collections::{BTreeMap, HashMap};
 use std::hash::Hash;
 use std::iter;
 
+// pub trait MultiMapFromIterator<K, V>: Sized {
+//   fn from_iter<I: IntoIterator<Item = (K, V)>>(iterator: I) -> Self;
+// }
+
 pub trait MultiMap<K, C> {
   fn add<V>(&mut self, k: K, v: V)
   where
