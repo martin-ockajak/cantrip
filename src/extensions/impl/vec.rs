@@ -16,6 +16,10 @@ impl<A> Iterable<A> for Vec<A> {
     self.iter().any(predicate)
   }
 
+  fn count_by(&self, mut predicate: impl FnMut(&A) -> bool) -> usize {
+    self.iter().filter(|&x| predicate(x)).count()
+  }
+
   fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().find(|&x| predicate(x))
   }

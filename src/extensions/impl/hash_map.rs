@@ -23,6 +23,10 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().any(predicate)
   }
 
+  fn count_by(&self, mut predicate: impl FnMut((&K, &V)) -> bool) -> usize {
+    self.iter().filter(|&x| predicate(x)).count()
+  }
+
   fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
   where
     K: Eq + Hash,

@@ -13,6 +13,8 @@ pub trait Map<K, V> {
 
   fn any(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool;
 
+  fn count_by(&self, predicate: impl FnMut((&K, &V)) -> bool) -> usize;
+
   fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
   where
     K: Eq + Hash;

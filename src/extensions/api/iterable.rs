@@ -6,6 +6,8 @@ pub trait Iterable<A> {
 
   fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool;
 
+  fn count_by(&self, predicate: impl FnMut(&A) -> bool) -> usize;
+
   fn find(&self, predicate: impl FnMut(&A) -> bool) -> Option<&A>;
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B;
