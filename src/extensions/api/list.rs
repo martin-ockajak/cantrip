@@ -65,7 +65,7 @@ pub trait ListCollection<A: Clone> {
   where
     A: PartialEq;
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self
+  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash;
 

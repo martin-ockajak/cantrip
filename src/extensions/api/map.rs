@@ -48,7 +48,7 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
 
   fn delete(self, key: &K) -> Self;
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = K> + Clone)) -> Self;
+  fn diff(self, iterable: impl IntoIterator<Item = K>) -> Self;
 
   fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
 

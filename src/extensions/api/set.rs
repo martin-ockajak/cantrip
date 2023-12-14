@@ -28,7 +28,7 @@ pub trait SetCollection<A: Eq + Hash + Clone> {
 
   fn delete(self, value: &A) -> Self;
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self;
+  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
 

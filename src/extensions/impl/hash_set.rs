@@ -77,12 +77,10 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
     self.into_iter().filter(|x| x == value).collect()
   }
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = A> + Clone)) -> Self {
-    let mut result = self.clone();
-    for item in iterable.clone().into_iter() {
-      result.remove(&item);
-    }
-    result
+  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self {
+    let mut removed: HashSet<A> = HashSet::new();
+    removed.extend(iterable.into_iter());
+    self.into_iter().filter(|x| removed.contains(x)).collect()
   }
 
   fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {

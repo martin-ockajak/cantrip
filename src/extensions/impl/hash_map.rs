@@ -1,6 +1,6 @@
 use crate::extensions::api::map::{MapFunctor, MapIterable, MapMonad};
 use crate::extensions::MapCollection;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 
@@ -84,12 +84,10 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     }).collect()
   }
 
-  fn diff(&self, iterable: &(impl IntoIterator<Item = K> + Clone)) -> Self {
-    let mut result = self.clone();
-    for item in iterable.clone().into_iter() {
-      result.remove(&item);
-    }
-    result
+  fn diff(self, iterable: impl IntoIterator<Item = K>) -> Self {
+    let mut removed: HashSet<K> = HashSet::new();
+    removed.extend(iterable.into_iter());
+    self.into_iter().filter(|(k, _)| removed.contains(k)).collect()
   }
 
   fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self {
