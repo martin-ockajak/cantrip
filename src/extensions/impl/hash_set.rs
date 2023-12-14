@@ -83,8 +83,8 @@ impl<A: Eq + Hash + Clone> SetCollection<A> for HashSet<A> {
     self.into_iter().filter(|x| removed.contains(x)).collect()
   }
 
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self {
-    self.iter().filter(|&x| predicate(x)).cloned().collect()
+  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self {
+    self.into_iter().filter(predicate).collect()
   }
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>
@@ -125,7 +125,7 @@ mod tests {
   fn test_filter_hash_set(data: HashSet<i32>) -> bool {
     let predicate = |x: &i32| x % 2 == 0;
     let function = |i: i32, x: &i32| i.saturating_add(*x);
-    let result = data.filter(predicate);
+    let result = data.clone().filter(predicate);
     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<HashSet<i32>>();
     result == expected
   }

@@ -90,8 +90,8 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     self.into_iter().filter(|(k, _)| removed.contains(k)).collect()
   }
 
-  fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self {
-    self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
+  fn filter(self, predicate: impl Fn((&K, &V)) -> bool) -> Self {
+    self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
   fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
@@ -108,18 +108,18 @@ impl<K: Eq + Hash + Clone, V: Clone> MapCollection<K, V> for HashMap<K, V> {
     self.iter().find_map(function)
   }
 
-  fn map_keys<L>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V>
+  fn map_keys<L>(self, function: impl Fn(&K) -> L) -> Self::C<L, V>
   where
     L: Eq + Hash,
   {
-    self.iter().map(|(k, v)| (function(k), v.clone())).collect()
+    self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  fn map_values<W>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W>
+  fn map_values<W>(self, function: impl Fn(&V) -> W) -> Self::C<K, W>
   where
     W: Eq + Hash,
   {
-    self.iter().map(|(k, v)| (k.clone(), function(v))).collect()
+    self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 
   fn merge(&self, iterable: &(impl IntoIterator<Item = (K, V)> + Clone)) -> Self {

@@ -50,7 +50,7 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
 
   fn diff(self, iterable: impl IntoIterator<Item = K>) -> Self;
 
-  fn filter(&self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
+  fn filter(self, predicate: impl Fn((&K, &V)) -> bool) -> Self;
 
   fn filter_map<L, W>(&self, function: impl Fn((&K, &V)) -> Option<(L, W)>) -> Self::C<L, W>
   where
@@ -60,11 +60,11 @@ pub trait MapCollection<K: Eq + Hash + Clone, V: Clone> {
   where
     B: Eq + Hash;
 
-  fn map_keys<L>(&self, function: impl Fn(&K) -> L) -> Self::C<L, V>
+  fn map_keys<L>(self, function: impl Fn(&K) -> L) -> Self::C<L, V>
   where
     L: Eq + Hash;
 
-  fn map_values<W>(&self, function: impl Fn(&V) -> W) -> Self::C<K, W>
+  fn map_values<W>(self, function: impl Fn(&V) -> W) -> Self::C<K, W>
   where
     W: Eq + Hash;
 

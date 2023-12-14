@@ -30,7 +30,7 @@ pub trait SetCollection<A: Eq + Hash + Clone> {
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self;
 
-  fn filter(&self, predicate: impl Fn(&A) -> bool) -> Self;
+  fn filter(self, predicate: impl Fn(&A) -> bool) -> Self;
 
   fn filter_map<B>(&self, function: impl Fn(&A) -> Option<B>) -> Self::C<B>
   where
