@@ -4,8 +4,8 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
-use crate::extensions::{Aggregable, MultiMap, List, Ordered};
 use crate::extensions::api::iterable::Iterable;
+use crate::extensions::{Aggregable, List, MultiMap, Ordered};
 
 impl<A> Iterable<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
@@ -182,9 +182,9 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn group_by<K, V>(self, mut group_key: impl FnMut(&A) -> K) -> V
-    where
-      K: Eq + Hash,
-      V: MultiMap<K, Self::C<A>> + Default,
+  where
+    K: Eq + Hash,
+    V: MultiMap<K, Self::C<A>> + Default,
   {
     let mut result: V = V::default();
     for item in self.into_iter() {
