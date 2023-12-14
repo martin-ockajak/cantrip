@@ -1,7 +1,7 @@
 use cantrip::extensions::*;
 
 #[test]
-fn test_x() {
+fn test() {
   let data = vec![1, 2, 3];
   data.all(|x| x % 2 == 0);
   data.fold(0, |r, x| r + x);
