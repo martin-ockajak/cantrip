@@ -11,7 +11,7 @@ Practical extensions for standard Rust collections.
   
   data.map(|x| x + 1);                     // [1, 2, 3]: Vec<i32>
 
-  data.filter(|x| x > 0);                  // [1, 2]:  Vec<i32>
+  data.filter(|x| x > 0);                  // [1, 2]: Vec<i32>
 
   data.flat_map(|x| unit(x - 1));          // [-1, 0, 1]: Vec<i32>
 
