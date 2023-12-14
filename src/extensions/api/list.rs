@@ -1,31 +1,5 @@
-use std::collections::{BTreeMap, HashMap};
+use crate::extensions::MultiMap;
 use std::hash::Hash;
-use std::iter;
-
-pub trait GroupMap<K, C> {
-  fn extend<V>(&mut self, k: K, v: V)
-  where
-    C: Extend<V> + Default;
-}
-
-impl<K: Eq + Hash, C> GroupMap<K, C> for HashMap<K, C> {
-  fn extend<V>(&mut self, k: K, v: V)
-  where
-    C: Extend<V> + Default,
-  {
-    self.entry(k).and_modify(|values| values.extend(iter::once(v))).or_insert(C::default());
-  }
-}
-
-impl<K: Ord, C> GroupMap<K, C> for BTreeMap<K, C> {
-  fn extend<V>(&mut self, k: K, v: V)
-  where
-    C: Extend<V> + Default,
-  {
-    self.entry(k).and_modify(|values| values.extend(iter::once(v))).or_insert(C::default());
-  }
-}
-
 
 pub trait List<A> {
   type C<X>;
@@ -51,7 +25,7 @@ pub trait List<A> {
   fn group_by<K, T>(self, group_key: impl FnMut(&A) -> K) -> T
   where
     K: Eq + Hash,
-    T: GroupMap<K, Self::C<A>> + Default;
+    T: MultiMap<K, Self::C<A>> + Default;
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
