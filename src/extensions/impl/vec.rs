@@ -131,11 +131,11 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     self.iter().take(n).cloned().collect()
   }
 
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where
-    I: Clone + IntoIterator,
+    I: IntoIterator,
   {
-    self.iter().cloned().zip(iterable.clone().into_iter()).collect()
+    self.into_iter().zip(iterable.into_iter()).collect()
   }
 }
 

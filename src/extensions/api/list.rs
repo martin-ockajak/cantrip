@@ -91,7 +91,7 @@ pub trait ListCollection<A: Clone> {
 
   fn take(&self, n: usize) -> Self;
 
-  fn zip<I>(&self, iterable: &I) -> Self::C<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::C<(A, I::Item)>
   where
-    I: IntoIterator + Clone;
+    I: IntoIterator;
 }
