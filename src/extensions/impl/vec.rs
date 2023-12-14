@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
-use std::path::Component::ParentDir;
 
 use crate::extensions::api::iterable::IterableOps;
 use crate::extensions::{ListFunctor, ListMonad, ListOps, OrderedOps};
