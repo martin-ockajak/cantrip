@@ -1,9 +1,9 @@
 use std::hash::Hash;
 
-pub trait MapFunctor<K, V, L, W> {
+pub trait MapFunctor<K, V> {
   type C<X, Y>;
 
-  fn map(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
+  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
   where
     L: Eq + Hash;
 }

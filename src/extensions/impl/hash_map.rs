@@ -4,10 +4,10 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 
-impl<K, V, L, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
+impl<K, V> MapFunctor<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
-  fn map(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
+  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::C<L, W>
   where
     L: Eq + Hash,
   {

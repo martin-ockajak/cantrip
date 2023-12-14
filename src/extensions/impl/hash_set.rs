@@ -5,10 +5,10 @@ use std::iter;
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::api::set::{SetCollection, SetFunctor, SetMonad};
 
-impl<A, B> SetFunctor<A, B> for HashSet<A> {
-  type C<X> = HashSet<B>;
+impl<A> SetFunctor<A> for HashSet<A> {
+  type C<X> = HashSet<X>;
 
-  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>
   where
     B: Eq + Hash,
   {

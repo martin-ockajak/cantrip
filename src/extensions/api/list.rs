@@ -5,8 +5,7 @@ use std::hash::Hash;
 /// # Type Parameters
 ///
 /// * `A` - type parameter of the implementing type
-/// * `R` - type parameter of the resulting type after mapping
-pub trait ListFunctor<A, B> {
+pub trait ListFunctor<A> {
   type C<X>;
 
   /// Applies the given closure `f` to each element in the container.
@@ -25,11 +24,11 @@ pub trait ListFunctor<A, B> {
   ///
   /// # Type Parameters
   ///
-  /// * `F` - type of the closure, which takes a reference to an element of type `A` and returns a value of type `R`.
+  /// * `F` - type of the closure, which takes a reference to an element of type `A` and returns a value of type `B`.
   ///
   /// # Constraints
   ///
-  /// * `F: FnMut(&A) -> R` - the closure must be callable with a reference to an element of type `A` and return a value of type `R`.
+  /// * `F: FnMut(&A) -> B` - the closure must be callable with a reference to an element of type `A` and return a value of type `B`.
   ///
   /// # Safety
   ///
@@ -41,7 +40,7 @@ pub trait ListFunctor<A, B> {
   /// ```
   /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B>;
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B>;
 }
 
 pub trait ListMonad<A> {

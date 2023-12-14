@@ -5,10 +5,10 @@ use std::iter;
 use crate::extensions::api::iterable::Iterable;
 use crate::extensions::{ListCollection, ListFunctor, ListMonad, Ordered};
 
-impl<A, B> ListFunctor<A, B> for Vec<A> {
+impl<A> ListFunctor<A> for Vec<A> {
   type C<X> = Vec<X>;
 
-  fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B> {
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::C<B> {
     self.iter().map(function).collect()
   }
 }
