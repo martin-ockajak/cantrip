@@ -235,6 +235,10 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().skip_while(predicate).collect()
   }
 
+  fn step_by(self, step: usize) -> Self {
+    self.into_iter().step_by(step).collect()
+  }
+
   fn tail(self) -> Self {
     let mut iterator = self.into_iter();
     iterator.next();

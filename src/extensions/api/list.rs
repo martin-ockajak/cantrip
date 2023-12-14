@@ -96,6 +96,8 @@ pub trait List<A> {
 
   fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self;
 
+  fn step_by(self, step: usize) -> Self;
+
   fn tail(self) -> Self;
 
   fn take(self, n: usize) -> Self;

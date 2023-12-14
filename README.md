@@ -75,6 +75,7 @@ Practical extensions for standard Rust collections.
 | *scan*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *skip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *skip_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *step_by*        | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *sum*            | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :x:                | :x:                |
 | *sum_keys*       | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *sum_values*     | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
