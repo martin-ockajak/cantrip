@@ -111,6 +111,10 @@ impl<A: Clone> ListCollection<A> for Vec<A> {
     result
   }
 
+  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A> {
+    self.iter().rev().find(|&x| predicate(x))
+  }
+
   fn skip(&self, n: usize) -> Self {
     self.iter().skip(n).cloned().collect()
   }

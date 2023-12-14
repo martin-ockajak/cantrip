@@ -56,11 +56,6 @@ pub trait ListMonad<A, B> {
       R: IntoIterator<Item = B> + Clone;
 }
 
-
-pub trait ListOrdered<A> {
-  fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize>;
-}
-
 pub trait ListCollection<A: Clone> {
   type C<X>;
 
@@ -89,6 +84,8 @@ pub trait ListCollection<A: Clone> {
   fn partition(&self, predicate: impl Fn(&A) -> bool) -> (Self, Self) where Self: Sized;
 
   fn repeat(&self, n: usize) -> Self;
+
+  fn rfind(&self, predicate: impl Fn(&A) -> bool) -> Option<&A>;
 
   fn skip(&self, n: usize) -> Self;
 
