@@ -44,12 +44,12 @@ pub trait ListFunctor<A, B> {
   fn map(&self, function: impl FnMut(&A) -> B) -> Self::C<B>;
 }
 
-pub trait ListMonad<A, B> {
+pub trait ListMonad<A> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>;
 
-  fn flat_map<R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
   where
     R: IntoIterator<Item = B>;
 }

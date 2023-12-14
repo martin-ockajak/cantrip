@@ -15,7 +15,7 @@ impl<K, V, L, W> MapFunctor<K, V, L, W> for HashMap<K, V> {
   }
 }
 
-impl<K, V, L, W> MapMonad<K, V, L, W> for HashMap<K, V> {
+impl<K, V> MapMonad<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
   fn unit(key: K, value: V) -> Self::C<K, V>
@@ -25,10 +25,10 @@ impl<K, V, L, W> MapMonad<K, V, L, W> for HashMap<K, V> {
     iter::once((key, value)).collect()
   }
 
-  fn flat_map<R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
   where
-    R: IntoIterator<Item = (L, W)>,
     L: Eq + Hash,
+    R: IntoIterator<Item = (L, W)>,
   {
     self.iter().flat_map(function).collect()
   }

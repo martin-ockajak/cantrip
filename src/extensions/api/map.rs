@@ -8,17 +8,17 @@ pub trait MapFunctor<K, V, L, W> {
     L: Eq + Hash;
 }
 
-pub trait MapMonad<K, V, L, W> {
+pub trait MapMonad<K, V> {
   type C<X, Y>;
 
   fn unit(key: K, value: V) -> Self::C<K, V>
   where
     K: Eq + Hash;
 
-  fn flat_map<R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::C<L, W>
   where
-    R: IntoIterator<Item = (L, W)>,
-    L: Eq + Hash;
+    L: Eq + Hash,
+    R: IntoIterator<Item = (L, W)>;
 }
 
 pub trait MapIterable<K, V> {

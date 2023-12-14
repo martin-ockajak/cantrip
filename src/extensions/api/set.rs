@@ -8,17 +8,17 @@ pub trait SetFunctor<A, B> {
     B: Eq + Hash;
 }
 
-pub trait SetMonad<A, B> {
+pub trait SetMonad<A> {
   type C<X>;
 
   fn unit(value: A) -> Self::C<A>
   where
     A: Eq + Hash;
 
-  fn flat_map<R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::C<B>
   where
-    R: IntoIterator<Item = B>,
-    B: Eq + Hash;
+    B: Eq + Hash,
+    R: IntoIterator<Item = B>;
 }
 
 pub trait SetCollection<A: Eq + Hash> {

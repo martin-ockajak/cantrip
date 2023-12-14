@@ -13,7 +13,7 @@ impl<A, B> ListFunctor<A, B> for Vec<A> {
   }
 }
 
-impl<A, B> ListMonad<A, B> for Vec<A> {
+impl<A> ListMonad<A> for Vec<A> {
   type C<X> = Vec<X>;
 
   fn unit(value: A) -> Self::C<A>
@@ -21,7 +21,7 @@ impl<A, B> ListMonad<A, B> for Vec<A> {
     iter::once(value).collect()
   }
 
-  fn flat_map<R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
+  fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::C<B>
   where
     R: IntoIterator<Item = B>,
   {
