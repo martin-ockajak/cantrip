@@ -16,7 +16,7 @@ fn overview() {
 
   data.head();                             // Option<i32>
 
-  data.clone().add(3).delete(0);           // Vec<i32>
+  data.clone().add(3).delete(0).tail();    // Vec<i32>
 
   data.clone().partition(|x| x < 2);       // (Vec<i32>, Vec<i32>)
 
