@@ -35,7 +35,7 @@ pub trait MapIterable<K, V> {
   fn rfold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 }
 
-pub trait MapCollection<K: Eq + Hash + Clone, V> {
+pub trait MapCollection<K: Eq + Hash, V> {
   type C<X, Y>;
 
   fn add(self, key: K, value: V) -> Self;

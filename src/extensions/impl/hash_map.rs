@@ -73,7 +73,7 @@ impl<K, V> MapIterable<K, V> for HashMap<K, V> {
   }
 }
 
-impl<K: Eq + Hash + Clone, V> MapCollection<K, V> for HashMap<K, V> {
+impl<K: Eq + Hash, V> MapCollection<K, V> for HashMap<K, V> {
   type C<X, Y> = HashMap<X, Y>;
 
   fn add(self, key: K, value: V) -> Self {
