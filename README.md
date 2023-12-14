@@ -67,7 +67,7 @@ Practical extensions for standard Rust collections.
 | *zip*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 
 
-## Methdod sources
+## Inspirations
 
 - Rust
   - [Iterator](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
