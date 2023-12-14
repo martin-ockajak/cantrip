@@ -8,8 +8,8 @@ pub trait Set<A> {
     A: Eq + Hash;
 
   fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
-    where
-      A: Eq + Hash;
+  where
+    A: Eq + Hash;
 
   fn delete(self, value: &A) -> Self
   where
@@ -34,24 +34,24 @@ pub trait Set<A> {
     B: Eq + Hash;
 
   fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
-    where
-      B: Eq + Hash,
-      R: IntoIterator<Item = B>;
+  where
+    B: Eq + Hash,
+    R: IntoIterator<Item = B>;
 
   fn flatten<B>(self) -> Self::Root<B>
-    where
-      A: IntoIterator<Item = B>,
-      B: Eq + Hash;
+  where
+    A: IntoIterator<Item = B>,
+    B: Eq + Hash;
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-    where
-      A: Eq + Hash;
+  where
+    A: Eq + Hash;
 
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
-    where
-      B: Eq + Hash;
+  where
+    B: Eq + Hash;
 
   fn unit(value: A) -> Self
-    where
-      A: Eq + Hash;
+  where
+    A: Eq + Hash;
 }
