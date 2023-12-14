@@ -95,7 +95,15 @@ impl<A> ListOps<A> for Vec<A> {
   where
     A: PartialEq,
   {
-    self.into_iter().filter(|x| x != value).collect()
+    let mut removed = false;
+    self.into_iter().filter(|x| {
+      if removed {
+        true
+      } else {
+        removed = true;
+        x != value
+      }
+    }).collect()
   }
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
