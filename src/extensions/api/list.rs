@@ -39,7 +39,7 @@ pub trait List<A> {
   fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
     where
       K: Eq + Hash,
-      M: MultiMap<K, Self::Root<A>> + Default;
+      M: MultiMap<K, Self::Root<A>>;
 
   fn init(self) -> Self;
 

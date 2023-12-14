@@ -184,13 +184,9 @@ impl<A> List<A> for Vec<A> {
   fn group_by<K, M>(self, mut group_key: impl FnMut(&A) -> K) -> M
   where
     K: Eq + Hash,
-    M: MultiMap<K, Self::Root<A>> + Default,
+    M: MultiMap<K, Self::Root<A>>,
   {
-    let mut result = M::default();
-    for item in self.into_iter() {
-      result.add(group_key(&item), item);
-    }
-    result
+    M::from_iter(self.into_iter().map(|x| (group_key(&x), x)))
   }
 
   fn init(self) -> Self {
