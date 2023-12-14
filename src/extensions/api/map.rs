@@ -26,10 +26,7 @@ pub trait MapIterable<K, V> {
 
   fn any(&self, predicate: impl Fn((&K, &V)) -> bool) -> bool;
 
-  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)>
-  where
-    K: Clone,
-    V: Clone;
+  fn find(&self, predicate: impl Fn((&K, &V)) -> bool) -> Option<(&K, &V)>;
 
   fn fold<B>(&self, init: B, function: impl Fn(B, (&K, &V)) -> B) -> B;
 
