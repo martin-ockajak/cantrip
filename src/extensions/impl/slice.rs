@@ -40,6 +40,14 @@ impl<A> Iterable<A> for [A] {
 }
 
 impl<A> Ordered<A> for [A] {
+  fn head(&self) -> Option<&A> {
+    self.get(0)
+  }
+
+  fn last(&self) -> Option<&A> {
+    self.get(self.len() - 1)
+  }
+
   fn position(&self, predicate: impl Fn(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }

@@ -14,16 +14,18 @@ Practical extensions for standard Rust collections
 | *diff* ?        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *enumerate*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *filter*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *filter_keys*   | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *filter_keys*   | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *filter_map*    | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *filter_values* | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *filter_values* | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *find_map*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *find*          | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *flat_map*      | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *fold*          | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *head*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *last*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
-| *map_keys*      | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
-| *map_values*    | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *map_keys*      | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *map_values*    | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *map_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *merge* ?       | Cantrip     | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *partition*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
@@ -59,6 +61,7 @@ Practical extensions for standard Rust collections
   - [QMap](https://doc.qt.io/qt-6/qmap.html)
   - [QString](https://doc.qt.io/qt-6/qstring.htm)
 - Misc
+  - [Toolz](https://toolz.readthedocs.io/en/latest/api.html)
   - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
   - [Array Tool](https://github.com/danielpclark/array_tool/tree/master)
 
