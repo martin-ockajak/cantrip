@@ -74,8 +74,6 @@ pub trait Map<K, V> {
 
   fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 
-  fn rfold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B;
-
   fn unit(key: K, value: V) -> Self::C<K, V>
     where
       K: Eq + Hash;

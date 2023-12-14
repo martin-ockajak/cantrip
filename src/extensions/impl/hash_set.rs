@@ -32,11 +32,6 @@ impl<A> Iterable<A> for HashSet<A> {
       _ => None,
     }
   }
-
-  fn rfold<B>(&self, init: B, mut function: impl FnMut(B, &A) -> B) -> B {
-    let values = self.iter().collect::<Vec<&A>>();
-    values.iter().rfold(init, |r, x| function(r, x))
-  }
 }
 
 impl<A> Set<A> for HashSet<A> {

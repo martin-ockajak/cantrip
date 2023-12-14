@@ -140,11 +140,6 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     }
   }
 
-  fn rfold<B>(&self, init: B, mut function: impl FnMut(B, (&K, &V)) -> B) -> B {
-    let values = self.iter().collect::<Vec<(&K, &V)>>();
-    values.iter().rfold(init, |r, &x| function(r, x))
-  }
-
   fn unit(key: K, value: V) -> Self::C<K, V>
     where
       K: Eq + Hash,

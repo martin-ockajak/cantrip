@@ -62,7 +62,7 @@ Practical extensions for standard Rust collections.
 | *reduce*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *rev*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *rfind*         | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
-| *rfold*         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *rfold*         | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *skip*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *tail*          | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *take*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |

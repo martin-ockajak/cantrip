@@ -32,10 +32,6 @@ impl<A> Iterable<A> for Vec<A> {
       _ => None,
     }
   }
-
-  fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
-    self.iter().rfold(init, function)
-  }
 }
 
 impl<A> Ordered<A> for Vec<A> {
@@ -53,6 +49,10 @@ impl<A> Ordered<A> for Vec<A> {
 
   fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
     self.iter().rev().find(|&x| predicate(x))
+  }
+
+  fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
+    self.iter().rfold(init, function)
   }
 }
 
