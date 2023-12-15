@@ -9,7 +9,7 @@ pub trait IterableFixture: Sized + Default {
 
   fn test(&self) -> bool;
 
-  fn add(&self, value: &Self) -> Self;
+  fn safe_add(&self, value: &Self) -> Self;
 
   fn compare(&self, value: &Self) -> Ordering
   where
@@ -39,7 +39,7 @@ where
   data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test())
     && data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test())
     && data.count_by(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).count()
-    && data.fold(A::init(), |r, x| r.add(x)) == data.clone().into_iter().fold(A::init(), |r, x| r.add(&x))
+    && data.fold(A::init(), |r, x| r.safe_add(x)) == data.clone().into_iter().fold(A::init(), |r, x| r.safe_add(&x))
     && data.max_by(|x, y| x.compare(y)).unwrap_or(&A::init())
       == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init())
     && data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init())

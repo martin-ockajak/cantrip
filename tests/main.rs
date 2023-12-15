@@ -14,7 +14,7 @@ impl IterableFixture for String {
     self.len() % 2 == 0
   }
 
-  fn add(&self, value: &Self) -> Self {
+  fn safe_add(&self, value: &Self) -> Self {
     if self.len() > u16::MAX as usize {
       self.clone()
     } else {
@@ -28,7 +28,7 @@ impl IterableFixture for i64 {
     self % 2 == 0
   }
 
-  fn add(&self, value: &Self) -> Self {
+  fn safe_add(&self, value: &Self) -> Self {
     self.saturating_add(value.clone())
   }
 }
