@@ -1,11 +1,15 @@
 use cantrip::extensions::*;
 use std::iter::{Product, Sum};
 
-pub fn test_iterable<A, C>(data: C, mut predicate: impl FnMut(&A) -> bool) -> bool
+pub fn test_iterable<A, B, C>(data: C, init: B, mut predicate: impl FnMut(&A) -> bool, mut fold: impl FnMut(B, &A) -> B) -> bool
 where
+  B: PartialEq + Clone,
   C: Iterable<A> + IntoIterator<Item = A> + Clone,
 {
   data.all(|x| predicate(x)) == data.clone().into_iter().all(|x| predicate(&x))
+    && data.any(|x| predicate(x)) == data.clone().into_iter().any(|x| predicate(&x))
+    && data.count_by(|x| predicate(x)) == data.clone().into_iter().filter(predicate).count()
+    && data.fold(init.clone(), |r, x| fold(r, x)) == data.clone().into_iter().fold(init, |r, x| fold(r, &x))
 }
 
 pub fn test_ordered<A, C>(data: C, mut predicate: impl FnMut(&A) -> bool) -> bool
