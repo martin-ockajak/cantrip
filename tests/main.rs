@@ -64,5 +64,5 @@ fn hash_set_string(data: HashSet<String>) -> bool {
 
 #[quickcheck]
 fn hash_set_i64(data: HashSet<i64>) -> bool {
-  test_iterable(data.clone())
+  test_iterable(data.clone()) && test_aggregable(data.clone())
 }
