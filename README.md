@@ -2,13 +2,15 @@
 
 Cantrip adds convenient fuctional-style methods to Rust standard library collections.
 
+## Features
 
+* Equivalents of all suitable iterator methods are added to standard library collection data types
+* Various utility methods inspired by other libraries are added to library collection data types
+* Transformation methods always produce new instances of the same collection type
+* All additional methods treat the collections as immutable
+* None of the additional methods use cloning or copying
 
-
-
-Practical extensions for standard Rust collections.
-
-# Example
+## Example
 
 ```rust
   use cantrip::extensions::*;
@@ -125,18 +127,17 @@ Practical extensions for standard Rust collections.
 # Tasks
 
 - Extend Rust collections type with methods available for iterators, slices and arrays
-  - Vec
   - VecDeque
   - LinkedList
-  - HashSet
+  - BinaryHeap
   - BTreeSet
-  - HashMap
   - BTreeMap
-  - Slice
   - String
-
 
 - Additional collection methods
 
-
 - Additional Scala and Python inspired extension
+
+- Implement tests
+
+- Write documentation

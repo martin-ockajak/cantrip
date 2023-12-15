@@ -6,6 +6,7 @@ use crate::extensions::MultiMap;
 
 pub trait List<A> {
   type Root<X>;
+  type Blob<X>;
 
   fn add(self, value: A) -> Self
   where
