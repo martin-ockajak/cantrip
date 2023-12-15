@@ -49,21 +49,7 @@ impl<A> Iterable<A> for HashSet<A> {
   }
 }
 
-impl<A> Aggregable<A> for HashSet<A> {
-  fn sum(self) -> A
-  where
-    A: Sum,
-  {
-    self.into_iter().sum()
-  }
-
-  fn product(self) -> A
-  where
-    A: Product,
-  {
-    self.into_iter().product()
-  }
-}
+impl<A> Aggregable<A> for HashSet<A> {}
 
 impl<A> Set<A> for HashSet<A> {
   type Root<X> = HashSet<X>;
