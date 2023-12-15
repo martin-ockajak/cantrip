@@ -33,7 +33,7 @@ impl Fixture for i64 {
   }
 }
 
-impl NumericFixture for i64 {
+impl AggregableFixture for i64 {
   fn init_mul() -> Self {
     1
   }

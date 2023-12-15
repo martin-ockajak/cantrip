@@ -19,7 +19,7 @@ pub trait Fixture: Sized + Default {
   }
 }
 
-pub trait NumericFixture: Sized + Default {
+pub trait AggregableFixture: Sized + Default {
   fn init_add() -> Self {
     Self::default()
   }
@@ -56,7 +56,7 @@ where
 
 pub fn test_aggregable<A, C>(data: C) -> bool
 where
-  A: NumericFixture + PartialEq + Sum + Product,
+  A: AggregableFixture + PartialEq + Sum + Product,
   C: Aggregable<A> + IntoIterator<Item = A> + Clone,
 {
   (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.checked_add(y))
