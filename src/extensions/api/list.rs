@@ -44,6 +44,8 @@ pub trait List<A> {
 
   fn init(self) -> Self;
 
+  fn interleave(self, iterable: impl IntoIterator<Item = A>) -> Self;
+
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash;

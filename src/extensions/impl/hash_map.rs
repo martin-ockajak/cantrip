@@ -32,7 +32,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
   where
     K: Eq + Hash,
   {
-    self.into_iter().chain(iterable.into_iter()).collect()
+    self.into_iter().chain(iterable).collect()
   }
 
   fn delete(self, key: &K) -> Self
@@ -47,7 +47,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     K: Eq + Hash,
   {
     let mut removed: HashSet<K> = HashSet::new();
-    removed.extend(iterable.into_iter());
+    removed.extend(iterable);
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
@@ -109,7 +109,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     K: Eq + Hash,
   {
     let mut retained: HashSet<K> = HashSet::new();
-    retained.extend(iterable.into_iter());
+    retained.extend(iterable);
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 

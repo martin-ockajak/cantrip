@@ -79,7 +79,7 @@ impl<A> Set<A> for HashSet<A> {
   where
     A: Eq + Hash,
   {
-    self.into_iter().chain(iterable.into_iter()).collect()
+    self.into_iter().chain(iterable).collect()
   }
 
   fn delete(self, value: &A) -> Self
@@ -94,7 +94,7 @@ impl<A> Set<A> for HashSet<A> {
     A: Eq + Hash,
   {
     let mut removed: HashSet<A> = HashSet::new();
-    removed.extend(iterable.into_iter());
+    removed.extend(iterable);
     self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
@@ -150,7 +150,7 @@ impl<A> Set<A> for HashSet<A> {
     A: Eq + Hash,
   {
     let mut retained: HashSet<A> = HashSet::new();
-    retained.extend(iterable.into_iter());
+    retained.extend(iterable);
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 

@@ -124,7 +124,7 @@ impl<A> List<A> for Vec<A> {
     A: Eq + Hash,
   {
     let mut removed: HashSet<A> = HashSet::new();
-    removed.extend(iterable.into_iter());
+    removed.extend(iterable);
     self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
@@ -152,7 +152,7 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn enumerate(self) -> Self::Root<(usize, A)> {
-    (0..self.len()).zip(self.into_iter()).collect()
+    (0..self.len()).zip(self).collect()
   }
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
@@ -171,7 +171,7 @@ impl<A> List<A> for Vec<A> {
   where
     R: IntoIterator<Item = B>,
   {
-    self.iter().flat_map(|x| function(x).into_iter()).collect()
+    self.iter().flat_map(|x| function(x)).collect()
   }
 
   fn flatten<B>(self) -> Self::Root<B>
@@ -195,12 +195,21 @@ impl<A> List<A> for Vec<A> {
     iterator.rev().collect()
   }
 
+  fn interleave(self, iterable: impl IntoIterator<Item = A>) -> Self {
+    let mut result: Vec<A> = Vec::new();
+    for (item1, item2) in self.into_iter().zip(iterable) {
+      result.push(item1);
+      result.push(item2);
+    }
+    result
+  }
+
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash,
   {
     let mut retained: HashSet<A> = HashSet::new();
-    retained.extend(iterable.into_iter());
+    retained.extend(iterable);
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
@@ -235,7 +244,10 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().skip_while(predicate).collect()
   }
 
-  fn sorted(self) -> Self where A: Ord {
+  fn sorted(self) -> Self
+  where
+    A: Ord,
+  {
     let mut heap: BinaryHeap<A> = BinaryHeap::new();
     heap.extend(self);
     heap.into_sorted_vec()
@@ -274,7 +286,7 @@ impl<A> List<A> for Vec<A> {
   where
     I: IntoIterator,
   {
-    self.into_iter().zip(iterable.into_iter()).collect()
+    self.into_iter().zip(iterable).collect()
   }
 }
 
@@ -306,7 +318,7 @@ mod tests {
     let result: HashMap<i32, Vec<i32>> = data.clone().group_by(key);
     let expected = {
       let mut map: HashMap<i32, Vec<i32>> = HashMap::new();
-      for item in data.into_iter() {
+      for item in data {
         let key = key(&item);
         map.entry(key).and_modify(|mut values| values.push(item)).or_insert(Vec::new());
       }
