@@ -38,11 +38,11 @@ impl AggregableFixture for i64 {
     1
   }
 
-  fn safe_add(&self, value: Self) -> Option<Self> {
+  fn check_add(&self, value: Self) -> Option<Self> {
     self.checked_add(value)
   }
 
-  fn safe_mul(&self, value: Self) -> Option<Self> {
+  fn check_mul(&self, value: Self) -> Option<Self> {
     self.checked_mul(value)
   }
 }

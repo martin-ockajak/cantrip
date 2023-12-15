@@ -3,7 +3,7 @@ use std::cmp::Ordering;
 use std::iter::{Product, Sum};
 
 pub trait IterableFixture: Sized + Default {
-  fn init() -> Self {
+  fn init_add() -> Self {
     Self::default()
   }
 
@@ -20,15 +20,11 @@ pub trait IterableFixture: Sized + Default {
 }
 
 pub trait AggregableFixture: Sized + Default {
-  fn init_add() -> Self {
-    Self::default()
-  }
-
   fn init_mul() -> Self;
 
-  fn safe_add(&self, value: Self) -> Option<Self>;
+  fn check_add(&self, value: Self) -> Option<Self>;
 
-  fn safe_mul(&self, value: Self) -> Option<Self>;
+  fn check_mul(&self, value: Self) -> Option<Self>;
 }
 
 pub fn test_iterable<A, C>(data: C) -> bool
@@ -39,11 +35,11 @@ where
   data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test())
     && data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test())
     && data.count_by(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).count()
-    && data.fold(A::init(), |r, x| r.safe_add(x)) == data.clone().into_iter().fold(A::init(), |r, x| r.safe_add(&x))
-    && data.max_by(|x, y| x.compare(y)).unwrap_or(&A::init())
-      == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init())
-    && data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init())
-      == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init())
+    && data.fold(A::init_add(), |r, x| r.safe_add(x)) == data.clone().into_iter().fold(A::init_add(), |r, x| r.safe_add(&x))
+    && data.max_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
+      == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init_add())
+    && data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
+      == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init_add())
 }
 
 pub fn test_ordered<A, C>(data: C) -> bool
@@ -56,12 +52,12 @@ where
 
 pub fn test_aggregable<A, C>(data: C) -> bool
 where
-  A: AggregableFixture + PartialEq + Sum + Product,
+  A: IterableFixture + AggregableFixture + PartialEq + Sum + Product,
   C: Aggregable<A> + IntoIterator<Item = A> + Clone,
 {
-  (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.safe_add(y))
+  (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.check_add(y))
     || data.clone().sum() == data.clone().into_iter().sum())
-    && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.safe_mul(y))
+    && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.check_mul(y))
       || data.clone().product() == data.clone().into_iter().product())
 }
 
