@@ -2,21 +2,21 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::extensions::Map;
+use crate::extensions::*;
 
 impl<K, V> Map<K, V> for HashMap<K, V> {
   type Root<X, Y> = HashMap<X, Y>;
 
-  fn all(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool {
-    self.iter().all(predicate)
+  fn all(&self, mut predicate: impl FnMut((&K, &V)) -> bool) -> bool {
+    all_pair(self.iter(), |&x| predicate(x))
   }
 
-  fn any(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool {
-    self.iter().any(predicate)
+  fn any(&self, mut predicate: impl FnMut((&K, &V)) -> bool) -> bool {
+    any_pair(self.iter(), |&x| predicate(x))
   }
 
   fn count_by(&self, mut predicate: impl FnMut((&K, &V)) -> bool) -> usize {
-    self.iter().filter(|&x| predicate(x)).count()
+    count_by_pair(self.iter(), |&x| predicate(x))
   }
 
   fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::Root<L, W>
@@ -47,8 +47,8 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().flat_map(function).collect()
   }
 
-  fn fold<B>(&self, init: B, function: impl FnMut(B, (&K, &V)) -> B) -> B {
-    self.iter().fold(init, function)
+  fn fold<B>(&self, init: B, mut function: impl FnMut(B, (&K, &V)) -> B) -> B {
+    fold_pair(self.iter(), init, |r, &x| function(r, x))
   }
 
   fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::Root<L, W>
@@ -82,15 +82,8 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
-  fn reduce(&self, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)> {
-    let mut iterator = self.iter();
-    match iterator.next() {
-      Some(value1) => match iterator.next() {
-        Some(value2) => Some(iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x))),
-        _ => None,
-      },
-      _ => None,
-    }
+  fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)> {
+    reduce_pair(self.iter(), function)
   }
 }
 
