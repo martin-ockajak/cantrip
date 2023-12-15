@@ -220,10 +220,6 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn unit(value: A) -> Self {
-    iter::once(value).collect()
-  }
-
   fn unzip<B, C>(self) -> (Self::Root<B>, Self::Root<C>)
   where
     Self: IntoIterator<Item = (B, C)>,

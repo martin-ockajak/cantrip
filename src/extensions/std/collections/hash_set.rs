@@ -54,23 +54,10 @@ impl<A> Aggregable<A> for HashSet<A> {}
 impl<A> Set<A> for HashSet<A> {
   type Root<X> = HashSet<X>;
 
-  fn add(self, value: A) -> Self
-  where
-    A: Eq + Hash,
-  {
-    self.into_iter().chain(iter::once(value)).collect()
-  }
-
-  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-  {
-    self.into_iter().chain(iterable).collect()
-  }
-
   fn delete(self, value: &A) -> Self
   where
     A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
   {
     self.into_iter().filter(|x| x != value).collect()
   }
@@ -82,13 +69,6 @@ impl<A> Set<A> for HashSet<A> {
     let mut removed: HashSet<A> = HashSet::new();
     removed.extend(iterable);
     self.into_iter().filter(|x| !removed.contains(x)).collect()
-  }
-
-  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
-  where
-    A: Eq + Hash,
-  {
-    self.into_iter().filter(predicate).collect()
   }
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>
@@ -122,7 +102,7 @@ impl<A> Set<A> for HashSet<A> {
   {
     self.into_iter().flatten().collect()
   }
-  //
+
   // fn group_by<K, M>(self, group_key: std FnMut(&A) -> K) -> M
   // where
   //   K: Eq + Hash,
@@ -131,27 +111,11 @@ impl<A> Set<A> for HashSet<A> {
   //   M::from_iter(self.into_iter().map(|x| (group_key(&x), x)))
   // }
 
-  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-  {
-    let mut retained: HashSet<A> = HashSet::new();
-    retained.extend(iterable);
-    self.into_iter().filter(|x| retained.contains(x)).collect()
-  }
-
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
   where
     B: Eq + Hash,
   {
     self.iter().map(function).collect()
-  }
-
-  fn unit(value: A) -> Self
-  where
-    A: Eq + Hash,
-  {
-    iter::once(value).collect()
   }
 }
 

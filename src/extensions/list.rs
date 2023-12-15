@@ -182,7 +182,12 @@ pub trait List<A> {
     self.into_iter().take_while(predicate).collect()
   }
 
-  fn unit(value: A) -> Self;
+  fn unit(value: A) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    iter::once(value).collect()
+  }
 
   fn unzip<B, C>(self) -> (Self::Root<B>, Self::Root<C>)
   where

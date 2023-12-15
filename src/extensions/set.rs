@@ -1,15 +1,25 @@
+use std::collections::HashSet;
 use std::hash::Hash;
+use std::iter;
 
 pub trait Set<A> {
   type Root<X>;
 
   fn add(self, value: A) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().chain(iter::once(value)).collect()
+  }
 
   fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
 
   fn delete(self, value: &A) -> Self
   where
@@ -21,7 +31,11 @@ pub trait Set<A> {
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().filter(predicate).collect()
+  }
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>
   where
@@ -42,7 +56,7 @@ pub trait Set<A> {
   where
     A: IntoIterator<Item = B>,
     B: Eq + Hash;
-  //
+
   // fn group_by<K, M>(self, group_key: std FnMut(&A) -> K) -> M
   //   where
   //     K: Eq + Hash,
@@ -50,7 +64,13 @@ pub trait Set<A> {
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    let mut retained: HashSet<A> = HashSet::new();
+    retained.extend(iterable);
+    self.into_iter().filter(|x| retained.contains(x)).collect()
+  }
 
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
   where
@@ -58,5 +78,9 @@ pub trait Set<A> {
 
   fn unit(value: A) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    iter::once(value).collect()
+  }
 }
