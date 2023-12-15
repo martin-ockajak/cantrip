@@ -85,10 +85,6 @@ impl<A> Slice<A> for [A] {
     &self[min(1, self.len())..self.len()]
   }
 
-  // fn take(&self, n: usize) -> &Self {
-  //   &self[0..min(n, self.len())]
-  // }
-
   fn take_while(&self, mut predicate: impl FnMut(&A) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[0..min(index, self.len())],
