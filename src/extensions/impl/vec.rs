@@ -139,7 +139,6 @@ impl<A> List<A> for Vec<A> {
         let value = self.get_unchecked(index);
         if !occured.contains(value) {
           indices.insert(index);
-        } else {
           occured.insert(value);
         }
       }
@@ -162,7 +161,6 @@ impl<A> List<A> for Vec<A> {
         let key = to_key(self.get_unchecked(index));
         if !occured.contains(&key) {
           indices.insert(index);
-        } else {
           occured.insert(key);
         }
       }
