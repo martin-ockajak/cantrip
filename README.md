@@ -53,6 +53,7 @@ Practical extensions for standard Rust collections.
 | *fold*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *group_by*       | Scala       | :heavy_check_mark:        |                    |                    | :x:                |
 | *head*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
+| *interleave*     | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *intersect*      | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *init*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *last*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
