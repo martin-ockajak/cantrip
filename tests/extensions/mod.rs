@@ -2,7 +2,7 @@ use cantrip::extensions::*;
 use std::cmp::Ordering;
 use std::iter::{Product, Sum};
 
-pub trait Fixture: Sized + Default {
+pub trait IterableFixture: Sized + Default {
   fn init() -> Self {
     Self::default()
   }
@@ -26,14 +26,14 @@ pub trait AggregableFixture: Sized + Default {
 
   fn init_mul() -> Self;
 
-  fn checked_add(&self, value: Self) -> Option<Self>;
+  fn safe_add(&self, value: Self) -> Option<Self>;
 
-  fn checked_mul(&self, value: Self) -> Option<Self>;
+  fn safe_mul(&self, value: Self) -> Option<Self>;
 }
 
 pub fn test_iterable<A, C>(data: C) -> bool
 where
-  A: Fixture + PartialEq + Ord + Clone,
+  A: IterableFixture + PartialEq + Ord + Clone,
   C: Iterable<A> + IntoIterator<Item = A> + Clone,
 {
   data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test())
@@ -48,7 +48,7 @@ where
 
 pub fn test_ordered<A, C>(data: C) -> bool
 where
-  A: Fixture,
+  A: IterableFixture,
   C: Ordered<A> + IntoIterator<Item = A> + Clone,
 {
   data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test())
@@ -59,9 +59,9 @@ where
   A: AggregableFixture + PartialEq + Sum + Product,
   C: Aggregable<A> + IntoIterator<Item = A> + Clone,
 {
-  (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.checked_add(y))
+  (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.safe_add(y))
     || data.clone().sum() == data.clone().into_iter().sum())
-    && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.checked_mul(y))
+    && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.safe_mul(y))
       || data.clone().product() == data.clone().into_iter().product())
 }
 

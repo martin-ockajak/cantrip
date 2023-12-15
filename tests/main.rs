@@ -9,7 +9,7 @@ use std::collections::HashSet;
 
 mod extensions;
 
-impl Fixture for String {
+impl IterableFixture for String {
   fn test(&self) -> bool {
     self.len() % 2 == 0
   }
@@ -23,7 +23,7 @@ impl Fixture for String {
   }
 }
 
-impl Fixture for i64 {
+impl IterableFixture for i64 {
   fn test(&self) -> bool {
     self % 2 == 0
   }
@@ -38,11 +38,11 @@ impl AggregableFixture for i64 {
     1
   }
 
-  fn checked_add(&self, value: Self) -> Option<Self> {
+  fn safe_add(&self, value: Self) -> Option<Self> {
     self.checked_add(value)
   }
 
-  fn checked_mul(&self, value: Self) -> Option<Self> {
+  fn safe_mul(&self, value: Self) -> Option<Self> {
     self.checked_mul(value)
   }
 }
