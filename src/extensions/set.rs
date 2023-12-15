@@ -1,4 +1,3 @@
-use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
@@ -22,10 +21,6 @@ pub trait Set<A> {
   }
 
   fn delete(self, value: &A) -> Self
-  where
-    A: Eq + Hash;
-
-  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
     A: Eq + Hash;
 
@@ -61,16 +56,6 @@ pub trait Set<A> {
   //   where
   //     K: Eq + Hash,
   //     M: MultiMap<K, Self::Root<A>>;
-
-  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
-  {
-    let mut retained: HashSet<A> = HashSet::new();
-    retained.extend(iterable);
-    self.into_iter().filter(|x| retained.contains(x)).collect()
-  }
 
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
   where

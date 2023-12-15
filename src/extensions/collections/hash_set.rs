@@ -40,6 +40,10 @@ impl<A> Iterable<A> for HashSet<A> {
 
 impl<A> Aggregable<A> for HashSet<A> {}
 
+impl<A> Collectible<A> for HashSet<A> {
+  type Root<X> = HashSet<X>;
+}
+
 impl<A> Set<A> for HashSet<A> {
   type Root<X> = HashSet<X>;
 
@@ -49,15 +53,6 @@ impl<A> Set<A> for HashSet<A> {
     Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
   {
     self.into_iter().filter(|x| x != value).collect()
-  }
-
-  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-  {
-    let mut removed: HashSet<A> = HashSet::new();
-    removed.extend(iterable);
-    self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>

@@ -66,6 +66,10 @@ impl<A> Ordered<A> for Vec<A> {
 
 impl<A> Aggregable<A> for Vec<A> {}
 
+impl<A> Collectible<A> for Vec<A> {
+  type Root<X> = Vec<X>;
+}
+
 impl<A> List<A> for Vec<A> {
   type Root<X> = Vec<X>;
 

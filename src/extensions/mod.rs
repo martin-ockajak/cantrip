@@ -1,4 +1,5 @@
 pub mod aggregable;
+pub mod collectible;
 pub mod iterable;
 pub mod list;
 pub mod map;
@@ -9,6 +10,7 @@ pub mod slice;
 mod collections;
 
 pub use aggregable::*;
+pub use collectible::*;
 pub use iterable::*;
 pub use list::*;
 pub use map::*;

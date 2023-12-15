@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 
@@ -25,16 +24,6 @@ pub trait List<A> {
   fn delete(self, value: &A) -> Self
   where
     A: PartialEq;
-
-  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
-  {
-    let mut removed: HashSet<A> = HashSet::new();
-    removed.extend(iterable);
-    self.into_iter().filter(|x| !removed.contains(x)).collect()
-  }
 
   fn distinct(self) -> Self
   where
@@ -73,16 +62,6 @@ pub trait List<A> {
   fn init(self) -> Self;
 
   fn interleave(self, iterable: impl IntoIterator<Item = A>) -> Self;
-
-  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
-  {
-    let mut retained: HashSet<A> = HashSet::new();
-    retained.extend(iterable);
-    self.into_iter().filter(|x| retained.contains(x)).collect()
-  }
 
   /// Applies the given closure `f` to each element in the container.
   ///
