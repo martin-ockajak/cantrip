@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter::FromIterator;
