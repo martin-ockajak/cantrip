@@ -1,5 +1,3 @@
-use cantrip::extensions::Iterable;
-
 #[test]
 fn overview() {
   use cantrip::extensions::*;

@@ -1,15 +1,23 @@
 use cantrip::extensions::*;
+use std::cmp::Ordering;
 use std::iter::{Product, Sum};
 
-pub fn test_iterable<A, B, C>(data: C, init: B, mut predicate: impl FnMut(&A) -> bool, mut fold: impl FnMut(B, &A) -> B) -> bool
+pub fn test_iterable<A, C>(
+  data: C, init: A, mut predicate: impl FnMut(&A) -> bool, mut add: impl FnMut(A, &A) -> A,
+  mut compare: impl FnMut(&A, &A) -> Ordering,
+) -> bool
 where
-  B: PartialEq + Clone,
+  A: PartialEq + Clone,
   C: Iterable<A> + IntoIterator<Item = A> + Clone,
 {
   data.all(|x| predicate(x)) == data.clone().into_iter().all(|x| predicate(&x))
     && data.any(|x| predicate(x)) == data.clone().into_iter().any(|x| predicate(&x))
     && data.count_by(|x| predicate(x)) == data.clone().into_iter().filter(predicate).count()
-    && data.fold(init.clone(), |r, x| fold(r, x)) == data.clone().into_iter().fold(init, |r, x| fold(r, &x))
+    && data.fold(init.clone(), |r, x| add(r, x)) == data.clone().into_iter().fold(init.clone(), |r, x| add(r, &x))
+    && data.max_by(|x, y| compare(x, y)).unwrap_or(&init.clone())
+      == &data.clone().into_iter().max_by(|x, y| compare(x, y)).unwrap_or(init.clone())
+    && data.min_by(|x, y| compare(x, y)).unwrap_or(&init.clone())
+    == &data.clone().into_iter().min_by(|x, y| compare(x, y)).unwrap_or(init.clone())
 }
 
 pub fn test_ordered<A, C>(data: C, mut predicate: impl FnMut(&A) -> bool) -> bool
