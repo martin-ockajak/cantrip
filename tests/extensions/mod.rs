@@ -16,14 +16,16 @@ where
 }
 
 pub fn test_aggregable<A, C>(
-  data: C, init_add: A, checked_add: impl FnMut(A, A) -> Option<A>, init_mul: A, checked_mul: impl FnMut(A, A) -> Option<A>,
+  data: C, init_add: A, checked_add: impl FnMut(A, A) -> Option<A>, init_mul: A,
+  checked_mul: impl FnMut(A, A) -> Option<A>,
 ) -> bool
 where
   A: PartialEq + Sum + Product,
   C: Aggregable<A> + IntoIterator<Item = A> + Clone,
 {
   (!safe_aggregate(data.clone(), init_add, checked_add) || data.clone().sum() == data.clone().into_iter().sum())
-    && (!safe_aggregate(data.clone(), init_mul, checked_mul) || data.clone().product() == data.clone().into_iter().product())
+    && (!safe_aggregate(data.clone(), init_mul, checked_mul)
+      || data.clone().product() == data.clone().into_iter().product())
 }
 
 fn safe_aggregate<A, C>(data: C, init: A, mut aggregate: impl FnMut(A, A) -> Option<A>) -> bool
