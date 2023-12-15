@@ -1,6 +1,10 @@
 # Overview
 
-Cantrip adds convenient fuctional-style methods to Rust standard library collections.
+Cantrip adds convenient functional-style methods to Rust standard library collections.
+
+## Motivation
+
+Reduce complexity and enhance readability or Rust code for a reasonable cost in performance.
 
 ## Features
 
