@@ -23,6 +23,16 @@ impl Fixture for String {
   }
 }
 
+impl Fixture for i64 {
+  fn test(&self) -> bool {
+    self % 2 == 0
+  }
+
+  fn add(&self, value: &Self) -> Self {
+    self.saturating_add(value.clone())
+  }
+}
+
 impl NumericFixture for i64 {
   fn init_mul() -> Self {
     1
@@ -34,16 +44,6 @@ impl NumericFixture for i64 {
 
   fn checked_mul(&self, value: Self) -> Option<Self> {
     self.checked_mul(value)
-  }
-}
-
-impl Fixture for i64 {
-  fn test(&self) -> bool {
-    self % 2 == 0
-  }
-
-  fn add(&self, value: &Self) -> Self {
-    self.saturating_add(value.clone())
   }
 }
 
