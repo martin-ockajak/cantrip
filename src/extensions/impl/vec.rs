@@ -151,6 +151,29 @@ impl<A> List<A> for Vec<A> {
       .collect()
   }
 
+  fn distinct_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> Self
+  where
+    K: Eq + Hash,
+  {
+    let mut occured: HashSet<K> = HashSet::new();
+    let mut indices: HashSet<usize> = HashSet::new();
+    unsafe {
+      for index in 0..self.len() {
+        let key = to_key(self.get_unchecked(index));
+        if !occured.contains(&key) {
+          indices.insert(index);
+        } else {
+          occured.insert(key);
+        }
+      }
+    }
+    self
+      .into_iter()
+      .enumerate()
+      .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
+      .collect()
+  }
+
   fn enumerate(self) -> Self::Root<(usize, A)> {
     (0..self.len()).zip(self).collect()
   }
@@ -181,12 +204,12 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().flatten().collect()
   }
 
-  fn group_by<K, M>(self, mut group_key: impl FnMut(&A) -> K) -> M
+  fn group_by<K, M>(self, mut to_key: impl FnMut(&A) -> K) -> M
   where
     K: Eq + Hash,
     M: MultiMap<K, Self::Root<A>>,
   {
-    M::from_iter(self.into_iter().map(|x| (group_key(&x), x)))
+    M::from_iter(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn init(self) -> Self {

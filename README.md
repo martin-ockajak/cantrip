@@ -41,6 +41,7 @@ Practical extensions for standard Rust collections.
 | *delete*         | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *diff*           | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *distinct*       | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *distinct_by*    | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *enumerate*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *filter*         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *filter_keys*    | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |

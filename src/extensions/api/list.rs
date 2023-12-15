@@ -21,6 +21,10 @@ pub trait List<A> {
   where
     A: Eq + Hash;
 
+  fn distinct_by<K>(self, to_key: impl FnMut(&A) -> K) -> Self
+  where
+    K: Eq + Hash;
+
   fn enumerate(self) -> Self::Root<(usize, A)>;
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
@@ -37,7 +41,7 @@ pub trait List<A> {
   where
     A: IntoIterator<Item = B>;
 
-  fn group_by<K, M>(self, group_key: impl FnMut(&A) -> K) -> M
+  fn group_by<K, M>(self, to_key: impl FnMut(&A) -> K) -> M
   where
     K: Eq + Hash,
     M: MultiMap<K, Self::Root<A>>;
