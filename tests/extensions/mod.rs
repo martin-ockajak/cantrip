@@ -32,14 +32,17 @@ where
   A: IterableFixture + PartialEq + Ord + Clone,
   C: Iterable<A> + IntoIterator<Item = A> + Clone,
 {
-  data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test())
-    && data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test())
-    && data.count_by(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).count()
-    && data.fold(A::init_add(), |r, x| r.safe_add(x)) == data.clone().into_iter().fold(A::init_add(), |r, x| r.safe_add(&x))
-    && data.max_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
-      == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init_add())
-    && data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
-      == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init_add())
+  let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
+  let any = data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test());
+  let count_by = data.count_by(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).count();
+  let fold = data.fold(A::init_add(), |r, x| r.safe_add(x))
+    == data.clone().into_iter().fold(A::init_add(), |r, x| r.safe_add(&x));
+  let max_by = data.max_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
+    == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
+  let min_by = data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
+    == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
+  // let reduce = data.reduce(|r, x| r.safe_add(x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
+  all && any && count_by && fold && max_by && min_by
 }
 
 pub fn test_ordered<A, C>(data: C) -> bool
@@ -47,7 +50,8 @@ where
   A: IterableFixture,
   C: Ordered<A> + IntoIterator<Item = A> + Clone,
 {
-  data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test())
+  let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
+  position
 }
 
 pub fn test_aggregable<A, C>(data: C) -> bool
