@@ -79,7 +79,7 @@ pub trait Set<A> {
   fn unit(value: A) -> Self
   where
     A: Eq + Hash,
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: FromIterator<A>,
   {
     iter::once(value).collect()
   }

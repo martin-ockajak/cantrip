@@ -184,7 +184,7 @@ pub trait List<A> {
 
   fn unit(value: A) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: FromIterator<A>,
   {
     iter::once(value).collect()
   }

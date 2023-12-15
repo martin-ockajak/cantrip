@@ -1,7 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
-use std::iter;
 
 use crate::extensions::Iterable;
 use crate::extensions::{Aggregable, List, MultiMap, Ordered};

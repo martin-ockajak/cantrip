@@ -1,5 +1,7 @@
 use std::cmp::Ordering;
+use std::collections::HashSet;
 use std::hash::Hash;
+use std::iter;
 use std::iter::{Product, Sum};
 
 pub trait Map<K, V> {
@@ -7,7 +9,11 @@ pub trait Map<K, V> {
 
   fn add(self, key: K, value: V) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().chain(iter::once((key, value))).collect()
+  }
 
   fn all(&self, predicate: impl FnMut((&K, &V)) -> bool) -> bool;
 
@@ -17,32 +23,58 @@ pub trait Map<K, V> {
 
   fn concat(self, iterable: impl IntoIterator<Item = (K, V)>) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
 
   fn delete(self, key: &K) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
+  }
 
   fn diff(self, iterable: impl IntoIterator<Item = K>) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    let mut removed: HashSet<K> = HashSet::new();
+    removed.extend(iterable);
+    self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
+  }
 
-  fn filter(self, predicate: impl FnMut((&K, &V)) -> bool) -> Self
+  fn filter(self, mut predicate: impl FnMut((&K, &V)) -> bool) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
+  }
 
-  fn filter_keys(self, predicate: impl FnMut(&K) -> bool) -> Self
+  fn filter_keys(self, mut predicate: impl FnMut(&K) -> bool) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().filter(|(k, _)| predicate(k)).collect()
+  }
 
   fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::Root<L, W>
   where
     K: Eq + Hash,
     L: Eq + Hash;
 
-  fn filter_values(self, predicate: impl FnMut(&V) -> bool) -> Self
+  fn filter_values(self, mut predicate: impl FnMut(&V) -> bool) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().filter(|(_, v)| predicate(v)).collect()
+  }
 
   fn find(&self, predicate: impl FnMut((&K, &V)) -> bool) -> Option<(&K, &V)>;
 
@@ -60,7 +92,13 @@ pub trait Map<K, V> {
 
   fn intersect(self, iterable: impl IntoIterator<Item = K>) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    let mut retained: HashSet<K> = HashSet::new();
+    retained.extend(iterable);
+    self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
+  }
 
   fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::Root<L, W>
   where
@@ -82,23 +120,43 @@ pub trait Map<K, V> {
 
   fn product_keys<S>(self) -> K
   where
-    K: Product;
+    K: Product,
+    Self: IntoIterator<Item = (K, V)> + Sized,
+  {
+    self.into_iter().map(|(k, _)| k).product()
+  }
 
   fn product_values<S>(self) -> V
   where
-    V: Product;
+    V: Product,
+    Self: IntoIterator<Item = (K, V)> + Sized,
+  {
+    self.into_iter().map(|(_, v)| v).product()
+  }
 
   fn reduce(&self, function: impl FnMut((&K, &V), (&K, &V)) -> (K, V)) -> Option<(K, V)>;
 
   fn sum_keys(self) -> K
   where
-    K: Sum;
+    K: Sum,
+    Self: IntoIterator<Item = (K, V)> + Sized,
+  {
+    self.into_iter().map(|(k, _)| k).sum()
+  }
 
   fn sum_values(self) -> V
   where
-    V: Sum;
+    V: Sum,
+    Self: IntoIterator<Item = (K, V)> + Sized,
+  {
+    self.into_iter().map(|(_, v)| v).sum()
+  }
 
   fn unit(key: K, value: V) -> Self
   where
-    K: Eq + Hash;
+    K: Eq + Hash,
+    Self: FromIterator<(K, V)>,
+  {
+    iter::once((key, value)).collect()
+  }
 }
