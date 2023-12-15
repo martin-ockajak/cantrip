@@ -14,24 +14,24 @@ Practical extensions for standard Rust collections.
   use cantrip::extensions::*;
 
   let data = vec![0, 1, 2];
-  
-  data.map(|x| x + 1);                     // [1, 2, 3]: Vec<i32>
 
-  data.fold(0, |r, x| r + x);              // 3: i32
+  data.map(|x| x + 1);                  // [1, 2, 3]: Vec<i32>
 
-  data.any(|&x| x == 0);                   // true: bool
+  data.fold(0, |r, x| r + x);           // 3: i32
 
-  data.head();                             // Some(0): Option<i32>
+  data.any(|&x| x == 0);                // true: bool
 
-  data.clone().filter(|&x| x > 0);         // [1, 2]: Vec<i32>
+  data.clone().filter(|&x| x > 0);      // [1, 2]: Vec<i32>
 
-  data.clone().add(0).unique();            // [0, 1, 2]: Vec<i32>
+  data.clone().add(0).distinct();       // [0, 1, 2]: Vec<i32>
 
-  data.clone().delete(&0).tail();          // [2]: Vec<i32>
+  data.clone().delete(&0).tail();       // [2]: Vec<i32>
 
-  data.clone().partition(|&x| x > 1);      // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
+  data.clone().group_by::<i64, HashMap<i64, Vec<i64>>>(|x| x % 2);  // {[0, 2], [1]}: HashMap<i64, Vec<i64>>
 
-  data.clone().zip(data);                  // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
+  data.clone().partition(|&x| x > 1);   // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
+
+  data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
 
 
@@ -59,11 +59,9 @@ Practical extensions for standard Rust collections.
 | *flatten*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :x:                | :x:                |
 | *fold*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *group_by*       | Scala       | :heavy_check_mark:        |                    |                    | :x:                |
-| *head*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *interleave*     | Toolz       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *intersect*      | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *init*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
-| *last*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *map*            | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *map_keys*       | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *map_values*     | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |

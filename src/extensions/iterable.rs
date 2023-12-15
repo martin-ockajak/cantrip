@@ -38,12 +38,10 @@ pub(crate) fn fold<'a, A: 'a, B>(
   iterator.fold(init, function)
 }
 
-pub(crate) fn reduce<'a, A: 'a>(mut iterator: impl Iterator<Item = &'a A>, mut function: impl FnMut(&A, &A) -> A) -> Option<A> {
-  match iterator.next() {
-    Some(value1) => match iterator.next() {
-      Some(value2) => Some(iterator.fold(function(value1, value2), |r, x| function(&r, x))),
-      _ => None,
-    },
-    _ => None,
-  }
+pub(crate) fn reduce<'a, A: 'a>(
+  mut iterator: impl Iterator<Item = &'a A>, mut function: impl FnMut(&A, &A) -> A,
+) -> Option<A> {
+  iterator
+    .next()
+    .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
 }

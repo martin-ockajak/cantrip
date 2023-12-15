@@ -39,14 +39,6 @@ impl<A> Iterable<A> for Vec<A> {
 }
 
 impl<A> Ordered<A> for Vec<A> {
-  fn head(&self) -> Option<&A> {
-    self.get(0)
-  }
-
-  fn last(&self) -> Option<&A> {
-    self.get(self.len() - 1)
-  }
-
   fn position(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }
@@ -95,14 +87,14 @@ impl<A> List<A> for Vec<A> {
   where
     A: Eq + Hash,
   {
-    let mut occured: HashSet<&A> = HashSet::new();
+    let mut occurred: HashSet<&A> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
     unsafe {
       for index in 0..self.len() {
         let value = self.get_unchecked(index);
-        if !occured.contains(value) {
+        if !occurred.contains(value) {
           indices.insert(index);
-          occured.insert(value);
+          occurred.insert(value);
         }
       }
     }
@@ -117,14 +109,14 @@ impl<A> List<A> for Vec<A> {
   where
     K: Eq + Hash,
   {
-    let mut occured: HashSet<K> = HashSet::new();
+    let mut occurred: HashSet<K> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
     unsafe {
       for index in 0..self.len() {
         let key = to_key(self.get_unchecked(index));
-        if !occured.contains(&key) {
+        if !occurred.contains(&key) {
           indices.insert(index);
-          occured.insert(key);
+          occurred.insert(key);
         }
       }
     }
@@ -147,11 +139,11 @@ impl<A> List<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, mut function: impl FnMut(&A) -> R) -> Self::Root<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
   where
     R: IntoIterator<Item = B>,
   {
-    self.iter().flat_map(|x| function(x)).collect()
+    self.iter().flat_map(function).collect()
   }
 
   fn flatten<B>(self) -> Self::Root<B>
