@@ -180,11 +180,7 @@ pub(crate) fn fold_pair<A, B>(iterator: impl Iterator<Item = A>, init: B, mut fu
 pub(crate) fn reduce_pair<'a, K: 'a, V: 'a>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V),
 ) -> Option<(K, V)> {
-  match iterator.next() {
-    Some(value1) => match iterator.next() {
-      Some(value2) => Some(iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x))),
-      _ => None,
-    },
-    _ => None,
-  }
+  iterator.next().and_then(|value1| {
+    iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x)))
+  })
 }
