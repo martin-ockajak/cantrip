@@ -269,9 +269,15 @@ impl<A> List<A> for Vec<A> {
   where
     A: Ord,
   {
-    let mut heap: BinaryHeap<A> = BinaryHeap::new();
-    heap.extend(self);
-    heap.into_sorted_vec()
+    let mut result = self.into_iter().collect::<Vec<A>>();
+    result.sort();
+    result
+  }
+
+  fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self {
+    let mut result = self.into_iter().collect::<Vec<A>>();
+    result.sort_by(compare);
+    result
   }
 
   fn step_by(self, step: usize) -> Self {

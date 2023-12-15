@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::hash::Hash;
 
 use crate::extensions::MultiMap;
@@ -105,6 +106,8 @@ pub trait List<A> {
   fn sorted(self) -> Self
   where
     A: Ord;
+
+  fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
 
   fn step_by(self, step: usize) -> Self;
 
