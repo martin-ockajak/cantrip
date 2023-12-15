@@ -1,24 +1,20 @@
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
-use std::iter;
-use std::iter::{Product, Sum};
 
-use crate::extensions::Iterable;
-use crate::extensions::Set;
-use crate::extensions::{Aggregable, MultiMap};
+use crate::extensions::*;
 
 impl<A> Iterable<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
-    self.iter().all(predicate)
+    all(self.iter(), predicate)
   }
 
   fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool {
-    self.iter().any(predicate)
+    any(self.iter(), predicate)
   }
 
-  fn count_by(&self, mut predicate: impl FnMut(&A) -> bool) -> usize {
-    self.iter().filter(|&x| predicate(x)).count()
+  fn count_by(&self, predicate: impl FnMut(&A) -> bool) -> usize {
+    count_by(self.iter(), predicate)
   }
 
   fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
@@ -26,7 +22,7 @@ impl<A> Iterable<A> for HashSet<A> {
   }
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
-    self.iter().fold(init, function)
+    fold(self.iter(), init, function)
   }
 
   fn max_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
@@ -37,15 +33,8 @@ impl<A> Iterable<A> for HashSet<A> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
-  fn reduce(&self, mut function: impl FnMut(&A, &A) -> A) -> Option<A> {
-    let mut iterator = self.iter();
-    match iterator.next() {
-      Some(value1) => match iterator.next() {
-        Some(value2) => Some(iterator.fold(function(value1, value2), |r, x| function(&r, x))),
-        _ => None,
-      },
-      _ => None,
-    }
+  fn reduce(&self, function: impl FnMut(&A, &A) -> A) -> Option<A> {
+    reduce(self.iter(), function)
   }
 }
 
@@ -121,6 +110,8 @@ impl<A> Set<A> for HashSet<A> {
 
 #[cfg(test)]
 mod tests {
+  use std::collections::HashSet;
+
   use crate::extensions::*;
 
   #[quickcheck]

@@ -6,7 +6,7 @@ pub mod multimap;
 pub mod ordered;
 pub mod set;
 pub mod slice;
-mod std;
+mod collections;
 
 pub use aggregable::*;
 pub use iterable::*;

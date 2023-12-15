@@ -1,8 +1,6 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::hash::Hash;
-use std::iter;
-use std::iter::{Product, Sum};
 
 use crate::extensions::Map;
 
@@ -98,6 +96,8 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
 
 #[cfg(test)]
 mod tests {
+  use std::collections::HashMap;
+
   use crate::extensions::*;
 
   #[quickcheck]
