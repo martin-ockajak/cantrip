@@ -1,11 +1,18 @@
-pub mod api;
-mod r#impl;
+pub mod aggregable;
+pub mod iterable;
+pub mod list;
+pub mod map;
+pub mod multimap;
+pub mod ordered;
+pub mod set;
+pub mod slice;
+mod std;
 
-pub use api::aggregable::*;
-pub use api::iterable::*;
-pub use api::list::*;
-pub use api::map::*;
-pub use api::multimap::*;
-pub use api::ordered::*;
-pub use api::set::*;
-pub use api::slice::*;
+pub use aggregable::*;
+pub use iterable::*;
+pub use list::*;
+pub use map::*;
+pub use multimap::*;
+pub use ordered::*;
+pub use set::*;
+pub use slice::*;

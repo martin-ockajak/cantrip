@@ -1,4 +1,4 @@
-use crate::extensions::api::iterable::Iterable;
+use crate::extensions::Iterable;
 use crate::extensions::{Ordered, Slice};
 use std::cmp::{max, min, Ordering};
 

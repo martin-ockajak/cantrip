@@ -1,14 +1,26 @@
 use std::cmp::Ordering;
+use std::collections::HashSet;
 use std::hash::Hash;
+use std::iter;
 
 use crate::extensions::MultiMap;
 
 pub trait List<A> {
   type Root<X>;
 
-  fn add(self, value: A) -> Self;
+  fn add(self, value: A) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().chain(iter::once(value)).collect()
+  }
 
-  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self;
+  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().chain(iterable.into_iter()).collect()
+  }
 
   fn delete(self, value: &A) -> Self
   where
@@ -16,7 +28,13 @@ pub trait List<A> {
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    let mut removed: HashSet<A> = HashSet::new();
+    removed.extend(iterable);
+    self.into_iter().filter(|x| !removed.contains(x)).collect()
+  }
 
   fn distinct(self) -> Self
   where
@@ -28,7 +46,12 @@ pub trait List<A> {
 
   fn enumerate(self) -> Self::Root<(usize, A)>;
 
-  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self;
+  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().filter(predicate).collect()
+  }
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>;
 
@@ -53,7 +76,13 @@ pub trait List<A> {
 
   fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
   where
-    A: Eq + Hash;
+    A: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    let mut retained: HashSet<A> = HashSet::new();
+    retained.extend(iterable);
+    self.into_iter().filter(|x| retained.contains(x)).collect()
+  }
 
   /// Applies the given closure `f` to each element in the container.
   ///
@@ -93,15 +122,29 @@ pub trait List<A> {
 
   fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
   where
-    Self: Sized;
+    Self: Sized + Default + Extend<A>,
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().partition(predicate)
+  }
 
   fn rev(self) -> Self;
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B>;
 
-  fn skip(self, n: usize) -> Self;
+  fn skip(self, n: usize) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().skip(n).collect()
+  }
 
-  fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self;
+  fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().skip_while(predicate).collect()
+  }
 
   fn sorted(self) -> Self
   where
@@ -109,17 +152,39 @@ pub trait List<A> {
 
   fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
 
-  fn step_by(self, step: usize) -> Self;
+  fn step_by(self, step: usize) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().step_by(step).collect()
+  }
 
-  fn tail(self) -> Self;
+  fn tail(self) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    let mut iterator = self.into_iter();
+    iterator.next();
+    iterator.collect()
+  }
 
-  fn take(self, n: usize) -> Self;
+  fn take(self, n: usize) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().take(n).collect()
+  }
 
-  fn take_while(self, predicate: impl FnMut(&A) -> bool) -> Self;
+  fn take_while(self, predicate: impl FnMut(&A) -> bool) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().take_while(predicate).collect()
+  }
 
   fn unit(value: A) -> Self;
 
-  fn unzip<B, C, FromB, FromC>(self) -> (Self::Root<B>, Self::Root<C>)
+  fn unzip<B, C>(self) -> (Self::Root<B>, Self::Root<C>)
   where
     Self: IntoIterator<Item = (B, C)>;
 

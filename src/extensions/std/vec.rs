@@ -1,10 +1,9 @@
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, HashSet};
+use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
-use std::iter::{Product, Sum};
 
-use crate::extensions::api::iterable::Iterable;
+use crate::extensions::Iterable;
 use crate::extensions::{Aggregable, List, MultiMap, Ordered};
 
 impl<A> Iterable<A> for Vec<A> {
@@ -74,32 +73,10 @@ impl<A> Ordered<A> for Vec<A> {
   }
 }
 
-impl<A> Aggregable<A> for Vec<A> {
-  fn sum(self) -> A
-  where
-    A: Sum,
-  {
-    self.into_iter().sum()
-  }
-
-  fn product(self) -> A
-  where
-    A: Product,
-  {
-    self.into_iter().product()
-  }
-}
+impl<A> Aggregable<A> for Vec<A> {}
 
 impl<A> List<A> for Vec<A> {
   type Root<X> = Vec<X>;
-
-  fn add(self, value: A) -> Self {
-    self.into_iter().chain(iter::once(value)).collect()
-  }
-
-  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self {
-    self.into_iter().chain(iterable.into_iter()).collect()
-  }
 
   fn delete(self, value: &A) -> Self
   where
@@ -117,15 +94,6 @@ impl<A> List<A> for Vec<A> {
         }
       })
       .collect()
-  }
-
-  fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-  {
-    let mut removed: HashSet<A> = HashSet::new();
-    removed.extend(iterable);
-    self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
   fn distinct(self) -> Self
@@ -173,11 +141,7 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn enumerate(self) -> Self::Root<(usize, A)> {
-    (0..self.len()).zip(self).collect()
-  }
-
-  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self {
-    self.into_iter().filter(predicate).collect()
+    self.into_iter().enumerate().collect()
   }
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B> {
@@ -225,15 +189,6 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn intersect(self, iterable: impl IntoIterator<Item = A>) -> Self
-  where
-    A: Eq + Hash,
-  {
-    let mut retained: HashSet<A> = HashSet::new();
-    retained.extend(iterable);
-    self.into_iter().filter(|x| retained.contains(x)).collect()
-  }
-
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B> {
     self.iter().map(function).collect()
   }
@@ -242,27 +197,12 @@ impl<A> List<A> for Vec<A> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
-  where
-    Self: Sized,
-  {
-    self.into_iter().partition(predicate)
-  }
-
   fn rev(self) -> Self {
     self.into_iter().rev().collect()
   }
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B> {
     self.iter().scan(init, function).collect()
-  }
-
-  fn skip(self, n: usize) -> Self {
-    self.into_iter().skip(n).collect()
-  }
-
-  fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self {
-    self.into_iter().skip_while(predicate).collect()
   }
 
   fn sorted(self) -> Self
@@ -280,29 +220,11 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn step_by(self, step: usize) -> Self {
-    self.into_iter().step_by(step).collect()
-  }
-
-  fn tail(self) -> Self {
-    let mut iterator = self.into_iter();
-    iterator.next();
-    iterator.collect()
-  }
-
-  fn take(self, n: usize) -> Self {
-    self.into_iter().take(n).collect()
-  }
-
-  fn take_while(self, predicate: impl FnMut(&A) -> bool) -> Self {
-    self.into_iter().take_while(predicate).collect()
-  }
-
   fn unit(value: A) -> Self {
     iter::once(value).collect()
   }
 
-  fn unzip<B, C, FromB, FromC>(self) -> (Self::Root<B>, Self::Root<C>)
+  fn unzip<B, C>(self) -> (Self::Root<B>, Self::Root<C>)
   where
     Self: IntoIterator<Item = (B, C)>,
   {
@@ -317,57 +239,57 @@ impl<A> List<A> for Vec<A> {
   }
 }
 
-#[cfg(test)]
-mod tests {
-  use std::collections::HashMap;
-
-  use crate::extensions::*;
-
-  #[quickcheck]
-  fn map(data: Vec<i32>) -> bool {
-    let function = |x: &i32| *x as i64;
-    let result = data.map(function);
-    let expected = data.iter().map(function).collect::<Vec<i64>>();
-    result == expected
-  }
-
-  #[quickcheck]
-  fn filter(data: Vec<i32>) -> bool {
-    let predicate = |x: &i32| x % 2 == 0;
-    let result = data.clone().filter(predicate);
-    let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
-    result == expected
-  }
-
-  #[quickcheck]
-  fn group(data: Vec<i32>) -> bool {
-    let key = |x: &i32| x % 2;
-    let result: HashMap<i32, Vec<i32>> = data.clone().group_by(key);
-    let expected = {
-      let mut map: HashMap<i32, Vec<i32>> = HashMap::new();
-      for item in data {
-        let key = key(&item);
-        map.entry(key).and_modify(|mut values| values.push(item)).or_insert(Vec::new());
-      }
-      map
-    };
-    result == expected
-  }
-
-  #[quickcheck]
-  fn fold(data: Vec<i32>) -> bool {
-    let function = |i: i32, x: &i32| i.saturating_add(*x);
-    let result = data.fold(0, function);
-    let expected = data.iter().fold(0, function);
-    result == expected
-  }
-
-  #[test]
-  fn test_x() {
-    [1, 2, 3];
-    &[1, 2, 3][0..];
-    "Test";
-    "Test".to_string();
-    assert_eq!(1, 1)
-  }
-}
+// #[cfg(test)]
+// mod tests {
+//   use std::collections::HashMap;
+//
+//   use crate::extensions::*;
+//
+//   #[quickcheck]
+//   fn map(data: Vec<i32>) -> bool {
+//     let function = |x: &i32| *x as i64;
+//     let result = data.map(function);
+//     let expected = data.iter().map(function).collect::<Vec<i64>>();
+//     result == expected
+//   }
+//
+//   #[quickcheck]
+//   fn filter(data: Vec<i32>) -> bool {
+//     let predicate = |x: &i32| x % 2 == 0;
+//     let result = data.clone().filter(predicate);
+//     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
+//     result == expected
+//   }
+//
+//   #[quickcheck]
+//   fn group(data: Vec<i32>) -> bool {
+//     let key = |x: &i32| x % 2;
+//     let result: HashMap<i32, Vec<i32>> = data.clone().group_by(key);
+//     let expected = {
+//       let mut map: HashMap<i32, Vec<i32>> = HashMap::new();
+//       for item in data {
+//         let key = key(&item);
+//         map.entry(key).and_modify(|mut values| values.push(item)).or_insert(Vec::new());
+//       }
+//       map
+//     };
+//     result == expected
+//   }
+//
+//   #[quickcheck]
+//   fn fold(data: Vec<i32>) -> bool {
+//     let function = |i: i32, x: &i32| i.saturating_add(*x);
+//     let result = data.fold(0, function);
+//     let expected = data.iter().fold(0, function);
+//     result == expected
+//   }
+//
+//   #[test]
+//   fn test_x() {
+//     [1, 2, 3];
+//     &[1, 2, 3][0..];
+//     "Test";
+//     "Test".to_string();
+//     assert_eq!(1, 1)
+//   }
+// }

@@ -193,8 +193,6 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
 
 #[cfg(test)]
 mod tests {
-  use std::collections::HashMap;
-
   use crate::extensions::*;
 
   #[quickcheck]
