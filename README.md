@@ -15,7 +15,7 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 * All methods treat collection instances as immutable although some consume them
 * Transformation methods return a new instance of the same collection type
 * No methods perform cloning nor do they use dynamic dispatch
-* Everything is available via a single import but specific imports are also supported
+* Everything is available via a single import
 
 ## Examples
 
