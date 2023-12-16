@@ -5,8 +5,8 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 ## Goals
 
 * Reduce complexity and enhance readability or Rust code
-* Require minimal learning by mirroring established interfaces
 * Ensure reasonable and predictable performance cost
+* Require minimal learning by mirroring established interfaces
 
 ## Features
 
