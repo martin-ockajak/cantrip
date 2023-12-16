@@ -2,7 +2,7 @@
 
 Cantrip adds convenient functional-style methods to Rust standard library collections.
 
-## Motivation
+## Goal
 
 Reduce complexity and enhance readability or Rust code for a reasonable cost in performance.
 
@@ -96,7 +96,7 @@ Reduce complexity and enhance readability or Rust code for a reasonable cost in 
 | *tail*           | Scala       | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *take*           | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *take_while*     | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
-| *unit* ?         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *unit*           | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *unzip*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *zip*            | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 
