@@ -1,8 +1,8 @@
-use crate::extensions::{all, any, count_by, fold, Iterable, reduce};
+use crate::extensions::{all, any, count_by, fold, Traversable, reduce};
 use crate::extensions::{Ordered, Slice};
 use std::cmp::{max, min, Ordering};
 
-impl<A> Iterable<A> for [A] {
+impl<A> Traversable<A> for [A] {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     all(self.iter(), predicate)
   }

@@ -6,6 +6,7 @@ pub use map::*;
 pub use ordered::*;
 pub use set::*;
 pub use slice::*;
+pub use traversable::*;
 
 mod aggregable;
 mod collectible;
@@ -16,4 +17,5 @@ mod map;
 mod ordered;
 mod set;
 mod slice;
+mod traversable;
 mod util;

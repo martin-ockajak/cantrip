@@ -1,47 +1,28 @@
-use std::cmp::Ordering;
+pub trait Iterable {
+  type Item<'collection>
+  where
+    Self: 'collection;
 
-pub trait Iterable<A> {
-  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool;
+  type Iterator<'collection>: Iterator<Item = Self::Item<'collection>>
+  where
+    Self: 'collection;
 
-  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool;
-
-  fn count_by(&self, predicate: impl FnMut(&A) -> bool) -> usize;
-
-  fn find(&self, predicate: impl FnMut(&A) -> bool) -> Option<&A>;
-
-  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B;
-
-  fn max_by(&self, compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A>;
-
-  fn min_by(&self, compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A>;
-
-  fn reduce(&self, function: impl FnMut(&A, &A) -> A) -> Option<A>;
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c>;
 }
 
-pub(crate) fn all<'a, A: 'a>(mut iterator: impl Iterator<Item = &'a A>, predicate: impl FnMut(&A) -> bool) -> bool {
-  iterator.all(predicate)
+pub struct Iter<'c, T> {
+  pub collection: &'c [T],
 }
 
-pub(crate) fn any<'a, A: 'a>(mut iterator: impl Iterator<Item = &'a A>, predicate: impl FnMut(&A) -> bool) -> bool {
-  iterator.any(predicate)
-}
+impl<'c, T> Iterator for Iter<'c, T> {
+  type Item = &'c T;
 
-pub(crate) fn count_by<'a, A: 'a>(
-  iterator: impl Iterator<Item = &'a A>, mut predicate: impl FnMut(&A) -> bool,
-) -> usize {
-  iterator.filter(|&x| predicate(x)).count()
-}
-
-pub(crate) fn fold<'a, A: 'a, B>(
-  iterator: impl Iterator<Item = &'a A>, init: B, function: impl FnMut(B, &A) -> B,
-) -> B {
-  iterator.fold(init, function)
-}
-
-pub(crate) fn reduce<'a, A: 'a>(
-  mut iterator: impl Iterator<Item = &'a A>, mut function: impl FnMut(&A, &A) -> A,
-) -> Option<A> {
-  iterator
-    .next()
-    .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
+  fn next(&mut self) -> Option<Self::Item> {
+    if let Some((prefix_elem, suffix)) = self.collection.split_first() {
+      self.collection = suffix;
+      Some(prefix_elem)
+    } else {
+      None
+    }
+  }
 }

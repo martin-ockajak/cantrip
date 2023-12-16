@@ -2,7 +2,7 @@ use cantrip::extensions::*;
 use std::cmp::Ordering;
 use std::iter::{Product, Sum};
 
-pub trait IterableFixture: Sized + Default {
+pub trait TraversableFixture: Sized + Default {
   fn init_add() -> Self {
     Self::default()
   }
@@ -27,10 +27,10 @@ pub trait AggregableFixture: Sized + Default {
   fn check_mul(&self, value: Self) -> Option<Self>;
 }
 
-pub fn test_iterable<A, C>(data: C) -> bool
+pub fn test_traversable<A, C>(data: C) -> bool
 where
-  A: IterableFixture + PartialEq + Ord + Clone,
-  C: Iterable<A> + IntoIterator<Item = A> + Clone,
+  A: TraversableFixture + PartialEq + Ord + Clone,
+  C: Traversable<A> + IntoIterator<Item = A> + Clone,
 {
   let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
   let any = data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test());
@@ -47,7 +47,7 @@ where
 
 pub fn test_ordered<A, C>(data: C) -> bool
 where
-  A: IterableFixture,
+  A: TraversableFixture,
   C: Ordered<A> + IntoIterator<Item = A> + Clone,
 {
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
@@ -56,7 +56,7 @@ where
 
 pub fn test_aggregable<A, C>(data: C) -> bool
 where
-  A: IterableFixture + AggregableFixture + PartialEq + Sum + Product,
+  A: TraversableFixture + AggregableFixture + PartialEq + Sum + Product,
   C: Aggregable<A> + IntoIterator<Item = A> + Clone,
 {
   (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.check_add(y))

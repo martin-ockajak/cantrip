@@ -5,7 +5,7 @@ use std::hash::Hash;
 use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
-impl<A> Iterable<A> for HashSet<A> {
+impl<A> Traversable<A> for HashSet<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     all(self.iter(), predicate)
   }

@@ -1,10 +1,11 @@
+use crate::extensions::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
 
-pub trait List<A> {
+pub trait List<'c, A> {
   type This<Item>;
 
   fn add(self, value: A) -> Self
@@ -116,6 +117,16 @@ pub trait List<A> {
   /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>;
+
+  // fn x_map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
+  // where
+  //   A: 'c,
+  //   Self: Iterable<Item<'c> = &'c A> + 'c,
+  //   Self::This<B>: FromIterator<B>,
+  // {
+  //   let x = self.iterator();
+  //   x.map(function).collect()
+  // }
 
   fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::This<B>;
 

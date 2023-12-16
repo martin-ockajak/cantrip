@@ -6,7 +6,21 @@ use std::ops::RangeBounds;
 use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
-impl<A> Iterable<A> for Vec<A> {
+impl<T> Iterable for Vec<T> {
+  type Item<'c> = &'c T
+    where
+      T: 'c;
+
+  type Iterator<'c> = Iter<'c, T>
+    where
+      T: 'c;
+
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    Iter { collection: self }
+  }
+}
+
+impl<A> Traversable<A> for Vec<A> {
   fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
     all(self.iter(), predicate)
   }
@@ -64,7 +78,7 @@ impl<A> Collectible<A> for Vec<A> {
   type This<X> = Vec<X>;
 }
 
-impl<A> List<A> for Vec<A> {
+impl<'c, A> List<'c, A> for Vec<A> {
   type This<X> = Vec<X>;
 
   fn exclude(self, value: &A) -> Self
