@@ -41,7 +41,7 @@ Reduce complexity and enhance readability or Rust code for a reasonable cost in 
 ```
 
 
-# API
+# Collection Extensions
 
 | Method           | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet  | HashMap, BTreeMap  | Slice              |
 |------------------|-------------|---------------------------|--------------------|--------------------|--------------------|
