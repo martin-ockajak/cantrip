@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 
-pub trait List<Item> {
+pub trait Sequence<Item> {
   type This<I>;
 
   fn add(self, value: Item) -> Self
@@ -36,7 +36,22 @@ pub trait List<Item> {
 
   fn exclude(self, value: &Item) -> Self
     where
-      Item: PartialEq;
+      Item: PartialEq,
+      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut removed = false;
+    self
+      .into_iter()
+      .filter(|x| {
+        if removed {
+          true
+        } else {
+          removed = true;
+          value != x
+        }
+      })
+      .collect()
+  }
 
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where

@@ -63,26 +63,8 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 }
 
-impl<Item> List<Item> for LinkedList<Item> {
+impl<Item> Sequence<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
-
-  fn exclude(self, value: &Item) -> Self
-    where
-      Item: PartialEq,
-  {
-    let mut removed = false;
-    self
-      .into_iter()
-      .filter(|x| {
-        if removed {
-          true
-        } else {
-          removed = true;
-          x != value
-        }
-      })
-      .collect()
-  }
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()

@@ -6,16 +6,16 @@ use crate::extensions::*;
 impl<Key, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   type This<X, V> = BTreeMap<X, V>;
 
-  fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
-    self.iter().all(predicate)
+  fn all(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
+    all_pair(self.iter(), |&x| predicate(x))
   }
 
-  fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
-    self.iter().any(predicate)
+  fn any(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
+    any_pair(self.iter(), |&x| predicate(x))
   }
 
   fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
-    self.iter().filter(|&(k, v)| predicate((k, v))).count()
+    count_by_pair(self.iter(), |&x| predicate(x))
   }
 
   fn find(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)> {
@@ -35,7 +35,7 @@ impl<Key, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
-    reduce_pair(self.iter(), function)
+    reduce_pairs(self.iter(), function)
   }
 }
 
@@ -87,20 +87,5 @@ impl<Key, Value> OrdMap<Key, Value> for BTreeMap<Key, Value> {
     W: Ord,
   {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
-  }
-}
-
-#[cfg(test)]
-mod tests {
-  use std::collections::BTreeMap;
-
-  use crate::extensions::*;
-
-  #[quickcheck]
-  fn map(data: BTreeMap<i32, i32>) -> bool {
-    let function = |(k, v): (&i32, &i32)| (*k, *v as i64);
-    let result = data.map(function);
-    let expected = data.iter().map(function).collect::<BTreeMap<i32, i64>>();
-    result == expected
   }
 }

@@ -22,7 +22,8 @@ pub trait Map<Key, Value> {
 
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
-    Self: Sized + Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self:
+      Sized + Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     self.into_iter().partition(|(k, v)| predicate((&k, &v)))
   }
@@ -70,11 +71,19 @@ pub trait Map<Key, Value> {
   }
 }
 
-pub(crate) fn fold_pair<A, B>(iterator: impl Iterator<Item = A>, init: B, mut function: impl FnMut(B, &A) -> B) -> B {
-  iterator.fold(init, |r, x| function(r, &x))
+pub(crate) fn all_pair<A>(mut iterator: impl Iterator<Item = A>, mut predicate: impl FnMut(&A) -> bool) -> bool {
+  iterator.all(|x| predicate(&x))
 }
 
-pub(crate) fn reduce_pair<'a, K: 'a, V: 'a>(
+pub(crate) fn any_pair<A>(mut iterator: impl Iterator<Item = A>, mut predicate: impl FnMut(&A) -> bool) -> bool {
+  iterator.any(|x| predicate(&x))
+}
+
+pub(crate) fn count_by_pair<A>(iterator: impl Iterator<Item = A>, predicate: impl FnMut(&A) -> bool) -> usize {
+  iterator.filter(predicate).count()
+}
+
+pub(crate) fn reduce_pairs<'a, K: 'a, V: 'a>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V),
 ) -> Option<(K, V)> {
   iterator.next().and_then(|value1| {

@@ -1,4 +1,4 @@
-use crate::extensions::{all, any, count_by, fold, Traversable, reduce};
+use crate::extensions::{all, any, count_by, fold, reduce, Traversable};
 use crate::extensions::{Ordered, Slice};
 use std::cmp::{max, min, Ordering};
 

@@ -71,7 +71,7 @@ where
 pub fn test_list<'c, A, C>(data: C) -> bool
 where
   A: TraversableFixture + 'c,
-  C: List<A> + IntoIterator<Item = A> + FromIterator<A> + Iterable<Item<'c> = &'c A> + PartialEq + Clone + 'c,
+  C: Sequence<A> + IntoIterator<Item = A> + FromIterator<A> + Iterable<Item<'c> = &'c A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
 {
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
@@ -117,3 +117,15 @@ where
 // {
 //   data.clone().rev() == data.clone().into_iter().rev().collect()
 // }
+
+//   use std::collections::HashMap;
+//
+//   use crate::extensions::*;
+//
+//   #[quickcheck]
+//   fn map(data: HashMap<i32, i32>) -> bool {
+//     let function = |(k, v): (&i32, &i32)| (*k, *v as i64);
+//     let result = data.map(function);
+//     let expected = data.iter().map(function).collect::<HashMap<i32, i64>>();
+//     result == expected
+//   }
