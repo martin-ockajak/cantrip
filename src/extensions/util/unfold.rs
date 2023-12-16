@@ -21,21 +21,3 @@ pub(crate) struct Unfold<S, F> {
   pub state: S,
   function: F,
 }
-
-// pub trait Kind1 {
-//   type Param1;
-// }
-//
-// impl<A1> Kind1 for Option<A1> {
-//   type Param1 = A1;
-// }
-//
-// pub trait Apply1<A1> {
-//   type Param1;
-//   type Result;
-// }
-//
-// impl<A1, P1> Apply1<A1> for Option<P1> {
-//   type Param1 = A1;
-//   type Result = Option<A1>;
-// }
