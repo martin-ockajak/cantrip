@@ -118,6 +118,13 @@ pub trait Map<K, V> {
 
   fn min_by(&self, compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering) -> Option<(&K, &V)>;
 
+  fn partition(self, mut predicate: impl FnMut((&K, &V)) -> bool) -> (Self, Self)
+  where
+    Self: Sized + Default + Extend<(K, V)> + IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().partition(|(k, v)| predicate((&k, &v)))
+  }
+
   fn product_keys<S>(self) -> K
   where
     K: Product,
