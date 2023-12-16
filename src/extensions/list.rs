@@ -144,6 +144,12 @@ pub trait List<A> {
 
   fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
 
+  fn sorted_unstable(self) -> Self
+    where
+      A: Ord;
+
+  fn sorted_unstable_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
+
   fn step_by(self, step: usize) -> Self
   where
     Self: IntoIterator<Item = A> + Sized + FromIterator<A>,

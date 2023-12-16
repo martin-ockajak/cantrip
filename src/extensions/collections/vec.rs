@@ -188,7 +188,7 @@ impl<A> List<A> for Vec<A> {
     where
       Self: IntoIterator<Item = A>,
   {
-    let mut result: Vec<A> = self.into_iter().collect();
+    let mut result = self.into_iter().collect::<Vec<A>>();
     result.insert(index, element);
     result
   }
@@ -213,6 +213,21 @@ impl<A> List<A> for Vec<A> {
   fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self {
     let mut result = self.into_iter().collect::<Vec<A>>();
     result.sort_by(compare);
+    result
+  }
+
+  fn sorted_unstable(self) -> Self
+    where
+      A: Ord,
+  {
+    let mut result = self.into_iter().collect::<Vec<A>>();
+    result.sort_unstable();
+    result
+  }
+
+  fn sorted_unstable_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self {
+    let mut result = self.into_iter().collect::<Vec<A>>();
+    result.sort_unstable_by(compare);
     result
   }
 
