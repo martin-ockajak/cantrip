@@ -64,6 +64,64 @@ impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 }
 
+impl<Item> Sequence<Item> for Vec<Item> {
+  type This<I> = Vec<I>;
+
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
+    self.iter().filter_map(function).collect()
+  }
+
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+    self.iter().find_map(function)
+  }
+
+  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  where
+    R: IntoIterator<Item = B>,
+  {
+    self.iter().flat_map(function).collect()
+  }
+
+  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  where
+    K: Eq + Hash,
+    Self: Sized,
+  {
+    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+  }
+
+  fn init(self) -> Self {
+    let mut iterator = self.into_iter().rev();
+    iterator.next();
+    iterator.rev().collect()
+  }
+
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self {
+    let mut result: Vec<Item> = Vec::new();
+    for (item1, item2) in self.into_iter().zip(iterable) {
+      result.push(item1);
+      result.push(item2);
+    }
+    result
+  }
+
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
+    self.iter().map(function).collect()
+  }
+
+  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
+    self.iter().map_while(predicate).collect()
+  }
+
+  fn rev(self) -> Self {
+    self.into_iter().rev().collect()
+  }
+
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
+    self.iter().scan(init, function).collect()
+  }
+}
+
 impl<Item> Indexed<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
@@ -159,62 +217,3 @@ impl<Item> Indexed<Item> for Vec<Item> {
     result
   }
 }
-
-impl<Item> Sequence<Item> for Vec<Item> {
-  type This<I> = Vec<I>;
-
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
-    self.iter().filter_map(function).collect()
-  }
-
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    self.iter().find_map(function)
-  }
-
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-  where
-    R: IntoIterator<Item = B>,
-  {
-    self.iter().flat_map(function).collect()
-  }
-
-  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
-  where
-    K: Eq + Hash,
-    Self: Sized,
-  {
-    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
-  }
-
-  fn init(self) -> Self {
-    let mut iterator = self.into_iter().rev();
-    iterator.next();
-    iterator.rev().collect()
-  }
-
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self {
-    let mut result: Vec<Item> = Vec::new();
-    for (item1, item2) in self.into_iter().zip(iterable) {
-      result.push(item1);
-      result.push(item2);
-    }
-    result
-  }
-
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
-    self.iter().map(function).collect()
-  }
-
-  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
-    self.iter().map_while(predicate).collect()
-  }
-
-  fn rev(self) -> Self {
-    self.into_iter().rev().collect()
-  }
-
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
-    self.iter().scan(init, function).collect()
-  }
-}
-
