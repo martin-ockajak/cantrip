@@ -64,6 +64,15 @@ where
     && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.check_mul(y))
       || data.clone().product() == data.clone().into_iter().product())
 }
+//
+// pub fn test_list<A, C>(data: C) -> bool
+//   where
+//     A: IterableFixture,
+//     C: List<A> + IntoIterator<Item = A> + Clone,
+// {
+//   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+//   map
+// }
 
 fn safe_aggregate<A, C>(data: C, init: A, mut aggregate: impl FnMut(A, A) -> Option<A>) -> bool
 where
