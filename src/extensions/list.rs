@@ -104,8 +104,7 @@ pub trait List<A> {
 
   fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
   where
-    Self: Sized + Default + Extend<A>,
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: Sized + Default + Extend<A> + IntoIterator<Item = A> + Sized + FromIterator<A>,
   {
     self.into_iter().partition(predicate)
   }

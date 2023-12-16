@@ -63,6 +63,14 @@ pub trait Set<A> {
   where
     B: Eq + Hash;
 
+  fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
+    where
+      A: Eq + Hash,
+      Self: Sized + Default + Extend<A> + IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().partition(predicate)
+  }
+
   fn unit(value: A) -> Self
   where
     A: Eq + Hash,
