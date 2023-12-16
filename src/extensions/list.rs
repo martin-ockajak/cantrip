@@ -222,9 +222,19 @@ pub trait List<A> {
 
   fn unzip<B, C>(self) -> (Self::This<B>, Self::This<C>)
   where
-    Self: IntoIterator<Item = (B, C)>;
+    Self: IntoIterator<Item = (B, C)> + Sized,
+    Self::This<B>: Default + Extend<B>,
+    Self::This<C>: Default + Extend<C>,
+  {
+    self.into_iter().unzip()
+  }
 
   fn zip<I>(self, iterable: I) -> Self::This<(A, I::Item)>
   where
-    I: IntoIterator;
+    I: IntoIterator,
+    Self: IntoIterator<Item = A> + Sized,
+    Self::This<(A, I::Item)>: FromIterator<(A, I::Item)>,
+  {
+    self.into_iter().zip(iterable).collect()
+  }
 }

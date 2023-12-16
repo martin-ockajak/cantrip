@@ -230,20 +230,6 @@ impl<A> List<A> for Vec<A> {
     result.sort_unstable_by(compare);
     result
   }
-
-  fn unzip<B, C>(self) -> (Self::This<B>, Self::This<C>)
-  where
-    Self: IntoIterator<Item = (B, C)>,
-  {
-    self.into_iter().unzip()
-  }
-
-  fn zip<I>(self, iterable: I) -> Self::This<(A, I::Item)>
-  where
-    I: IntoIterator,
-  {
-    self.into_iter().zip(iterable).collect()
-  }
 }
 
 // #[cfg(test)]
