@@ -8,15 +8,15 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
 
   fn all(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
-    all_pair(self.iter(), |&x| predicate(x))
+    all_pairs(self.iter(), |&x| predicate(x))
   }
 
   fn any(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
-    any_pair(self.iter(), |&x| predicate(x))
+    any_pairs(self.iter(), |&x| predicate(x))
   }
 
   fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
-    count_by_pair(self.iter(), |&x| predicate(x))
+    count_by_pairs(self.iter(), |&x| predicate(x))
   }
 
   fn find(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)> {
@@ -24,7 +24,7 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
-    self.iter().fold(init, function)
+    fold_pairs(self.iter(), init, function)
   }
 
   fn max_by(&self, mut compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)> {
