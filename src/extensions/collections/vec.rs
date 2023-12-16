@@ -125,24 +125,6 @@ impl<Item> Indexed<Item> for Vec<Item> {
       .collect()
   }
 
-  fn exclude(self, value: &Item) -> Self
-    where
-      Item: PartialEq,
-  {
-    let mut removed = false;
-    self
-      .into_iter()
-      .filter(|x| {
-        if removed {
-          true
-        } else {
-          removed = true;
-          x != value
-        }
-      })
-      .collect()
-  }
-
   fn put(self, index: usize, element: Item) -> Self
     where
       Self: IntoIterator<Item = Item>,
@@ -194,6 +176,24 @@ impl<Item> Indexed<Item> for Vec<Item> {
 
 impl<Item> List<Item> for Vec<Item> {
   type This<I> = Vec<I>;
+
+  fn exclude(self, value: &Item) -> Self
+    where
+      Item: PartialEq,
+  {
+    let mut removed = false;
+    self
+      .into_iter()
+      .filter(|x| {
+        if removed {
+          true
+        } else {
+          removed = true;
+          x != value
+        }
+      })
+      .collect()
+  }
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()

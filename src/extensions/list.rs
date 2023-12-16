@@ -38,6 +38,10 @@ pub trait List<Item> {
     self.into_iter().enumerate().collect()
   }
 
+  fn exclude(self, value: &Item) -> Self
+    where
+      Item: PartialEq;
+
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,

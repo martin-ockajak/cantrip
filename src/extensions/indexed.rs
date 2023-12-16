@@ -17,10 +17,6 @@ pub trait Indexed<Item> {
   where
     K: Eq + Hash;
 
-  fn exclude(self, value: &Item) -> Self
-  where
-    Item: PartialEq;
-
   fn put(self, index: usize, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item>;
