@@ -118,6 +118,7 @@ pub trait List<A> {
   /// ```
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>;
 
+  // FIXME - make the lifetimes work
   // fn x_map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
   // where
   //   A: 'c,
@@ -141,6 +142,7 @@ pub trait List<A> {
   where
     Self: IntoIterator<Item = A>;
 
+  // FIXME - make the moving work
   // fn x_put(self, index: usize, element: A) -> Self
   // where
   //   Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
