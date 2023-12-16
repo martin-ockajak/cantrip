@@ -2,8 +2,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
-
-use crate::extensions::MultiMap;
+use std::ops::RangeBounds;
 
 pub trait List<A> {
   type Root<X>;
@@ -117,8 +116,12 @@ pub trait List<A> {
   }
 
   fn put(self, index: usize, element: A) -> Self
-    where
-      Self: IntoIterator<Item = A>;
+  where
+    Self: IntoIterator<Item = A>;
+
+  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
+  where
+    Self: IntoIterator<Item = A>;
 
   fn rev(self) -> Self;
 
@@ -145,8 +148,8 @@ pub trait List<A> {
   fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
 
   fn sorted_unstable(self) -> Self
-    where
-      A: Ord;
+  where
+    A: Ord;
 
   fn sorted_unstable_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
 

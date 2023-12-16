@@ -1,20 +1,19 @@
-pub mod aggregable;
-pub mod collectible;
-pub mod iterable;
-pub mod list;
-pub mod map;
-pub mod multimap;
-pub mod ordered;
-pub mod set;
-pub mod slice;
-mod collections;
-
 pub use aggregable::*;
 pub use collectible::*;
 pub use iterable::*;
 pub use list::*;
 pub use map::*;
-pub use multimap::*;
 pub use ordered::*;
 pub use set::*;
 pub use slice::*;
+
+mod aggregable;
+mod collectible;
+mod collections;
+mod iterable;
+mod list;
+mod map;
+mod ordered;
+mod set;
+mod slice;
+mod util;

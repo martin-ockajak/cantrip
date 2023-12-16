@@ -84,6 +84,7 @@ Cantrip adds convenient functional-style methods to Rust standard library collec
 | *product_values*     | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *put*                | Python      | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *reduce*             | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| *replace*            | Python      | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *rev*                | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *rfind*              | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |
 | *rfold*              | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |

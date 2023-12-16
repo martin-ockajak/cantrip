@@ -1,7 +1,9 @@
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
+use std::ops::RangeBounds;
 
+use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
 impl<A> Iterable<A> for Vec<A> {
@@ -185,8 +187,8 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn put(self, index: usize, element: A) -> Self
-    where
-      Self: IntoIterator<Item = A>,
+  where
+    Self: IntoIterator<Item = A>,
   {
     let mut result = self.into_iter().collect::<Vec<A>>();
     result.insert(index, element);
@@ -195,6 +197,15 @@ impl<A> List<A> for Vec<A> {
 
   fn rev(self) -> Self {
     self.into_iter().rev().collect()
+  }
+
+  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
+  where
+    Self: IntoIterator<Item = A>,
+  {
+    let mut result = self.into_iter().collect::<Vec<A>>();
+    result.splice(range, replace_with);
+    result
   }
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B> {
@@ -217,8 +228,8 @@ impl<A> List<A> for Vec<A> {
   }
 
   fn sorted_unstable(self) -> Self
-    where
-      A: Ord,
+  where
+    A: Ord,
   {
     let mut result = self.into_iter().collect::<Vec<A>>();
     result.sort_unstable();

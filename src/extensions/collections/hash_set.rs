@@ -2,6 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
+use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
 impl<A> Iterable<A> for HashSet<A> {
@@ -88,10 +89,10 @@ impl<A> Set<A> for HashSet<A> {
   }
 
   fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
-    where
-      A: Eq + Hash,
-      K: Eq + Hash,
-      Self: Sized,
+  where
+    A: Eq + Hash,
+    K: Eq + Hash,
+    Self: Sized,
   {
     HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
