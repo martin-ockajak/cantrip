@@ -54,6 +54,8 @@ where
   C: Ordered<A> + IntoIterator<Item = A> + Clone,
 {
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
+  // let rposition = data.rposition(|x| x.test()) == data.clone().into_iter().rev().position(|x| x.test());
+  // position && rposition
   position
 }
 
