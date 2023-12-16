@@ -1,21 +1,21 @@
 use std::cmp::Ordering;
 
-pub trait Traversable<A> {
-  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool;
+pub trait Traversable<Item> {
+  fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
-  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool;
+  fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
-  fn count_by(&self, predicate: impl FnMut(&A) -> bool) -> usize;
+  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
 
-  fn find(&self, predicate: impl FnMut(&A) -> bool) -> Option<&A>;
+  fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B;
+  fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B;
 
-  fn max_by(&self, compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A>;
+  fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  fn min_by(&self, compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A>;
+  fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  fn reduce(&self, function: impl FnMut(&A, &A) -> A) -> Option<A>;
+  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 }
 
 pub(crate) fn all<'a, A: 'a>(mut iterator: impl Iterator<Item = &'a A>, predicate: impl FnMut(&A) -> bool) -> bool {

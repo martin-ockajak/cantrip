@@ -20,70 +20,70 @@ impl<T> Iterable for Vec<T> {
   }
 }
 
-impl<A> Traversable<A> for Vec<A> {
-  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
+impl<Item> Traversable<Item> for Vec<Item> {
+  fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
   }
 
-  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool {
+  fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
 
-  fn count_by(&self, predicate: impl FnMut(&A) -> bool) -> usize {
+  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize {
     count_by(self.iter(), predicate)
   }
 
-  fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
+  fn find(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
+  fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     fold(self.iter(), init, function)
   }
 
-  fn max_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+  fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
 
-  fn min_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+  fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
-  fn reduce(&self, function: impl FnMut(&A, &A) -> A) -> Option<A> {
+  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
     reduce(self.iter(), function)
   }
 }
 
-impl<A> Ordered<A> for Vec<A> {
-  fn position(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
+impl<Item> Ordered<Item> for Vec<Item> {
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }
 
-  fn rfind(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
+  fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
   }
 
-  fn rfold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
+  fn rfold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.iter().rfold(init, function)
   }
 
-  fn rposition(&self, predicate: impl FnMut(&A) -> bool) -> Option<usize> {
+  fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.iter().rposition(predicate)
   }
 }
 
-impl<A> Aggregable<A> for Vec<A> {}
+impl<Item> Aggregable<Item> for Vec<Item> {}
 
-impl<A> Collectible<A> for Vec<A> {
-  type This<X> = Vec<X>;
+impl<Item> Collectible<Item> for Vec<Item> {
+  type This<I> = Vec<I>;
 }
 
-impl<A> List<A> for Vec<A> {
-  type This<X> = Vec<X>;
+impl<Item> List<Item> for Vec<Item> {
+  type This<I> = Vec<I>;
 
-  fn exclude(self, value: &A) -> Self
+  fn exclude(self, value: &Item) -> Self
   where
-    A: PartialEq,
+    Item: PartialEq,
   {
     let mut removed = false;
     self
@@ -101,9 +101,9 @@ impl<A> List<A> for Vec<A> {
 
   fn distinct(self) -> Self
   where
-    A: Eq + Hash,
+    Item: Eq + Hash,
   {
-    let mut occurred: HashSet<&A> = HashSet::new();
+    let mut occurred: HashSet<&Item> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
     unsafe {
       for index in 0..self.len() {
@@ -121,7 +121,7 @@ impl<A> List<A> for Vec<A> {
       .collect()
   }
 
-  fn distinct_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> Self
+  fn distinct_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
   {
@@ -143,22 +143,22 @@ impl<A> List<A> for Vec<A> {
       .collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B> {
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B> {
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
   }
 
-  fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
+  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
     Self: Sized,
@@ -172,8 +172,8 @@ impl<A> List<A> for Vec<A> {
     iterator.rev().collect()
   }
 
-  fn interleave(self, iterable: impl IntoIterator<Item = A>) -> Self {
-    let mut result: Vec<A> = Vec::new();
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self {
+    let mut result: Vec<Item> = Vec::new();
     for (item1, item2) in self.into_iter().zip(iterable) {
       result.push(item1);
       result.push(item2);
@@ -181,19 +181,19 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B> {
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }
 
-  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::This<B> {
+  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn put(self, index: usize, element: A) -> Self
+  fn put(self, index: usize, element: Item) -> Self
   where
-    Self: IntoIterator<Item = A>,
+    Self: IntoIterator<Item = Item>,
   {
-    let mut result = self.into_iter().collect::<Vec<A>>();
+    let mut result = self.into_iter().collect::<Vec<Item>>();
     result.insert(index, element);
     result
   }
@@ -204,43 +204,43 @@ impl<A> List<A> for Vec<A> {
 
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
-    Self: IntoIterator<Item = A>,
+    Self: IntoIterator<Item = Item>,
   {
-    let mut result = self.into_iter().collect::<Vec<A>>();
+    let mut result = self.into_iter().collect::<Vec<Item>>();
     result.splice(range, replace_with);
     result
   }
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::This<B> {
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
     self.iter().scan(init, function).collect()
   }
 
   fn sorted(self) -> Self
   where
-    A: Ord,
+    Item: Ord,
   {
-    let mut result = self.into_iter().collect::<Vec<A>>();
+    let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort();
     result
   }
 
-  fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self {
-    let mut result = self.into_iter().collect::<Vec<A>>();
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_by(compare);
     result
   }
 
   fn sorted_unstable(self) -> Self
   where
-    A: Ord,
+    Item: Ord,
   {
-    let mut result = self.into_iter().collect::<Vec<A>>();
+    let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable();
     result
   }
 
-  fn sorted_unstable_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self {
-    let mut result = self.into_iter().collect::<Vec<A>>();
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by(compare);
     result
   }

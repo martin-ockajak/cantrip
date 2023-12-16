@@ -5,74 +5,74 @@ use std::hash::Hash;
 use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
-impl<A> Traversable<A> for HashSet<A> {
-  fn all(&self, predicate: impl FnMut(&A) -> bool) -> bool {
+impl<Item> Traversable<Item> for HashSet<Item> {
+  fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
   }
 
-  fn any(&self, predicate: impl FnMut(&A) -> bool) -> bool {
+  fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
 
-  fn count_by(&self, predicate: impl FnMut(&A) -> bool) -> usize {
+  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize {
     count_by(self.iter(), predicate)
   }
 
-  fn find(&self, mut predicate: impl FnMut(&A) -> bool) -> Option<&A> {
+  fn find(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().find(|&x| predicate(x))
   }
 
-  fn fold<B>(&self, init: B, function: impl FnMut(B, &A) -> B) -> B {
+  fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     fold(self.iter(), init, function)
   }
 
-  fn max_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+  fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
 
-  fn min_by(&self, mut compare: impl FnMut(&A, &A) -> Ordering) -> Option<&A> {
+  fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
 
-  fn reduce(&self, function: impl FnMut(&A, &A) -> A) -> Option<A> {
+  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
     reduce(self.iter(), function)
   }
 }
 
-impl<A> Aggregable<A> for HashSet<A> {}
+impl<Item> Aggregable<Item> for HashSet<Item> {}
 
-impl<A> Collectible<A> for HashSet<A> {
-  type This<Item> = HashSet<Item>;
+impl<Item> Collectible<Item> for HashSet<Item> {
+  type This<I> = HashSet<I>;
 }
 
-impl<A> Set<A> for HashSet<A> {
-  type This<Item> = HashSet<Item>;
+impl<Item> Set<Item> for HashSet<Item> {
+  type This<I> = HashSet<I>;
 
-  fn exclude(self, value: &A) -> Self
+  fn exclude(self, value: &Item) -> Self
   where
-    A: Eq + Hash,
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Item: Eq + Hash,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(|x| x != value).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B>
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
-    A: Eq + Hash,
+    Item: Eq + Hash,
     B: Eq + Hash,
   {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>
   where
-    A: Eq + Hash,
+    Item: Eq + Hash,
     B: Eq + Hash,
   {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     B: Eq + Hash,
     R: IntoIterator<Item = B>,
@@ -80,16 +80,16 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().flat_map(function).collect()
   }
 
-  fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
+  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    A: Eq + Hash,
+    Item: Eq + Hash,
     K: Eq + Hash,
     Self: Sized,
   {
     HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     B: Eq + Hash,
   {

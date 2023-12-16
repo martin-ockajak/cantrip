@@ -1,86 +1,87 @@
-use crate::extensions::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
 
-pub trait List<A> {
-  type This<Item>;
+use crate::extensions::Iterable;
 
-  fn add(self, value: A) -> Self
+pub trait List<Item> {
+  type This<I>;
+
+  fn add(self, value: Item) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn concat(self, iterable: impl IntoIterator<Item = A>) -> Self
+  fn concat(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
 
   fn distinct(self) -> Self
   where
-    A: Eq + Hash;
+    Item: Eq + Hash;
 
-  fn distinct_by<K>(self, to_key: impl FnMut(&A) -> K) -> Self
+  fn distinct_by<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash;
 
   fn delete(self, index: usize) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
-  fn enumerate(self) -> Self::This<(usize, A)>
+  fn enumerate(self) -> Self::This<(usize, Item)>
   where
-    Self: IntoIterator<Item = A> + Sized,
-    Self::This<(usize, A)>: FromIterator<(usize, A)>,
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<(usize, Item)>: FromIterator<(usize, Item)>,
   {
     self.into_iter().enumerate().collect()
   }
 
-  fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
+  fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn exclude(self, value: &A) -> Self
+  fn exclude(self, value: &Item) -> Self
   where
-    A: PartialEq;
+    Item: PartialEq;
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B>;
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
-  fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>;
 
   fn flatten<B>(self) -> Self::This<B>
   where
-    A: IntoIterator<Item = B>,
-    Self: IntoIterator<Item = A> + Sized,
+    Item: IntoIterator<Item = B>,
+    Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
   {
     self.into_iter().flatten().collect()
   }
 
-  fn group_by<K>(self, to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
+  fn group_by<K>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
     Self: Sized;
 
   fn init(self) -> Self;
 
-  fn interleave(self, iterable: impl IntoIterator<Item = A>) -> Self;
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self;
 
   /// Applies the given closure `f` to each element in the container.
   ///
@@ -116,7 +117,7 @@ pub trait List<A> {
   ///
   /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>;
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>;
 
   // FIXME - make the lifetimes work
   // fn x_map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
@@ -129,18 +130,18 @@ pub trait List<A> {
   //   x.map(function).collect()
   // }
 
-  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::This<B>;
+  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
-  fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
+  fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
-    Self: Sized + Default + Extend<A> + IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: Sized + Default + Extend<Item> + IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().partition(predicate)
   }
 
-  fn put(self, index: usize, element: A) -> Self
+  fn put(self, index: usize, element: Item) -> Self
   where
-    Self: IntoIterator<Item = A>;
+    Self: IntoIterator<Item = Item>;
 
   // FIXME - make the moving work
   // fn x_put(self, index: usize, element: A) -> Self
@@ -164,48 +165,48 @@ pub trait List<A> {
   //
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
-    Self: IntoIterator<Item = A>;
+    Self: IntoIterator<Item = Item>;
 
   fn rev(self) -> Self;
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::This<B>;
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>;
 
   fn skip(self, n: usize) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().skip(n).collect()
   }
 
-  fn skip_while(self, predicate: impl FnMut(&A) -> bool) -> Self
+  fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().skip_while(predicate).collect()
   }
 
   fn sorted(self) -> Self
   where
-    A: Ord;
+    Item: Ord;
 
-  fn sorted_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self;
 
   fn sorted_unstable(self) -> Self
   where
-    A: Ord;
+    Item: Ord;
 
-  fn sorted_unstable_by(self, compare: impl FnMut(&A, &A) -> Ordering) -> Self;
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self;
 
   fn step_by(self, step: usize) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().step_by(step).collect()
   }
 
   fn tail(self) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     iterator.next();
@@ -214,21 +215,21 @@ pub trait List<A> {
 
   fn take(self, n: usize) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().take(n).collect()
   }
 
-  fn take_while(self, predicate: impl FnMut(&A) -> bool) -> Self
+  fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().take_while(predicate).collect()
   }
 
-  fn unit(value: A) -> Self
+  fn unit(value: Item) -> Self
   where
-    Self: FromIterator<A>,
+    Self: FromIterator<Item>,
   {
     iter::once(value).collect()
   }
@@ -242,11 +243,11 @@ pub trait List<A> {
     self.into_iter().unzip()
   }
 
-  fn zip<I>(self, iterable: I) -> Self::This<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::This<(Item, I::Item)>
   where
     I: IntoIterator,
-    Self: IntoIterator<Item = A> + Sized,
-    Self::This<(A, I::Item)>: FromIterator<(A, I::Item)>,
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<(Item, I::Item)>: FromIterator<(Item, I::Item)>,
   {
     self.into_iter().zip(iterable).collect()
   }
