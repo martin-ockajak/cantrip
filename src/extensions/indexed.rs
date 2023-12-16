@@ -27,7 +27,7 @@ pub trait Indexed<Item> {
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    // let mut value = Rc::new(element);
+    let mut value = Rc::new(element);
     unfold((0 as usize, false), |(current, done)| {
       if !*done && *current == index {
         *done = true;
