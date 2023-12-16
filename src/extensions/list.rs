@@ -3,6 +3,8 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
+use std::rc::Rc;
+use crate::extensions::util::unfold::unfold;
 
 pub trait List<A> {
   type Root<X>;
@@ -118,6 +120,25 @@ pub trait List<A> {
   fn put(self, index: usize, element: A) -> Self
   where
     Self: IntoIterator<Item = A>;
+
+  // fn put(self, index: usize, element: A) -> Self
+  //   where
+  //     Self: IntoIterator<Item = A> + Sized + FromIterator<A> {
+  //   let mut iterator = self.into_iter();
+  //   let mut value = Rc::new(element);
+  //   let x = move || { value };
+  //   unfold((0 as usize, false), |(current, done)| {
+  //     if !*done && *current == index {
+  //       *done = true;
+  //       x();
+  //       None
+  //       // Rc::into_inner(value)
+  //     } else {
+  //       *current += 1;
+  //       iterator.next()
+  //     }
+  //   }).collect()
+  // }
 
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
