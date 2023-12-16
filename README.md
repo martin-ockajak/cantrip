@@ -10,11 +10,13 @@ Cantrip adds convenient functional-style methods to Rust standard library collec
 
 ## Features
 
-* Equivalents of all suitable iterator methods are added to standard library collection data types
-* Various utility methods inspired by other libraries are added to library collection data types
+* Equivalents of all suitable iterator methods alon are added to standard library collection data types
+* Various utility methods inspired by other libraries are also added to library collection data types
 * Transformation methods always produce new instances of the same collection type
+* Everything is available through a single import but specific imports are also supported
 * All additional methods treat the collections as immutable
-* None of the additional method clone collection elements
+* None of the additional methods clone collection elements
+* None of the additional methods use dynamic dispatch
 
 ## Examples
 

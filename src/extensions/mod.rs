@@ -3,7 +3,6 @@ pub use collectible::*;
 pub use eq_set::*;
 pub use eq_map::*;
 pub use indexed::*;
-pub use util::iterable::*;
 pub use sequence::*;
 pub use map::*;
 pub use ord_set::*;
