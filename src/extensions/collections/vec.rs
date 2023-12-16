@@ -6,14 +6,14 @@ use std::ops::RangeBounds;
 use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
-impl<T> Iterable for Vec<T> {
-  type Item<'c> = &'c T
+impl<Item> Iterable for Vec<Item> {
+  type Item<'c> = &'c Item
     where
-      T: 'c;
+      Item: 'c;
 
-  type Iterator<'c> = Iter<'c, T>
+  type Iterator<'c> = Iter<'c, Item>
     where
-      T: 'c;
+      Item: 'c;
 
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     Iter { collection: self }
