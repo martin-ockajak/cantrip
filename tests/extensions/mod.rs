@@ -55,8 +55,8 @@ where
   C: Ordered<A> + IntoIterator<Item = A> + Clone,
 {
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
+  // FIXME - make iterator reversal work
   // let rposition = data.rposition(|x| x.test()) == data.clone().into_iter().rev().position(|x| x.test());
-  // position && rposition
   position
 }
 
@@ -83,6 +83,8 @@ where
   let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
     == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  // FIXME - make iterator reversal work
+  // let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
   enumerate && filter && flat_map && map
 }
 
@@ -117,13 +119,6 @@ where
   }
   safe
 }
-
-// pub fn test_list<A, C>(data: C, mut predicate: impl FnMut(&A) -> bool) -> bool
-//   where
-//     C: List<A> + IntoIterator<Item = A> + Clone + PartialEq,
-// {
-//   data.clone().rev() == data.clone().into_iter().rev().collect()
-// }
 
 //   use std::collections::HashMap;
 //
