@@ -16,7 +16,7 @@ Cantrip adds convenient functional-style methods to Rust standard library collec
 * All additional methods treat the collections as immutable
 * None of the additional method clone collection elements
 
-## Example
+## Examples
 
 ```rust
   use cantrip::extensions::*;
