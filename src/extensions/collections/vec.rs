@@ -78,30 +78,12 @@ impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 }
 
-impl<Item> List<Item> for Vec<Item> {
+impl<Item> Indexed<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
-  fn exclude(self, value: &Item) -> Self
-  where
-    Item: PartialEq,
-  {
-    let mut removed = false;
-    self
-      .into_iter()
-      .filter(|x| {
-        if removed {
-          true
-        } else {
-          removed = true;
-          x != value
-        }
-      })
-      .collect()
-  }
-
   fn distinct(self) -> Self
-  where
-    Item: Eq + Hash,
+    where
+      Item: Eq + Hash,
   {
     let mut occurred: HashSet<&Item> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
@@ -122,8 +104,8 @@ impl<Item> List<Item> for Vec<Item> {
   }
 
   fn distinct_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
-  where
-    K: Eq + Hash,
+    where
+      K: Eq + Hash,
   {
     let mut occurred: HashSet<K> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
@@ -142,6 +124,76 @@ impl<Item> List<Item> for Vec<Item> {
       .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
       .collect()
   }
+
+  fn exclude(self, value: &Item) -> Self
+    where
+      Item: PartialEq,
+  {
+    let mut removed = false;
+    self
+      .into_iter()
+      .filter(|x| {
+        if removed {
+          true
+        } else {
+          removed = true;
+          x != value
+        }
+      })
+      .collect()
+  }
+
+  fn put(self, index: usize, element: Item) -> Self
+    where
+      Self: IntoIterator<Item = Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.insert(index, element);
+    result
+  }
+
+  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
+    where
+      Self: IntoIterator<Item = Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.splice(range, replace_with);
+    result
+  }
+
+  fn sorted(self) -> Self
+    where
+      Item: Ord,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort();
+    result
+  }
+
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by(compare);
+    result
+  }
+
+  fn sorted_unstable(self) -> Self
+    where
+      Item: Ord,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable();
+    result
+  }
+
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable_by(compare);
+    result
+  }
+}
+
+impl<Item> List<Item> for Vec<Item> {
+  type This<I> = Vec<I>;
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
@@ -189,114 +241,12 @@ impl<Item> List<Item> for Vec<Item> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn put(self, index: usize, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.insert(index, element);
-    result
-  }
-
   fn rev(self) -> Self {
     self.into_iter().rev().collect()
-  }
-
-  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
-  where
-    Self: IntoIterator<Item = Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.splice(range, replace_with);
-    result
   }
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
     self.iter().scan(init, function).collect()
   }
-
-  fn sorted(self) -> Self
-  where
-    Item: Ord,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort();
-    result
-  }
-
-  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_by(compare);
-    result
-  }
-
-  fn sorted_unstable(self) -> Self
-  where
-    Item: Ord,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable();
-    result
-  }
-
-  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable_by(compare);
-    result
-  }
 }
 
-// #[cfg(test)]
-// mod tests {
-//   use std::collections::HashMap;
-//
-//   use crate::extensions::*;
-//
-//   #[quickcheck]
-//   fn map(data: Vec<i32>) -> bool {
-//     let function = |x: &i32| *x as i64;
-//     let result = data.map(function);
-//     let expected = data.iter().map(function).collect::<Vec<i64>>();
-//     result == expected
-//   }
-//
-//   #[quickcheck]
-//   fn filter(data: Vec<i32>) -> bool {
-//     let predicate = |x: &i32| x % 2 == 0;
-//     let result = data.clone().filter(predicate);
-//     let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<Vec<i32>>();
-//     result == expected
-//   }
-//
-//   #[quickcheck]
-//   fn group(data: Vec<i32>) -> bool {
-//     let key = |x: &i32| x % 2;
-//     let result: HashMap<i32, Vec<i32>> = data.clone().group_by(key);
-//     let expected = {
-//       let mut map: HashMap<i32, Vec<i32>> = HashMap::new();
-//       for item in data {
-//         let key = key(&item);
-//         map.entry(key).and_modify(|mut values| values.push(item)).or_insert(Vec::new());
-//       }
-//       map
-//     };
-//     result == expected
-//   }
-//
-//   #[quickcheck]
-//   fn fold(data: Vec<i32>) -> bool {
-//     let function = |i: i32, x: &i32| i.saturating_add(*x);
-//     let result = data.fold(0, function);
-//     let expected = data.iter().fold(0, function);
-//     result == expected
-//   }
-//
-//   #[test]
-//   fn test_x() {
-//     [1, 2, 3];
-//     &[1, 2, 3][0..];
-//     "Test";
-//     "Test".to_string();
-//     assert_eq!(1, 1)
-//   }
-// }

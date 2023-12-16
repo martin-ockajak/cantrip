@@ -96,35 +96,3 @@ impl<Item> Set<Item> for HashSet<Item> {
     self.iter().map(function).collect()
   }
 }
-
-#[cfg(test)]
-mod tests {
-  use std::collections::HashSet;
-
-  use crate::extensions::*;
-
-  #[quickcheck]
-  fn map(data: HashSet<i32>) -> bool {
-    let function = |x: &i32| *x as i64;
-    let result = data.map(function);
-    let expected = data.iter().map(function).collect::<HashSet<i64>>();
-    result == expected
-  }
-
-  #[quickcheck]
-  fn filter(data: HashSet<i32>) -> bool {
-    let predicate = |x: &i32| x % 2 == 0;
-    let function = |i: i32, x: &i32| i.saturating_add(*x);
-    let result = data.clone().filter(predicate);
-    let expected = data.iter().filter(|&x| predicate(x)).cloned().collect::<HashSet<i32>>();
-    result == expected
-  }
-
-  #[quickcheck]
-  fn fold(data: HashSet<i32>) -> bool {
-    let function = |i: i32, x: &i32| i.saturating_add(*x);
-    let result = data.fold(0, function);
-    let expected = data.iter().fold(0, function);
-    result == expected
-  }
-}

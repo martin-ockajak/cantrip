@@ -23,14 +23,6 @@ pub trait List<Item> {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
 
-  fn distinct(self) -> Self
-  where
-    Item: Eq + Hash;
-
-  fn distinct_by<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
-  where
-    K: Eq + Hash;
-
   fn delete(self, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -52,10 +44,6 @@ pub trait List<Item> {
   {
     self.into_iter().filter(predicate).collect()
   }
-
-  fn exclude(self, value: &Item) -> Self
-  where
-    Item: PartialEq;
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
@@ -139,34 +127,6 @@ pub trait List<Item> {
     self.into_iter().partition(predicate)
   }
 
-  fn put(self, index: usize, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item>;
-
-  // FIXME - make the moving work
-  // fn x_put(self, index: usize, element: A) -> Self
-  // where
-  //   Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
-  // {
-  //   let mut iterator = self.into_iter();
-  //   let mut value = Rc::new(element);
-  //   unfold((0 as usize, false), |(current, done)| {
-  //     if !*done && *current == index {
-  //       *done = true;
-  //       None
-  //       // Rc::into_inner(value)
-  //     } else {
-  //       *current += 1;
-  //       iterator.next()
-  //     }
-  //   })
-  //   .collect()
-  // }
-  //
-  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
-  where
-    Self: IntoIterator<Item = Item>;
-
   fn rev(self) -> Self;
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>;
@@ -184,18 +144,6 @@ pub trait List<Item> {
   {
     self.into_iter().skip_while(predicate).collect()
   }
-
-  fn sorted(self) -> Self
-  where
-    Item: Ord;
-
-  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self;
-
-  fn sorted_unstable(self) -> Self
-  where
-    Item: Ord;
-
-  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self;
 
   fn step_by(self, step: usize) -> Self
   where
