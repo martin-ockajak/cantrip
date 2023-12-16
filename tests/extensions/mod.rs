@@ -27,7 +27,7 @@ pub trait AggregableFixture: Sized + Default {
   fn check_mul(&self, value: Self) -> Option<Self>;
 }
 
-pub fn test_traversable<A, C>(data: C) -> bool
+pub fn test_iterable<A, C>(data: C) -> bool
 where
   A: IterableFixture + PartialEq + Ord + Clone,
   C: Iterable<A> + IntoIterator<Item = A> + Clone,
