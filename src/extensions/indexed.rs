@@ -5,6 +5,7 @@ use std::rc::Rc;
 
 use crate::extensions::util::unfold::unfold;
 
+// FIXME - find out how to generalize these for all sequences
 pub trait Indexed<Item> {
   type This<I>;
 
