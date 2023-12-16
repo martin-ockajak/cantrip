@@ -140,10 +140,6 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - VecDeque
-  - LinkedList
-  - BinaryHeap
-  - BTreeSet
-  - BTreeMap
   - String
 
 - Additional collection methods
