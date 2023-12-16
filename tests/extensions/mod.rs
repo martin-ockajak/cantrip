@@ -42,6 +42,7 @@ where
     == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
   let min_by = data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
     == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
+  // FIXME - failing test
   // let reduce = data.reduce(|r, x| r.safe_add(x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
   let reduce = true;
   all && any && count_by && fold && max_by && min_by && reduce
