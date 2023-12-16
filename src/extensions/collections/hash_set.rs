@@ -80,14 +80,6 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().flat_map(function).collect()
   }
 
-  fn flatten<B>(self) -> Self::This<B>
-  where
-    A: IntoIterator<Item = B>,
-    B: Eq + Hash,
-  {
-    self.into_iter().flatten().collect()
-  }
-
   fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
   where
     A: Eq + Hash,

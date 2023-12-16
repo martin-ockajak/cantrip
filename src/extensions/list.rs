@@ -65,7 +65,12 @@ pub trait List<A> {
 
   fn flatten<B>(self) -> Self::This<B>
   where
-    A: IntoIterator<Item = B>;
+    A: IntoIterator<Item = B>,
+    Self: IntoIterator<Item = A> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().flatten().collect()
+  }
 
   fn group_by<K>(self, to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
   where

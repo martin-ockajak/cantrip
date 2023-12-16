@@ -47,26 +47,31 @@ pub trait Set<A> {
   fn flatten<B>(self) -> Self::This<B>
   where
     A: IntoIterator<Item = B>,
-    B: Eq + Hash;
+    B: Eq + Hash,
+    Self: IntoIterator<Item = A> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().flatten().collect()
+  }
 
   fn exclude(self, value: &A) -> Self
-    where
-      A: Eq + Hash;
+  where
+    A: Eq + Hash;
 
   fn group_by<K>(self, to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
-    where
-      A: Eq + Hash,
-      K: Eq + Hash,
-      Self: Sized;
+  where
+    A: Eq + Hash,
+    K: Eq + Hash,
+    Self: Sized;
 
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
   where
     B: Eq + Hash;
 
   fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
-    where
-      A: Eq + Hash,
-      Self: Sized + Default + Extend<A> + IntoIterator<Item = A> + Sized + FromIterator<A>,
+  where
+    A: Eq + Hash,
+    Self: Sized + Default + Extend<A> + IntoIterator<Item = A> + Sized + FromIterator<A>,
   {
     self.into_iter().partition(predicate)
   }

@@ -144,13 +144,6 @@ impl<A> List<A> for Vec<A> {
     self.iter().flat_map(function).collect()
   }
 
-  fn flatten<B>(self) -> Self::This<B>
-  where
-    A: IntoIterator<Item = B>,
-  {
-    self.into_iter().flatten().collect()
-  }
-
   fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
