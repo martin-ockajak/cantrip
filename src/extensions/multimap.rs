@@ -3,13 +3,13 @@ use std::hash::Hash;
 use std::iter;
 
 pub trait MultiMap<K, C> {
-  fn from_iter<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
+  fn from_pairs<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
   where
     C: Extend<V> + Default;
 }
 
 impl<K: Eq + Hash, C> MultiMap<K, C> for HashMap<K, C> {
-  fn from_iter<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
+  fn from_pairs<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
   where
     C: Extend<V> + Default,
   {
@@ -22,7 +22,7 @@ impl<K: Eq + Hash, C> MultiMap<K, C> for HashMap<K, C> {
 }
 
 impl<K: Ord, C> MultiMap<K, C> for BTreeMap<K, C> {
-  fn from_iter<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
+  fn from_pairs<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
   where
     C: Extend<V> + Default,
   {

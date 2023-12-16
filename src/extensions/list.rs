@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 
@@ -54,10 +55,10 @@ pub trait List<A> {
   where
     A: IntoIterator<Item = B>;
 
-  fn group_by<K, M>(self, to_key: impl FnMut(&A) -> K) -> M
+  fn group_by<K>(self, to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
-    M: MultiMap<K, Self::Root<A>>;
+    Self: Sized;
 
   fn init(self) -> Self;
 

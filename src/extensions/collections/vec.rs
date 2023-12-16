@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -153,12 +153,12 @@ impl<A> List<A> for Vec<A> {
     self.into_iter().flatten().collect()
   }
 
-  fn group_by<K, M>(self, mut to_key: impl FnMut(&A) -> K) -> M
+  fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
-    M: MultiMap<K, Self::Root<A>>,
+    Self: Sized,
   {
-    M::from_iter(self.into_iter().map(|x| (to_key(&x), x)))
+    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn init(self) -> Self {

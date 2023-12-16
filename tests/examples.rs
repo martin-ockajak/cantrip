@@ -18,7 +18,7 @@ fn overview() {
 
   data.clone().delete(&0).tail();       // [2]: Vec<i32>
 
-  data.clone().group_by::<i64, HashMap<i64, Vec<i64>>>(|x| x % 2);  // {[0, 2], [1]}: HashMap<i64, Vec<i64>>
+  data.clone().group_by(|x| x % 2);     // {[0, 2], [1]}: HashMap<i64, Vec<i64>>
 
   data.clone().partition(|&x| x > 1);   // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
 
