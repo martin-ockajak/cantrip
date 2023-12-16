@@ -1,6 +1,7 @@
 use cantrip::extensions::*;
 use std::cmp::Ordering;
 use std::hash::Hash;
+use std::iter;
 use std::iter::{Product, Sum};
 
 pub trait TraversableFixture: Sized + Default {
@@ -75,10 +76,13 @@ where
   A: TraversableFixture + 'c,
   C: Sequence<A> + IntoIterator<Item = A> + FromIterator<A> + Iterable<Item<'c> = &'c A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
+  C::This<(usize, A)>: PartialEq + FromIterator<(usize, A)>,
 {
-  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  let enumerate = data.clone().enumerate() == data.clone().into_iter().enumerate().collect();
   let filter = data.clone().filter(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).collect();
-  map && filter
+  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x))) == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
+  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  enumerate && filter && flat_map && map
 }
 
 pub fn test_set<A, C>(data: C) -> bool
