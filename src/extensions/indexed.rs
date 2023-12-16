@@ -1,11 +1,8 @@
 use std::cmp::Ordering;
-use std::collections::HashMap;
 use std::hash::Hash;
-use std::iter;
 use std::ops::RangeBounds;
 use std::rc::Rc;
 
-use crate::extensions::Iterable;
 use crate::extensions::util::unfold::unfold;
 
 pub trait Indexed<Item> {
