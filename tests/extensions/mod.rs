@@ -80,7 +80,8 @@ where
 {
   let enumerate = data.clone().enumerate() == data.clone().into_iter().enumerate().collect();
   let filter = data.clone().filter(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).collect();
-  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x))) == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
+  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
+    == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
   enumerate && filter && flat_map && map
 }
