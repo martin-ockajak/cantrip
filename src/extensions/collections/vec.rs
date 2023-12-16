@@ -65,7 +65,7 @@ impl<A> Collectible<A> for Vec<A> {
 impl<A> List<A> for Vec<A> {
   type Root<X> = Vec<X>;
 
-  fn delete(self, value: &A) -> Self
+  fn exclude(self, value: &A) -> Self
   where
     A: PartialEq,
   {

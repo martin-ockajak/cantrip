@@ -16,7 +16,7 @@ fn overview() {
 
   data.clone().add(0).distinct();       // [0, 1, 2]: Vec<i32>
 
-  data.clone().delete(&0).tail();       // [2]: Vec<i32>
+  data.clone().exclude(&0).tail();       // [2]: Vec<i32>
 
   data.clone().group_by(|x| x % 2);     // {[0, 2], [1]}: HashMap<i32, Vec<i32>>
 

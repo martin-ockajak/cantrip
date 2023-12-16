@@ -47,7 +47,7 @@ impl<A> Collectible<A> for HashSet<A> {
 impl<A> Set<A> for HashSet<A> {
   type Root<X> = HashSet<X>;
 
-  fn delete(self, value: &A) -> Self
+  fn exclude(self, value: &A) -> Self
   where
     A: Eq + Hash,
     Self: IntoIterator<Item = A> + Sized + FromIterator<A>,

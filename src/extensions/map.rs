@@ -29,14 +29,6 @@ pub trait Map<K, V> {
     self.into_iter().chain(iterable).collect()
   }
 
-  fn delete(self, key: &K) -> Self
-  where
-    K: Eq + Hash,
-    Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
-  {
-    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
-  }
-
   fn diff(self, iterable: impl IntoIterator<Item = K>) -> Self
   where
     K: Eq + Hash,
@@ -45,6 +37,14 @@ pub trait Map<K, V> {
     let mut removed: HashSet<K> = HashSet::new();
     removed.extend(iterable);
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
+  }
+
+  fn exclude(self, key: &K) -> Self
+    where
+      K: Eq + Hash,
+      Self: IntoIterator<Item = (K, V)> + Sized + FromIterator<(K, V)>,
+  {
+    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
   fn filter(self, mut predicate: impl FnMut((&K, &V)) -> bool) -> Self

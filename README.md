@@ -50,11 +50,12 @@ Reduce complexity and enhance readability or Rust code for a reasonable cost in 
 | *any*            | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *concat*         | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *count_by*       | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| *delete*         | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
+| *delete*         | Python      | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *diff*           | Scala       | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *distinct*       | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *distinct_by*    | Scala       | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *enumerate*      | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
+| *exclude*        | Python      | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *filter*         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |
 | *filter_keys*    | Toolz       | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *filter_map*     | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :x:                |

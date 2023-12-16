@@ -21,10 +21,6 @@ pub trait Set<A> {
     self.into_iter().chain(iterable).collect()
   }
 
-  fn delete(self, value: &A) -> Self
-  where
-    A: Eq + Hash;
-
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
   where
     A: Eq + Hash,
@@ -52,6 +48,10 @@ pub trait Set<A> {
   where
     A: IntoIterator<Item = B>,
     B: Eq + Hash;
+
+  fn exclude(self, value: &A) -> Self
+    where
+      A: Eq + Hash;
 
   fn group_by<K>(self, to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
     where

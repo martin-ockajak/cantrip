@@ -22,10 +22,6 @@ pub trait List<A> {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
 
-  fn delete(self, value: &A) -> Self
-  where
-    A: PartialEq;
-
   fn distinct(self) -> Self
   where
     A: Eq + Hash;
@@ -33,6 +29,13 @@ pub trait List<A> {
   fn distinct_by<K>(self, to_key: impl FnMut(&A) -> K) -> Self
   where
     K: Eq + Hash;
+
+  fn delete(self, index: usize) -> Self
+  where
+    Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  {
+    self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
+  }
 
   fn enumerate(self) -> Self::Root<(usize, A)>;
 
@@ -42,6 +45,10 @@ pub trait List<A> {
   {
     self.into_iter().filter(predicate).collect()
   }
+
+  fn exclude(self, value: &A) -> Self
+  where
+    A: PartialEq;
 
   fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>;
 
