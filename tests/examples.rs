@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use cantrip::extensions::List;
 
 #[test]
 fn overview() {

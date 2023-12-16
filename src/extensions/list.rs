@@ -6,7 +6,6 @@ use crate::extensions::MultiMap;
 
 pub trait List<A> {
   type Root<X>;
-  type Blob<X>;
 
   fn add(self, value: A) -> Self
   where
@@ -94,7 +93,9 @@ pub trait List<A> {
   /// # Examples
   ///
   /// ```
-  /// // let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
+  /// use crate::cantrip::extensions::*;
+  ///
+  /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>;
 
