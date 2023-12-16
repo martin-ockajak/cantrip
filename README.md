@@ -2,9 +2,11 @@
 
 Cantrip adds convenient functional-style methods to Rust standard library collections.
 
-## Goal
+## Goals
 
-Reduce complexity and enhance readability or Rust code for a reasonable cost in performance.
+* Reduce complexity and enhance readability or Rust code
+* Require minimal learning effort by mirroring established interfaces
+* Ensure reasonable and predictable performance cost
 
 ## Features
 
@@ -12,7 +14,7 @@ Reduce complexity and enhance readability or Rust code for a reasonable cost in 
 * Various utility methods inspired by other libraries are added to library collection data types
 * Transformation methods always produce new instances of the same collection type
 * All additional methods treat the collections as immutable
-* None of the additional methods use cloning or copying
+* None of the additional method clone collection elements
 
 ## Example
 
