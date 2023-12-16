@@ -116,6 +116,10 @@ pub trait List<A> {
     self.into_iter().partition(predicate)
   }
 
+  fn put(self, index: usize, element: A) -> Self
+    where
+      Self: IntoIterator<Item = A>;
+
   fn rev(self) -> Self;
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B>;

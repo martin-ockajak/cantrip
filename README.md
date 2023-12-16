@@ -80,6 +80,7 @@ Reduce complexity and enhance readability or Rust code for a reasonable cost in 
 | *product*        | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :x:                | :x:                |
 | *product_keys*   | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
 | *product_values* | Rust        | :x:                       | :x:                | :heavy_check_mark: | :x:                |
+| *put*            | Python      | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *reduce*         | Rust        | :heavy_check_mark:        | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | *rev*            | Rust        | :heavy_check_mark:        | :x:                | :x:                | :x:                |
 | *rfind*          | Rust        | :heavy_check_mark:        | :x:                | :x:                | :heavy_check_mark: |

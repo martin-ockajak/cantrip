@@ -184,6 +184,15 @@ impl<A> List<A> for Vec<A> {
     self.iter().map_while(predicate).collect()
   }
 
+  fn put(self, index: usize, element: A) -> Self
+    where
+      Self: IntoIterator<Item = A>,
+  {
+    let mut result: Vec<A> = self.into_iter().collect();
+    result.insert(index, element);
+    result
+  }
+
   fn rev(self) -> Self {
     self.into_iter().rev().collect()
   }
