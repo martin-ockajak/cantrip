@@ -39,7 +39,7 @@ Cantrip adds convenient functional-style methods to Rust standard library collec
 
   data.partition(|&x| x > 1);           // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
 
-  data.zip(data);                       // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
+  data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
 
 
