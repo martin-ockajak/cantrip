@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -87,13 +87,14 @@ impl<A> Set<A> for HashSet<A> {
     self.into_iter().flatten().collect()
   }
 
-  // fn group_by<K, M>(self, group_key: std FnMut(&A) -> K) -> M
-  // where
-  //   K: Eq + Hash,
-  //   M: MultiMap<K, Self::Root<A>>,
-  // {
-  //   M::from_iter(self.into_iter().map(|x| (group_key(&x), x)))
-  // }
+  fn group_by<K>(self, mut to_key: impl FnMut(&A) -> K) -> HashMap<K, Self>
+    where
+      A: Eq + Hash,
+      K: Eq + Hash,
+      Self: Sized,
+  {
+    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+  }
 
   fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
   where
