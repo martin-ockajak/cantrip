@@ -1,13 +1,14 @@
-use std::collections::HashMap;
-use std::hash::Hash;
+use std::collections::BTreeMap;
 use std::iter;
 
-pub trait Set<Item> {
+use crate::extensions::util::multi_map::MultiMap;
+
+pub trait OrdSet<Item> {
   type This<T>;
 
   fn add(self, value: Item) -> Self
   where
-    Item: Eq + Hash,
+    Item: Ord,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iter::once(value)).collect()
@@ -15,7 +16,7 @@ pub trait Set<Item> {
 
   fn concat(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
-    Item: Eq + Hash,
+    Item: Ord,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable).collect()
@@ -23,7 +24,7 @@ pub trait Set<Item> {
 
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Item: Eq + Hash,
+    Item: Ord,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(predicate).collect()
@@ -31,23 +32,23 @@ pub trait Set<Item> {
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
-    Item: Eq + Hash,
-    B: Eq + Hash;
+    Item: Ord,
+    B: Ord;
 
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>
   where
-    Item: Eq + Hash,
-    B: Eq + Hash;
+    Item: Ord,
+    B: Ord;
 
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
-    B: Eq + Hash,
+    B: Ord,
     R: IntoIterator<Item = B>;
 
   fn flatten<B>(self) -> Self::This<B>
   where
     Item: IntoIterator<Item = B>,
-    B: Eq + Hash,
+    B: Ord,
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
   {
@@ -56,21 +57,24 @@ pub trait Set<Item> {
 
   fn exclude(self, value: &Item) -> Self
   where
-    Item: Eq + Hash;
+    Item: Ord;
 
-  fn group_by<K>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
   where
-    Item: Eq + Hash,
-    K: Eq + Hash,
-    Self: Sized;
+    Item: Ord,
+    K: Ord,
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    BTreeMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+  }
 
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
-    B: Eq + Hash;
+    B: Ord;
 
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
-    Item: Eq + Hash,
+    Item: Ord,
     Self: Sized + Default + Extend<Item> + IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().partition(predicate)
@@ -78,8 +82,7 @@ pub trait Set<Item> {
 
   fn unit(value: Item) -> Self
   where
-    Item: Eq + Hash,
-    Self: FromIterator<Item>,
+    Self: FromIterator<Item> + Sized,
   {
     iter::once(value).collect()
   }

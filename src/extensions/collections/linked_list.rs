@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, LinkedList};
 use std::hash::Hash;
 
-use crate::extensions::util::multimap::MultiMap;
+use crate::extensions::util::multi_map::MultiMap;
 use crate::extensions::*;
 
 impl<Item> Traversable<Item> for LinkedList<Item> {

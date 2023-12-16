@@ -1,8 +1,7 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::hash::Hash;
 
-use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
 impl<Item> Traversable<Item> for HashSet<Item> {
@@ -45,7 +44,7 @@ impl<Item> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 }
 
-impl<Item> Set<Item> for HashSet<Item> {
+impl<Item> EqSet<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
   fn exclude(self, value: &Item) -> Self
@@ -78,15 +77,6 @@ impl<Item> Set<Item> for HashSet<Item> {
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
-  }
-
-  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
-  where
-    Item: Eq + Hash,
-    K: Eq + Hash,
-    Self: Sized,
-  {
-    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>

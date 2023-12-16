@@ -2,8 +2,6 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 
-use crate::extensions::Iterable;
-
 pub trait List<Item> {
   type This<I>;
 

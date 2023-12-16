@@ -82,7 +82,7 @@ where
 pub fn test_set<A, C>(data: C) -> bool
 where
   A: TraversableFixture + Eq + Hash,
-  C: Set<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
+  C: EqSet<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
   C::This<A>: PartialEq + FromIterator<A>,
 {
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();

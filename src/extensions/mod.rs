@@ -1,23 +1,25 @@
 pub use aggregable::*;
 pub use collectible::*;
+pub use eq_set::*;
 pub use indexed::*;
 pub use iterable::*;
 pub use list::*;
 pub use map::*;
+pub use ord_set::*;
 pub use ordered::*;
-pub use set::*;
 pub use slice::*;
 pub use traversable::*;
 
 mod aggregable;
 mod collectible;
 mod collections;
+mod eq_set;
 mod indexed;
 mod iterable;
 mod list;
 mod map;
+mod ord_set;
 mod ordered;
-mod set;
 mod slice;
 mod traversable;
 mod util;

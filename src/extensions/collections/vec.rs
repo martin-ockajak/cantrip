@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::ops::RangeBounds;
 
-use crate::extensions::util::multimap::MultiMap;
+use crate::extensions::util::multi_map::MultiMap;
 use crate::extensions::*;
 
 impl<Item> Traversable<Item> for Vec<Item> {
