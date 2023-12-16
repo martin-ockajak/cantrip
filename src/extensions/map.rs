@@ -5,7 +5,7 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 pub trait Map<K, V> {
-  type Root<X, Y>;
+  type This<Key, Value>;
 
   fn add(self, key: K, value: V) -> Self
   where
@@ -63,7 +63,7 @@ pub trait Map<K, V> {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
-  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::Root<L, W>
+  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     K: Eq + Hash,
     L: Eq + Hash;
@@ -83,7 +83,7 @@ pub trait Map<K, V> {
     K: Eq + Hash,
     B: Eq + Hash;
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::Root<L, W>
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::This<L, W>
   where
     L: Eq + Hash,
     R: IntoIterator<Item = (L, W)>;
@@ -100,16 +100,16 @@ pub trait Map<K, V> {
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::Root<L, W>
+  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::This<L, W>
   where
     L: Eq + Hash;
 
-  fn map_keys<L>(self, function: impl FnMut(&K) -> L) -> Self::Root<L, V>
+  fn map_keys<L>(self, function: impl FnMut(&K) -> L) -> Self::This<L, V>
   where
     K: Eq + Hash,
     L: Eq + Hash;
 
-  fn map_values<W>(self, function: impl FnMut(&V) -> W) -> Self::Root<K, W>
+  fn map_values<W>(self, function: impl FnMut(&V) -> W) -> Self::This<K, W>
   where
     K: Eq + Hash,
     W: Eq + Hash;

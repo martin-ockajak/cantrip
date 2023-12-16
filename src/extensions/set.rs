@@ -3,7 +3,7 @@ use std::hash::Hash;
 use std::iter;
 
 pub trait Set<A> {
-  type Root<X>;
+  type This<Item>;
 
   fn add(self, value: A) -> Self
   where
@@ -29,7 +29,7 @@ pub trait Set<A> {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B>
   where
     A: Eq + Hash,
     B: Eq + Hash;
@@ -39,12 +39,12 @@ pub trait Set<A> {
     A: Eq + Hash,
     B: Eq + Hash;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
   where
     B: Eq + Hash,
     R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::Root<B>
+  fn flatten<B>(self) -> Self::This<B>
   where
     A: IntoIterator<Item = B>,
     B: Eq + Hash;
@@ -59,7 +59,7 @@ pub trait Set<A> {
       K: Eq + Hash,
       Self: Sized;
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
   where
     B: Eq + Hash;
 

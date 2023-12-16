@@ -3,7 +3,7 @@ use std::hash::Hash;
 use std::iter::FromIterator;
 
 pub trait Collectible<A> {
-  type Root<X>;
+  type This<Item>;
 
   fn diff(self, iterable: impl IntoIterator<Item = A>) -> Self
     where

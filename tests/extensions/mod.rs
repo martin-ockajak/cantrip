@@ -64,7 +64,7 @@ where
     && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.check_mul(y))
       || data.clone().product() == data.clone().into_iter().product())
 }
-//
+
 // pub fn test_list<A, C>(data: C) -> bool
 //   where
 //     A: IterableFixture,

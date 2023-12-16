@@ -5,7 +5,7 @@ use std::hash::Hash;
 use crate::extensions::*;
 
 impl<K, V> Map<K, V> for HashMap<K, V> {
-  type Root<X, Y> = HashMap<X, Y>;
+  type This<Key, Value> = HashMap<Key, Value>;
 
   fn all(&self, mut predicate: impl FnMut((&K, &V)) -> bool) -> bool {
     all_pair(self.iter(), |&x| predicate(x))
@@ -19,7 +19,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     count_by_pair(self.iter(), |&x| predicate(x))
   }
 
-  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::Root<L, W>
+  fn filter_map<L, W>(&self, function: impl FnMut((&K, &V)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     K: Eq + Hash,
     L: Eq + Hash,
@@ -39,7 +39,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::Root<L, W>
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&K, &V)) -> R) -> Self::This<L, W>
   where
     L: Eq + Hash,
     R: IntoIterator<Item = (L, W)>,
@@ -51,14 +51,14 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     fold_pair(self.iter(), init, |r, &x| function(r, x))
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::Root<L, W>
+  fn map<L, W>(&self, function: impl FnMut((&K, &V)) -> (L, W)) -> Self::This<L, W>
   where
     L: Eq + Hash,
   {
     self.iter().map(function).collect()
   }
 
-  fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::Root<L, V>
+  fn map_keys<L>(self, mut function: impl FnMut(&K) -> L) -> Self::This<L, V>
   where
     K: Eq + Hash,
     L: Eq + Hash,
@@ -66,7 +66,7 @@ impl<K, V> Map<K, V> for HashMap<K, V> {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  fn map_values<W>(self, mut function: impl FnMut(&V) -> W) -> Self::Root<K, W>
+  fn map_values<W>(self, mut function: impl FnMut(&V) -> W) -> Self::This<K, W>
   where
     K: Eq + Hash,
     W: Eq + Hash,

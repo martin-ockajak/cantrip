@@ -3,11 +3,9 @@ use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
-use std::rc::Rc;
-use crate::extensions::util::unfold::unfold;
 
 pub trait List<A> {
-  type Root<X>;
+  type This<Item>;
 
   fn add(self, value: A) -> Self
   where
@@ -38,7 +36,13 @@ pub trait List<A> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
-  fn enumerate(self) -> Self::Root<(usize, A)>;
+  fn enumerate(self) -> Self::This<(usize, A)>
+  where
+    Self: IntoIterator<Item = A> + Sized,
+    Self::This<(usize, A)>: FromIterator<(usize, A)>,
+  {
+    self.into_iter().enumerate().collect()
+  }
 
   fn filter(self, predicate: impl FnMut(&A) -> bool) -> Self
   where
@@ -51,15 +55,15 @@ pub trait List<A> {
   where
     A: PartialEq;
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>;
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B>;
 
   fn find_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Option<B>;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::Root<B>
+  fn flatten<B>(self) -> Self::This<B>
   where
     A: IntoIterator<Item = B>;
 
@@ -106,9 +110,9 @@ pub trait List<A> {
   ///
   /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>;
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>;
 
-  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::Root<B>;
+  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::This<B>;
 
   fn partition(self, predicate: impl FnMut(&A) -> bool) -> (Self, Self)
   where
@@ -121,30 +125,32 @@ pub trait List<A> {
   where
     Self: IntoIterator<Item = A>;
 
-  fn putx(self, index: usize, element: A) -> Self
-    where
-      Self: IntoIterator<Item = A> + Sized + FromIterator<A> {
-    let mut iterator = self.into_iter();
-    let mut value = Rc::new(element);
-    unfold((0 as usize, false), |(current, done)| {
-      if !*done && *current == index {
-        *done = true;
-        None
-        // Rc::into_inner(value)
-      } else {
-        *current += 1;
-        iterator.next()
-      }
-    }).collect()
-  }
-
+  // fn x_put(self, index: usize, element: A) -> Self
+  // where
+  //   Self: IntoIterator<Item = A> + Sized + FromIterator<A>,
+  // {
+  //   let mut iterator = self.into_iter();
+  //   let mut value = Rc::new(element);
+  //   unfold((0 as usize, false), |(current, done)| {
+  //     if !*done && *current == index {
+  //       *done = true;
+  //       None
+  //       // Rc::into_inner(value)
+  //     } else {
+  //       *current += 1;
+  //       iterator.next()
+  //     }
+  //   })
+  //   .collect()
+  // }
+  //
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
     Self: IntoIterator<Item = A>;
 
   fn rev(self) -> Self;
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B>;
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::This<B>;
 
   fn skip(self, n: usize) -> Self
   where
@@ -209,11 +215,11 @@ pub trait List<A> {
     iter::once(value).collect()
   }
 
-  fn unzip<B, C>(self) -> (Self::Root<B>, Self::Root<C>)
+  fn unzip<B, C>(self) -> (Self::This<B>, Self::This<C>)
   where
     Self: IntoIterator<Item = (B, C)>;
 
-  fn zip<I>(self, iterable: I) -> Self::Root<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::This<(A, I::Item)>
   where
     I: IntoIterator;
 }

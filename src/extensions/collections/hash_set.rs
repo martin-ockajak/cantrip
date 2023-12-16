@@ -42,11 +42,11 @@ impl<A> Iterable<A> for HashSet<A> {
 impl<A> Aggregable<A> for HashSet<A> {}
 
 impl<A> Collectible<A> for HashSet<A> {
-  type Root<X> = HashSet<X>;
+  type This<Item> = HashSet<Item>;
 }
 
 impl<A> Set<A> for HashSet<A> {
-  type Root<X> = HashSet<X>;
+  type This<Item> = HashSet<Item>;
 
   fn exclude(self, value: &A) -> Self
   where
@@ -56,7 +56,7 @@ impl<A> Set<A> for HashSet<A> {
     self.into_iter().filter(|x| x != value).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B>
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B>
   where
     A: Eq + Hash,
     B: Eq + Hash,
@@ -72,7 +72,7 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
   where
     B: Eq + Hash,
     R: IntoIterator<Item = B>,
@@ -80,7 +80,7 @@ impl<A> Set<A> for HashSet<A> {
     self.iter().flat_map(function).collect()
   }
 
-  fn flatten<B>(self) -> Self::Root<B>
+  fn flatten<B>(self) -> Self::This<B>
   where
     A: IntoIterator<Item = B>,
     B: Eq + Hash,
@@ -97,7 +97,7 @@ impl<A> Set<A> for HashSet<A> {
     HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B>
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
   where
     B: Eq + Hash,
   {

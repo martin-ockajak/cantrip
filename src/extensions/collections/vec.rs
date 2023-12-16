@@ -61,11 +61,11 @@ impl<A> Ordered<A> for Vec<A> {
 impl<A> Aggregable<A> for Vec<A> {}
 
 impl<A> Collectible<A> for Vec<A> {
-  type Root<X> = Vec<X>;
+  type This<X> = Vec<X>;
 }
 
 impl<A> List<A> for Vec<A> {
-  type Root<X> = Vec<X>;
+  type This<X> = Vec<X>;
 
   fn exclude(self, value: &A) -> Self
   where
@@ -129,11 +129,7 @@ impl<A> List<A> for Vec<A> {
       .collect()
   }
 
-  fn enumerate(self) -> Self::Root<(usize, A)> {
-    self.into_iter().enumerate().collect()
-  }
-
-  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::Root<B> {
+  fn filter_map<B>(&self, function: impl FnMut(&A) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }
 
@@ -141,14 +137,14 @@ impl<A> List<A> for Vec<A> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::Root<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&A) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
   }
 
-  fn flatten<B>(self) -> Self::Root<B>
+  fn flatten<B>(self) -> Self::This<B>
   where
     A: IntoIterator<Item = B>,
   {
@@ -178,11 +174,11 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::Root<B> {
+  fn map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }
 
-  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::Root<B> {
+  fn map_while<B>(&self, predicate: impl FnMut(&A) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
 
@@ -208,7 +204,7 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::Root<B> {
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &A) -> Option<B>) -> Self::This<B> {
     self.iter().scan(init, function).collect()
   }
 
@@ -242,14 +238,14 @@ impl<A> List<A> for Vec<A> {
     result
   }
 
-  fn unzip<B, C>(self) -> (Self::Root<B>, Self::Root<C>)
+  fn unzip<B, C>(self) -> (Self::This<B>, Self::This<C>)
   where
     Self: IntoIterator<Item = (B, C)>,
   {
     self.into_iter().unzip()
   }
 
-  fn zip<I>(self, iterable: I) -> Self::Root<(A, I::Item)>
+  fn zip<I>(self, iterable: I) -> Self::This<(A, I::Item)>
   where
     I: IntoIterator,
   {
