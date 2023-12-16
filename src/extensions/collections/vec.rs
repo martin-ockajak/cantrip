@@ -78,7 +78,7 @@ impl<A> Collectible<A> for Vec<A> {
   type This<X> = Vec<X>;
 }
 
-impl<'c, A> List<'c, A> for Vec<A> {
+impl<A> List<A> for Vec<A> {
   type This<X> = Vec<X>;
 
   fn exclude(self, value: &A) -> Self

@@ -9,6 +9,29 @@ use std::collections::HashSet;
 
 mod extensions;
 
+#[quickcheck]
+fn vec_string(data: Vec<String>) -> bool {
+  test_traversable(data.clone()) && test_ordered(data.clone())
+}
+
+#[quickcheck]
+fn vec_i64(data: Vec<i64>) -> bool {
+  test_traversable(data.clone())
+    && test_ordered(data.clone())
+    && test_aggregable(data.clone())
+    && test_list(data.clone())
+}
+
+#[quickcheck]
+fn hash_set_string(data: HashSet<String>) -> bool {
+  test_traversable(data.clone()) && test_set(data.clone())
+}
+
+#[quickcheck]
+fn hash_set_i64(data: HashSet<i64>) -> bool {
+  test_traversable(data.clone()) && test_aggregable(data.clone())
+}
+
 impl TraversableFixture for String {
   fn test(&self) -> bool {
     self.len() % 2 == 0
@@ -45,24 +68,4 @@ impl AggregableFixture for i64 {
   fn check_mul(&self, value: Self) -> Option<Self> {
     self.checked_mul(value)
   }
-}
-
-#[quickcheck]
-fn vec_string(data: Vec<String>) -> bool {
-  test_traversable(data.clone()) && test_ordered(data.clone())
-}
-
-#[quickcheck]
-fn vec_i64(data: Vec<i64>) -> bool {
-  test_traversable(data.clone()) && test_ordered(data.clone()) && test_aggregable(data.clone())
-}
-
-#[quickcheck]
-fn hash_set_string(data: HashSet<String>) -> bool {
-  test_traversable(data.clone())
-}
-
-#[quickcheck]
-fn hash_set_i64(data: HashSet<i64>) -> bool {
-  test_traversable(data.clone()) && test_aggregable(data.clone())
 }

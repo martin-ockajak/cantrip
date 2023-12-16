@@ -1,5 +1,6 @@
 use cantrip::extensions::*;
 use std::cmp::Ordering;
+use std::hash::Hash;
 use std::iter::{Product, Sum};
 
 pub trait TraversableFixture: Sized + Default {
@@ -65,14 +66,25 @@ where
       || data.clone().product() == data.clone().into_iter().product())
 }
 
-// pub fn test_list<A, C>(data: C) -> bool
-//   where
-//     A: IterableFixture,
-//     C: List<A> + IntoIterator<Item = A> + Clone,
-// {
-//   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
-//   map
-// }
+pub fn test_list<A, C>(data: C) -> bool
+where
+  A: TraversableFixture,
+  C: List<A> + IntoIterator<Item = A> + Clone,
+  C::This<A>: PartialEq + FromIterator<A>,
+{
+  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  map
+}
+
+pub fn test_set<A, C>(data: C) -> bool
+where
+  A: TraversableFixture + Eq + Hash,
+  C: Set<A> + IntoIterator<Item = A> + Clone,
+  C::This<A>: PartialEq + FromIterator<A>,
+{
+  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  map
+}
 
 fn safe_aggregate<A, C>(data: C, init: A, mut aggregate: impl FnMut(A, A) -> Option<A>) -> bool
 where

@@ -5,7 +5,7 @@ use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
 
-pub trait List<'c, A> {
+pub trait List<A> {
   type This<Item>;
 
   fn add(self, value: A) -> Self
