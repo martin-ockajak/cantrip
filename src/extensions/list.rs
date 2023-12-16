@@ -1,8 +1,6 @@
-use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
-use std::ops::RangeBounds;
 
 use crate::extensions::Iterable;
 
