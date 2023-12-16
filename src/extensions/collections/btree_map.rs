@@ -1,11 +1,10 @@
 use std::cmp::Ordering;
-use std::collections::HashMap;
-use std::hash::Hash;
+use std::collections::BTreeMap;
 
 use crate::extensions::*;
 
-impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
-  type This<X, V> = HashMap<X, V>;
+impl<Key, Value> Map<Key, Value> for BTreeMap<Key, Value> {
+  type This<X, V> = BTreeMap<X, V>;
 
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
     self.iter().all(predicate)
@@ -40,53 +39,52 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 }
 
-
-impl<Key, Value> EqMap<Key, Value> for HashMap<Key, Value> {
-  type This<X, V> = HashMap<X, V>;
+impl<Key, Value> OrdMap<Key, Value> for BTreeMap<Key, Value> {
+  type This<X, V> = BTreeMap<X, V>;
 
   fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-    where
-      Key: Eq + Hash,
-      L: Eq + Hash,
+  where
+    Key: Ord,
+    L: Ord,
   {
     self.iter().filter_map(function).collect()
   }
 
   fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>
-    where
-      Key: Eq + Hash,
-      B: Eq + Hash,
+  where
+    Key: Ord,
+    B: Ord,
   {
     self.iter().find_map(function)
   }
 
   fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
-    where
-      L: Eq + Hash,
-      R: IntoIterator<Item = (L, W)>,
+  where
+    L: Ord,
+    R: IntoIterator<Item = (L, W)>,
   {
     self.iter().flat_map(function).collect()
   }
 
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-    where
-      L: Eq + Hash,
+  where
+    L: Ord,
   {
     self.iter().map(function).collect()
   }
 
   fn map_keys<L>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
-    where
-      Key: Eq + Hash,
-      L: Eq + Hash,
+  where
+    Key: Ord,
+    L: Ord,
   {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
   fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
-    where
-      Key: Eq + Hash,
-      W: Eq + Hash,
+  where
+    Key: Ord,
+    W: Ord,
   {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
@@ -94,15 +92,15 @@ impl<Key, Value> EqMap<Key, Value> for HashMap<Key, Value> {
 
 #[cfg(test)]
 mod tests {
-  use std::collections::HashMap;
+  use std::collections::BTreeMap;
 
   use crate::extensions::*;
 
   #[quickcheck]
-  fn map(data: HashMap<i32, i32>) -> bool {
+  fn map(data: BTreeMap<i32, i32>) -> bool {
     let function = |(k, v): (&i32, &i32)| (*k, *v as i64);
     let result = data.map(function);
-    let expected = data.iter().map(function).collect::<HashMap<i32, i64>>();
+    let expected = data.iter().map(function).collect::<BTreeMap<i32, i64>>();
     result == expected
   }
 }
