@@ -6,20 +6,6 @@ use std::ops::RangeBounds;
 use crate::extensions::util::multimap::MultiMap;
 use crate::extensions::*;
 
-impl<Item> Iterable for Vec<Item> {
-  type Item<'c> = &'c Item
-    where
-      Item: 'c;
-
-  type Iterator<'c> = Iter<'c, Item>
-    where
-      Item: 'c;
-
-  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    Iter { collection: self }
-  }
-}
-
 impl<Item> Traversable<Item> for Vec<Item> {
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)

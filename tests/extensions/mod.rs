@@ -68,10 +68,10 @@ where
       || data.clone().product() == data.clone().into_iter().product())
 }
 
-pub fn test_list<A, C>(data: C) -> bool
+pub fn test_list<'c, A, C>(data: C) -> bool
 where
-  A: TraversableFixture,
-  C: List<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
+  A: TraversableFixture + 'c,
+  C: List<A> + IntoIterator<Item = A> + FromIterator<A> + Iterable<Item<'c> = &'c A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
 {
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();

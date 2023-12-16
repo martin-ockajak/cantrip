@@ -111,15 +111,14 @@ pub trait List<Item> {
   /// ```
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>;
 
-  // FIXME - make the lifetimes work
-  // fn x_map<B>(&self, function: impl FnMut(&A) -> B) -> Self::This<B>
-  // where
-  //   A: 'c,
-  //   Self: Iterable<Item<'c> = &'c A> + 'c,
-  //   Self::This<B>: FromIterator<B>,
+  // FIXME - decide if the lifetime declarations are worth it
+  // fn map<'c, B>(&'c self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  //   where
+  //     Item: 'c,
+  //     Self: Iterable<Item<'c> = &'c Item> + 'c,
+  //     Self::This<B>: FromIterator<B>,
   // {
-  //   let x = self.iterator();
-  //   x.map(function).collect()
+  //   self.iterator().map(function).collect()
   // }
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
