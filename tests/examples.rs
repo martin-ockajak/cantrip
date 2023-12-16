@@ -1,5 +1,3 @@
-use cantrip::extensions::Sequence;
-
 #[test]
 fn overview() {
   use cantrip::extensions::*;

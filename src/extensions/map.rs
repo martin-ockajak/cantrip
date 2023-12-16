@@ -71,24 +71,29 @@ pub trait Map<Key, Value> {
   }
 }
 
+#[inline]
 pub(crate) fn all_pairs<A>(mut iterator: impl Iterator<Item = A>, mut predicate: impl FnMut(&A) -> bool) -> bool {
   iterator.all(|x| predicate(&x))
 }
 
+#[inline]
 pub(crate) fn any_pairs<A>(mut iterator: impl Iterator<Item = A>, mut predicate: impl FnMut(&A) -> bool) -> bool {
   iterator.any(|x| predicate(&x))
 }
 
+#[inline]
 pub(crate) fn count_by_pairs<A>(iterator: impl Iterator<Item = A>, predicate: impl FnMut(&A) -> bool) -> usize {
   iterator.filter(predicate).count()
 }
 
+#[inline]
 pub(crate) fn fold_pairs<'a, K: 'a, V: 'a, B>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, init: B, function: impl FnMut(B, (&K, &V)) -> B,
 ) -> B {
   iterator.fold(init, function)
 }
 
+#[inline]
 pub(crate) fn reduce_pairs<'a, K: 'a, V: 'a>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V),
 ) -> Option<(K, V)> {

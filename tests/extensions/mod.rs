@@ -74,7 +74,7 @@ where
 pub fn test_sequence<'c, A, C>(data: C) -> bool
 where
   A: TraversableFixture + 'c,
-  C: Sequence<A> + IntoIterator<Item = A> + FromIterator<A> + Iterable<Item<'c> = &'c A> + PartialEq + Clone + 'c,
+  C: Sequence<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
   C::This<(usize, A)>: PartialEq + FromIterator<(usize, A)>,
 {
