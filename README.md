@@ -29,17 +29,17 @@ Cantrip adds convenient functional-style methods to Rust standard library collec
 
   data.any(|&x| x == 0);                // true: bool
 
-  data.clone().filter(|&x| x > 0);      // [1, 2]: Vec<i32>
+  data.filter(|&x| x > 0);              // [1, 2]: Vec<i32>
 
-  data.clone().add(0).distinct();       // [0, 1, 2]: Vec<i32>
+  data.add(0).distinct();               // [0, 1, 2]: Vec<i32>
 
-  data.clone().delete(0).tail();        // [2]: Vec<i32>
+  data.delete(0).tail();                // [2]: Vec<i32>
 
-  data.clone().group_by(|x| x % 2);     // {0: [0, 2], 1: [1]}: HashMap<i32, Vec<i32>>
+  data.group_by(|x| x % 2);             // {0: [0, 2], 1: [1]}: HashMap<i32, Vec<i32>>
 
-  data.clone().partition(|&x| x > 1);   // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
+  data.partition(|&x| x > 1);           // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
 
-  data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
+  data.zip(data);                       // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
 
 
