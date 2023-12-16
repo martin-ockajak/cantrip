@@ -52,7 +52,7 @@ impl TraversableFixture for i64 {
   }
 
   fn safe_add(&self, value: &Self) -> Self {
-    self.saturating_add(value.clone())
+    self.saturating_add(*value)
   }
 }
 
