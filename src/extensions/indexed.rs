@@ -23,7 +23,7 @@ pub trait Indexed<Item> {
   where
     Self: IntoIterator<Item = Item>;
 
-  // FIXME - make the moving work
+  // FIXME - make moving of the element work
   fn x_put(self, index: usize, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
