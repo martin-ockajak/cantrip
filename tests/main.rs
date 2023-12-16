@@ -19,7 +19,7 @@ fn vec_i64(data: Vec<i64>) -> bool {
   test_traversable(data.clone())
     && test_ordered(data.clone())
     && test_aggregable(data.clone())
-    && test_list(data.clone())
+    && test_sequence(data.clone())
 }
 
 #[quickcheck]

@@ -70,7 +70,7 @@ where
       || data.clone().product() == data.clone().into_iter().product())
 }
 
-pub fn test_list<'c, A, C>(data: C) -> bool
+pub fn test_sequence<'c, A, C>(data: C) -> bool
 where
   A: TraversableFixture + 'c,
   C: Sequence<A> + IntoIterator<Item = A> + FromIterator<A> + Iterable<Item<'c> = &'c A> + PartialEq + Clone + 'c,
