@@ -148,8 +148,6 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 - Additional collection methods
 
-- Additional Scala and Python inspired extension
-
 - Implement tests
 
 - Write documentation
