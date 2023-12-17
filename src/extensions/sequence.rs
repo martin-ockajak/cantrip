@@ -220,6 +220,7 @@ pub trait Sequence<Item> {
   }
 }
 
+#[inline]
 pub(crate) fn chunked<Item, Chunk, Result>(iterator: impl Iterator<Item = Item>, chunk_size: usize) -> Result
 where
   Chunk: IntoIterator<Item = Item> + Sized + Default + Append<Item>,
@@ -245,6 +246,7 @@ where
   result
 }
 
+#[inline]
 pub(crate) fn interleave<Item, Result>(
   iterator: impl Iterator<Item = Item>, iterable: impl IntoIterator<Item = Item>,
 ) -> Result
