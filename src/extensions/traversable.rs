@@ -14,14 +14,6 @@ pub trait Traversable<Item> {
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
-
-  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-  {
-    let mut iterator = self.into_iter();
-    iterator.next().map(|result| iterator.fold(result, function))
-  }
 }
 
 #[inline]

@@ -11,7 +11,10 @@ mod extensions;
 
 #[quickcheck]
 fn vec_string(data: Vec<String>) -> bool {
-  test_traversable(data.clone()) && test_ordered(data.clone())
+  test_traversable(data.clone())
+    && test_ordered(data.clone())
+    && test_collectible(data.clone())
+    && test_sequence(data.clone())
 }
 
 #[quickcheck]
@@ -19,6 +22,7 @@ fn vec_i64(data: Vec<i64>) -> bool {
   test_traversable(data.clone())
     && test_ordered(data.clone())
     && test_aggregable(data.clone())
+    && test_collectible(data.clone())
     && test_sequence(data.clone())
 }
 
@@ -29,7 +33,7 @@ fn hash_set_string(data: HashSet<String>) -> bool {
 
 #[quickcheck]
 fn hash_set_i64(data: HashSet<i64>) -> bool {
-  test_traversable(data.clone()) && test_aggregable(data.clone())
+  test_traversable(data.clone()) && test_aggregable(data.clone()) && test_set(data.clone())
 }
 
 impl TraversableFixture for String {

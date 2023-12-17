@@ -46,8 +46,7 @@ where
     == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
   let min_by = data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
     == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
-  let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
-  all && any && count_by && find && fold && max_by && min_by && reduce
+  all && any && count_by && find && fold && max_by && min_by
 }
 
 pub fn test_ordered<A, C, I>(data: C) -> bool
@@ -75,6 +74,15 @@ where
     || data.clone().sum() == data.clone().into_iter().sum())
     && (!safe_aggregate(data.clone(), A::init_mul(), |x, y| x.check_mul(y))
       || data.clone().product() == data.clone().into_iter().product())
+}
+
+pub fn test_collectible<A, C>(data: C) -> bool
+where
+  A: TraversableFixture + PartialEq,
+  C: Collectible<A> + IntoIterator<Item = A> + Clone,
+{
+  let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
+  reduce
 }
 
 pub fn test_sequence<'c, A, C, I>(data: C) -> bool
