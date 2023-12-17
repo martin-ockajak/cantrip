@@ -1,6 +1,6 @@
-use crate::extensions::{all, any, count_by, fold, reduce, Traversable};
-use crate::extensions::{Ordered, Slice};
 use std::cmp::{max, min, Ordering};
+
+use crate::extensions::*;
 
 impl<Item> Traversable<Item> for [Item] {
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
@@ -29,10 +29,6 @@ impl<Item> Traversable<Item> for [Item] {
 
   fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().min_by(|&x, &y| compare(x, y))
-  }
-
-  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
-    reduce(self.iter(), function)
   }
 }
 

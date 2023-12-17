@@ -34,10 +34,6 @@ impl<Item> Traversable<Item> for Vec<Item> {
   fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().min_by(|&x, &y| compare(x, y))
   }
-
-  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
-    reduce(self.iter(), function)
-  }
 }
 
 impl<Item> Ordered<Item> for Vec<Item> {

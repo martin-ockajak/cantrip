@@ -15,7 +15,13 @@ pub trait Traversable<Item> {
 
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
+  fn reduce(self, mut function: impl FnMut(Item, Item) -> Item) -> Option<Item>
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+  {
+    let mut iterator = self.into_iter();
+    iterator.next().map(|result| iterator.fold(result, |r, x| function(r, x)))
+  }
 }
 
 #[inline]
@@ -43,10 +49,6 @@ pub(crate) fn fold<'a, A: 'a, B>(
 }
 
 #[inline]
-pub(crate) fn reduce<'a, A: 'a>(
-  mut iterator: impl Iterator<Item = &'a A>, mut function: impl FnMut(&A, &A) -> A,
-) -> Option<A> {
-  iterator
-    .next()
-    .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
+pub(crate) fn reduce<A>(mut iterator: impl Iterator<Item = A>, mut function: impl FnMut(A, A) -> A) -> Option<A> {
+  iterator.next().map(|result| iterator.fold(result, |r, x| function(r, x)))
 }
