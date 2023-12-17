@@ -45,68 +45,68 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 # Collection Methods
 
-| Method               | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
-|----------------------|-------------|---------------------------|-------------------------------|-------------------|----------------|
-| *add*                | Python      | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *all*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *any*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *chunked*            | Rust        | :radio_button:            |                               |                   |                |
-| *count_by*           | Scala       | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *delete*             | Python      | :radio_button:            |                               |                   |                |
-| *diff*               | Scala       | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *distinct*           | Scala       | :radio_button:            |                               |                   |                |
-| *distinct_by*        | Scala       | :radio_button:            |                               |                   |                |
-| *enumerate*          | Rust        | :radio_button:            |                               |                   |                |
-| *exclude*            | Python      | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *filter*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *filter_keys*        | Toolz       |                           |                               | :radio_button:    |                |
-| *filter_map*         | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *filter_values*      | Toolz       |                           |                               | :radio_button:    |                |
-| *find_map*           | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *find*               | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *flat_map*           | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *flat*               | Rust        | :radio_button:            | :radio_button:                |                   |                |
-| *fold*               | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *grouped_by*         | Scala       | :radio_button:            | :radio_button:                |                   |                |
-| *interleave*         | Toolz       | :radio_button:            |                               |                   |                |
-| *intersect*          | Scala       | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *init*               | Scala       | :radio_button:            |                               |                   | :radio_button: |
-| *map*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *map_keys*           | Toolz       |                           |                               | :radio_button:    |                |
-| *map_values*         | Toolz       |                           |                               | :radio_button:    |                |
-| *map_while*          | Rust        | :radio_button:            |                               |                   |                |
-| *max_by*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *merge*              | Toolz       | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *min_by*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *partition*          | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *position*           | Rust        | :radio_button:            |                               |                   | :radio_button: |
-| *product*            | Rust        | :radio_button:            | :radio_button:                |                   |                |
-| *product_keys*       | Rust        |                           |                               | :radio_button:    |                |
-| *product_values*     | Rust        |                           |                               | :radio_button:    |                |
-| *put*                | Python      | :radio_button:            |                               |                   |                |
-| *reduce*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *replace*            | Python      | :radio_button:            |                               |                   |                |
-| *rev*                | Rust        | :radio_button:            |                               |                   |                |
-| *rfind*              | Rust        | :radio_button:            |                               |                   | :radio_button: |
-| *rfold*              | Rust        | :radio_button:            |                               |                   | :radio_button: |
-| *rposition*          | Rust        | :radio_button:            |                               |                   | :radio_button: |
-| *scan*               | Rust        | :radio_button:            |                               |                   |                |
-| *skip*               | Rust        | :radio_button:            |                               |                   |                |
-| *skip_while*         | Rust        | :radio_button:            |                               |                   | :radio_button: |
-| *sorted*             | Scala       | :radio_button:            |                               |                   |                |
-| *sorted_by*          | Scala       | :radio_button:            |                               |                   |                |
-| *sorted_unstable*    | Scala       | :radio_button:            |                               |                   |                |
-| *sorted_unstable_by* | Scala       | :radio_button:            |                               |                   |                |
-| *step_by*            | Rust        | :radio_button:            |                               |                   |                |
-| *sum*                | Rust        | :radio_button:            | :radio_button:                |                   |                |
-| *sum_keys*           | Rust        |                           |                               | :radio_button:    |                |
-| *sum_values*         | Rust        |                           |                               | :radio_button:    |                |
-| *tail*               | Scala       | :radio_button:            |                               |                   | :radio_button: |
-| *take*               | Rust        | :radio_button:            |                               |                   |                |
-| *take_while*         | Rust        | :radio_button:            |                               |                   | :radio_button: |
-| *unit*               | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
-| *unzip*              | Rust        | :radio_button:            |                               |                   |                |
-| *zip*                | Rust        | :radio_button:            |                               |                   |                |
+| Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
+|----------------------|---------------------------|-------------------------------|-------------------|----------------|
+| *add*                | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *all*                | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *any*                | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *chunked*            | :radio_button:            |                               |                   |                |
+| *count_by*           | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *delete*             | :radio_button:            |                               |                   |                |
+| *diff*               | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *distinct*           | :radio_button:            |                               |                   |                |
+| *distinct_by*        | :radio_button:            |                               |                   |                |
+| *enumerate*          | :radio_button:            |                               |                   |                |
+| *exclude*            | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *filter*             | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *filter_keys*        |                           |                               | :radio_button:    |                |
+| *filter_map*         | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *filter_values*      |                           |                               | :radio_button:    |                |
+| *find_map*           | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *find*               | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *flat_map*           | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *flat*               | :radio_button:            | :radio_button:                |                   |                |
+| *fold*               | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *grouped_by*         | :radio_button:            | :radio_button:                |                   |                |
+| *interleave*         | :radio_button:            |                               |                   |                |
+| *intersect*          | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *init*               | :radio_button:            |                               |                   | :radio_button: |
+| *map*                | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *map_keys*           |                           |                               | :radio_button:    |                |
+| *map_values*         |                           |                               | :radio_button:    |                |
+| *map_while*          | :radio_button:            |                               |                   |                |
+| *max_by*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *merge*              | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *min_by*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *partition*          | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *position*           | :radio_button:            |                               |                   | :radio_button: |
+| *product*            | :radio_button:            | :radio_button:                |                   |                |
+| *product_keys*       |                           |                               | :radio_button:    |                |
+| *product_values*     |                           |                               | :radio_button:    |                |
+| *put*                | :radio_button:            |                               |                   |                |
+| *reduce*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *replace*            | :radio_button:            |                               |                   |                |
+| *rev*                | :radio_button:            |                               |                   |                |
+| *rfind*              | :radio_button:            |                               |                   | :radio_button: |
+| *rfold*              | :radio_button:            |                               |                   | :radio_button: |
+| *rposition*          | :radio_button:            |                               |                   | :radio_button: |
+| *scan*               | :radio_button:            |                               |                   |                |
+| *skip*               | :radio_button:            |                               |                   |                |
+| *skip_while*         | :radio_button:            |                               |                   | :radio_button: |
+| *sorted*             | :radio_button:            |                               |                   |                |
+| *sorted_by*          | :radio_button:            |                               |                   |                |
+| *sorted_unstable*    | :radio_button:            |                               |                   |                |
+| *sorted_unstable_by* | :radio_button:            |                               |                   |                |
+| *step_by*            | :radio_button:            |                               |                   |                |
+| *sum*                | :radio_button:            | :radio_button:                |                   |                |
+| *sum_keys*           |                           |                               | :radio_button:    |                |
+| *sum_values*         |                           |                               | :radio_button:    |                |
+| *tail*               | :radio_button:            |                               |                   | :radio_button: |
+| *take*               | :radio_button:            |                               |                   |                |
+| *take_while*         | :radio_button:            |                               |                   | :radio_button: |
+| *unit*               | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *unzip*              | :radio_button:            |                               |                   |                |
+| *zip*                | :radio_button:            |                               |                   |                |
 
 
 ## Inspirations
@@ -131,7 +131,6 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
   - [QMap](https://doc.qt.io/qt-6/qmap.html)
   - [QString](https://doc.qt.io/qt-6/qstring.htm)
 - Misc
-  - [Itertools](https://docs.rs/itertools/latest/itertools/index.html)
   - [Toolz](https://toolz.readthedocs.io/en/latest/api.html)
   - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
   - [Array Tool](https://github.com/danielpclark/array_tool/tree/master)
