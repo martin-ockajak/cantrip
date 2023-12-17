@@ -48,65 +48,65 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 | Method               | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
 |----------------------|-------------|---------------------------|-------------------------------|-------------------|----------------|
-| *add*                | Python      | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *all*                | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *any*                | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *count_by*           | Scala       | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *delete*             | Python      | :black_circle:            |                               |                   |                |
-| *diff*               | Scala       | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *distinct*           | Scala       | :black_circle:            |                               |                   |                |
-| *distinct_by*        | Scala       | :black_circle:            |                               |                   |                |
-| *enumerate*          | Rust        | :black_circle:            |                               |                   |                |
-| *exclude*            | Python      | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *filter*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *filter_keys*        | Toolz       |                           |                               | :black_circle:    |                |
-| *filter_map*         | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *filter_values*      | Toolz       |                           |                               | :black_circle:    |                |
-| *find_map*           | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *find*               | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *flat_map*           | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *flat*               | Rust        | :black_circle:            | :black_circle:                |                   |                |
-| *fold*               | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *grouped_by*         | Scala       | :black_circle:            | :black_circle:                |                   |                |
-| *interleave*         | Toolz       | :black_circle:            |                               |                   |                |
-| *intersect*          | Scala       | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *init*               | Scala       | :black_circle:            |                               |                   | :black_circle: |
-| *map*                | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *map_keys*           | Toolz       |                           |                               | :black_circle:    |                |
-| *map_values*         | Toolz       |                           |                               | :black_circle:    |                |
-| *map_while*          | Rust        | :black_circle:            |                               |                   |                |
-| *max_by*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *merge*              | Scala       | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *min_by*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *partition*          | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *position*           | Rust        | :black_circle:            |                               |                   | :black_circle: |
-| *product*            | Rust        | :black_circle:            | :black_circle:                |                   |                |
-| *product_keys*       | Rust        |                           |                               | :black_circle:    |                |
-| *product_values*     | Rust        |                           |                               | :black_circle:    |                |
-| *put*                | Python      | :black_circle:            |                               |                   |                |
-| *reduce*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
-| *replace*            | Python      | :black_circle:            |                               |                   |                |
-| *rev*                | Rust        | :black_circle:            |                               |                   |                |
-| *rfind*              | Rust        | :black_circle:            |                               |                   | :black_circle: |
-| *rfold*              | Rust        | :black_circle:            |                               |                   | :black_circle: |
-| *rposition*          | Rust        | :black_circle:            |                               |                   | :black_circle: |
-| *scan*               | Rust        | :black_circle:            |                               |                   |                |
-| *skip*               | Rust        | :black_circle:            |                               |                   |                |
-| *skip_while*         | Rust        | :black_circle:            |                               |                   | :black_circle: |
-| *sorted*             | Scala       | :black_circle:            |                               |                   |                |
-| *sorted_by*          | Scala       | :black_circle:            |                               |                   |                |
-| *sorted_unstable*    | Scala       | :black_circle:            |                               |                   |                |
-| *sorted_unstable_by* | Scala       | :black_circle:            |                               |                   |                |
-| *step_by*            | Rust        | :black_circle:            |                               |                   |                |
-| *sum*                | Rust        | :black_circle:            | :black_circle:                |                   |                |
-| *sum_keys*           | Rust        |                           |                               | :black_circle:    |                |
-| *sum_values*         | Rust        |                           |                               | :black_circle:    |                |
-| *tail*               | Scala       | :black_circle:            |                               |                   | :black_circle: |
-| *take*               | Rust        | :black_circle:            |                               |                   |                |
-| *take_while*         | Rust        | :black_circle:            |                               |                   | :black_circle: |
-| *unit*               | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
-| *unzip*              | Rust        | :black_circle:            |                               |                   |                |
-| *zip*                | Rust        | :black_circle:            |                               |                   |                |
+| *add*                | Python      | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *all*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *any*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *count_by*           | Scala       | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *delete*             | Python      | :radio_button:            |                               |                   |                |
+| *diff*               | Scala       | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *distinct*           | Scala       | :radio_button:            |                               |                   |                |
+| *distinct_by*        | Scala       | :radio_button:            |                               |                   |                |
+| *enumerate*          | Rust        | :radio_button:            |                               |                   |                |
+| *exclude*            | Python      | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *filter*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *filter_keys*        | Toolz       |                           |                               | :radio_button:    |                |
+| *filter_map*         | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *filter_values*      | Toolz       |                           |                               | :radio_button:    |                |
+| *find_map*           | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *find*               | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *flat_map*           | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *flat*               | Rust        | :radio_button:            | :radio_button:                |                   |                |
+| *fold*               | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *grouped_by*         | Scala       | :radio_button:            | :radio_button:                |                   |                |
+| *interleave*         | Toolz       | :radio_button:            |                               |                   |                |
+| *intersect*          | Scala       | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *init*               | Scala       | :radio_button:            |                               |                   | :radio_button: |
+| *map*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *map_keys*           | Toolz       |                           |                               | :radio_button:    |                |
+| *map_values*         | Toolz       |                           |                               | :radio_button:    |                |
+| *map_while*          | Rust        | :radio_button:            |                               |                   |                |
+| *max_by*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *merge*              | Scala       | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *min_by*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *partition*          | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *position*           | Rust        | :radio_button:            |                               |                   | :radio_button: |
+| *product*            | Rust        | :radio_button:            | :radio_button:                |                   |                |
+| *product_keys*       | Rust        |                           |                               | :radio_button:    |                |
+| *product_values*     | Rust        |                           |                               | :radio_button:    |                |
+| *put*                | Python      | :radio_button:            |                               |                   |                |
+| *reduce*             | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *replace*            | Python      | :radio_button:            |                               |                   |                |
+| *rev*                | Rust        | :radio_button:            |                               |                   |                |
+| *rfind*              | Rust        | :radio_button:            |                               |                   | :radio_button: |
+| *rfold*              | Rust        | :radio_button:            |                               |                   | :radio_button: |
+| *rposition*          | Rust        | :radio_button:            |                               |                   | :radio_button: |
+| *scan*               | Rust        | :radio_button:            |                               |                   |                |
+| *skip*               | Rust        | :radio_button:            |                               |                   |                |
+| *skip_while*         | Rust        | :radio_button:            |                               |                   | :radio_button: |
+| *sorted*             | Scala       | :radio_button:            |                               |                   |                |
+| *sorted_by*          | Scala       | :radio_button:            |                               |                   |                |
+| *sorted_unstable*    | Scala       | :radio_button:            |                               |                   |                |
+| *sorted_unstable_by* | Scala       | :radio_button:            |                               |                   |                |
+| *step_by*            | Rust        | :radio_button:            |                               |                   |                |
+| *sum*                | Rust        | :radio_button:            | :radio_button:                |                   |                |
+| *sum_keys*           | Rust        |                           |                               | :radio_button:    |                |
+| *sum_values*         | Rust        |                           |                               | :radio_button:    |                |
+| *tail*               | Scala       | :radio_button:            |                               |                   | :radio_button: |
+| *take*               | Rust        | :radio_button:            |                               |                   |                |
+| *take_while*         | Rust        | :radio_button:            |                               |                   | :radio_button: |
+| *unit*               | Rust        | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *unzip*              | Rust        | :radio_button:            |                               |                   |                |
+| *zip*                | Rust        | :radio_button:            |                               |                   |                |
 
 
 ## Inspirations
