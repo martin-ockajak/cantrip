@@ -229,6 +229,7 @@ pub trait Traversable<Item> {
   /// assert_eq!(a.max_value(), Some(&3));
   /// assert_eq!(b.max_value(), None);
   /// ```
+  #[inline]
   fn max_value(&self) -> Option<&Item> where Item: Ord {
     self.max_by(Ord::cmp)
   }
@@ -281,6 +282,7 @@ pub trait Traversable<Item> {
   /// assert_eq!(a.min_value(), Some(&1));
   /// assert_eq!(b.min_value(), None);
   /// ```
+  #[inline]
   fn min_value(&self) -> Option<&Item> where Item: Ord {
     self.min_by(Ord::cmp)
   }

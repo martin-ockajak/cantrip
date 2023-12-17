@@ -20,6 +20,7 @@ pub trait Map<Key, Value> {
 
   fn min_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
+  #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
     Self:
@@ -28,6 +29,7 @@ pub trait Map<Key, Value> {
     self.into_iter().partition(|(k, v)| predicate((&k, &v)))
   }
 
+  #[inline]
   fn product_keys<S>(self) -> Key
   where
     Key: Product,
@@ -36,6 +38,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, _)| k).product()
   }
 
+  #[inline]
   fn product_values<S>(self) -> Value
   where
     Value: Product,
@@ -46,6 +49,7 @@ pub trait Map<Key, Value> {
 
   fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
+  #[inline]
   fn sum_keys(self) -> Key
   where
     Key: Sum,
@@ -54,6 +58,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, _)| k).sum()
   }
 
+  #[inline]
   fn sum_values(self) -> Value
   where
     Value: Sum,
@@ -62,6 +67,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
+  #[inline]
   fn unit(key: Key, value: Value) -> Self
   where
     Key: Eq + Hash,
