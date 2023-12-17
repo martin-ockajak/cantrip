@@ -47,7 +47,7 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 | Method               | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
 |----------------------|-------------|---------------------------|-------------------------------|-------------------|----------------|
-| *add*                | Python      | :radio_button:            | :radio_button:                | :radio_button:    |                |
+| *add*                | Python      |      :radio_button:      | :radio_button:                | :radio_button:    |                |
 | *all*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
 | *any*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
 | *chunked*            | Toolz       | :radio_button:            |                               |                   |                |
