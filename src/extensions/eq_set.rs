@@ -38,7 +38,7 @@ pub trait EqSet<Item> {
     B: Eq + Hash,
     R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::This<B>
+  fn flat<B>(self) -> Self::This<B>
   where
     Item: IntoIterator<Item = B>,
     B: Eq + Hash,
@@ -52,7 +52,7 @@ pub trait EqSet<Item> {
   where
     Item: Eq + Hash;
 
-  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     Item: Eq + Hash,
     K: Eq + Hash,

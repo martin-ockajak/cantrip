@@ -37,7 +37,7 @@ pub trait OrdSet<Item> {
     B: Ord,
     R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::This<B>
+  fn flat<B>(self) -> Self::This<B>
   where
     Item: IntoIterator<Item = B>,
     B: Ord,
@@ -51,7 +51,7 @@ pub trait OrdSet<Item> {
   where
     Item: Ord;
 
-  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
+  fn grouped_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
   where
     Item: Ord,
     K: Ord,

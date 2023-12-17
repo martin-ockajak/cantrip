@@ -12,8 +12,9 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 * Equivalents of suitable iterator methods are added to all standard library collection data types
 * Utility methods inspired by other libraries are also added to the same collection data types
-* Added methods return a new instance of the same collection type instead of an iterator
+* Method names are distinct from current or planned standard library collection method names
 * All methods consider collection instances to be immutable although some consume them
+* Transformation methods return a new collection instance instead of an iterator
 * Everything is available via a single import
 
 ## Examples
@@ -64,9 +65,9 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 | *find_map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
 | *find*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
 | *flat_map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *flatten*            | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
+| *flat*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
 | *fold*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *group_by*           | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
+| *grouped_by*         | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
 | *interleave*         | Toolz       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
 | *intersect*          | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
 | *init*               | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |

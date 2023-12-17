@@ -81,7 +81,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     self.iter().flat_map(function).collect()
   }
 
-  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
     Self: Sized,

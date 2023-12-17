@@ -61,7 +61,7 @@ pub trait Sequence<Item> {
   where
     R: IntoIterator<Item = B>;
 
-  fn flatten<B>(self) -> Self::This<B>
+  fn flat<B>(self) -> Self::This<B>
   where
     Item: IntoIterator<Item = B>,
     Self: IntoIterator<Item = Item> + Sized,
@@ -70,7 +70,7 @@ pub trait Sequence<Item> {
     self.into_iter().flatten().collect()
   }
 
-  fn group_by<K>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
     Self: Sized;
