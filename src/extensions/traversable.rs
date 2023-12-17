@@ -47,8 +47,3 @@ pub(crate) fn fold<'a, A: 'a, B>(
 ) -> B {
   iterator.fold(init, function)
 }
-
-#[inline]
-pub(crate) fn reduce<A>(mut iterator: impl Iterator<Item = A>, mut function: impl FnMut(A, A) -> A) -> Option<A> {
-  iterator.next().map(|result| iterator.fold(result, |r, x| function(r, x)))
-}
