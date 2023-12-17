@@ -1,35 +1,12 @@
-use cantrip::extensions::*;
-use std::cmp::Ordering;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
+use cantrip::extensions::*;
+
+use crate::base::fixtures::{AggregableFixture, TraversableFixture};
+
 // FIXME - add tests for all methods
-
-pub trait TraversableFixture: Sized + Default {
-  fn init_add() -> Self {
-    Self::default()
-  }
-
-  fn test(&self) -> bool;
-
-  fn safe_add(&self, value: &Self) -> Self;
-
-  fn compare(&self, value: &Self) -> Ordering
-  where
-    Self: Ord,
-  {
-    self.cmp(value)
-  }
-}
-
-pub trait AggregableFixture: Sized + Default {
-  fn init_mul() -> Self;
-
-  fn check_add(&self, value: Self) -> Option<Self>;
-
-  fn check_mul(&self, value: Self) -> Option<Self>;
-}
 
 pub fn test_traversable<A, C>(data: C) -> bool
 where
@@ -136,7 +113,7 @@ where
 
 //   use std::collections::HashMap;
 //
-//   use crate::extensions::*;
+//   use crate::base::*;
 //
 //   #[quickcheck]
 //   fn map(data: HashMap<i32, i32>) -> bool {

@@ -4,12 +4,14 @@ extern crate quickcheck;
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
-use crate::extensions::*;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter::{Product, Sum};
 
-mod extensions;
+use crate::base::fixtures::*;
+use crate::base::properties::*;
+
+mod base;
 
 #[quickcheck]
 fn vec_string(data: Vec<String>) -> bool {
@@ -32,8 +34,8 @@ fn hash_set_i64(data: HashSet<i64>) -> bool {
 }
 
 fn test_vec<Item>(data: Vec<Item>) -> bool
-  where
-    Item: Clone + Ord + TraversableFixture,
+where
+  Item: Clone + Ord + TraversableFixture,
 {
   test_traversable(data.clone())
     && test_ordered(data.clone())
@@ -42,8 +44,8 @@ fn test_vec<Item>(data: Vec<Item>) -> bool
 }
 
 fn test_numeric_vec<Item>(data: Vec<Item>) -> bool
-  where
-    Item: Clone + Ord + TraversableFixture + AggregableFixture + Sum + Product,
+where
+  Item: Clone + Ord + TraversableFixture + AggregableFixture + Sum + Product,
 {
   test_vec(data.clone()) && test_aggregable(data)
 }
@@ -60,42 +62,4 @@ where
   Item: Clone + Ord + Eq + Hash + TraversableFixture + AggregableFixture + Sum + Product,
 {
   test_hash_set(data.clone()) && test_aggregable(data)
-}
-
-impl TraversableFixture for String {
-  fn test(&self) -> bool {
-    self.len() % 2 == 0
-  }
-
-  fn safe_add(&self, value: &Self) -> Self {
-    if self.len() > u16::MAX as usize {
-      self.clone()
-    } else {
-      self.clone() + value
-    }
-  }
-}
-
-impl TraversableFixture for i64 {
-  fn test(&self) -> bool {
-    self % 2 == 0
-  }
-
-  fn safe_add(&self, value: &Self) -> Self {
-    self.saturating_add(*value)
-  }
-}
-
-impl AggregableFixture for i64 {
-  fn init_mul() -> Self {
-    1
-  }
-
-  fn check_add(&self, value: Self) -> Option<Self> {
-    self.checked_add(value)
-  }
-
-  fn check_mul(&self, value: Self) -> Option<Self> {
-    self.checked_mul(value)
-  }
 }
