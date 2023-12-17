@@ -1,26 +1,29 @@
 use std::collections::{LinkedList, VecDeque};
 
-pub trait Append<A> {
-  fn append(&mut self, value: A);
+pub trait Append<Item> {
+  fn append(&mut self, value: Item);
 }
 
-impl<A> Append<A> for Vec<A> {
+impl<Item> Append<Item> for Vec<Item> {
   #[inline]
-  fn append(&mut self, value: A) {
+  fn append(&mut self, value: Item)
+  where
+    Self: Extend<Item>,
+  {
     self.push(value)
   }
 }
 
-impl<A> Append<A> for LinkedList<A> {
+impl<Item> Append<Item> for LinkedList<Item> {
   #[inline]
-  fn append(&mut self, value: A) {
+  fn append(&mut self, value: Item) {
     self.push_back(value)
   }
 }
 
-impl<A> Append<A> for VecDeque<A> {
+impl<Item> Append<Item> for VecDeque<Item> {
   #[inline]
-  fn append(&mut self, value: A) {
+  fn append(&mut self, value: Item) {
     self.push_back(value)
   }
 }
