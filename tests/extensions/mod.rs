@@ -37,6 +37,7 @@ where
   let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
   let any = data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test());
   let count_by = data.count_by(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).count();
+  let find = data.find(|x| x.test()) == data.clone().find(|x| x.test());
   let fold = data.fold(A::init_add(), |r, x| r.safe_add(x))
     == data.clone().into_iter().fold(A::init_add(), |r, x| r.safe_add(&x));
   let max_by = data.max_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
@@ -46,18 +47,23 @@ where
   // FIXME - failing test
   // let reduce = data.reduce(|r, x| r.safe_add(x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
   let reduce = true;
-  all && any && count_by && fold && max_by && min_by && reduce
+  all && any && count_by && find && fold && max_by && min_by && reduce
 }
 
-pub fn test_ordered<A, C>(data: C) -> bool
+pub fn test_ordered<A, C, I>(data: C) -> bool
 where
-  A: TraversableFixture,
-  C: Ordered<A> + IntoIterator<Item = A> + Clone,
+  A: TraversableFixture + PartialEq,
+  C: Ordered<A> + IntoIterator<Item = A, IntoIter = I> + Clone,
+  I: Iterator<Item = A> + DoubleEndedIterator + ExactSizeIterator,
 {
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
-  // FIXME - make iterator reversal work
-  // let rposition = data.rposition(|x| x.test()) == data.clone().into_iter().rev().position(|x| x.test());
-  position
+  let rfind = data.rfind(|x| x.test()) == data.clone().rfind(|x| x.test());
+  let rfold = data.rfold(A::init_add(), |r, x| r.safe_add(x))
+    == data.clone().into_iter().rfold(A::init_add(), |r, x| r.safe_add(&x));
+  let size = data.clone().into_iter().len();
+  let rposition =
+    data.rposition(|x| x.test()) == data.clone().into_iter().rev().position(|x| x.test()).map(|x| size - x - 1);
+  position && rfind && rfold && rposition
 }
 
 pub fn test_aggregable<A, C>(data: C) -> bool
@@ -71,21 +77,21 @@ where
       || data.clone().product() == data.clone().into_iter().product())
 }
 
-pub fn test_sequence<'c, A, C>(data: C) -> bool
+pub fn test_sequence<'c, A, C, I>(data: C) -> bool
 where
   A: TraversableFixture + 'c,
-  C: Sequence<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone + 'c,
+  C: Sequence<A> + IntoIterator<Item = A, IntoIter = I> + FromIterator<A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
   C::This<(usize, A)>: PartialEq + FromIterator<(usize, A)>,
+  I: Iterator<Item = A> + DoubleEndedIterator,
 {
   let enumerate = data.clone().enumerate() == data.clone().into_iter().enumerate().collect();
   let filter = data.clone().filter(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).collect();
   let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
     == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
-  // FIXME - make iterator reversal work
-  // let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
-  enumerate && filter && flat_map && map
+  let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
+  enumerate && filter && flat_map && map && rev
 }
 
 pub fn test_set<A, C>(data: C) -> bool
