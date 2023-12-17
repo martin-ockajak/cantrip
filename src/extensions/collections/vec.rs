@@ -67,25 +67,6 @@ impl<Item> Collectible<Item> for Vec<Item> {
 impl<Item> Sequence<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
-  fn chunked(self, chunk_size: usize) -> Self::This<Self>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-  {
-    let mut result: Vec<Vec<Item>> = Vec::new();
-    let mut current: Vec<Item> = Vec::new();
-    for (index, item) in self.into_iter().enumerate() {
-      current.push(item);
-      if index % chunk_size == chunk_size - 1 {
-        result.push(current);
-        current = Vec::new();
-      }
-    }
-    if !current.is_empty() {
-      result.push(current);
-    }
-    result
-  }
-
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }

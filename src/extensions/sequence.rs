@@ -14,7 +14,28 @@ pub trait Sequence<Item> {
 
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Sized;
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self::This<Self>: Default + Extend<Self>,
+  {
+    let mut result: Self::This<Self> = Self::This::default();
+    let mut chunk: Self = Self::default();
+    let mut index: usize = 0;
+    let mut chunk_index: usize = 0;
+    for item in self.into_iter() {
+      chunk.extend(iter::once(item));
+      index += 1;
+      chunk_index += 1;
+      if chunk_index == chunk_size {
+        result.extend(iter::once(chunk));
+        chunk = Self::default();
+        chunk_index = 0;
+      }
+    }
+    if index > 0 && chunk_index == 0 {
+      result.extend(iter::once(chunk));
+    }
+    result
+  }
 
   fn delete(self, index: usize) -> Self
   where
