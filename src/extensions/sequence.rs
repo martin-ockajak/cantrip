@@ -15,7 +15,7 @@ pub trait Sequence<Item> {
 
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Sized;
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>;
 
   fn delete(self, index: usize) -> Self
   where
@@ -82,7 +82,9 @@ pub trait Sequence<Item> {
 
   fn init(self) -> Self;
 
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self;
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: Default + Extend<Item>;
 
   /// Applies the given closure `f` to each element in the container.
   ///

@@ -68,8 +68,8 @@ impl<Item> Sequence<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
-    where
-      Self: IntoIterator<Item = Item> + Sized,
+  where
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
     chunked(self.into_iter(), chunk_size)
   }
@@ -103,7 +103,10 @@ impl<Item> Sequence<Item> for Vec<Item> {
     iterator.rev().collect()
   }
 
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self {
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: Default + Extend<Item>,
+  {
     interleave(self.into_iter(), iterable)
   }
 
