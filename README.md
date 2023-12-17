@@ -50,7 +50,7 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 | *add*                | Python      | :radio_button:            | :radio_button:                | :radio_button:    |                |
 | *all*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
 | *any*                | Rust        | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *chunked*            | Toolz       | :radio_button:            |                               |                   |                |
+| *divide*             | Rust        | :radio_button:            |                               |                   |                |
 | *count_by*           | Scala       | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
 | *delete*             | Python      | :radio_button:            |                               |                   |                |
 | *diff*               | Scala       | :radio_button:            | :radio_button:                | :radio_button:    |                |

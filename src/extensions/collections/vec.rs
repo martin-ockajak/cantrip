@@ -63,7 +63,7 @@ impl<Item> Collectible<Item> for Vec<Item> {
 impl<Item> Sequence<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
-  fn chunked(self, chunk_size: usize) -> Self::This<Self>
+  fn divide(self, chunk_size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
