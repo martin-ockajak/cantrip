@@ -48,65 +48,65 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 | Method               | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
 |----------------------|-------------|---------------------------|-------------------------------|-------------------|----------------|
-| *add*                | Python      | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *all*                | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *any*                | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *count_by*           | Scala       | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *delete*             | Python      | :white_circle:            |                               |                   |                |
-| *diff*               | Scala       | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *distinct*           | Scala       | :white_circle:            |                               |                   |                |
-| *distinct_by*        | Scala       | :white_circle:            |                               |                   |                |
-| *enumerate*          | Rust        | :white_circle:            |                               |                   |                |
-| *exclude*            | Python      | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *filter*             | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *filter_keys*        | Toolz       |                           |                               | :white_circle:    |                |
-| *filter_map*         | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *filter_values*      | Toolz       |                           |                               | :white_circle:    |                |
-| *find_map*           | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *find*               | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *flat_map*           | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *flat*               | Rust        | :white_circle:            | :white_circle:                |                   |                |
-| *fold*               | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *grouped_by*         | Scala       | :white_circle:            | :white_circle:                |                   |                |
-| *interleave*         | Toolz       | :white_circle:            |                               |                   |                |
-| *intersect*          | Scala       | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *init*               | Scala       | :white_circle:            |                               |                   | :white_circle: |
-| *map*                | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *map_keys*           | Toolz       |                           |                               | :white_circle:    |                |
-| *map_values*         | Toolz       |                           |                               | :white_circle:    |                |
-| *map_while*          | Rust        | :white_circle:            |                               |                   |                |
-| *max_by*             | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *merge*              | Scala       | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *min_by*             | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *partition*          | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *position*           | Rust        | :white_circle:            |                               |                   | :white_circle: |
-| *product*            | Rust        | :white_circle:            | :white_circle:                |                   |                |
-| *product_keys*       | Rust        |                           |                               | :white_circle:    |                |
-| *product_values*     | Rust        |                           |                               | :white_circle:    |                |
-| *put*                | Python      | :white_circle:            |                               |                   |                |
-| *reduce*             | Rust        | :white_circle:            | :white_circle:                | :white_circle:    | :white_circle: |
-| *replace*            | Python      | :white_circle:            |                               |                   |                |
-| *rev*                | Rust        | :white_circle:            |                               |                   |                |
-| *rfind*              | Rust        | :white_circle:            |                               |                   | :white_circle: |
-| *rfold*              | Rust        | :white_circle:            |                               |                   | :white_circle: |
-| *rposition*          | Rust        | :white_circle:            |                               |                   | :white_circle: |
-| *scan*               | Rust        | :white_circle:            |                               |                   |                |
-| *skip*               | Rust        | :white_circle:            |                               |                   |                |
-| *skip_while*         | Rust        | :white_circle:            |                               |                   | :white_circle: |
-| *sorted*             | Scala       | :white_circle:            |                               |                   |                |
-| *sorted_by*          | Scala       | :white_circle:            |                               |                   |                |
-| *sorted_unstable*    | Scala       | :white_circle:            |                               |                   |                |
-| *sorted_unstable_by* | Scala       | :white_circle:            |                               |                   |                |
-| *step_by*            | Rust        | :white_circle:            |                               |                   |                |
-| *sum*                | Rust        | :white_circle:            | :white_circle:                |                   |                |
-| *sum_keys*           | Rust        |                           |                               | :white_circle:    |                |
-| *sum_values*         | Rust        |                           |                               | :white_circle:    |                |
-| *tail*               | Scala       | :white_circle:            |                               |                   | :white_circle: |
-| *take*               | Rust        | :white_circle:            |                               |                   |                |
-| *take_while*         | Rust        | :white_circle:            |                               |                   | :white_circle: |
-| *unit*               | Rust        | :white_circle:            | :white_circle:                | :white_circle:    |                |
-| *unzip*              | Rust        | :white_circle:            |                               |                   |                |
-| *zip*                | Rust        | :white_circle:            |                               |                   |                |
+| *add*                | Python      | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *all*                | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *any*                | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *count_by*           | Scala       | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *delete*             | Python      | :black_circle:            |                               |                   |                |
+| *diff*               | Scala       | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *distinct*           | Scala       | :black_circle:            |                               |                   |                |
+| *distinct_by*        | Scala       | :black_circle:            |                               |                   |                |
+| *enumerate*          | Rust        | :black_circle:            |                               |                   |                |
+| *exclude*            | Python      | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *filter*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *filter_keys*        | Toolz       |                           |                               | :black_circle:    |                |
+| *filter_map*         | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *filter_values*      | Toolz       |                           |                               | :black_circle:    |                |
+| *find_map*           | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *find*               | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *flat_map*           | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *flat*               | Rust        | :black_circle:            | :black_circle:                |                   |                |
+| *fold*               | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *grouped_by*         | Scala       | :black_circle:            | :black_circle:                |                   |                |
+| *interleave*         | Toolz       | :black_circle:            |                               |                   |                |
+| *intersect*          | Scala       | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *init*               | Scala       | :black_circle:            |                               |                   | :black_circle: |
+| *map*                | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *map_keys*           | Toolz       |                           |                               | :black_circle:    |                |
+| *map_values*         | Toolz       |                           |                               | :black_circle:    |                |
+| *map_while*          | Rust        | :black_circle:            |                               |                   |                |
+| *max_by*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *merge*              | Scala       | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *min_by*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *partition*          | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *position*           | Rust        | :black_circle:            |                               |                   | :black_circle: |
+| *product*            | Rust        | :black_circle:            | :black_circle:                |                   |                |
+| *product_keys*       | Rust        |                           |                               | :black_circle:    |                |
+| *product_values*     | Rust        |                           |                               | :black_circle:    |                |
+| *put*                | Python      | :black_circle:            |                               |                   |                |
+| *reduce*             | Rust        | :black_circle:            | :black_circle:                | :black_circle:    | :black_circle: |
+| *replace*            | Python      | :black_circle:            |                               |                   |                |
+| *rev*                | Rust        | :black_circle:            |                               |                   |                |
+| *rfind*              | Rust        | :black_circle:            |                               |                   | :black_circle: |
+| *rfold*              | Rust        | :black_circle:            |                               |                   | :black_circle: |
+| *rposition*          | Rust        | :black_circle:            |                               |                   | :black_circle: |
+| *scan*               | Rust        | :black_circle:            |                               |                   |                |
+| *skip*               | Rust        | :black_circle:            |                               |                   |                |
+| *skip_while*         | Rust        | :black_circle:            |                               |                   | :black_circle: |
+| *sorted*             | Scala       | :black_circle:            |                               |                   |                |
+| *sorted_by*          | Scala       | :black_circle:            |                               |                   |                |
+| *sorted_unstable*    | Scala       | :black_circle:            |                               |                   |                |
+| *sorted_unstable_by* | Scala       | :black_circle:            |                               |                   |                |
+| *step_by*            | Rust        | :black_circle:            |                               |                   |                |
+| *sum*                | Rust        | :black_circle:            | :black_circle:                |                   |                |
+| *sum_keys*           | Rust        |                           |                               | :black_circle:    |                |
+| *sum_values*         | Rust        |                           |                               | :black_circle:    |                |
+| *tail*               | Scala       | :black_circle:            |                               |                   | :black_circle: |
+| *take*               | Rust        | :black_circle:            |                               |                   |                |
+| *take_while*         | Rust        | :black_circle:            |                               |                   | :black_circle: |
+| *unit*               | Rust        | :black_circle:            | :black_circle:                | :black_circle:    |                |
+| *unzip*              | Rust        | :black_circle:            |                               |                   |                |
+| *zip*                | Rust        | :black_circle:            |                               |                   |                |
 
 
 ## Inspirations
