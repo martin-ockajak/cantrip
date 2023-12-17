@@ -98,9 +98,7 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   fn init(self) -> Self {
-    let mut iterator = self.into_iter().rev();
-    iterator.next();
-    iterator.rev().collect()
+    init(self.into_iter())
   }
 
   fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self

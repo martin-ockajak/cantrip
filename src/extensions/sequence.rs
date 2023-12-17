@@ -177,9 +177,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
-    iterator.next();
-    iterator.collect()
+    self.into_iter().skip(1).collect()
   }
 
   fn take(self, n: usize) -> Self
@@ -246,6 +244,16 @@ where
     result.append(chunk);
   }
   result
+}
+
+#[inline]
+pub(crate) fn init<Item, Result, Iterable>(iterator: Iterable) -> Result
+where
+  Iterable: Iterator<Item = Item> + ExactSizeIterator,
+  Result: Sized + FromIterator<Item>,
+{
+  let size = iterator.len() - 1;
+  iterator.skip(size).collect()
 }
 
 #[inline]
