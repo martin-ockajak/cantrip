@@ -5,11 +5,9 @@ extern crate quickcheck;
 extern crate quickcheck_macros;
 
 use std::collections::HashSet;
-use std::hash::Hash;
 use std::iter::{Product, Sum};
 
 use crate::base::collections::*;
-use crate::base::fixtures::*;
 
 mod base;
 
