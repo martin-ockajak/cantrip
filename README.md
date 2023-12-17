@@ -76,10 +76,10 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 | *map_values*         |                           |                               | :radio_button:    |                |
 | *map_while*          | :radio_button:            |                               |                   |                |
 | *max_by*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *max_value*          | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *max_entry*          | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
 | *merge*              | :radio_button:            | :radio_button:                | :radio_button:    |                |
 | *min_by*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-| *min_value*          | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
+| *min_entry*          | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
 | *partition*          | :radio_button:            | :radio_button:                | :radio_button:    |                |
 | *position*           | :radio_button:            |                               |                   | :radio_button: |
 | *product*            | :radio_button:            | :radio_button:                |                   |                |

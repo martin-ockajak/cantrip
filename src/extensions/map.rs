@@ -18,7 +18,25 @@ pub trait Map<Key, Value> {
 
   fn max_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
+  #[inline]
+  fn max_entry(&self) -> Option<(&Key, &Value)>
+  where
+    Key: Ord,
+    Value: Ord,
+  {
+    self.max_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
+  }
+
   fn min_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+
+  #[inline]
+  fn min_entry(&self) -> Option<(&Key, &Value)>
+  where
+    Key: Ord,
+    Value: Ord,
+  {
+    self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
+  }
 
   #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
