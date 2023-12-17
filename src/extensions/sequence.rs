@@ -1,3 +1,4 @@
+use crate::extensions::util::append::Append;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
@@ -14,28 +15,7 @@ pub trait Sequence<Item> {
 
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
-    Self::This<Self>: Default + Extend<Self>,
-  {
-    let mut result: Self::This<Self> = Self::This::default();
-    let mut chunk: Self = Self::default();
-    let mut index: usize = 0;
-    let mut chunk_index: usize = 0;
-    for item in self.into_iter() {
-      chunk.extend(iter::once(item));
-      index += 1;
-      chunk_index += 1;
-      if chunk_index == chunk_size {
-        result.extend(iter::once(chunk));
-        chunk = Self::default();
-        chunk_index = 0;
-      }
-    }
-    if index > 0 && chunk_index == 0 {
-      result.extend(iter::once(chunk));
-    }
-    result
-  }
+    Self: IntoIterator<Item = Item> + Sized;
 
   fn delete(self, index: usize) -> Self
   where
@@ -102,17 +82,7 @@ pub trait Sequence<Item> {
 
   fn init(self) -> Self;
 
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-  {
-    let mut result: Self = Self::default();
-    for (item1, item2) in self.into_iter().zip(iterable) {
-      result.extend(iter::once(item1));
-      result.extend(iter::once(item2));
-    }
-    result
-  }
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self;
 
   /// Applies the given closure `f` to each element in the container.
   ///
@@ -248,4 +218,43 @@ pub trait Sequence<Item> {
   {
     self.into_iter().zip(iterable).collect()
   }
+}
+
+pub(crate) fn chunked<Item, Chunk, Result>(iterator: impl Iterator<Item = Item>, chunk_size: usize) -> Result
+where
+  Chunk: IntoIterator<Item = Item> + Sized + Default + Append<Item>,
+  Result: Default + Append<Chunk>,
+{
+  let mut result = Result::default();
+  let mut chunk = Chunk::default();
+  let mut index: usize = 0;
+  let mut chunk_index: usize = 0;
+  for item in iterator {
+    chunk.append(item);
+    index += 1;
+    chunk_index += 1;
+    if chunk_index == chunk_size {
+      result.append(chunk);
+      chunk = Chunk::default();
+      chunk_index = 0;
+    }
+  }
+  if index > 0 && chunk_index == 0 {
+    result.append(chunk);
+  }
+  result
+}
+
+pub(crate) fn interleave<Item, Result>(
+  iterator: impl Iterator<Item = Item>, iterable: impl IntoIterator<Item = Item>,
+) -> Result
+where
+  Result: Default + Append<Item>,
+{
+  let mut result = Result::default();
+  for (item1, item2) in iterator.zip(iterable) {
+    result.append(item1);
+    result.append(item2);
+  }
+  result
 }
