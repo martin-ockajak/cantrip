@@ -13,7 +13,7 @@ pub trait Sequence<Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn divide(self, chunk_size: usize) -> Self::This<Self>
+  fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>;
 

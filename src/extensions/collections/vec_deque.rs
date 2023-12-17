@@ -62,7 +62,7 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
 impl<Item> Sequence<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
-  fn divide(self, chunk_size: usize) -> Self::This<Self>
+  fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {

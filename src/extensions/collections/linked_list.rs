@@ -62,7 +62,7 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
 impl<Item> Sequence<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
-  fn divide(self, chunk_size: usize) -> Self::This<Self>
+  fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
