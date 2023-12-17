@@ -57,7 +57,7 @@ pub trait OrdSet<Item> {
     K: Ord,
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
-    BTreeMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+    BTreeMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>

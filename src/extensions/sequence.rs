@@ -12,6 +12,10 @@ pub trait Sequence<Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
+  fn chunked(self, chunk_size: usize) -> Self::This<Self>
+  where
+    Self: IntoIterator<Item = Item> + Sized;
+
   fn delete(self, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -28,9 +32,9 @@ pub trait Sequence<Item> {
   }
 
   fn exclude(self, value: &Item) -> Self
-    where
-      Item: PartialEq,
-      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  where
+    Item: PartialEq,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut removed = false;
     self
@@ -128,8 +132,8 @@ pub trait Sequence<Item> {
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
   fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
-    where
-      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable.into_iter()).collect()
   }

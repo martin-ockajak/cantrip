@@ -86,7 +86,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     K: Eq + Hash,
     Self: Sized,
   {
-    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+    HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn init(self) -> Self {

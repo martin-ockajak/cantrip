@@ -58,7 +58,7 @@ pub trait EqSet<Item> {
     K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
-    HashMap::from_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+    HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>

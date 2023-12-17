@@ -48,65 +48,65 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 
 | Method               | Inspiration | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap  | Slice              |
 |----------------------|-------------|---------------------------|-------------------------------|--------------------|--------------------|
-| *add*                | Python      | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *all*                | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *any*                | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *count_by*           | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *delete*             | Python      | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *diff*               | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *distinct*           | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *distinct_by*        | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *enumerate*          | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *exclude*            | Python      | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *filter*             | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *filter_keys*        | Toolz       | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *filter_map*         | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *filter_values*      | Toolz       | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *find_map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *find*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *flat_map*           | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *flat*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
-| *fold*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *grouped_by*         | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
-| *interleave*         | Toolz       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *intersect*          | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *init*               | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *map*                | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *map_keys*           | Toolz       | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *map_values*         | Toolz       | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *map_while*          | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *max_by*             | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *merge*              | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *min_by*             | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *partition*          | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *position*           | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *product*            | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
-| *product_keys*       | Rust        | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *product_values*     | Rust        | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *put*                | Python      | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *reduce*             | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *replace*            | Python      | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *rev*                | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *rfind*              | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *rfold*              | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *rposition*          | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *scan*               | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *skip*               | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *skip_while*         | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *sorted*             | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *sorted_by*          | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *sorted_unstable*    | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *sorted_unstable_by* | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *step_by*            | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *sum*                | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :x:                | :x:                |
-| *sum_keys*           | Rust        | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *sum_values*         | Rust        | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
-| *tail*               | Scala       | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *take*               | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *take_while*         | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |
-| *unit*               | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
-| *unzip*              | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
-| *zip*                | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
+| *add*                | Python      | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *all*                | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *any*                | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *count_by*           | Scala       | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *delete*             | Python      | :white_check_mark:        |                               |                    |                    |
+| *diff*               | Scala       | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *distinct*           | Scala       | :white_check_mark:        |                               |                    |                    |
+| *distinct_by*        | Scala       | :white_check_mark:        |                               |                    |                    |
+| *enumerate*          | Rust        | :white_check_mark:        |                               |                    |                    |
+| *exclude*            | Python      | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *filter*             | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *filter_keys*        | Toolz       |                           |                               | :white_check_mark: |                    |
+| *filter_map*         | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *filter_values*      | Toolz       |                           |                               | :white_check_mark: |                    |
+| *find_map*           | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *find*               | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *flat_map*           | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *flat*               | Rust        | :white_check_mark:        | :white_check_mark:            |                    |                    |
+| *fold*               | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *grouped_by*         | Scala       | :white_check_mark:        | :white_check_mark:            |                    |                    |
+| *interleave*         | Toolz       | :white_check_mark:        |                               |                    |                    |
+| *intersect*          | Scala       | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *init*               | Scala       | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *map*                | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *map_keys*           | Toolz       |                           |                               | :white_check_mark: |                    |
+| *map_values*         | Toolz       |                           |                               | :white_check_mark: |                    |
+| *map_while*          | Rust        | :white_check_mark:        |                               |                    |                    |
+| *max_by*             | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *merge*              | Scala       | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *min_by*             | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *partition*          | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *position*           | Rust        | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *product*            | Rust        | :white_check_mark:        | :white_check_mark:            |                    |                    |
+| *product_keys*       | Rust        |                           |                               | :white_check_mark: |                    |
+| *product_values*     | Rust        |                           |                               | :white_check_mark: |                    |
+| *put*                | Python      | :white_check_mark:        |                               |                    |                    |
+| *reduce*             | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: | :white_check_mark: |
+| *replace*            | Python      | :white_check_mark:        |                               |                    |                    |
+| *rev*                | Rust        | :white_check_mark:        |                               |                    |                    |
+| *rfind*              | Rust        | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *rfold*              | Rust        | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *rposition*          | Rust        | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *scan*               | Rust        | :white_check_mark:        |                               |                    |                    |
+| *skip*               | Rust        | :white_check_mark:        |                               |                    |                    |
+| *skip_while*         | Rust        | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *sorted*             | Scala       | :white_check_mark:        |                               |                    |                    |
+| *sorted_by*          | Scala       | :white_check_mark:        |                               |                    |                    |
+| *sorted_unstable*    | Scala       | :white_check_mark:        |                               |                    |                    |
+| *sorted_unstable_by* | Scala       | :white_check_mark:        |                               |                    |                    |
+| *step_by*            | Rust        | :white_check_mark:        |                               |                    |                    |
+| *sum*                | Rust        | :white_check_mark:        | :white_check_mark:            |                    |                    |
+| *sum_keys*           | Rust        |                           |                               | :white_check_mark: |                    |
+| *sum_values*         | Rust        |                           |                               | :white_check_mark: |                    |
+| *tail*               | Scala       | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *take*               | Rust        | :white_check_mark:        |                               |                    |                    |
+| *take_while*         | Rust        | :white_check_mark:        |                               |                    | :white_check_mark: |
+| *unit*               | Rust        | :white_check_mark:        | :white_check_mark:            | :white_check_mark: |                    |
+| *unzip*              | Rust        | :white_check_mark:        |                               |                    |                    |
+| *zip*                | Rust        | :white_check_mark:        |                               |                    |                    |
 
 
 ## Inspirations
