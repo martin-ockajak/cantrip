@@ -95,15 +95,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     iterator.rev().collect()
   }
 
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self {
-    let mut result: LinkedList<Item> = LinkedList::new();
-    for (item1, item2) in self.into_iter().zip(iterable) {
-      result.push_back(item1);
-      result.push_back(item2);
-    }
-    result
-  }
-
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }

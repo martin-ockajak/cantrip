@@ -102,7 +102,17 @@ pub trait Sequence<Item> {
 
   fn init(self) -> Self;
 
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self;
+  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+  {
+    let mut result: Self = Self::default();
+    for (item1, item2) in self.into_iter().zip(iterable) {
+      result.extend(iter::once(item1));
+      result.extend(iter::once(item2));
+    }
+    result
+  }
 
   /// Applies the given closure `f` to each element in the container.
   ///

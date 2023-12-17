@@ -96,15 +96,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
     iterator.rev().collect()
   }
 
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self {
-    let mut result: Vec<Item> = Vec::new();
-    for (item1, item2) in self.into_iter().zip(iterable) {
-      result.push(item1);
-      result.push(item2);
-    }
-    result
-  }
-
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }
