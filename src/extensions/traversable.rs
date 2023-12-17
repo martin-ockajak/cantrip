@@ -15,12 +15,12 @@ pub trait Traversable<Item> {
 
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  fn reduce(self, mut function: impl FnMut(Item, Item) -> Item) -> Option<Item>
+  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   where
     Self: IntoIterator<Item = Item> + Sized,
   {
     let mut iterator = self.into_iter();
-    iterator.next().map(|result| iterator.fold(result, |r, x| function(r, x)))
+    iterator.next().map(|result| iterator.fold(result, function))
   }
 }
 
