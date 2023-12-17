@@ -4,6 +4,8 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
+// FIXME - add tests for all methods
+
 pub trait TraversableFixture: Sized + Default {
   fn init_add() -> Self {
     Self::default()
