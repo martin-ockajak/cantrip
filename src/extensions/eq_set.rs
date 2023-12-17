@@ -15,14 +15,6 @@ pub trait EqSet<Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn concat(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Item: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().chain(iterable).collect()
-  }
-
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Item: Eq + Hash,
@@ -72,6 +64,14 @@ pub trait EqSet<Item> {
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     B: Eq + Hash;
+
+  fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
+    where
+      Item: Eq + Hash,
+      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
 
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where

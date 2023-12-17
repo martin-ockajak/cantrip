@@ -14,14 +14,6 @@ pub trait OrdSet<Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn concat(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Item: Ord,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().chain(iterable).collect()
-  }
-
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Item: Ord,
@@ -71,6 +63,14 @@ pub trait OrdSet<Item> {
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     B: Ord;
+
+  fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
+    where
+      Item: Ord,
+      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
 
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where

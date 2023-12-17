@@ -50,7 +50,6 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 | *add*                | Python      | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
 | *all*                | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
 | *any*                | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
-| *concat*             | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
 | *count_by*           | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
 | *delete*             | Python      | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
 | *diff*               | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
@@ -76,6 +75,7 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
 | *map_values*         | Toolz       | :x:                       | :x:                           | :heavy_check_mark: | :x:                |
 | *map_while*          | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :x:                |
 | *max_by*             | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
+| *merge*              | Scala       | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
 | *min_by*             | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :heavy_check_mark: |
 | *partition*          | Rust        | :heavy_check_mark:        | :heavy_check_mark:            | :heavy_check_mark: | :x:                |
 | *position*           | Rust        | :heavy_check_mark:        | :x:                           | :x:                | :heavy_check_mark: |

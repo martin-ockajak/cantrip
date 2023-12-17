@@ -12,13 +12,6 @@ pub trait Sequence<Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  fn concat(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().chain(iterable.into_iter()).collect()
-  }
-
   fn delete(self, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -133,6 +126,13 @@ pub trait Sequence<Item> {
   // }
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
+
+  fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
+    where
+      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().chain(iterable.into_iter()).collect()
+  }
 
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
