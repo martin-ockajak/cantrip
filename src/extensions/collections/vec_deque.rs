@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, VecDeque};
+use std::collections::{HashMap, LinkedList, VecDeque};
 use std::hash::Hash;
 
 use crate::extensions::util::multi_map::MultiMap;
@@ -65,6 +65,25 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
 
 impl<Item> Sequence<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
+
+  fn chunked(self, chunk_size: usize) -> Self::This<Self>
+    where
+      Self: IntoIterator<Item = Item> + Sized,
+  {
+    let mut result: VecDeque<VecDeque<Item>> = VecDeque::new();
+    let mut current: VecDeque<Item> = VecDeque::new();
+    for (index, item) in self.into_iter().enumerate() {
+      current.push_back(item);
+      if index % chunk_size == chunk_size - 1 {
+        result.push_back(current);
+        current = VecDeque::new();
+      }
+    }
+    if !current.is_empty() {
+      result.push_back(current);
+    }
+    result
+  }
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()

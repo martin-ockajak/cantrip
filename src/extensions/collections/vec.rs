@@ -80,6 +80,9 @@ impl<Item> Sequence<Item> for Vec<Item> {
         current = Vec::new();
       }
     }
+    if !current.is_empty() {
+      result.push(current);
+    }
     result
   }
 

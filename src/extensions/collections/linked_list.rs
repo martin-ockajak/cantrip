@@ -66,6 +66,25 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
 impl<Item> Sequence<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
+  fn chunked(self, chunk_size: usize) -> Self::This<Self>
+    where
+      Self: IntoIterator<Item = Item> + Sized,
+  {
+    let mut result: LinkedList<LinkedList<Item>> = LinkedList::new();
+    let mut current: LinkedList<Item> = LinkedList::new();
+    for (index, item) in self.into_iter().enumerate() {
+      current.push_back(item);
+      if index % chunk_size == chunk_size - 1 {
+        result.push_back(current);
+        current = LinkedList::new();
+      }
+    }
+    if !current.is_empty() {
+      result.push_back(current);
+    }
+    result
+  }
+
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }
