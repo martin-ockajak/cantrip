@@ -1,68 +1,15 @@
 // #![deny(unsafe_op_in_unsafe_fn)]
-// #![allow(clippy::needless_doctest_main)]
-// #![allow(missing_docs)]
 //
 // use std::cmp::Ordering;
 // use std::iter::FromIterator;
-// use std::slice;
 // use core::fmt;
 // use core::mem::{swap, ManuallyDrop};
 // use core::ptr;
-// use std::ops::Deref;
-// use std::ops::DerefMut;
 // use std::vec;
 //
 // pub struct BinaryHeap<T, C> where C: Fn(&T, &T) -> Ordering {
 //     data: Vec<T>,
 //     cmp: C,
-// }
-//
-// /// Structure wrapping a mutable reference to the greatest item on a
-// /// `BinaryHeap`.
-// ///
-// /// This `struct` is created by the [`peek_mut`] method on [`BinaryHeap`]. See
-// /// its documentation for more.
-// ///
-// /// [`peek_mut`]: BinaryHeap::peek_mut
-// pub struct PeekMut<'a, T: 'a, C: 'a> where C: Fn(&T, &T) -> Ordering {
-//     heap: &'a mut BinaryHeap<T, C>,
-//     sift: bool,
-// }
-//
-// impl<T, C> Drop for PeekMut<'_, T, C> {
-//     fn drop(&mut self) {
-//         if self.sift {
-//             // SAFETY: PeekMut is only instantiated for non-empty heaps.
-//             unsafe { self.heap.sift_down(0) };
-//         }
-//     }
-// }
-//
-// impl<T, C> Deref for PeekMut<'_, T, C> {
-//     type Target = T;
-//     fn deref(&self) -> &T {
-//         debug_assert!(!self.heap.is_empty());
-//         // SAFE: PeekMut is only instantiated for non-empty heaps
-//         unsafe { self.heap.data.get_unchecked(0) }
-//     }
-// }
-//
-// impl<T, C> DerefMut for PeekMut<'_, T, C> {
-//     fn deref_mut(&mut self) -> &mut T {
-//         debug_assert!(!self.heap.is_empty());
-//         self.sift = true;
-//         // SAFE: PeekMut is only instantiated for non-empty heaps
-//         unsafe { self.heap.data.get_unchecked_mut(0) }
-//     }
-// }
-//
-// impl<'a, T, C> PeekMut<'a, T, C> {
-//     /// Removes the peeked value from the heap and returns it.
-//     pub fn pop(mut this: PeekMut<'a, T, C>) -> T {
-//         let value = this.heap.pop().unwrap();
-//         this.sift = false;
-//         value
-//     }
 // }
 //
 // impl<T: Clone, C: Clone> Clone for BinaryHeap<T, C> {
@@ -112,27 +59,6 @@
 // }
 //
 // impl<T, C> BinaryHeap<T, C> {
-//
-//     /// Returns a mutable reference to the greatest item in the binary heap, or
-//     /// `None` if it is empty.
-//     ///
-//     /// Note: If the `PeekMut` value is leaked, the heap may be in an
-//     /// inconsistent state.
-//     ///
-//     /// # Time complexity
-//     ///
-//     /// If the item is modified then the worst case time complexity is *O*(log(*n*)),
-//     /// otherwise it's *O*(1).
-//     pub fn peek_mut(&mut self) -> Option<PeekMut<'_, T, C>> {
-//         if self.is_empty() {
-//             None
-//         } else {
-//             Some(PeekMut {
-//                 heap: self,
-//                 sift: false,
-//             })
-//         }
-//     }
 //
 //     /// Removes the greatest item from the binary heap and returns it, or `None` if it
 //     /// is empty.
