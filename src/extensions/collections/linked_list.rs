@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, LinkedList};
+use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 
 use crate::extensions::util::multi_map::MultiMap;
@@ -60,7 +60,9 @@ impl<Item> Ordered<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> Aggregable<Item> for LinkedList<Item> {}
+impl<Item> Summable<Item> for LinkedList<Item> {}
+
+impl<Item> Productable<Item> for LinkedList<Item> {}
 
 impl<Item> Collectible<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;

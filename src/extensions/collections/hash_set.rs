@@ -41,7 +41,9 @@ impl<Item> Traversable<Item> for HashSet<Item> {
   }
 }
 
-impl<Item> Aggregable<Item> for HashSet<Item> {}
+impl<Item> Summable<Item> for HashSet<Item> {}
+
+impl<Item> Productable<Item> for HashSet<Item> {}
 
 impl<Item> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;

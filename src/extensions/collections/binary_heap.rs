@@ -40,7 +40,7 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   }
 }
 
-impl<Item> Aggregable<Item> for BinaryHeap<Item> {}
+impl<Item> Summable<Item> for BinaryHeap<Item> {}
 
 impl<Item> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;

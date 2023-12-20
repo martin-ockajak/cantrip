@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::ops::RangeBounds;
 
@@ -61,7 +61,9 @@ impl<Item> Ordered<Item> for Vec<Item> {
   }
 }
 
-impl<Item> Aggregable<Item> for Vec<Item> {}
+impl<Item> Summable<Item> for Vec<Item> {}
+
+impl<Item> Productable<Item> for Vec<Item> {}
 
 impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
