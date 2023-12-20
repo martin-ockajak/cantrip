@@ -4,7 +4,7 @@ use std::hash::Hash;
 
 use crate::extensions::*;
 
-impl<Item> Traversable<Item> for HashSet<Item> {
+impl<Item> Iterable<Item> for HashSet<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)

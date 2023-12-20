@@ -10,7 +10,7 @@ pub use productable::*;
 pub use sequence::*;
 pub use slice::*;
 pub use summable::*;
-pub use traversable::*;
+pub use iterable::*;
 
 mod collectible;
 mod collections;
@@ -25,5 +25,5 @@ mod productable;
 mod sequence;
 mod slice;
 mod summable;
-mod traversable;
+mod iterable;
 mod util;

@@ -2,7 +2,7 @@ use std::cmp::{max, min, Ordering};
 
 use crate::extensions::*;
 
-impl<Item> Traversable<Item> for [Item] {
+impl<Item> Iterable<Item> for [Item] {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)

@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 
-pub trait Traversable<Item> {
+pub trait Iterable<Item> {
   /// Tests if every element of the collection matches a predicate.
   ///
   /// `all()` takes a closure that returns `true` or `false`. It applies

@@ -3,7 +3,7 @@ use std::collections::BTreeSet;
 
 use crate::extensions::*;
 
-impl<Item> Traversable<Item> for BTreeSet<Item> {
+impl<Item> Iterable<Item> for BTreeSet<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)

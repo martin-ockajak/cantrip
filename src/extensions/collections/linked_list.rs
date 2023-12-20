@@ -5,7 +5,7 @@ use std::hash::Hash;
 use crate::extensions::util::multi_map::MultiMap;
 use crate::extensions::*;
 
-impl<Item> Traversable<Item> for LinkedList<Item> {
+impl<Item> Iterable<Item> for LinkedList<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)

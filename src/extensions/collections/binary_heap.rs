@@ -3,7 +3,7 @@ use std::collections::BinaryHeap;
 
 use crate::extensions::*;
 
-impl<Item> Traversable<Item> for BinaryHeap<Item> {
+impl<Item> Iterable<Item> for BinaryHeap<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
