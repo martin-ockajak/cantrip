@@ -4,7 +4,7 @@ extern crate quickcheck;
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use crate::base::collections::*;
 
@@ -28,4 +28,9 @@ fn hash_set_string(data: HashSet<String>) -> bool {
 #[quickcheck]
 fn hash_set_i64(data: HashSet<i64>) -> bool {
   test_numeric_hash_set(data)
+}
+
+#[quickcheck]
+fn hash_map_string(data: HashMap<String, String>) -> bool {
+  true
 }

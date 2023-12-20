@@ -1,5 +1,4 @@
 use std::cmp::Ordering;
-use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
@@ -88,7 +87,6 @@ pub trait Map<Key, Value> {
   #[inline]
   fn unit(key: Key, value: Value) -> Self
   where
-    Key: Eq + Hash,
     Self: FromIterator<(Key, Value)>,
   {
     iter::once((key, value)).collect()

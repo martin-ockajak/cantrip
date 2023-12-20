@@ -91,9 +91,8 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     self.iter().flat_map(function).collect()
   }
 
-  fn grouped_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    K: Eq + Hash,
     Self: Sized,
   {
     HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))

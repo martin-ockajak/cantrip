@@ -92,9 +92,8 @@ impl<Item> Sequence<Item> for Vec<Item> {
     self.iter().flat_map(function).collect()
   }
 
-  fn grouped_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    K: Eq + Hash,
     Self: Sized,
   {
     HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
@@ -153,10 +152,7 @@ impl<Item> Indexed<Item> for Vec<Item> {
       .collect()
   }
 
-  fn distinct_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
-  where
-    K: Eq + Hash,
-  {
+  fn distinct_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self {
     let mut occurred: HashSet<K> = HashSet::new();
     let mut indices: HashSet<usize> = HashSet::new();
     unsafe {

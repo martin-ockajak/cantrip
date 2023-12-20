@@ -75,9 +75,8 @@ pub trait Sequence<Item> {
     self.into_iter().flatten().collect()
   }
 
-  fn grouped_by<K>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K: Eq + Hash>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    K: Eq + Hash,
     Self: Sized;
 
   fn init(self) -> Self;
@@ -210,9 +209,8 @@ pub trait Sequence<Item> {
     self.into_iter().unzip()
   }
 
-  fn zip<I>(self, iterable: I) -> Self::This<(Item, I::Item)>
+  fn zip<I: IntoIterator>(self, iterable: I) -> Self::This<(Item, I::Item)>
   where
-    I: IntoIterator,
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<(Item, I::Item)>: FromIterator<(Item, I::Item)>,
   {

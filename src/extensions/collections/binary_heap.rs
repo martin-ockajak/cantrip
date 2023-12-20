@@ -46,45 +46,33 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
 }
 
-impl<Item> OrdSet<Item> for BinaryHeap<Item> {
+impl<Item: Ord> OrdSet<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
 
   fn exclude(self, value: &Item) -> Self
   where
-    Item: Ord + PartialEq,
+    Item: PartialEq,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(|x| value != x).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Item: Ord,
-    B: Ord,
-  {
+  fn filter_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>
-  where
-    Item: Ord,
-    B: Ord,
-  {
+  fn find_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  fn flat_map<B: Ord, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
-    B: Ord,
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
   }
 
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    B: Ord,
-  {
+  fn map<B: Ord>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }
 }

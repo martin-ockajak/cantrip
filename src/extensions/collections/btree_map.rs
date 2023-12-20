@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 
 use crate::extensions::*;
 
-impl<Key, Value> Map<Key, Value> for BTreeMap<Key, Value> {
+impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   type This<X, V> = BTreeMap<X, V>;
 
   #[inline]
@@ -47,53 +47,33 @@ impl<Key, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 }
 
-impl<Key, Value> OrdMap<Key, Value> for BTreeMap<Key, Value> {
+impl<Key: Ord, Value> OrdMap<Key, Value> for BTreeMap<Key, Value> {
   type This<X, V> = BTreeMap<X, V>;
 
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Key: Ord,
-    L: Ord,
-  {
+  fn filter_map<L: Ord, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W> {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>
-  where
-    Key: Ord,
-    B: Ord,
-  {
+  fn find_map<B: Ord>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  fn flat_map<L: Ord, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
-    L: Ord,
     R: IntoIterator<Item = (L, W)>,
   {
     self.iter().flat_map(function).collect()
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-  where
-    L: Ord,
-  {
+  fn map<L: Ord, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W> {
     self.iter().map(function).collect()
   }
 
-  fn map_keys<L>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
-  where
-    Key: Ord,
-    L: Ord,
-  {
+  fn map_keys<L: Ord>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value> {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
-  where
-    Key: Ord,
-    W: Ord,
-  {
+  fn map_values<W: Ord>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W> {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 }

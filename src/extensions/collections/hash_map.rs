@@ -48,53 +48,33 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 }
 
-impl<Key, Value> EqMap<Key, Value> for HashMap<Key, Value> {
+impl<Key: Eq + Hash, Value> EqMap<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
 
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Key: Eq + Hash,
-    L: Eq + Hash,
-  {
+  fn filter_map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W> {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>
-  where
-    Key: Eq + Hash,
-    B: Eq + Hash,
-  {
+  fn find_map<B: Eq + Hash>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  fn flat_map<L: Eq + Hash, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
-    L: Eq + Hash,
     R: IntoIterator<Item = (L, W)>,
   {
     self.iter().flat_map(function).collect()
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-  where
-    L: Eq + Hash,
-  {
+  fn map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W> {
     self.iter().map(function).collect()
   }
 
-  fn map_keys<L>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
-  where
-    Key: Eq + Hash,
-    L: Eq + Hash,
-  {
+  fn map_keys<L: Eq + Hash>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value> {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
-  where
-    Key: Eq + Hash,
-    W: Eq + Hash,
-  {
+  fn map_values<W: Eq + Hash>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W> {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 }

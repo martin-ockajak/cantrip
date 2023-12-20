@@ -4,12 +4,11 @@ use std::iter;
 
 use crate::extensions::util::multi_map::MultiMap;
 
-pub trait EqSet<Item> {
+pub trait EqSet<Item: Eq + Hash> {
   type This<T>;
 
   fn add(self, value: Item) -> Self
   where
-    Item: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iter::once(value)).collect()
@@ -17,65 +16,48 @@ pub trait EqSet<Item> {
 
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Item: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(predicate).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Item: Eq + Hash,
-    B: Eq + Hash;
+  fn filter_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>
-  where
-    Item: Eq + Hash,
-    B: Eq + Hash;
+  fn find_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  fn flat_map<B: Eq + Hash, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
-    B: Eq + Hash,
     R: IntoIterator<Item = B>;
 
-  fn flat<B>(self) -> Self::This<B>
+  fn flat<B: Eq + Hash>(self) -> Self::This<B>
   where
     Item: IntoIterator<Item = B>,
-    B: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
   {
     self.into_iter().flatten().collect()
   }
 
-  fn exclude(self, value: &Item) -> Self
-  where
-    Item: Eq + Hash;
+  fn exclude(self, value: &Item) -> Self;
 
-  fn grouped_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    Item: Eq + Hash,
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
     HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    B: Eq + Hash;
+  fn map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>;
 
   fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
-    where
-      Item: Eq + Hash,
-      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable).collect()
   }
 
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
-    Item: Eq + Hash,
     Self: Sized + Default + Extend<Item> + IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().partition(predicate)

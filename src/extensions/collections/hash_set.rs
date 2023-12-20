@@ -47,45 +47,32 @@ impl<Item> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 }
 
-impl<Item> EqSet<Item> for HashSet<Item> {
+impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
   fn exclude(self, value: &Item) -> Self
   where
-    Item: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(|x| x != value).collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Item: Eq + Hash,
-    B: Eq + Hash,
-  {
+  fn filter_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>
-  where
-    Item: Eq + Hash,
-    B: Eq + Hash,
-  {
+  fn find_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  fn flat_map<B: Eq + Hash, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
-    B: Eq + Hash,
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
   }
 
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    B: Eq + Hash,
-  {
+  fn map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }
 }

@@ -13,9 +13,7 @@ pub trait Indexed<Item> {
   where
     Item: Eq + Hash;
 
-  fn distinct_by<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
-  where
-    K: Eq + Hash;
+  fn distinct_by<K: Eq + Hash>(self, to_key: impl FnMut(&Item) -> K) -> Self;
 
   fn put(self, index: usize, element: Item) -> Self
   where

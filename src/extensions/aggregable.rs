@@ -1,16 +1,16 @@
 use std::iter::{Product, Sum};
 
-pub trait Aggregable<A>: IntoIterator<Item = A> + Sized {
-  fn sum(self) -> A
+pub trait Aggregable<Item>: IntoIterator<Item = Item> + Sized {
+  fn sum(self) -> Item
   where
-    A: Sum,
+    Item: Sum,
   {
     self.into_iter().sum()
   }
 
-  fn product(self) -> A
+  fn product(self) -> Item
   where
-    A: Product,
+    Item: Product,
   {
     self.into_iter().product()
   }
