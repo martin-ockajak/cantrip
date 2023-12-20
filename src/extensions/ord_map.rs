@@ -2,7 +2,7 @@ use std::collections::BTreeSet;
 use std::iter;
 use std::iter::FromIterator;
 
-pub trait OrdMap<Key: Ord, Value> {
+pub trait OrdMap<Key, Value> {
   type This<K, V>;
 
   fn add(self, key: Key, value: Value) -> Self
@@ -21,6 +21,7 @@ pub trait OrdMap<Key: Ord, Value> {
 
   fn diff(self, iterable: impl IntoIterator<Item = Key>) -> Self
   where
+    Key: Ord,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     let mut removed: BTreeSet<Key> = BTreeSet::new();
@@ -30,6 +31,7 @@ pub trait OrdMap<Key: Ord, Value> {
 
   fn exclude(self, key: &Key) -> Self
   where
+    Key: PartialEq,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
@@ -66,6 +68,7 @@ pub trait OrdMap<Key: Ord, Value> {
 
   fn intersect(self, iterable: impl IntoIterator<Item = Key>) -> Self
   where
+    Key: Ord,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     let mut retained: BTreeSet<Key> = BTreeSet::new();

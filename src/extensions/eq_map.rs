@@ -3,7 +3,7 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::FromIterator;
 
-pub trait EqMap<Key: Eq + Hash, Value> {
+pub trait EqMap<Key, Value> {
   type This<K, V>;
 
   fn add(self, key: Key, value: Value) -> Self
@@ -22,6 +22,7 @@ pub trait EqMap<Key: Eq + Hash, Value> {
 
   fn diff(self, iterable: impl IntoIterator<Item = Key>) -> Self
   where
+    Key: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     let mut removed: HashSet<Key> = HashSet::new();
@@ -31,6 +32,7 @@ pub trait EqMap<Key: Eq + Hash, Value> {
 
   fn exclude(self, key: &Key) -> Self
   where
+    Key: PartialEq,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
@@ -67,6 +69,7 @@ pub trait EqMap<Key: Eq + Hash, Value> {
 
   fn intersect(self, iterable: impl IntoIterator<Item = Key>) -> Self
   where
+    Key: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
     let mut retained: HashSet<Key> = HashSet::new();
