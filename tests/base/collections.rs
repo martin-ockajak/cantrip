@@ -9,7 +9,7 @@ pub fn test_vec<Item>(data: Vec<Item>) -> bool
     Item: Clone + Ord + TraversableFixture,
 {
   test_traversable(data.clone())
-    && test_ordered(data.clone())
+    && test_reverse_iterable(data.clone())
     && test_collectible(data.clone())
     && test_sequence(data.clone())
 }

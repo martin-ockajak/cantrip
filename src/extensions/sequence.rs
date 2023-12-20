@@ -147,6 +147,8 @@ pub trait Sequence<Item> {
     self.into_iter().partition(predicate)
   }
 
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
+
   fn rev(self) -> Self;
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>;

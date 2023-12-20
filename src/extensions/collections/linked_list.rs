@@ -42,11 +42,7 @@ impl<Item> Iterable<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> Ordered<Item> for LinkedList<Item> {
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
+impl<Item> ReverseIterable<Item> for LinkedList<Item> {
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
   }
@@ -117,6 +113,10 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
+  }
+
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
   }
 
   fn rev(self) -> Self {

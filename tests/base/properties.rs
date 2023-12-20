@@ -26,20 +26,19 @@ where
   all && any && count_by && find && fold && max_by && min_by
 }
 
-pub fn test_ordered<A, C, I>(data: C) -> bool
+pub fn test_reverse_iterable<A, C, I>(data: C) -> bool
 where
   A: TraversableFixture + PartialEq,
-  C: Ordered<A> + IntoIterator<Item = A, IntoIter = I> + Clone,
+  C: ReverseIterable<A> + IntoIterator<Item = A, IntoIter = I> + Clone,
   I: Iterator<Item = A> + DoubleEndedIterator + ExactSizeIterator,
 {
-  let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
   let rfind = data.rfind(|x| x.test()) == data.clone().rfind(|x| x.test());
   let rfold = data.rfold(A::init_add(), |r, x| r.safe_add(x))
     == data.clone().into_iter().rfold(A::init_add(), |r, x| r.safe_add(&x));
   let size = data.clone().into_iter().len();
   let rposition =
     data.rposition(|x| x.test()) == data.clone().into_iter().rev().position(|x| x.test()).map(|x| size - x - 1);
-  position && rfind && rfold && rposition
+  rfind && rfold && rposition
 }
 
 pub fn test_aggregable<A, C>(data: C) -> bool
@@ -75,8 +74,9 @@ where
   let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
     == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
   let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
-  enumerate && filter && flat_map && map && rev
+  enumerate && filter && flat_map && map && position && rev
 }
 
 pub fn test_set<A, C>(data: C) -> bool

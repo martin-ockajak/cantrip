@@ -39,11 +39,7 @@ impl<Item> Iterable<Item> for [Item] {
   }
 }
 
-impl<Item> Ordered<Item> for [Item] {
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
+impl<Item> ReverseIterable<Item> for [Item] {
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
   }
@@ -60,6 +56,10 @@ impl<Item> Ordered<Item> for [Item] {
 impl<Item> Slice<Item> for [Item] {
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]
+  }
+
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
   }
 
   fn skip_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
