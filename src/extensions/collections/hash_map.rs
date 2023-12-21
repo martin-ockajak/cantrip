@@ -4,12 +4,6 @@ use std::hash::Hash;
 
 use crate::extensions::*;
 
-impl<'a, Key, Value> Test<(&'a Key, &'a Value)> for HashMap<Key, Value> {
-  fn xall(&self, predicate: impl FnMut(&(&'a Key, &'a Value)) -> bool) -> bool {
-    todo!()
-  }
-}
-
 impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
 
