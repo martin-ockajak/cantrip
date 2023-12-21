@@ -7,7 +7,7 @@
 // use core::ptr;
 // use std::vec;
 //
-// pub struct BinaryHeap<T, C> where C: Fn(&T, &T) -> Ordering {
+// pub(crate) struct BinaryHeap<T, C> where C: Fn(&T, &T) -> Ordering {
 //     data: Vec<T>,
 //     cmp: C,
 // }

@@ -1,6 +1,6 @@
 use std::collections::{LinkedList, VecDeque};
 
-pub trait Append<Item> {
+pub(crate) trait Append<Item> {
   fn append(&mut self, value: Item);
 }
 

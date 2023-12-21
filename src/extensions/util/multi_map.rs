@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::hash::Hash;
 use std::iter;
 
-pub trait MultiMap<K, C> {
+pub(crate) trait MultiMap<K, C> {
   fn group_pairs<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
   where
     C: Extend<V> + Default;
