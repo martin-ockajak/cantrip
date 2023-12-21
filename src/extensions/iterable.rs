@@ -164,11 +164,11 @@ pub trait Iterable<Item> {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// let numbers = [1, 2, 3, 4, 5];
+  /// let a = [1, 2, 3, 4, 5];
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.fold(zero, |acc, &x| {
+  /// let result = a.fold(zero, |acc, &x| {
   ///     format!("({acc} + {x})")
   /// });
   ///
@@ -183,17 +183,17 @@ pub trait Iterable<Item> {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// let numbers = [1, 2, 3, 4, 5];
+  /// let a = [1, 2, 3, 4, 5];
   ///
   /// let mut result = 0;
   ///
   /// // for loop:
-  /// for i in &numbers {
+  /// for i in &a {
   ///     result = result + i;
   /// }
   ///
   /// // fold:
-  /// let result2 = numbers.fold(0, |acc, &x| acc + x);
+  /// let result2 = a.fold(0, |acc, &x| acc + x);
   ///
   /// // they're the same
   /// assert_eq!(result, result2);
