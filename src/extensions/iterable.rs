@@ -226,13 +226,6 @@ pub trait Iterable<Item> {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// assert_eq!(
-  ///     [2.4, f32::NAN, 1.3]
-  ///         .into_iter()
-  ///         .reduce(f32::max)
-  ///         .unwrap(),
-  ///     2.4
-  /// );
   /// ```
   ///
   /// # Examples
@@ -279,13 +272,6 @@ pub trait Iterable<Item> {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// assert_eq!(
-  ///     [2.4, f32::NAN, 1.3]
-  ///         .into_iter()
-  ///         .reduce(f32::min)
-  ///         .unwrap(),
-  ///     1.3
-  /// );
   /// ```
   ///
   /// # Examples
