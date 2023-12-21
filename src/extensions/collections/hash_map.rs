@@ -51,14 +51,17 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
 impl<Key: Eq + Hash, Value> EqMap<Key, Value> for HashMap<Key, Value> {
   type This<K, V> = HashMap<K, V>;
 
+  #[inline]
   fn filter_map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W> {
     self.iter().filter_map(function).collect()
   }
 
+  #[inline]
   fn find_map<B: Eq + Hash>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
+  #[inline]
   fn flat_map<L: Eq + Hash, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
@@ -66,6 +69,7 @@ impl<Key: Eq + Hash, Value> EqMap<Key, Value> for HashMap<Key, Value> {
     self.iter().flat_map(function).collect()
   }
 
+  #[inline]
   fn map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W> {
     self.iter().map(function).collect()
   }

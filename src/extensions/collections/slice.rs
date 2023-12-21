@@ -40,14 +40,17 @@ impl<Item> Iterable<Item> for [Item] {
 }
 
 impl<Item> ReverseIterable<Item> for [Item] {
+  #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
   }
 
+  #[inline]
   fn rfold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.iter().rfold(init, function)
   }
 
+  #[inline]
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.iter().rposition(predicate)
   }

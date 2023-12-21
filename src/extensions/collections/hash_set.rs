@@ -48,14 +48,17 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
 impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
+  #[inline]
   fn filter_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }
 
+  #[inline]
   fn find_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
+  #[inline]
   fn flat_map<B: Eq + Hash, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
@@ -63,6 +66,7 @@ impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
     self.iter().flat_map(function).collect()
   }
 
+  #[inline]
   fn map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
     self.iter().map(function).collect()
   }
