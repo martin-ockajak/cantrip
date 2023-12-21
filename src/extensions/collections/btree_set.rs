@@ -1,6 +1,7 @@
 use std::cmp::Ordering;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 
+use crate::extensions::util::multi_map::MultiMap;
 use crate::extensions::*;
 
 impl<Item> Iterable<Item> for BTreeSet<Item> {
@@ -40,19 +41,12 @@ impl<Item> Iterable<Item> for BTreeSet<Item> {
   }
 }
 
-impl<Item> Collectible<Item> for BTreeSet<Item> {
+impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
 }
 
 impl<Item: Ord> OrdSet<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
-
-  fn exclude(self, value: &Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().filter(|x| x != value).collect()
-  }
 
   fn filter_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
@@ -67,6 +61,13 @@ impl<Item: Ord> OrdSet<Item> for BTreeSet<Item> {
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
+  }
+
+  fn grouped_by<K: Ord>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
+  where
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    BTreeMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn map<B: Ord>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {

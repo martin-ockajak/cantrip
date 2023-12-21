@@ -47,14 +47,6 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
 impl<Item: Ord> OrdSet<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
 
-  fn exclude(self, value: &Item) -> Self
-  where
-    Item: PartialEq,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().filter(|x| value != x).collect()
-  }
-
   fn filter_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()
   }

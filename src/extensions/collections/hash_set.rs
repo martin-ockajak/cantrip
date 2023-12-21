@@ -41,19 +41,12 @@ impl<Item> Iterable<Item> for HashSet<Item> {
   }
 }
 
-impl<Item> Collectible<Item> for HashSet<Item> {
+impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 }
 
 impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
-
-  fn exclude(self, value: &Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().filter(|x| x != value).collect()
-  }
 
   fn filter_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().filter_map(function).collect()

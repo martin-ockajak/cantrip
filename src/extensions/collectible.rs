@@ -1,9 +1,17 @@
-use std::collections::HashSet;
+use std::collections::{BTreeMap, HashSet};
 use std::hash::Hash;
+use std::iter;
 use std::iter::{Product, Sum};
 
-pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
+pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   type This<I>;
+
+  fn add(self, value: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().chain(iter::once(value)).collect()
+  }
 
   #[inline]
   fn diff(self, iterable: impl IntoIterator<Item = Item>) -> Self
@@ -17,6 +25,34 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
   }
 
   #[inline]
+  fn exclude(self, value: &Item) -> Self
+  where
+    Item: PartialEq,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    let mut removed = false;
+    self
+      .into_iter()
+      .filter(|x| {
+        if removed {
+          true
+        } else {
+          removed = true;
+          value != x
+        }
+      })
+      .collect()
+  }
+
+  #[inline]
+  fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().filter(predicate).collect()
+  }
+
+  #[inline]
   fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Eq + Hash,
@@ -25,13 +61,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
     let mut retained: HashSet<Item> = HashSet::new();
     retained.extend(iterable);
     self.into_iter().filter(|x| retained.contains(x)).collect()
-  }
-
-  #[inline]
-  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
-  {
-    let mut iterator = self.into_iter();
-    iterator.next().map(|result| iterator.fold(result, function))
   }
 
   // fn largest_by(self, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
@@ -43,19 +72,49 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
   // }
 
   #[inline]
+  fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
+
+  #[inline]
+  fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
+  where
+    Self: Sized + Default + Extend<Item> + IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().partition(predicate)
+  }
+
+  #[inline]
   fn product(self) -> Item
-    where
-      Item: Product,
+  where
+    Item: Product,
   {
     self.into_iter().product()
   }
 
   #[inline]
+  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item> {
+    let mut iterator = self.into_iter();
+    iterator.next().map(|result| iterator.fold(result, function))
+  }
+
+  #[inline]
   fn sum(self) -> Item
-    where
-      Item: Sum,
+  where
+    Item: Sum,
   {
     self.into_iter().sum()
+  }
+
+  #[inline]
+  fn unit(value: Item) -> Self
+  where
+    Self: FromIterator<Item> + Sized,
+  {
+    iter::once(value).collect()
   }
 }
 

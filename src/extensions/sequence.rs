@@ -6,13 +6,6 @@ use std::iter;
 pub trait Sequence<Item> {
   type This<I>;
 
-  fn add(self, value: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().chain(iter::once(value)).collect()
-  }
-
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>;
@@ -30,32 +23,6 @@ pub trait Sequence<Item> {
     Self::This<(usize, Item)>: FromIterator<(usize, Item)>,
   {
     self.into_iter().enumerate().collect()
-  }
-
-  fn exclude(self, value: &Item) -> Self
-  where
-    Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut removed = false;
-    self
-      .into_iter()
-      .filter(|x| {
-        if removed {
-          true
-        } else {
-          removed = true;
-          value != x
-        }
-      })
-      .collect()
-  }
-
-  fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().filter(predicate).collect()
   }
 
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
@@ -138,13 +105,6 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable.into_iter()).collect()
-  }
-
-  fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
-  where
-    Self: Sized + Default + Extend<Item> + IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().partition(predicate)
   }
 
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
