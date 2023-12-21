@@ -58,7 +58,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
 
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  /// Flattens nested structure.
+  /// Flattens a nested structure.
   ///
   /// This is useful when you have a collection of iterables and
   /// you want to remove one level of indirection.
