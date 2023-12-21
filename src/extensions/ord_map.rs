@@ -1,7 +1,3 @@
-use std::collections::BTreeSet;
-use std::iter;
-use std::iter::FromIterator;
-
 pub trait OrdMap<Key, Value> {
   type This<K, V>;
 

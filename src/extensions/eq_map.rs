@@ -1,7 +1,4 @@
-use std::collections::HashSet;
 use std::hash::Hash;
-use std::iter;
-use std::iter::FromIterator;
 
 pub trait EqMap<Key, Value> {
   type This<K, V>;
