@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashSet};
+use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
@@ -56,9 +57,28 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
+  #[inline]
+  fn filter_values(self, mut predicate: impl FnMut(&Value) -> bool) -> Self
+    where
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().filter(|(_, v)| predicate(v)).collect()
+  }
+
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
+
+  #[inline]
+  fn intersect(self, iterable: impl IntoIterator<Item = Key>) -> Self
+    where
+      Key: Eq + Hash,
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    let mut retained: HashSet<Key> = HashSet::new();
+    retained.extend(iterable);
+    self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
+  }
 
   fn max_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
