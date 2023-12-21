@@ -11,6 +11,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>;
 
+  #[inline]
   fn delete(self, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -18,6 +19,7 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
+  #[inline]
   fn enumerate(self) -> Self::This<(usize, Item)>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -96,6 +98,7 @@ pub trait Sequence<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
+  #[inline]
   fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -109,6 +112,7 @@ pub trait Sequence<Item> {
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>;
 
+  #[inline]
   fn skip(self, n: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -116,6 +120,7 @@ pub trait Sequence<Item> {
     self.into_iter().skip(n).collect()
   }
 
+  #[inline]
   fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -123,6 +128,7 @@ pub trait Sequence<Item> {
     self.into_iter().skip_while(predicate).collect()
   }
 
+  #[inline]
   fn step_by(self, step: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -130,6 +136,7 @@ pub trait Sequence<Item> {
     self.into_iter().step_by(step).collect()
   }
 
+  #[inline]
   fn tail(self) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -137,6 +144,7 @@ pub trait Sequence<Item> {
     self.into_iter().skip(1).collect()
   }
 
+  #[inline]
   fn take(self, n: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -144,6 +152,7 @@ pub trait Sequence<Item> {
     self.into_iter().take(n).collect()
   }
 
+  #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -151,6 +160,7 @@ pub trait Sequence<Item> {
     self.into_iter().take_while(predicate).collect()
   }
 
+  #[inline]
   fn unit(value: Item) -> Self
   where
     Self: FromIterator<Item>,
@@ -158,6 +168,7 @@ pub trait Sequence<Item> {
     iter::once(value).collect()
   }
 
+  #[inline]
   fn unzip<B, C>(self) -> (Self::This<B>, Self::This<C>)
   where
     Self: IntoIterator<Item = (B, C)> + Sized,
@@ -167,6 +178,7 @@ pub trait Sequence<Item> {
     self.into_iter().unzip()
   }
 
+  #[inline]
   fn zip<I: IntoIterator>(self, iterable: I) -> Self::This<(Item, I::Item)>
   where
     Self: IntoIterator<Item = Item> + Sized,
