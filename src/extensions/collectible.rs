@@ -58,6 +58,81 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
 
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
+  /// Flattens nested structure.
+  ///
+  /// This is useful when you have a collection of iterables and
+  /// you want to remove one level of indirection.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let data = vec![vec![1, 2, 3, 4], vec![5, 6]];
+  /// let flattened = data.flat();
+  /// assert_eq!(flattened, &[1, 2, 3, 4, 5, 6]);
+  /// ```
+  ///
+  /// Mapping and then flattening:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let data = vec![1, 2, 3];
+  ///
+  /// // Vec is iterable because it supports IntoIterator
+  /// let merged: Vec<i32> = data.map(|x| vec![*x, -x]).flat();
+  /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
+  /// ```
+  ///
+  /// You can also rewrite this in terms of [`flat_map()`], which is preferable
+  /// in this case since it conveys intent more clearly:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let data = vec![1, 2, 3];
+  ///
+  /// // Vec is iterable because it supports IntoIterator
+  /// let merged: Vec<i32> = data.flat_map(|x| vec![*x, -x]);
+  /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
+  /// ```
+  ///
+  /// Flattening works on any `IntoIterator` type, including `Option` and `Result`:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let options = vec![Some(123), Some(321), None, Some(231)];
+  /// let flattened_options: Vec<_> = options.into_iter().flatten().collect();
+  /// assert_eq!(flattened_options, vec![123, 321, 231]);
+  ///
+  /// let results = vec![Ok(123), Ok(321), Err(456), Ok(231)];
+  /// let flattened_results: Vec<_> = results.into_iter().flatten().collect();
+  /// assert_eq!(flattened_results, vec![123, 321, 231]);
+  /// ```
+  ///
+  /// Flattening only removes one level of nesting at a time:
+  ///
+  /// ```
+  /// let d3 = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]];
+  ///
+  /// let d2 = d3.iter().flatten().collect::<Vec<_>>();
+  /// assert_eq!(d2, [&[1, 2], &[3, 4], &[5, 6], &[7, 8]]);
+  ///
+  /// let d1 = d3.iter().flatten().flatten().collect::<Vec<_>>();
+  /// assert_eq!(d1, [&1, &2, &3, &4, &5, &6, &7, &8]);
+  /// ```
+  ///
+  /// Here we see that `flat()` does not perform a "deep" flatten.
+  /// Instead, only one level of nesting is removed. That is, if you
+  /// `flat()` a three-dimensional array, the result will be
+  /// two-dimensional and not one-dimensional. To get a one-dimensional
+  /// structure, you have to `flat()` again.
+  ///
+  /// [`flat_map()`]: Collectible::flat_map
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
@@ -68,6 +143,36 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     self.into_iter().flatten().collect()
   }
 
+  /// Applies the given closure `f` to each element in the container and flattens the nested structure.
+  ///
+  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// argument produces values. If it produces an iterable value instead, there's
+  /// an extra layer of indirection. `flat_map()` will remove this extra layer
+  /// on its own.
+  ///
+  /// You can think of `flat_map(f)` as the semantic equivalent
+  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  ///
+  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
+  /// one item for each element, and `flat_map()`'s closure returns an
+  /// iterable value for each element.
+  ///
+  /// [`map`]: Iterator::map
+  /// [`flatten`]: Iterator::flatten
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let data = vec![1, 2, 3];
+  ///
+  /// // Vec is iterable because it supports IntoIterator
+  /// let merged: Vec<i32> = data.flat_map(|x| vec![*x, -x]);
+  /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
+  /// ```
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,

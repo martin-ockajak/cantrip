@@ -57,6 +57,25 @@ pub trait Iterable<Item> {
   /// ```
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
+  /// Counts elements of an collection that satisfy a predicate.
+  ///
+  /// `count_by()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each element of the collection, and counts those which
+  /// return `true`, disregarding those which return `false`.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.count_by(|&x| x == 2), 1);
+  ///
+  /// assert_eq!(a.count_by(|&x| x == 5), 0);
+  /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
 
   /// Searches for an element of an collection that satisfies a predicate.
