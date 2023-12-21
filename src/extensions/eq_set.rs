@@ -14,16 +14,6 @@ pub trait EqSet<Item> {
     R: IntoIterator<Item = B>;
 
   #[inline]
-  fn flat<B: Eq + Hash>(self) -> Self::This<B>
-  where
-    Item: IntoIterator<Item = B>,
-    Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().flatten().collect()
-  }
-
-  #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
     where
       Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,

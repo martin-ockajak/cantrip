@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashSet};
+use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -50,6 +50,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().filter(predicate).collect()
+  }
+
+  #[inline]
+  fn flat<B>(self) -> Self::This<B>
+    where
+      Item: IntoIterator<Item = B>,
+      Self: IntoIterator<Item = Item> + Sized,
+      Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().flatten().collect()
   }
 
   #[inline]

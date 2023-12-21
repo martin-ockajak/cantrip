@@ -33,15 +33,6 @@ pub trait Sequence<Item> {
   where
     R: IntoIterator<Item = B>;
 
-  fn flat<B>(self) -> Self::This<B>
-  where
-    Item: IntoIterator<Item = B>,
-    Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().flatten().collect()
-  }
-
   fn grouped_by<K: Eq + Hash>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     Self: Sized;
