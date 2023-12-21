@@ -117,13 +117,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Flattening only removes one level of nesting at a time:
   ///
   /// ```
-  /// let d3 = [[[1, 2], [3, 4]], [[5, 6], [7, 8]]];
+  /// use cantrip::extensions::*;
   ///
-  /// let d2 = d3.iter().flatten().collect::<Vec<_>>();
-  /// assert_eq!(d2, [&[1, 2], &[3, 4], &[5, 6], &[7, 8]]);
+  /// let d3 = vec![vec![vec![1, 2], vec![3, 4]], vec![vec![5, 6], vec![7, 8]]];
   ///
-  /// let d1 = d3.iter().flatten().flatten().collect::<Vec<_>>();
-  /// assert_eq!(d1, [&1, &2, &3, &4, &5, &6, &7, &8]);
+  /// let d2 = d3.clone().flat();
+  /// assert_eq!(d2, vec![vec![1, 2], vec![3, 4], vec![5, 6], vec![7, 8]]);
+  ///
+  /// let d1 = d3.flat().flat();
+  /// assert_eq!(d1, vec![1, 2, 3, 4, 5, 6, 7, 8]);
   /// ```
   ///
   /// Here we see that `flat()` does not perform a "deep" flatten.
