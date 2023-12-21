@@ -1,16 +1,15 @@
-use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
 use cantrip::extensions::*;
 
-use crate::base::fixtures::{AggregableFixture, TraversableFixture};
+use crate::base::fixtures::{AggregableFixture, IterableFixture};
 
 // FIXME - add tests for all methods
 
-pub fn test_traversable<A, C>(data: C) -> bool
+pub fn test_iterable<A, C>(data: C) -> bool
 where
-  A: TraversableFixture + PartialEq + Ord + Clone,
+  A: IterableFixture + PartialEq + Ord + Clone,
   C: Iterable<A> + IntoIterator<Item = A> + Clone,
 {
   let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
@@ -28,7 +27,7 @@ where
 
 pub fn test_reverse_iterable<A, C, I>(data: C) -> bool
 where
-  A: TraversableFixture + PartialEq,
+  A: IterableFixture + PartialEq,
   C: ReverseIterable<A> + IntoIterator<Item = A, IntoIter = I> + Clone,
   I: Iterator<Item = A> + DoubleEndedIterator + ExactSizeIterator,
 {
@@ -43,7 +42,7 @@ where
 
 pub fn test_numeric<A, C>(data: C) -> bool
 where
-  A: TraversableFixture + AggregableFixture + PartialEq + Sum + Product,
+  A: IterableFixture + AggregableFixture + PartialEq + Sum + Product,
   C: Collectible<A> + IntoIterator<Item = A> + Clone,
 {
   (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.check_add(y))
@@ -54,7 +53,7 @@ where
 
 pub fn test_collectible<A, C>(data: C) -> bool
 where
-  A: TraversableFixture + PartialEq,
+  A: IterableFixture + PartialEq,
   C: Collectible<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
   C::This<A>: PartialEq + FromIterator<A>,
 {
@@ -68,7 +67,7 @@ where
 
 pub fn test_sequence<'c, A, C, I>(data: C) -> bool
 where
-  A: TraversableFixture + 'c,
+  A: IterableFixture + 'c,
   C: Sequence<A> + IntoIterator<Item = A, IntoIter = I> + FromIterator<A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
   C::This<(usize, A)>: PartialEq + FromIterator<(usize, A)>,
@@ -78,14 +77,6 @@ where
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
   let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
   enumerate && position && rev
-}
-
-pub fn test_eq_set<A, C>(data: C) -> bool
-where
-  A: TraversableFixture + Eq + Hash,
-  C: EqSet<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
-{
-  true
 }
 
 fn safe_aggregate<A, C>(data: C, init: A, mut aggregate: impl FnMut(A, A) -> Option<A>) -> bool

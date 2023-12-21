@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -46,8 +45,8 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
 
   #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-    where
-      Self::This<B>: FromIterator<B>,
+  where
+    Self::This<B>: FromIterator<B>,
   {
     filter_map(self.iter(), function)
   }
@@ -73,8 +72,4 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
   {
     map(self.iter(), function)
   }
-}
-
-impl<Item: Ord> OrdSet<Item> for BinaryHeap<Item> {
-  type This<I> = BinaryHeap<I>;
 }

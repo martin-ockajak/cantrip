@@ -74,7 +74,3 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
     map(self.iter(), function)
   }
 }
-
-impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
-  type This<I> = HashSet<I>;
-}

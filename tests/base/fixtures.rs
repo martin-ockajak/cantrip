@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-pub trait TraversableFixture: Sized + Default {
+pub trait IterableFixture: Sized + Default {
   fn init_add() -> Self {
     Self::default()
   }
@@ -24,7 +24,7 @@ pub trait AggregableFixture: Sized + Default {
   fn check_mul(&self, value: Self) -> Option<Self>;
 }
 
-impl TraversableFixture for String {
+impl IterableFixture for String {
   fn test(&self) -> bool {
     self.len() % 2 == 0
   }
@@ -38,7 +38,7 @@ impl TraversableFixture for String {
   }
 }
 
-impl TraversableFixture for i64 {
+impl IterableFixture for i64 {
   fn test(&self) -> bool {
     self % 2 == 0
   }

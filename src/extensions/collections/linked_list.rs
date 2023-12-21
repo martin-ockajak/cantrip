@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::LinkedList;
-use std::hash::Hash;
 
 use crate::extensions::*;
 

@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -72,6 +72,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   where
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>;
+
+  #[inline]
+  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  where
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    let mut result: HashMap<K, Self> = HashMap::new();
+    for item in self.into_iter() {
+      let key = to_key(&item);
+      result.entry(key).and_modify(|values| values.extend(iter::once(item))).or_insert(Self::default());
+    }
+    result
+  }
 
   #[inline]
   fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
@@ -179,7 +192,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
 
 #[inline]
 pub(crate) fn filter_map<'a, A: 'a, B, C>(
-  mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> Option<B>,
+  iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> Option<B>,
 ) -> C
 where
   C: FromIterator<B>,
@@ -196,7 +209,7 @@ pub(crate) fn find_map<'a, A: 'a, B>(
 
 #[inline]
 pub(crate) fn flat_map<'a, A: 'a, B, R, C>(
-  mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> R,
+  iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> R,
 ) -> C
 where
   R: IntoIterator<Item = B>,
@@ -206,7 +219,7 @@ where
 }
 
 #[inline]
-pub(crate) fn map<'a, A: 'a, B, C>(mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> B) -> C
+pub(crate) fn map<'a, A: 'a, B, C>(iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> B) -> C
 where
   C: FromIterator<B>,
 {

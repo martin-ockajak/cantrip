@@ -1,7 +1,6 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 
-use crate::extensions::util::multi_map::MultiMap;
 use crate::extensions::*;
 
 impl<Item> Iterable<Item> for BTreeSet<Item> {
@@ -72,17 +71,5 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
     Self::This<B>: FromIterator<B>,
   {
     map(self.iter(), function)
-  }
-}
-
-impl<Item: Ord> OrdSet<Item> for BTreeSet<Item> {
-  type This<I> = BTreeSet<I>;
-
-  #[inline]
-  fn grouped_by<K: Ord>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
-  where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
-  {
-    BTreeMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 }
