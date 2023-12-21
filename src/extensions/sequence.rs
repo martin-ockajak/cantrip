@@ -50,42 +50,6 @@ pub trait Sequence<Item> {
   where
     Self: Default + Extend<Item>;
 
-  /// Applies the given closure `f` to each element in the container.
-  ///
-  /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
-  /// The resulting other are collected into a new container of the same type.
-  ///
-  /// # Arguments
-  ///
-  /// * `self` - the container to apply the mapping to.
-  /// * `f` - the closure to apply to each element.
-  ///
-  /// # Returns
-  ///
-  /// A new container of the same type, containing the mapped other.
-  ///
-  /// # Type Parameters
-  ///
-  /// * `F` - type of the closure, which takes a reference to an element of type `A` and returns a value of type `B`.
-  ///
-  /// # Constraints
-  ///
-  /// * `F: FnMut(&A) -> B` - the closure must be callable with a reference to an element of type `A` and return a value of type `B`.
-  ///
-  /// # Safety
-  ///
-  /// The caller must ensure that the closure does not mutate any shared state while being executed.
-  /// The closure must not panic while being executed, as this will lead to undefined behavior.
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use crate::cantrip::extensions::*;
-  ///
-  /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
-  /// ```
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>;
-
   // FIXME - decide if the lifetime declarations are worth it
   // fn map<'c, B>(&'c self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   //   where

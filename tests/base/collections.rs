@@ -25,7 +25,7 @@ pub fn test_hash_set<Item>(data: HashSet<Item>) -> bool
   where
     Item: Clone + Ord + Eq + Hash + TraversableFixture,
 {
-  test_traversable(data.clone()) && test_set(data.clone())
+  test_traversable(data.clone()) && test_eq_set(data.clone())
 }
 
 pub fn test_numeric_hash_set<Item>(data: HashSet<Item>) -> bool

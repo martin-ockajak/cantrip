@@ -54,10 +54,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
 
   #[inline]
   fn flat<B>(self) -> Self::This<B>
-    where
-      Item: IntoIterator<Item = B>,
-      Self: IntoIterator<Item = Item> + Sized,
-      Self::This<B>: FromIterator<B>,
+  where
+    Item: IntoIterator<Item = B>,
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<B>: FromIterator<B>,
   {
     self.into_iter().flatten().collect()
   }
@@ -72,6 +72,44 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     retained.extend(iterable);
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
+
+  /// Applies the given closure `f` to each element in the container.
+  ///
+  /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
+  /// The resulting other are collected into a new container of the same type.
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the container to apply the mapping to.
+  /// * `f` - the closure to apply to each element.
+  ///
+  /// # Returns
+  ///
+  /// A new container of the same type, containing the mapped other.
+  ///
+  /// # Type Parameters
+  ///
+  /// * `F` - type of the closure, which takes a reference to an element of type `A` and returns a value of type `B`.
+  ///
+  /// # Constraints
+  ///
+  /// * `F: FnMut(&A) -> B` - the closure must be callable with a reference to an element of type `A` and return a value of type `B`.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::extensions::*;
+  ///
+  /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
+  /// ```
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
 
   // fn largest_by(self, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   // where

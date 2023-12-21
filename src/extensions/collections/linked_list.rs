@@ -60,6 +60,14 @@ impl<Item> ReverseIterable<Item> for LinkedList<Item> {
 
 impl<Item> Collectible<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().map(function).collect()
+  }
 }
 
 impl<Item> Sequence<Item> for LinkedList<Item> {
@@ -102,11 +110,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     Self: Default + Extend<Item>,
   {
     interleave(self.into_iter(), iterable)
-  }
-
-  #[inline]
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
-    self.iter().map(function).collect()
   }
 
   #[inline]

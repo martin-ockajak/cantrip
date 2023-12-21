@@ -21,6 +21,4 @@ pub trait EqSet<Item> {
   {
     HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
-
-  fn map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>;
 }

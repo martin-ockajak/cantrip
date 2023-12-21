@@ -43,6 +43,14 @@ impl<Item> Iterable<Item> for HashSet<Item> {
 
 impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().map(function).collect()
+  }
 }
 
 impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
@@ -64,10 +72,5 @@ impl<Item: Eq + Hash> EqSet<Item> for HashSet<Item> {
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
-  }
-
-  #[inline]
-  fn map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
-    self.iter().map(function).collect()
   }
 }

@@ -56,10 +56,12 @@ pub fn test_collectible<A, C>(data: C) -> bool
 where
   A: TraversableFixture + PartialEq,
   C: Collectible<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
+  C::This<A>: PartialEq + FromIterator<A>,
 {
   let filter = data.clone().filter(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).collect();
+  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
   let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
-  filter && reduce
+  filter && map && reduce
 }
 
 pub fn test_sequence<'c, A, C, I>(data: C) -> bool
@@ -73,20 +75,17 @@ where
   let enumerate = data.clone().enumerate() == data.clone().into_iter().enumerate().collect();
   let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
     == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
-  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
   let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
-  enumerate && flat_map && map && position && rev
+  enumerate && flat_map && position && rev
 }
 
-pub fn test_set<A, C>(data: C) -> bool
+pub fn test_eq_set<A, C>(data: C) -> bool
 where
   A: TraversableFixture + Eq + Hash,
   C: EqSet<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
-  C::This<A>: PartialEq + FromIterator<A>,
 {
-  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
-  map
+  true
 }
 
 fn safe_aggregate<A, C>(data: C, init: A, mut aggregate: impl FnMut(A, A) -> Option<A>) -> bool

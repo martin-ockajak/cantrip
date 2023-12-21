@@ -43,6 +43,14 @@ impl<Item> Iterable<Item> for BTreeSet<Item> {
 
 impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().map(function).collect()
+  }
 }
 
 impl<Item: Ord> OrdSet<Item> for BTreeSet<Item> {
@@ -72,10 +80,5 @@ impl<Item: Ord> OrdSet<Item> for BTreeSet<Item> {
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
     BTreeMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
-  }
-
-  #[inline]
-  fn map<B: Ord>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
-    self.iter().map(function).collect()
   }
 }

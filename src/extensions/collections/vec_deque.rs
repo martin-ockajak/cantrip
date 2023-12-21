@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::VecDeque;
-use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -60,6 +59,14 @@ impl<Item> ReverseIterable<Item> for VecDeque<Item> {
 
 impl<Item> Collectible<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().map(function).collect()
+  }
 }
 
 impl<Item> Sequence<Item> for VecDeque<Item> {
@@ -102,11 +109,6 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     Self: Default + Extend<Item>,
   {
     interleave(self.into_iter(), iterable)
-  }
-
-  #[inline]
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
-    self.iter().map(function).collect()
   }
 
   #[inline]

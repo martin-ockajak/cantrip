@@ -42,6 +42,14 @@ impl<Item> Iterable<Item> for BinaryHeap<Item> {
 
 impl<Item> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().map(function).collect()
+  }
 }
 
 impl<Item: Ord> OrdSet<Item> for BinaryHeap<Item> {
@@ -63,10 +71,5 @@ impl<Item: Ord> OrdSet<Item> for BinaryHeap<Item> {
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
-  }
-
-  #[inline]
-  fn map<B: Ord>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B> {
-    self.iter().map(function).collect()
   }
 }
