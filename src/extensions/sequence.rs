@@ -32,10 +32,6 @@ pub trait Sequence<Item> {
 
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-  where
-    R: IntoIterator<Item = B>;
-
   #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
     where

@@ -61,6 +61,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     self.into_iter().flatten().collect()
   }
+  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  where
+    R: IntoIterator<Item = B>,
+    Self::This<B>: FromIterator<B>;
 
   #[inline]
   fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
@@ -164,6 +168,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     iter::once(value).collect()
   }
+}
+
+#[inline]
+pub(crate) fn flat_map<'a, A: 'a, B, R, C>(
+  mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> R,
+) -> C
+where
+  R: IntoIterator<Item = B>,
+  C: FromIterator<B>,
+{
+  iterator.flat_map(function).collect()
 }
 
 #[inline]

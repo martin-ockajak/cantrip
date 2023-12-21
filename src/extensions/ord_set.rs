@@ -9,10 +9,6 @@ pub trait OrdSet<Item> {
 
   fn find_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  fn flat_map<B: Ord, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-  where
-    R: IntoIterator<Item = B>;
-
   #[inline]
   fn grouped_by<K: Ord>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
     where

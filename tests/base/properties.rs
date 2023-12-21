@@ -59,9 +59,11 @@ where
   C::This<A>: PartialEq + FromIterator<A>,
 {
   let filter = data.clone().filter(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).collect();
+  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
+    == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
   let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
   let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
-  filter && map && reduce
+  filter && flat_map && map && reduce
 }
 
 pub fn test_sequence<'c, A, C, I>(data: C) -> bool
@@ -73,11 +75,9 @@ where
   I: Iterator<Item = A> + DoubleEndedIterator,
 {
   let enumerate = data.clone().enumerate() == data.clone().into_iter().enumerate().collect();
-  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
-    == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
   let position = data.position(|x| x.test()) == data.clone().into_iter().position(|x| x.test());
   let rev = data.clone().rev() == data.clone().into_iter().rev().collect();
-  enumerate && flat_map && position && rev
+  enumerate && position && rev
 }
 
 pub fn test_eq_set<A, C>(data: C) -> bool
