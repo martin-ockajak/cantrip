@@ -10,7 +10,7 @@ use crate::base::fixtures::{AggregableFixture, IterableFixture};
 pub fn test_iterable<A, C>(data: C) -> bool
 where
   A: IterableFixture + PartialEq + Ord + Clone,
-  C: Iterable<A> + IntoIterator<Item = A> + Clone,
+  C: Traversable<A> + IntoIterator<Item = A> + Clone,
 {
   let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
   let any = data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test());

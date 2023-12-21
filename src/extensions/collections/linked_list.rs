@@ -3,7 +3,7 @@ use std::collections::LinkedList;
 
 use crate::extensions::*;
 
-impl<Item> Iterable<Item> for LinkedList<Item> {
+impl<Item> Traversable<Item> for LinkedList<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)

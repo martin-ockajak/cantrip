@@ -2,6 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+use crate::extensions::util::iterable::Iterable;
 
 pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   type This<I>;
@@ -13,14 +14,38 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
+  /// Retains the values representing the difference,
+  /// i.e., the values that are in `self` but not in `other`.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::extensions::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let b = vec![4, 2, 3, 4];
+  ///
+  /// // Can be seen as `a - b`.
+  /// for x in a.clone().diff(&b) {
+  ///     println!("{x}"); // Print 1
+  /// }
+  ///
+  /// let diff: Vec<_> = a.clone().diff(&b);
+  /// assert_eq!(diff, vec![1]);
+  ///
+  /// // Note that difference is not symmetric,
+  /// // and `b - a` means something else:
+  /// let diff: Vec<_> = b.diff(&a);
+  /// assert_eq!(diff, vec![4, 4]);
+  /// ```
   #[inline]
-  fn diff(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  fn diff<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
-    Item: Eq + Hash,
+    Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut removed: HashSet<Item> = HashSet::new();
-    removed.extend(iterable);
+    let mut removed: HashSet<&Item> = HashSet::new();
+    removed.extend(iterable.iterator());
     self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
@@ -253,14 +278,40 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     result
   }
 
+  /// Retains the values representing the intersection,
+  /// i.e., the values that are both in `self` and `other`.
+  ///
+  /// When an equal element is present in `self` and `other`
+  /// then the resulting `Intersection` may yield references to
+  /// one or the other. This can be relevant if `T` contains fields which
+  /// are not compared by its `Eq` implementation, and may hold different
+  /// value between the two equal copies of `T` in the two sets.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// use std::collections::HashSet;
+  /// let a = vec![1, 2, 3];
+  /// let b = vec![4, 2, 3, 4];
+  ///
+  /// // Print 2, 3 in arbitrary order.
+  /// for x in a.clone().intersect(&b) {
+  ///     println!("{x}");
+  /// }
+  ///
+  /// let intersection: Vec<_> = a.intersect(&b);
+  /// assert_eq!(intersection, [2, 3]);
+  /// ```
   #[inline]
-  fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
-    Item: Eq + Hash,
+    Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut retained: HashSet<Item> = HashSet::new();
-    retained.extend(iterable);
+    let mut retained: HashSet<&Item> = HashSet::new();
+    retained.extend(iterable.iterator());
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 

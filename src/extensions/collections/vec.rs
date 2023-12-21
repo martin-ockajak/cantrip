@@ -5,7 +5,7 @@ use std::ops::RangeBounds;
 
 use crate::extensions::*;
 
-impl<Item> Iterable<Item> for Vec<Item> {
+impl<Item> Traversable<Item> for Vec<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
