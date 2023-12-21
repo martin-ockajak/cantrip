@@ -41,10 +41,6 @@ impl<Item> Iterable<Item> for HashSet<Item> {
   }
 }
 
-impl<Item> Summable<Item> for HashSet<Item> {}
-
-impl<Item> Productable<Item> for HashSet<Item> {}
-
 impl<Item> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 }

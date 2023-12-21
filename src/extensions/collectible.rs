@@ -1,14 +1,14 @@
 use std::collections::HashSet;
 use std::hash::Hash;
-use std::iter::FromIterator;
+use std::iter::{Product, Sum};
 
-pub trait Collectible<Item> {
+pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
   type This<I>;
 
   fn diff(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: FromIterator<Item>,
   {
     let mut removed: HashSet<Item> = HashSet::new();
     removed.extend(iterable);
@@ -18,7 +18,7 @@ pub trait Collectible<Item> {
   fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: FromIterator<Item>,
   {
     let mut retained: HashSet<Item> = HashSet::new();
     retained.extend(iterable);
@@ -26,8 +26,6 @@ pub trait Collectible<Item> {
   }
 
   fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
   {
     let mut iterator = self.into_iter();
     iterator.next().map(|result| iterator.fold(result, function))
@@ -40,6 +38,20 @@ pub trait Collectible<Item> {
   // {
   //   largest_by(self, n, compare)
   // }
+
+  fn product(self) -> Item
+    where
+      Item: Product,
+  {
+    self.into_iter().product()
+  }
+
+  fn sum(self) -> Item
+    where
+      Item: Sum,
+  {
+    self.into_iter().sum()
+  }
 }
 
 // fn largest_by<Item, Collection>(

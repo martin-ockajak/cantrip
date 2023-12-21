@@ -18,7 +18,7 @@ pub fn test_numeric_vec<Item>(data: Vec<Item>) -> bool
   where
     Item: Clone + Ord + TraversableFixture + AggregableFixture + Sum + Product,
 {
-  test_vec(data.clone()) && test_aggregable(data)
+  test_vec(data.clone()) && test_numeric(data)
 }
 
 pub fn test_hash_set<Item>(data: HashSet<Item>) -> bool
@@ -32,5 +32,5 @@ pub fn test_numeric_hash_set<Item>(data: HashSet<Item>) -> bool
   where
     Item: Clone + Ord + Eq + Hash + TraversableFixture + AggregableFixture + Sum + Product,
 {
-  test_hash_set(data.clone()) && test_aggregable(data)
+  test_hash_set(data.clone()) && test_numeric(data)
 }

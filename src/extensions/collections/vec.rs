@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet, LinkedList};
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::ops::RangeBounds;
 
@@ -56,10 +56,6 @@ impl<Item> ReverseIterable<Item> for Vec<Item> {
     self.iter().rposition(predicate)
   }
 }
-
-impl<Item> Summable<Item> for Vec<Item> {}
-
-impl<Item> Productable<Item> for Vec<Item> {}
 
 impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;

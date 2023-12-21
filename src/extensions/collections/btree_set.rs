@@ -40,10 +40,6 @@ impl<Item> Iterable<Item> for BTreeSet<Item> {
   }
 }
 
-impl<Item> Summable<Item> for BTreeSet<Item> {}
-
-impl<Item> Productable<Item> for BTreeSet<Item> {}
-
 impl<Item> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
 }

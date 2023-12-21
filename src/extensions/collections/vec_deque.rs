@@ -56,10 +56,6 @@ impl<Item> ReverseIterable<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> Summable<Item> for VecDeque<Item> {}
-
-impl<Item> Productable<Item> for VecDeque<Item> {}
-
 impl<Item> Collectible<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 }

@@ -41,10 +41,10 @@ where
   rfind && rfold && rposition
 }
 
-pub fn test_aggregable<A, C>(data: C) -> bool
+pub fn test_numeric<A, C>(data: C) -> bool
 where
   A: TraversableFixture + AggregableFixture + PartialEq + Sum + Product,
-  C: Summable<A> + Productable<A> + IntoIterator<Item = A> + Clone,
+  C: Collectible<A> + IntoIterator<Item = A> + Clone,
 {
   (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.check_add(y))
     || data.clone().sum() == data.clone().into_iter().sum())
@@ -93,7 +93,7 @@ where
 fn safe_aggregate<A, C>(data: C, init: A, mut aggregate: impl FnMut(A, A) -> Option<A>) -> bool
 where
   A: PartialEq + Sum + Product,
-  C: Summable<A> + IntoIterator<Item = A> + Clone,
+  C: Collectible<A> + IntoIterator<Item = A> + Clone,
 {
   let mut result = init;
   let mut safe = true;
