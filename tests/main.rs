@@ -32,5 +32,6 @@ fn hash_set_i64(data: HashSet<i64>) -> bool {
 
 #[quickcheck]
 fn hash_map_string(data: HashMap<String, String>) -> bool {
+  data.len();
   true
 }

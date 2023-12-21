@@ -219,8 +219,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// one item for each element, and `flat_map()`'s closure returns an
   /// iterable value for each element.
   ///
-  /// [`map`]: Iterator::map
-  /// [`flatten`]: Iterator::flatten
+  /// [`map`]: Collectible::map
+  /// [`flatten`]: Collectible::flatten
   ///
   /// # Examples
   ///
