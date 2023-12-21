@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::collections::BTreeSet;
 use std::iter;
 use std::iter::{Product, Sum};
 
@@ -18,6 +19,42 @@ pub trait Map<Key, Value> {
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
+
+  #[inline]
+  fn diff(self, iterable: impl IntoIterator<Item = Key>) -> Self
+    where
+      Key: Ord,
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    let mut removed: BTreeSet<Key> = BTreeSet::new();
+    removed.extend(iterable);
+    self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
+  }
+
+  #[inline]
+  fn exclude(self, key: &Key) -> Self
+    where
+      Key: PartialEq,
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
+  }
+
+  #[inline]
+  fn filter(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
+    where
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
+  }
+
+  #[inline]
+  fn filter_keys(self, mut predicate: impl FnMut(&Key) -> bool) -> Self
+    where
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().filter(|(k, _)| predicate(k)).collect()
+  }
 
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
