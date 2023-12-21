@@ -8,10 +8,10 @@ use crate::base::fixtures::{AggregableFixture, TraversableFixture};
 
 // FIXME - add tests for all methods
 
-pub fn test_iterable<A, C>(data: C) -> bool
+pub fn test_traversable<A, C>(data: C) -> bool
 where
   A: TraversableFixture + PartialEq + Ord + Clone,
-  C: Iterable<A> + IntoIterator<Item = A> + FromIterator<A> + Clone,
+  C: Iterable<A> + IntoIterator<Item = A> + Clone,
 {
   let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
   let any = data.any(|x| x.test()) == data.clone().into_iter().any(|x| x.test());
@@ -23,7 +23,6 @@ where
     == &data.clone().into_iter().max_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
   let min_by = data.min_by(|x, y| x.compare(y)).unwrap_or(&A::init_add())
     == &data.clone().into_iter().min_by(|x, y| x.compare(y)).unwrap_or(A::init_add());
-  let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
   all && any && count_by && find && fold && max_by && min_by
 }
 
@@ -58,7 +57,8 @@ where
   A: TraversableFixture + PartialEq,
   C: Collectible<A> + IntoIterator<Item = A> + Clone,
 {
-  true
+  let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
+  reduce
 }
 
 pub fn test_sequence<'c, A, C, I>(data: C) -> bool

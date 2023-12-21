@@ -1,7 +1,38 @@
+use std::collections::HashSet;
+use std::hash::Hash;
 use std::iter::{Product, Sum};
 
 pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
   type This<I>;
+
+  #[inline]
+  fn diff(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  where
+    Item: Eq + Hash,
+    Self: FromIterator<Item>,
+  {
+    let mut removed: HashSet<Item> = HashSet::new();
+    removed.extend(iterable);
+    self.into_iter().filter(|x| !removed.contains(x)).collect()
+  }
+
+  #[inline]
+  fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  where
+    Item: Eq + Hash,
+    Self: FromIterator<Item>,
+  {
+    let mut retained: HashSet<Item> = HashSet::new();
+    retained.extend(iterable);
+    self.into_iter().filter(|x| retained.contains(x)).collect()
+  }
+
+  #[inline]
+  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
+  {
+    let mut iterator = self.into_iter();
+    iterator.next().map(|result| iterator.fold(result, function))
+  }
 
   // fn largest_by(self, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   // where
