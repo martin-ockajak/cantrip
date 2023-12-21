@@ -44,6 +44,66 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
       .collect()
   }
 
+  /// Filter a collection using a closure to determine if an element should be retained.
+  ///
+  /// Given an element the closure must return `true` or `false`. The returned
+  /// collection will contain only the elements for which the closure returns
+  /// true.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec![0i32, 1, 2];
+  ///
+  /// let filtered = a.filter(|x| x.is_positive());
+  ///
+  /// assert_eq!(filtered, vec![1, 2]);
+  /// ```
+  ///
+  /// Because the closure passed to `filter()` takes a reference, and some
+  /// collections may contain references, this leads to a possibly confusing
+  /// situation, where the type of the closure is a double reference:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec![&0, &1, &2];
+  ///
+  /// let filtered = a.filter(|x| **x > 1); // need two *s!
+  ///
+  /// assert_eq!(filtered, vec![&2]);
+  /// ```
+  ///
+  /// It's common to instead use destructuring on the argument to strip away
+  /// one:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec![&0, &1, &2];
+  ///
+  /// let mut filtered = a.filter(|&x| *x > 1); // both & and *
+  ///
+  /// assert_eq!(filtered, vec![&2]);
+  /// ```
+  ///
+  /// or both:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec![&0, &1, &2];
+  ///
+  /// let filtered = a.filter(|&&x| x > 1); // two &s
+  ///
+  /// assert_eq!(filtered, vec![&2]);
+  /// ```
+  ///
+  /// of these layers.
   #[inline]
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
@@ -70,8 +130,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// let data = vec![vec![1, 2, 3, 4], vec![5, 6]];
-  /// let flattened = data.flat();
+  /// let a = vec![vec![1, 2, 3, 4], vec![5, 6]];
+  /// let flattened = a.flat();
   /// assert_eq!(flattened, &[1, 2, 3, 4, 5, 6]);
   /// ```
   ///
@@ -80,10 +140,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// let data = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let merged: Vec<i32> = data.map(|x| vec![*x, -x]).flat();
+  /// let merged: Vec<i32> = a.map(|x| vec![*x, -x]).flat();
   /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
   /// ```
   ///
@@ -93,10 +153,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// let data = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let merged: Vec<i32> = data.flat_map(|x| vec![*x, -x]);
+  /// let merged: Vec<i32> = a.flat_map(|x| vec![*x, -x]);
   /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
   /// ```
   ///
@@ -169,10 +229,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// ```
   /// use cantrip::extensions::*;
   ///
-  /// let data = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let merged: Vec<i32> = data.flat_map(|x| vec![*x, -x]);
+  /// let merged: Vec<i32> = a.flat_map(|x| vec![*x, -x]);
   /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
   /// ```
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
