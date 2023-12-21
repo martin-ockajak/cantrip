@@ -49,7 +49,7 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
 }
 
 impl<Key: Eq + Hash, Value> EqMap<Key, Value> for HashMap<Key, Value> {
-  type This<X, V> = HashMap<X, V>;
+  type This<K, V> = HashMap<K, V>;
 
   fn filter_map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W> {
     self.iter().filter_map(function).collect()
