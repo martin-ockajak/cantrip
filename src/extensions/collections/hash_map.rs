@@ -69,12 +69,4 @@ impl<Key: Eq + Hash, Value> EqMap<Key, Value> for HashMap<Key, Value> {
   fn map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W> {
     self.iter().map(function).collect()
   }
-
-  fn map_keys<L: Eq + Hash>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value> {
-    self.into_iter().map(|(k, v)| (function(&k), v)).collect()
-  }
-
-  fn map_values<W: Eq + Hash>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W> {
-    self.into_iter().map(|(k, v)| (k, function(&v))).collect()
-  }
 }

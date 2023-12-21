@@ -12,8 +12,4 @@ pub trait EqMap<Key, Value> {
     R: IntoIterator<Item = (L, W)>;
 
   fn map<L: Eq + Hash, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>;
-
-  fn map_keys<L: Eq + Hash>(self, function: impl FnMut(&Key) -> L) -> Self::This<L, Value>;
-
-  fn map_values<W: Eq + Hash>(self, function: impl FnMut(&Value) -> W) -> Self::This<Key, W>;
 }

@@ -68,12 +68,4 @@ impl<Key: Ord, Value> OrdMap<Key, Value> for BTreeMap<Key, Value> {
   fn map<L: Ord, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W> {
     self.iter().map(function).collect()
   }
-
-  fn map_keys<L: Ord>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value> {
-    self.into_iter().map(|(k, v)| (function(&k), v)).collect()
-  }
-
-  fn map_values<W: Ord>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W> {
-    self.into_iter().map(|(k, v)| (k, function(&v))).collect()
-  }
 }

@@ -10,8 +10,4 @@ pub trait OrdMap<Key, Value> {
     R: IntoIterator<Item = (L, W)>;
 
   fn map<L: Ord, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>;
-
-  fn map_keys<L: Ord>(self, function: impl FnMut(&Key) -> L) -> Self::This<L, Value>;
-
-  fn map_values<W: Ord>(self, function: impl FnMut(&Value) -> W) -> Self::This<Key, W>;
 }
