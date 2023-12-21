@@ -23,6 +23,7 @@ pub trait EqSet<Item> {
     self.into_iter().flatten().collect()
   }
 
+  #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
     where
       Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,

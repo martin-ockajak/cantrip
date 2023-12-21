@@ -9,6 +9,7 @@ pub trait MultiMap<K, C> {
 }
 
 impl<K: Eq + Hash, C> MultiMap<K, C> for HashMap<K, C> {
+  #[inline]
   fn group_pairs<V>(iterator: impl IntoIterator<Item = (K, V)>) -> Self
   where
     C: Extend<V> + Default,

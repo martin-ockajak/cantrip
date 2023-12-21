@@ -22,6 +22,7 @@ pub trait OrdSet<Item> {
     self.into_iter().flatten().collect()
   }
 
+  #[inline]
   fn grouped_by<K: Ord>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
     where
       Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
