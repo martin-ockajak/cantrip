@@ -216,16 +216,22 @@ pub trait Iterable<Item> {
   /// ```
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  /// Returns the maximum element of an collection.
+  /// Returns the maximum element of a collection.
   ///
   /// If several elements are equally maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
-  /// incomparable. You can work around this by using [`Iterator::reduce`]:
+  /// incomparable. You can work around this by using [`Collectible::reduce`]:
   /// ```
   /// use cantrip::extensions::*;
   ///
+  /// assert_eq!(
+  ///     vec![2.4, f32::NAN, 1.3]
+  ///         .reduce(f32::max)
+  ///         .unwrap(),
+  ///     2.4
+  /// );
   /// ```
   ///
   /// # Examples
@@ -268,10 +274,16 @@ pub trait Iterable<Item> {
   /// If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
-  /// incomparable. You can work around this by using [`Iterator::reduce`]:
+  /// incomparable. You can work around this by using [`Collectible::reduce`]:
   /// ```
   /// use cantrip::extensions::*;
   ///
+  /// assert_eq!(
+  ///     vec![2.4, f32::NAN, 1.3]
+  ///         .reduce(f32::min)
+  ///         .unwrap(),
+  ///     1.3
+  /// );
   /// ```
   ///
   /// # Examples
