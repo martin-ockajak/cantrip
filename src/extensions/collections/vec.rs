@@ -1,9 +1,8 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::hash::Hash;
 use std::ops::RangeBounds;
 
-use crate::extensions::util::multi_map::MultiMap;
 use crate::extensions::*;
 
 impl<Item> Iterable<Item> for Vec<Item> {
@@ -84,13 +83,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
     R: IntoIterator<Item = B>,
   {
     self.iter().flat_map(function).collect()
-  }
-
-  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
-  where
-    Self: Sized,
-  {
-    HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
   }
 
   fn init(self) -> Self {

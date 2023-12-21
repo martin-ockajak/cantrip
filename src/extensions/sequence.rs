@@ -2,6 +2,7 @@ use crate::extensions::util::append::Append;
 use std::collections::HashMap;
 use std::hash::Hash;
 use std::iter;
+use crate::extensions::util::multi_map::MultiMap;
 
 pub trait Sequence<Item> {
   type This<I>;
@@ -33,9 +34,13 @@ pub trait Sequence<Item> {
   where
     R: IntoIterator<Item = B>;
 
-  fn grouped_by<K: Eq + Hash>(self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
-  where
-    Self: Sized;
+  #[inline]
+  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+    where
+      Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    HashMap::group_pairs(self.into_iter().map(|x| (to_key(&x), x)))
+  }
 
   fn init(self) -> Self;
 
