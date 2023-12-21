@@ -5,20 +5,6 @@ use std::iter::FromIterator;
 pub trait OrdMap<Key, Value> {
   type This<K, V>;
 
-  fn add(self, key: Key, value: Value) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
-  {
-    self.into_iter().chain(iter::once((key, value))).collect()
-  }
-
-  fn concat(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
-  {
-    self.into_iter().chain(iterable).collect()
-  }
-
   fn diff(self, iterable: impl IntoIterator<Item = Key>) -> Self
   where
     Key: Ord,

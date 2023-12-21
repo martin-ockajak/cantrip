@@ -5,6 +5,14 @@ use std::iter::{Product, Sum};
 pub trait Map<Key, Value> {
   type This<K, V>;
 
+  #[inline]
+  fn add(self, key: Key, value: Value) -> Self
+    where
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().chain(iter::once((key, value))).collect()
+  }
+
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
@@ -35,6 +43,14 @@ pub trait Map<Key, Value> {
     Value: Ord,
   {
     self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
+  }
+
+  #[inline]
+  fn merge(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
+    where
+      Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().chain(iterable).collect()
   }
 
   #[inline]

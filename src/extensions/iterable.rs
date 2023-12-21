@@ -1,5 +1,10 @@
 use std::cmp::Ordering;
 
+
+pub trait Test<Item> {
+  fn xall(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
+}
+
 pub trait Iterable<Item> {
   /// Tests if every element of the collection matches a predicate.
   ///

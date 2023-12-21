@@ -5,6 +5,7 @@ use std::iter::{Product, Sum};
 pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
   type This<I>;
 
+  #[inline]
   fn diff(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Eq + Hash,
@@ -15,6 +16,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
     self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
+  #[inline]
   fn intersect(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Eq + Hash,
@@ -25,6 +27,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
+  #[inline]
   fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   {
     let mut iterator = self.into_iter();
@@ -39,6 +42,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
   //   largest_by(self, n, compare)
   // }
 
+  #[inline]
   fn product(self) -> Item
     where
       Item: Product,
@@ -46,6 +50,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized  {
     self.into_iter().product()
   }
 
+  #[inline]
   fn sum(self) -> Item
     where
       Item: Sum,
