@@ -67,6 +67,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     self.into_iter().flatten().collect()
   }
+
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
