@@ -49,7 +49,7 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    self.iter().map(function).collect()
+    map(self.iter(), function)
   }
 }
 

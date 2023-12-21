@@ -49,7 +49,7 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    self.iter().map(function).collect()
+    map(self.iter(), function)
   }
 }
 

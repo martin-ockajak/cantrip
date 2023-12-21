@@ -67,7 +67,7 @@ impl<Item> Collectible<Item> for Vec<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    self.iter().map(function).collect()
+    map(self.iter(), function)
   }
 }
 

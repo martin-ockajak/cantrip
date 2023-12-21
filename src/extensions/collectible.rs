@@ -166,6 +166,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   }
 }
 
+#[inline]
+pub(crate) fn map<'a, A: 'a, B, C>(mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> B) -> C
+where
+  C: FromIterator<B>,
+{
+  iterator.map(function).collect()
+}
+
 // fn largest_by<Item, Collection>(
 //   collection: Collection, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering,
 // ) -> Collection

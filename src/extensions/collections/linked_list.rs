@@ -66,7 +66,7 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    self.iter().map(function).collect()
+    map(self.iter(), function)
   }
 }
 
