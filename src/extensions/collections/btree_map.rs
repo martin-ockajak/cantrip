@@ -27,8 +27,38 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
+  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.iter().filter_map(function).collect()
+  }
+
+  #[inline]
+  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
+    self.iter().find_map(function)
+  }
+
+  #[inline]
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  where
+    R: IntoIterator<Item = (L, W)>,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.iter().flat_map(function).collect()
+  }
+
+  #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     fold_pairs(self.iter(), init, function)
+  }
+
+  #[inline]
+  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.iter().map(function).collect()
   }
 
   #[inline]
@@ -44,32 +74,5 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   #[inline]
   fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
     reduce_pairs(self.iter(), function)
-  }
-}
-
-impl<Key: Ord, Value> OrdMap<Key, Value> for BTreeMap<Key, Value> {
-  type This<X, V> = BTreeMap<X, V>;
-
-  #[inline]
-  fn filter_map<L: Ord, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W> {
-    self.iter().filter_map(function).collect()
-  }
-
-  #[inline]
-  fn find_map<B: Ord>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
-    self.iter().find_map(function)
-  }
-
-  #[inline]
-  fn flat_map<L: Ord, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
-  where
-    R: IntoIterator<Item = (L, W)>,
-  {
-    self.iter().flat_map(function).collect()
-  }
-
-  #[inline]
-  fn map<L: Ord, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W> {
-    self.iter().map(function).collect()
   }
 }

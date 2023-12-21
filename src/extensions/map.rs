@@ -67,6 +67,17 @@ pub trait Map<Key, Value> {
 
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
+  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>;
+
+  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
+
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  where
+    R: IntoIterator<Item = (L, W)>,
+    Self::This<L, W>: FromIterator<(L, W)>;
+
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
 
   #[inline]
@@ -79,6 +90,10 @@ pub trait Map<Key, Value> {
     retained.extend(iterable);
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
+
+  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   #[inline]
   fn map_keys<L: Eq + Hash>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>

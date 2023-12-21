@@ -1,9 +1,7 @@
 pub use collectible::*;
-pub use eq_map::*;
 pub use eq_set::*;
 pub use indexed::*;
 pub use map::*;
-pub use ord_map::*;
 pub use ord_set::*;
 pub use reverse_iterable::*;
 pub use sequence::*;
@@ -12,11 +10,9 @@ pub use iterable::*;
 
 mod collectible;
 mod collections;
-mod eq_map;
 mod eq_set;
 mod indexed;
 mod map;
-mod ord_map;
 mod ord_set;
 mod reverse_iterable;
 mod sequence;
