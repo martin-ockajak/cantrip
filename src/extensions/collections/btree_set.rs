@@ -45,6 +45,19 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
 
   #[inline]
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    filter_map(self.iter(), function)
+  }
+
+  #[inline]
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+    find_map(self.iter(), function)
+  }
+
+  #[inline]
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
@@ -64,16 +77,6 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
 
 impl<Item: Ord> OrdSet<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
-
-  #[inline]
-  fn filter_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
-    self.iter().filter_map(function).collect()
-  }
-
-  #[inline]
-  fn find_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    self.iter().find_map(function)
-  }
 
   #[inline]
   fn grouped_by<K: Ord>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>

@@ -5,10 +5,6 @@ use crate::extensions::util::multi_map::MultiMap;
 pub trait OrdSet<Item> {
   type This<T>;
 
-  fn filter_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
-
-  fn find_map<B: Ord>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
-
   #[inline]
   fn grouped_by<K: Ord>(self, mut to_key: impl FnMut(&Item) -> K) -> BTreeMap<K, Self>
     where

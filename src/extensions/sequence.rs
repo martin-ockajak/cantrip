@@ -28,10 +28,6 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().collect()
   }
 
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
-
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
-
   #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
     where

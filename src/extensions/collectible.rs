@@ -52,6 +52,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     self.into_iter().filter(predicate).collect()
   }
 
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
+
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
@@ -168,6 +174,23 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     iter::once(value).collect()
   }
+}
+
+#[inline]
+pub(crate) fn filter_map<'a, A: 'a, B, C>(
+  mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> Option<B>,
+) -> C
+where
+  C: FromIterator<B>,
+{
+  iterator.filter_map(function).collect()
+}
+
+#[inline]
+pub(crate) fn find_map<'a, A: 'a, B>(
+  mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> Option<B>,
+) -> Option<B> {
+  iterator.find_map(function)
 }
 
 #[inline]

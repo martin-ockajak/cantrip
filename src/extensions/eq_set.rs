@@ -6,10 +6,6 @@ use crate::extensions::util::multi_map::MultiMap;
 pub trait EqSet<Item> {
   type This<T>;
 
-  fn filter_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
-
-  fn find_map<B: Eq + Hash>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
-
   #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
