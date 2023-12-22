@@ -1,8 +1,9 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeSet, HashSet};
+use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+use crate::extensions::collections::iterable::Iterable;
 
 /// Map operations.
 ///
@@ -30,13 +31,13 @@ pub trait Map<Key, Value> {
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
 
   #[inline]
-  fn diff(self, iterable: impl IntoIterator<Item = Key>) -> Self
+  fn diff<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
-    Key: Ord,
+    Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
-    let mut removed: BTreeSet<Key> = BTreeSet::new();
-    removed.extend(iterable);
+    let mut removed: HashSet<&Key> = HashSet::new();
+    removed.extend(iterable.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
@@ -105,13 +106,13 @@ pub trait Map<Key, Value> {
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
 
   #[inline]
-  fn intersect(self, iterable: impl IntoIterator<Item = Key>) -> Self
+  fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
-    Key: Eq + Hash,
+    Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
   {
-    let mut retained: HashSet<Key> = HashSet::new();
-    retained.extend(iterable);
+    let mut retained: HashSet<&Key> = HashSet::new();
+    retained.extend(iterable.iterator());
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
