@@ -384,6 +384,31 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     self.into_iter().product()
   }
 
+  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// operation.
+  ///
+  /// If the collection is empty, returns [`None`]; otherwise, returns the
+  /// result of the reduction.
+  ///
+  /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
+  /// For collections with at least one element, this is the same as [`fold()`]
+  /// with the first element of the collection as the initial accumulator value, folding
+  /// every subsequent element into it.
+  ///
+  /// [`fold()`]: Traversable::fold
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let reduced: i32 = (1..10).reduce(|acc, e| acc + e).unwrap();
+  /// assert_eq!(reduced, 45);
+  ///
+  /// // Which is equivalent to doing it with `fold`:
+  /// let folded: i32 = (1..10).fold(0, |acc, e| acc + e);
+  /// assert_eq!(reduced, folded);
+  /// ```
   #[inline]
   fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item> {
     let mut iterator = self.into_iter();
