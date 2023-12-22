@@ -15,8 +15,6 @@ Convenient functional-style methods for existing Rust standard library collectio
 
   let data = vec![0, 1, 2];
 
-  let data = vec![0, 1, 2];
- 
   data.map(|x| x + 1);                  // vec![1, 2, 3]
  
   data.fold(0, |r, x| r + x);           // 3
