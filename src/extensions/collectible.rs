@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::util::iterable::Iterable;
+use crate::extensions::collections::iterable::Iterable;
 
 pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   type This<I>;
