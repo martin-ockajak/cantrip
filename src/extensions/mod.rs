@@ -1,17 +1,17 @@
 pub use collectible::*;
 pub use indexed::*;
 pub use map::*;
-pub use reverse_iterable::*;
+pub use reversible::*;
 pub use sequence::*;
 pub use slice::*;
-pub use iterable::*;
+pub use traversable::*;
 
 mod collectible;
 mod collections;
 mod indexed;
 mod map;
-mod reverse_iterable;
+mod reversible;
 mod sequence;
 mod slice;
-mod iterable;
+mod traversable;
 mod util;

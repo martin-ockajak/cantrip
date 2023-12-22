@@ -42,7 +42,7 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 }
 
-impl<Item> ReverseIterable<Item> for Vec<Item> {
+impl<Item> Reversible<Item> for Vec<Item> {
   #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))

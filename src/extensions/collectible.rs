@@ -248,7 +248,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// iterable value for each element.
   ///
   /// [`map`]: Collectible::map
-  /// [`flatten`]: Collectible::flatten
+  /// [`flat`]: Collectible::flatten
   ///
   /// # Examples
   ///
@@ -327,14 +327,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// # Returns
   ///
   /// A new container of the same type, containing the mapped other.
-  ///
-  /// # Type Parameters
-  ///
-  /// * `F` - type of the closure, which takes a reference to an element of type `A` and returns a value of type `B`.
-  ///
-  /// # Constraints
-  ///
-  /// * `F: FnMut(&A) -> B` - the closure must be callable with a reference to an element of type `A` and return a value of type `B`.
   ///
   /// # Safety
   ///

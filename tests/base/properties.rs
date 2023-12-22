@@ -3,13 +3,13 @@ use std::iter::{Product, Sum};
 
 use cantrip::extensions::*;
 
-use crate::base::fixtures::{AggregableFixture, IterableFixture};
+use crate::base::fixtures::{AggregableFixture, TraversableFixture};
 
 // FIXME - add tests for all methods
 
-pub fn test_iterable<A, C>(data: C) -> bool
+pub fn test_traversable<A, C>(data: C) -> bool
 where
-  A: IterableFixture + PartialEq + Ord + Clone,
+  A: TraversableFixture + PartialEq + Ord + Clone,
   C: Traversable<A> + IntoIterator<Item = A> + Clone,
 {
   let all = data.all(|x| x.test()) == data.clone().into_iter().all(|x| x.test());
@@ -25,10 +25,10 @@ where
   all && any && count_by && find && fold && max_by && min_by
 }
 
-pub fn test_reverse_iterable<A, C, I>(data: C) -> bool
+pub fn test_reversible<A, C, I>(data: C) -> bool
 where
-  A: IterableFixture + PartialEq,
-  C: ReverseIterable<A> + IntoIterator<Item = A, IntoIter = I> + Clone,
+  A: TraversableFixture + PartialEq,
+  C: Reversible<A> + IntoIterator<Item = A, IntoIter = I> + Clone,
   I: Iterator<Item = A> + DoubleEndedIterator + ExactSizeIterator,
 {
   let rfind = data.rfind(|x| x.test()) == data.clone().rfind(|x| x.test());
@@ -42,7 +42,7 @@ where
 
 pub fn test_numeric<A, C>(data: C) -> bool
 where
-  A: IterableFixture + AggregableFixture + PartialEq + Sum + Product,
+  A: TraversableFixture + AggregableFixture + PartialEq + Sum + Product,
   C: Collectible<A> + IntoIterator<Item = A> + Clone,
 {
   (!safe_aggregate(data.clone(), A::init_add(), |x, y| x.check_add(y))
@@ -53,7 +53,7 @@ where
 
 pub fn test_collectible<A, C>(data: C) -> bool
 where
-  A: IterableFixture + PartialEq,
+  A: TraversableFixture + PartialEq,
   C: Collectible<A> + IntoIterator<Item = A> + FromIterator<A> + PartialEq + Clone,
   C::This<A>: PartialEq + FromIterator<A>,
 {
@@ -67,7 +67,7 @@ where
 
 pub fn test_sequence<'c, A, C, I>(data: C) -> bool
 where
-  A: IterableFixture + 'c,
+  A: TraversableFixture + 'c,
   C: Sequence<A> + IntoIterator<Item = A, IntoIter = I> + FromIterator<A> + PartialEq + Clone + 'c,
   C::This<A>: PartialEq + FromIterator<A>,
   C::This<(usize, A)>: PartialEq + FromIterator<(usize, A)>,

@@ -40,7 +40,7 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> ReverseIterable<Item> for LinkedList<Item> {
+impl<Item> Reversible<Item> for LinkedList<Item> {
   #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))

@@ -1,4 +1,4 @@
-pub trait ReverseIterable<Item> {
+pub trait Reversible<Item> {
   /// Searches for an element of an collection from the back that satisfies a predicate.
   ///
   /// `rfind()` takes a closure that returns `true` or `false`. It applies
