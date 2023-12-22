@@ -6,7 +6,7 @@ Convenient functional-style methods for existing Rust standard library collectio
 - Additional utility methods commonly found in collection libraries are also included
 - Transformation methods return a new collection instance instead of an iterator
 - All methods consider collection instances to be immutable although some may consume them
-- Asymptotic complexity is optimal and overhead is limited to new collection creation
+- Asymptotic complexity is optimal and performance overhead is limited to new collection creation
 
 ### Examples
 
