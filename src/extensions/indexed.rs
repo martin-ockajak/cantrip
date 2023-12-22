@@ -28,24 +28,24 @@ pub trait Indexed<Item> {
     Self: IntoIterator<Item = Item>;
 
   // FIXME - make moving of the element work
-  fn x_put(self, index: usize, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let mut value = Rc::new(element);
-    unfold((0 as usize, false), |(current, done)| {
-      if !*done && *current == index {
-        *done = true;
-        None
-        // Rc::into_inner(value)
-      } else {
-        *current += 1;
-        iterator.next()
-      }
-    })
-    .collect()
-  }
+  // fn x_put(self, index: usize, element: Item) -> Self
+  // where
+  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  // {
+  //   let mut iterator = self.into_iter();
+  //   let mut value = Rc::new(element);
+  //   unfold((0 as usize, false), |(current, done)| {
+  //     if !*done && *current == index {
+  //       *done = true;
+  //       None
+  //       // Rc::into_inner(value)
+  //     } else {
+  //       *current += 1;
+  //       iterator.next()
+  //     }
+  //   })
+  //   .collect()
+  // }
 
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
