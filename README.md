@@ -1,22 +1,20 @@
-# Overview
+Convenient functional-style methods for existing Rust standard library collections.
 
-Cantrip adds convenient functional-style methods to existing Rust standard library collections.
+# Goals
 
-## Goals
+- Reduce complexity and enhance clarity or Rust code
+- Ensure reasonably low and predictable performance cost
+- Require minimal learning by mirroring established interfaces
 
-* Reduce complexity and enhance clarity or Rust code
-* Ensure reasonably low and predictable performance cost
-* Require minimal learning by mirroring established interfaces
+# Features
 
-## Features
+- Equivalents of suitable iterator methods are added to all standard library collection data types
+- Utility methods inspired by other libraries are also added to the same collection data types
+- Method names are distinct from current or planned standard library collection method names
+- All methods consider collection instances to be immutable although some consume them
+- Transformation methods return a new collection instance instead of an iterator
 
-* Equivalents of suitable iterator methods are added to all standard library collection data types
-* Utility methods inspired by other libraries are also added to the same collection data types
-* Method names are distinct from current or planned standard library collection method names
-* All methods consider collection instances to be immutable although some consume them
-* Transformation methods return a new collection instance instead of an iterator
-
-## Examples
+# Examples
 
 ```rust
   use cantrip::extensions::*;
@@ -24,26 +22,26 @@ Cantrip adds convenient functional-style methods to existing Rust standard libra
   let data = vec![0, 1, 2];
 
   data.map(|x| x + 1);                  // [1, 2, 3]: Vec<i32>
-
+ 
   data.fold(0, |r, x| r + x);           // 3: i32
-
+ 
   data.any(|&x| x == 0);                // true: bool
-
-  data.filter(|&x| x > 0);              // [1, 2]: Vec<i32>
-
-  data.add(0).distinct();               // [0, 1, 2]: Vec<i32>
-
-  data.delete(0).tail();                // [2]: Vec<i32>
-
-  data.group_by(|x| x % 2);             // {0: [0, 2], 1: [1]}: HashMap<i32, Vec<i32>>
-
-  data.partition(|&x| x > 1);           // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
-
+ 
+  data.clone().filter(|&x| x > 0);      // [1, 2]: Vec<i32>
+ 
+  data.clone().add(0).distinct();       // [0, 1, 2]: Vec<i32>
+ 
+  data.clone().delete(0).tail();        // [2]: Vec<i32>
+ 
+  data.clone().grouped_by(|x| x % 2);   // {0: [0, 2], 1: [1]}: HashMap<i32, Vec<i32>>
+ 
+  data.clone().partition(|&x| x > 1);   // ([2], [0, 1]): (Vec<i32>, Vec<i32>)
+ 
   data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
 
 
-# Collection Methods
+# Methods
 
 | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
 |----------------------|---------------------------|-------------------------------|-------------------|----------------|
