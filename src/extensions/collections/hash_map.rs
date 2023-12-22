@@ -27,38 +27,8 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iter().filter_map(function).collect()
-  }
-
-  #[inline]
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
-    self.iter().find_map(function)
-  }
-
-  #[inline]
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
-  where
-    R: IntoIterator<Item = (L, W)>,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iter().flat_map(function).collect()
-  }
-
-  #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     fold_pairs(self.iter(), init, function)
-  }
-
-  #[inline]
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iter().map(function).collect()
   }
 
   #[inline]

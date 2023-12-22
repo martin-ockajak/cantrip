@@ -75,16 +75,32 @@ pub trait Map<Key, Value> {
 
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  #[inline]
+  fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
 
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
+  #[inline]
+  fn find_map<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
+    self.into_iter().find_map(function)
+  }
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  #[inline]
+  fn flat_map<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().flat_map(function).collect()
+  }
 
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
 
@@ -99,9 +115,14 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  #[inline]
+  fn map<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().map(function).collect()
+  }
 
   #[inline]
   fn map_keys<L: Eq + Hash>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
