@@ -43,34 +43,4 @@ impl<Item> Traversable<Item> for HashSet<Item> {
 
 impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
-
-  #[inline]
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    filter_map(self.iter(), function)
-  }
-
-  #[inline]
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    find_map(self.iter(), function)
-  }
-
-  #[inline]
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-  where
-    R: IntoIterator<Item = B>,
-    Self::This<B>: FromIterator<B>,
-  {
-    flat_map(self.iter(), function)
-  }
-
-  #[inline]
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    map(self.iter(), function)
-  }
 }

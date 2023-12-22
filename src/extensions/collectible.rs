@@ -1,8 +1,8 @@
+use crate::extensions::collections::iterable::Iterable;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::collections::iterable::Iterable;
 
 /// Consuming collection operations.
 ///
@@ -180,14 +180,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
-  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map(|s| s.clone().unwrap());
+  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map(|s| s.unwrap());
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
 
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+  fn find_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B> {
+    self.into_iter().find_map(function)
+  }
 
   /// Flattens a nested structure.
   ///
@@ -214,8 +219,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let merged: Vec<i32> = a.map(|x| vec![*x, -x]).flat();
-  /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
+  /// let flattened: Vec<i32> = a.map(|x| vec![x, -x]).flat();
+  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
   /// ```
   ///
   /// You can also rewrite this in terms of [`flat_map()`], which is preferable
@@ -227,8 +232,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let merged: Vec<i32> = a.flat_map(|x| vec![*x, -x]);
-  /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
+  /// let flattened: Vec<i32> = a.flat_map(|x| vec![x, -x]);
+  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
   /// ```
   ///
   /// Flattening works on any `IntoIterator` type, including `Option` and `Result`:
@@ -303,13 +308,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let merged: Vec<i32> = a.flat_map(|x| vec![*x, -x]);
-  /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
+  /// let flattened: Vec<i32> = a.flat_map(|x| vec![x, -x]);
+  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
   /// ```
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  fn flat_map<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().flat_map(function).collect()
+  }
 
   #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
@@ -383,9 +391,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   ///
   /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
   /// ```
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  fn map<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B> {
+    self.into_iter().map(function).collect()
+  }
 
   // FIXME - implement n_largest
   // fn largest_by(self, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
@@ -466,42 +476,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     iter::once(value).collect()
   }
-}
-
-#[inline]
-pub(crate) fn filter_map<'a, A: 'a, B, C>(
-  iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> Option<B>,
-) -> C
-where
-  C: FromIterator<B>,
-{
-  iterator.filter_map(function).collect()
-}
-
-#[inline]
-pub(crate) fn find_map<'a, A: 'a, B>(
-  mut iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> Option<B>,
-) -> Option<B> {
-  iterator.find_map(function)
-}
-
-#[inline]
-pub(crate) fn flat_map<'a, A: 'a, B, R, C>(
-  iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> R,
-) -> C
-where
-  R: IntoIterator<Item = B>,
-  C: FromIterator<B>,
-{
-  iterator.flat_map(function).collect()
-}
-
-#[inline]
-pub(crate) fn map<'a, A: 'a, B, C>(iterator: impl Iterator<Item = &'a A>, function: impl FnMut(&A) -> B) -> C
-where
-  C: FromIterator<B>,
-{
-  iterator.map(function).collect()
 }
 
 // fn largest_by<Item, Collection>(

@@ -15,11 +15,11 @@
 ///
 /// let data = vec![1, 2, 3];
 ///
-/// data.map(|x| x + 1);                  // vec![2, 3, 4]
-///
 /// data.fold(0, |r, x| r + x);           // 6
 ///
 /// data.any(|&x| x == 1);                // true
+///
+/// data.clone().map(|x| x + 1);          // vec![2, 3, 4]
 ///
 /// data.clone().filter(|&x| x > 1);      // vec![2, 3]
 ///

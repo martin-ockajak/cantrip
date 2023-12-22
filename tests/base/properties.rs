@@ -58,9 +58,9 @@ where
   C::This<A>: PartialEq + FromIterator<A>,
 {
   let filter = data.clone().filter(|x| x.test()) == data.clone().into_iter().filter(|x| x.test()).collect();
-  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(x)))
+  let flat_map = data.clone().flat_map(|x| iter::once(x.safe_add(&x)))
     == data.clone().into_iter().flat_map(|x| iter::once(x.safe_add(&x))).collect();
-  let map = data.clone().map(|x| x.safe_add(x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
+  let map = data.clone().map(|x| x.safe_add(&x)) == data.clone().into_iter().map(|x| x.safe_add(&x)).collect();
   let reduce = data.clone().reduce(|r, x| r.safe_add(&x)) == data.clone().into_iter().reduce(|r, x| r.safe_add(&x));
   filter && flat_map && map && reduce
 }
