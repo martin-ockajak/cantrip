@@ -1,12 +1,12 @@
 Convenient functional-style methods for existing Rust standard library collections.
 
-# Goals
+### Goals
 
 - Reduce complexity and enhance clarity or Rust code
 - Ensure reasonably low and predictable performance cost
 - Require minimal learning by mirroring established interfaces
 
-# Features
+### Features
 
 - Equivalents of suitable iterator methods are added to all standard library collection data types
 - Utility methods inspired by other libraries are also added to the same collection data types
@@ -14,7 +14,7 @@ Convenient functional-style methods for existing Rust standard library collectio
 - All methods consider collection instances to be immutable although some consume them
 - Transformation methods return a new collection instance instead of an iterator
 
-# Examples
+### Examples
 
 ```rust
   use cantrip::extensions::*;
@@ -40,7 +40,7 @@ Convenient functional-style methods for existing Rust standard library collectio
   data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
 
-# Methods
+### Methods
 
 | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 |----------------------|---------------------------|-------------------------------|-------------------|-------|
