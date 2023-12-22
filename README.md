@@ -13,25 +13,25 @@ Convenient functional-style methods for existing Rust standard library collectio
 ```rust
   use cantrip::extensions::*;
 
-  let data = vec![0, 1, 2];
+  let data = vec![1, 2, 3];
 
-  data.map(|x| x + 1);                  // vec![1, 2, 3]
+  data.map(|x| x + 1);                  // vec![2, 3, 4]
  
-  data.fold(0, |r, x| r + x);           // 3
+  data.fold(0, |r, x| r + x);           // 6
  
-  data.any(|&x| x == 0);                // true
+  data.any(|&x| x == 1);                // true
  
-  data.clone().filter(|&x| x > 0);      // vec![1, 2]
+  data.clone().filter(|&x| x > 1);      // vec![2, 3]
  
-  data.clone().add(0).distinct();       // vec![0, 1, 2]
+  data.clone().add(1).distinct();       // vec![1, 2, 3]
  
-  data.clone().delete(0).tail();        // vec![2]
+  data.clone().delete(0).tail();        // vec![3]
  
-  data.clone().grouped_by(|x| x % 2);   // HashMap::from(vec![(0, vec![0, 2]), (1, vec![1])])
+  data.clone().grouped_by(|x| x % 2);   // HashMap::from(vec![(0, vec![2]), (1, vec![1, 3])])
  
-  data.clone().partition(|&x| x > 1);   // (vec![2], vec![0, 1])
+  data.clone().partition(|&x| x > 1);   // (vec![3], vec![1, 2])
  
-  data.clone().zip(data);               // vec![(0, 0), (1, 1), (2, 2)]
+  data.clone().zip(data);               // vec![(1, 1), (2, 2), (3, 3)]
 ```
 
 ### Methods
