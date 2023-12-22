@@ -40,7 +40,7 @@
 /// data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 /// ```
 ///
-/// # Methods
+/// ### Methods
 ///
 /// | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 /// |----------------------|---------------------------|-------------------------------|-------------------|-------|
