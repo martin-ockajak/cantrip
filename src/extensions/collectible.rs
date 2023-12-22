@@ -259,7 +259,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // Vec is iterable because it supports IntoIterator
+  /// // Vec is iterable because it implements IntoIterator
   /// let merged: Vec<i32> = a.flat_map(|x| vec![*x, -x]);
   /// assert_eq!(merged, [1, -1, 2, -2, 3, -3]);
   /// ```
