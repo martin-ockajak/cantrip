@@ -17,21 +17,24 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Retains the values representing the difference,
   /// i.e., the values that are in `self` but not in `other`.
   ///
+  /// The order or retained values is preserved for ordered collections.
+  ///
   /// # Examples
   ///
   /// ```
   /// use crate::cantrip::extensions::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let b = vec![4, 2, 3, 4];
+  /// let b = vec![4, 3, 4];
   ///
   /// // Can be seen as `a - b`.
+  /// // Print 1, 2.
   /// for x in a.clone().diff(&b) {
-  ///     println!("{x}"); // Print 1
+  ///     println!("{x}");
   /// }
   ///
   /// let diff: Vec<_> = a.clone().diff(&b);
-  /// assert_eq!(diff, vec![1]);
+  /// assert_eq!(diff, vec![1, 2]);
   ///
   /// // Note that difference is not symmetric,
   /// // and `b - a` means something else:
@@ -281,11 +284,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Retains the values representing the intersection,
   /// i.e., the values that are both in `self` and `other`.
   ///
-  /// When an equal element is present in `self` and `other`
-  /// then the resulting `Intersection` may yield references to
-  /// one or the other. This can be relevant if `T` contains fields which
-  /// are not compared by its `Eq` implementation, and may hold different
-  /// value between the two equal copies of `T` in the two sets.
+  /// The order or retained values is preserved for ordered collections.
   ///
   /// # Examples
   ///
@@ -296,7 +295,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let a = vec![1, 2, 3];
   /// let b = vec![4, 2, 3, 4];
   ///
-  /// // Print 2, 3 in arbitrary order.
+  /// // Print 2, 3.
   /// for x in a.clone().intersect(&b) {
   ///     println!("{x}");
   /// }
