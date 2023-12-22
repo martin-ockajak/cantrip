@@ -40,7 +40,6 @@ Convenient functional-style methods for existing Rust standard library collectio
   data.clone().zip(data);               // [(0, 0), (1, 1), (2, 2)]: Vec<(i32, i32)>
 ```
 
-
 # Methods
 
 | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
