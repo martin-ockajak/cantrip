@@ -1,18 +1,12 @@
 Convenient functional-style methods for existing Rust standard library collections.
 
-### Goals
-
-- Reduce complexity and enhance clarity or Rust code
-- Ensure reasonably low and predictable performance cost
-- Require minimal learning by mirroring established interfaces
-
 ### Features
 
-- Equivalents of suitable iterator methods are added to all standard library collection data types
-- Utility methods inspired by other libraries are also added to the same collection data types
-- Method names are distinct from current or planned standard library collection method names
-- All methods consider collection instances to be immutable although some consume them
+- Equivalents of suitable iterator methods are added to standard library collections
+- Additional utility methods commonly found in collection libraries are also included
 - Transformation methods return a new collection instance instead of an iterator
+- All methods consider collection instances to be immutable although some may consume them
+- Asymptotic complexity is optimal and overhead is limited to new collection creation
 
 ### Examples
 
