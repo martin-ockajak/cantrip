@@ -79,7 +79,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
       .collect()
   }
 
-  /// Filter a collection using a closure to determine if an element should be retained.
+  /// Filters a collection using a closure to determine if an element should be retained.
   ///
   /// Given an element the closure must return `true` or `false`. The returned
   /// collection will contain only the elements for which the closure returns
@@ -147,6 +147,42 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     self.into_iter().filter(predicate).collect()
   }
 
+  /// Filters and maps a collection.
+  ///
+  /// The returned collection contains only the `value`s for which the supplied
+  /// closure returns `Some(value)`.
+  ///
+  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
+  /// concise. The example below shows how a `map().filter().map()` can be
+  /// shortened to a single call to `filter_map`.
+  ///
+  /// [`filter`]: Collectible::filter
+  /// [`map`]: Collectible::map
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  ///
+  /// let filter_mapped = a.filter_map(|s| s.parse::<i32>().ok());
+  ///
+  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter`] and [`map`]:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  ///
+  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map(|s| s.clone().unwrap());
+  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// ```
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>;
