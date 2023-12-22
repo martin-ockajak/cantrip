@@ -1,3 +1,9 @@
+/// Collection operations with the following properties:
+///
+/// - Requires an efficient way to traverse the collection in reverse direction
+/// - Does not consume the collection or its elements
+/// - Does not create a new collection
+///
 pub trait Reversible<Item> {
   /// Searches for an element of an collection from the back that satisfies a predicate.
   ///
@@ -100,7 +106,6 @@ pub trait Reversible<Item> {
   /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
   /// ```
   fn rfold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B;
-
 
   /// Searches for an element in an collection from the right, returning its
   /// index.

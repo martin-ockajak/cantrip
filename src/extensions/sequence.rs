@@ -2,6 +2,12 @@ use std::iter;
 
 use crate::extensions::util::append::Append;
 
+/// Collection operations with the following properties:
+///
+/// - Requires the collection to represent an ordered sequence
+/// - May consume the collection and its elements
+/// - May create a new collection
+///
 pub trait Sequence<Item> {
   type This<I>;
 

@@ -1,3 +1,9 @@
+/// Collection operations with the following properties:
+///
+/// - Requires the collection to represent a slice
+/// - Does not consume the collection or its elements
+/// - Does not create a new collection
+///
 pub trait Slice<Item> {
   fn init(&self) -> &Self;
 

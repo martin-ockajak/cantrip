@@ -1,5 +1,12 @@
+#![deny(missing_docs)]
+
 use std::cmp::Ordering;
 
+/// Collection operations with the following properties:
+///
+/// - Does not consume the collection or its elements
+/// - Does not create a new collection
+///
 pub trait Traversable<Item> {
   /// Tests if every element of the collection matches a predicate.
   ///
