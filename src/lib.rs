@@ -43,68 +43,68 @@
 ///
 /// # Methods
 ///
-/// | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice          |
-/// |----------------------|---------------------------|-------------------------------|-------------------|----------------|
-/// | *add*                | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *all*                | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *any*                | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *chunked*            | :radio_button:            |                               |                   |                |
-/// | *count_by*           | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *delete*             | :radio_button:            |                               |                   |                |
-/// | *diff*               | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *distinct*           | :radio_button:            |                               |                   |                |
-/// | *distinct_by*        | :radio_button:            |                               |                   |                |
-/// | *enumerate*          | :radio_button:            |                               |                   |                |
-/// | *exclude*            | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *filter*             | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *filter_keys*        |                           |                               | :radio_button:    |                |
-/// | *filter_map*         | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *filter_values*      |                           |                               | :radio_button:    |                |
-/// | *find_map*           | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *find*               | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *flat_map*           | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *flat*               | :radio_button:            | :radio_button:                |                   |                |
-/// | *fold*               | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *grouped_by*         | :radio_button:            | :radio_button:                |                   |                |
-/// | *interleave*         | :radio_button:            |                               |                   |                |
-/// | *intersect*          | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *init*               | :radio_button:            |                               |                   | :radio_button: |
-/// | *map*                | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *map_keys*           |                           |                               | :radio_button:    |                |
-/// | *map_values*         |                           |                               | :radio_button:    |                |
-/// | *map_while*          | :radio_button:            |                               |                   |                |
-/// | *max_by*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *max_entry*          | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *merge*              | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *min_by*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *min_entry*          | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *partition*          | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *position*           | :radio_button:            |                               |                   | :radio_button: |
-/// | *product*            | :radio_button:            | :radio_button:                |                   |                |
-/// | *product_keys*       |                           |                               | :radio_button:    |                |
-/// | *product_values*     |                           |                               | :radio_button:    |                |
-/// | *put*                | :radio_button:            |                               |                   |                |
-/// | *reduce*             | :radio_button:            | :radio_button:                | :radio_button:    | :radio_button: |
-/// | *replace*            | :radio_button:            |                               |                   |                |
-/// | *rev*                | :radio_button:            |                               |                   |                |
-/// | *rfind*              | :radio_button:            |                               |                   | :radio_button: |
-/// | *rfold*              | :radio_button:            |                               |                   | :radio_button: |
-/// | *rposition*          | :radio_button:            |                               |                   | :radio_button: |
-/// | *scan*               | :radio_button:            |                               |                   |                |
-/// | *skip*               | :radio_button:            |                               |                   |                |
-/// | *skip_while*         | :radio_button:            |                               |                   | :radio_button: |
-/// | *sorted*             | :radio_button:            |                               |                   |                |
-/// | *sorted_by*          | :radio_button:            |                               |                   |                |
-/// | *sorted_unstable*    | :radio_button:            |                               |                   |                |
-/// | *sorted_unstable_by* | :radio_button:            |                               |                   |                |
-/// | *step_by*            | :radio_button:            |                               |                   |                |
-/// | *sum*                | :radio_button:            | :radio_button:                |                   |                |
-/// | *sum_keys*           |                           |                               | :radio_button:    |                |
-/// | *sum_values*         |                           |                               | :radio_button:    |                |
-/// | *tail*               | :radio_button:            |                               |                   | :radio_button: |
-/// | *take*               | :radio_button:            |                               |                   |                |
-/// | *take_while*         | :radio_button:            |                               |                   | :radio_button: |
-/// | *unit*               | :radio_button:            | :radio_button:                | :radio_button:    |                |
-/// | *unzip*              | :radio_button:            |                               |                   |                |
-/// | *zip*                | :radio_button:            |                               |                   |                |
+/// | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
+/// |----------------------|---------------------------|-------------------------------|-------------------|-------|
+/// | *add*                | *                         | *                             | *                 |       |
+/// | *all*                | *                         | *                             | *                 | *     |
+/// | *any*                | *                         | *                             | *                 | *     |
+/// | *chunked*            | *                         |                               |                   |       |
+/// | *count_by*           | *                         | *                             | *                 | *     |
+/// | *delete*             | *                         |                               |                   |       |
+/// | *diff*               | *                         | *                             | *                 |       |
+/// | *distinct*           | *                         |                               |                   |       |
+/// | *distinct_by*        | *                         |                               |                   |       |
+/// | *enumerate*          | *                         |                               |                   |       |
+/// | *exclude*            | *                         | *                             | *                 |       |
+/// | *filter*             | *                         | *                             | *                 |       |
+/// | *filter_keys*        |                           |                               | *                 |       |
+/// | *filter_map*         | *                         | *                             | *                 |       |
+/// | *filter_values*      |                           |                               | *                 |       |
+/// | *find_map*           | *                         | *                             | *                 |       |
+/// | *find*               | *                         | *                             | *                 | *     |
+/// | *flat_map*           | *                         | *                             | *                 |       |
+/// | *flat*               | *                         | *                             |                   |       |
+/// | *fold*               | *                         | *                             | *                 | *     |
+/// | *grouped_by*         | *                         | *                             |                   |       |
+/// | *interleave*         | *                         |                               |                   |       |
+/// | *intersect*          | *                         | *                             | *                 |       |
+/// | *init*               | *                         |                               |                   | *     |
+/// | *map*                | *                         | *                             | *                 |       |
+/// | *map_keys*           |                           |                               | *                 |       |
+/// | *map_values*         |                           |                               | *                 |       |
+/// | *map_while*          | *                         |                               |                   |       |
+/// | *max_by*             | *                         | *                             | *                 | *     |
+/// | *max_entry*          | *                         | *                             | *                 | *     |
+/// | *merge*              | *                         | *                             | *                 |       |
+/// | *min_by*             | *                         | *                             | *                 | *     |
+/// | *min_entry*          | *                         | *                             | *                 | *     |
+/// | *partition*          | *                         | *                             | *                 |       |
+/// | *position*           | *                         |                               |                   | *     |
+/// | *product*            | *                         | *                             |                   |       |
+/// | *product_keys*       |                           |                               | *                 |       |
+/// | *product_values*     |                           |                               | *                 |       |
+/// | *put*                | *                         |                               |                   |       |
+/// | *reduce*             | *                         | *                             | *                 | *     |
+/// | *replace*            | *                         |                               |                   |       |
+/// | *rev*                | *                         |                               |                   |       |
+/// | *rfind*              | *                         |                               |                   | *     |
+/// | *rfold*              | *                         |                               |                   | *     |
+/// | *rposition*          | *                         |                               |                   | *     |
+/// | *scan*               | *                         |                               |                   |       |
+/// | *skip*               | *                         |                               |                   |       |
+/// | *skip_while*         | *                         |                               |                   | *     |
+/// | *sorted*             | *                         |                               |                   |       |
+/// | *sorted_by*          | *                         |                               |                   |       |
+/// | *sorted_unstable*    | *                         |                               |                   |       |
+/// | *sorted_unstable_by* | *                         |                               |                   |       |
+/// | *step_by*            | *                         |                               |                   |       |
+/// | *sum*                | *                         | *                             |                   |       |
+/// | *sum_keys*           |                           |                               | *                 |       |
+/// | *sum_values*         |                           |                               | *                 |       |
+/// | *tail*               | *                         |                               |                   | *     |
+/// | *take*               | *                         |                               |                   |       |
+/// | *take_while*         | *                         |                               |                   | *     |
+/// | *unit*               | *                         | *                             | *                 |       |
+/// | *unzip*              | *                         |                               |                   |       |
+/// | *zip*                | *                         |                               |                   |       |
 pub mod extensions;
