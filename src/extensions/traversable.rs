@@ -2,7 +2,9 @@
 
 use std::cmp::Ordering;
 
-/// Collection operations with the following properties:
+/// Non-consuming collection operations.
+///
+/// Methods have the following properties:
 ///
 /// - Does not consume the collection or its elements
 /// - Does not create a new collection

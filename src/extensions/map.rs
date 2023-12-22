@@ -4,7 +4,9 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
-/// Collection operations with the following properties:
+/// Map operations.
+///
+/// Methods have the following properties:
 ///
 /// - Requires the collection to represent a map
 /// - May consume the collection and its elements

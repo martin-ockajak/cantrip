@@ -4,7 +4,9 @@ use std::iter;
 use std::iter::{Product, Sum};
 use crate::extensions::collections::iterable::Iterable;
 
-/// Collection operations with the following properties:
+/// Consuming collection operations.
+///
+/// Methods have the following properties:
 ///
 /// - Consumes the collection and its elements
 /// - May create a new collection

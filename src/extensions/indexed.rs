@@ -6,7 +6,9 @@ use std::rc::Rc;
 use crate::extensions::util::unfold::unfold;
 
 // FIXME - find out how to generalize these for all sequences
-/// Collection operations with the following properties:
+/// Indexed collection operations.
+///
+/// Methods have the following properties:
 ///
 /// - Requires an efficient way to access the collection elements by index
 /// - Consumes the collection and its elements

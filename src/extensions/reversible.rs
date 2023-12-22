@@ -1,4 +1,6 @@
-/// Collection operations with the following properties:
+/// Reversible collection operations.
+///
+/// Methods have the following properties:
 ///
 /// - Requires an efficient way to traverse the collection in reverse direction
 /// - Does not consume the collection or its elements

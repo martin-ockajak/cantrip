@@ -1,4 +1,6 @@
-/// Collection operations with the following properties:
+/// Slice operations.
+///
+/// Methods have the following properties:
 ///
 /// - Requires the collection to represent a slice
 /// - Does not consume the collection or its elements

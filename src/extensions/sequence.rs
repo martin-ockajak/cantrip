@@ -2,7 +2,9 @@ use std::iter;
 
 use crate::extensions::util::append::Append;
 
-/// Collection operations with the following properties:
+/// Sequence operations.
+///
+/// Methods have the following properties:
 ///
 /// - Requires the collection to represent an ordered sequence
 /// - May consume the collection and its elements
