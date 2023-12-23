@@ -1,6 +1,8 @@
 use std::iter;
+use std::ops::RangeBounds;
 
 use crate::extensions::util::append::Append;
+use crate::extensions::util::unfold::unfold;
 
 /// Sequence operations.
 ///
@@ -60,6 +62,24 @@ pub trait Sequence<Item> {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
 
+  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut values = replace_with.into_iter();
+    unfold(0_usize, |current| {
+      if range.contains(current) {
+        *current += 1;
+        values.next()
+      } else {
+        *current += 1;
+        iterator.next()
+      }
+    })
+    .collect()
+  }
+
   /// Searches for an element in an iterator, returning its index.
   ///
   /// `position()` takes a closure that returns `true` or `false`. It applies
@@ -113,6 +133,25 @@ pub trait Sequence<Item> {
   ///
   /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
+
+  #[inline]
+  fn put(self, index: usize, element: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut value = iter::once(element);
+    unfold(0_usize, |current| {
+      if *current == index {
+        *current += 1;
+        value.next()
+      } else {
+        *current += 1;
+        iterator.next()
+      }
+    })
+    .collect()
+  }
 
   fn rev(self) -> Self;
 

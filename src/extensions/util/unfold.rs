@@ -1,8 +1,8 @@
-pub(crate) fn unfold<A, S, F>(init: S, function: F) -> Unfold<S, F>
+pub(crate) fn unfold<A, S, F>(state: S, function: F) -> Unfold<S, F>
 where
   F: FnMut(&mut S) -> Option<A>,
 {
-  Unfold { state: init, function }
+  Unfold { state, function }
 }
 
 impl<A, S, F> Iterator for Unfold<S, F>
@@ -18,6 +18,6 @@ where
 }
 
 pub(crate) struct Unfold<S, F> {
-  pub state: S,
+  state: S,
   function: F,
 }

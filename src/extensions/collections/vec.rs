@@ -1,7 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
-use std::ops::RangeBounds;
 
 use crate::extensions::*;
 
@@ -150,26 +149,6 @@ impl<Item> Indexed<Item> for Vec<Item> {
       .enumerate()
       .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
       .collect()
-  }
-
-  #[inline]
-  fn put(self, index: usize, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.insert(index, element);
-    result
-  }
-
-  #[inline]
-  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
-  where
-    Self: IntoIterator<Item = Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.splice(range, replace_with);
-    result
   }
 
   #[inline]
