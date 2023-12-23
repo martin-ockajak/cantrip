@@ -13,25 +13,33 @@
 /// ```rust
 /// use cantrip::extensions::*;
 ///
+/// # let source = vec![1, 2, 3];
 /// let data = vec![1, 2, 3];
 ///
-/// data.fold(0, |r, x| r + x);           // 6
+/// data.fold(0, |r, x| r + x);     // 6
 ///
-/// data.any(|&x| x == 1);                // true
+/// data.any(|&x| x == 1);          // true
 ///
-/// data.clone().map(|x| x + 1);          // vec![2, 3, 4]
+/// # let data = source.clone();
+/// data.map(|x| x + 1);            // vec![2, 3, 4]
 ///
-/// data.clone().filter(|&x| x > 1);      // vec![2, 3]
+/// # let data = source.clone();
+/// data.filter(|&x| x > 1);        // vec![2, 3]
 ///
-/// data.clone().add(1).distinct();       // vec![1, 2, 3]
+/// # let data = source.clone();
+/// data.add(1).distinct();         // vec![1, 2, 3]
 ///
-/// data.clone().delete(0).tail();        // vec![3]
+/// # let data = source.clone();
+/// data.delete(0).tail();          // vec![3]
 ///
-/// data.clone().grouped_by(|x| x % 2);   // HashMap::from(vec![(0, vec![2]), (1, vec![1, 3])])
+/// # let data = source.clone();
+/// data.grouped_by(|x| x % 2);     // HashMap::from(vec![(0, vec![2]), (1, vec![1, 3])])
 ///
-/// data.clone().partition(|&x| x > 1);   // (vec![3], vec![1, 2])
+/// # let data = source.clone();
+/// data.partition(|&x| x > 1);     // (vec![3], vec![1, 2])
 ///
-/// data.clone().zip(data);               // vec![(1, 1), (2, 2), (3, 3)]
+/// # let data = source.clone();
+/// data.clone().zip(data);         // vec![(1, 1), (2, 2), (3, 3)]
 /// ```
 ///
 /// ### Methods
