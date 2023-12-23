@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
 
@@ -26,6 +28,27 @@ pub trait Sequence<Item> {
   {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
+
+  // FIXME - make this work
+  // #[inline]
+  // fn distinct(self) -> Self
+  // where
+  //   Item: Eq + Hash,
+  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  // {
+  //   let mut occurred: HashSet<&Item> = HashSet::new();
+  //   let mut iterator = self.into_iter();
+  //   iterator
+  //     .filter_map(|item| {
+  //       if occurred.contains(&item) {
+  //         None
+  //       } else {
+  //         occurred.insert(&item);
+  //         Some(item)
+  //       }
+  //     })
+  //     .collect()
+  // }
 
   #[inline]
   fn enumerate(self) -> Self::This<(usize, Item)>
