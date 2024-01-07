@@ -143,6 +143,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - String
 
+- Add global import
+
 - Additional collection methods
 
 - List libraries serving as an inspiration
