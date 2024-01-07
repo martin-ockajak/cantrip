@@ -145,6 +145,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 
 - Additional collection methods
 
+- List libraries serving as an inspiration
+
 - Implement tests
 
 - Write documentation
