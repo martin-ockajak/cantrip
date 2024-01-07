@@ -135,6 +135,10 @@ It enables collection manipulation in a functional style without the usual Rust 
 
 - Add methods not existing in Rust to initial examples
 
+- Replace argument in the zip example with another collection
+
+- Add consuming versions of certain methods with the suffix '_to'
+
 - Add `chunked_by` method
   - https://apidock.com/ruby/v2_6_3/Enumerable/chunk
   - https://apidock.com/rails/v2.3.8/ActiveSupport/CoreExtensions/Array/Grouping/in_groups
