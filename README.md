@@ -1,4 +1,7 @@
-Convenient functional-style methods for existing Rust standard library collections.
+Convenient extension methods for Rust standard library collections.
+
+It enables collection manipulation in a functional style without the usual Rust boilerplate.
+
 
 ### Features
 
