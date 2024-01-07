@@ -40,7 +40,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 ### Methods
 
 | Method               | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
-|----------------------|---------------------------|-------------------------------|-------------------|-------|
+|:--------------------:|:-------------------------:|-------------------------------|-------------------|-------|
 | *add*                | *                         | *                             | *                 |       |
 | *all*                | *                         | *                             | *                 | *     |
 | *any*                | *                         | *                             | *                 | *     |
