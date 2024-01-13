@@ -45,6 +45,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *all*                | *                         | *                             | *                 | *     |
 | *any*                | *                         | *                             | *                 | *     |
 | *chunked*            | *                         |                               |                   |       |
+| *chunked_by*         | *                         |                               |                   |       |
 | *count_by*           | *                         | *                             | *                 | *     |
 | *delete*             | *                         |                               |                   |       |
 | *diff*               | *                         | *                             | *                 |       |
@@ -119,11 +120,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 - Add methods not existing in Rust to initial examples
 
 - Add consuming versions of certain methods with the suffix '_to'
-
-- Add `chunked_by` method
-  - https://apidock.com/ruby/v2_6_3/Enumerable/chunk
-  - https://apidock.com/rails/v2.3.8/ActiveSupport/CoreExtensions/Array/Grouping/in_groups
-  - https://apidock.com/rails/browse - CoreExtensions
 
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - String

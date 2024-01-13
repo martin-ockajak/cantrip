@@ -329,18 +329,42 @@ where
   let mut result = Result::default();
   let mut chunk = Chunk::default();
   let mut index: usize = 0;
-  let mut chunk_index: usize = 0;
   for item in iterator {
-    chunk.append(item);
-    index += 1;
-    chunk_index += 1;
-    if chunk_index == chunk_size {
+    if index > 0 && index == chunk_size {
       result.append(chunk);
       chunk = Chunk::default();
-      chunk_index = 0;
+      index = 0;
     }
+    chunk.append(item);
+    index += 1;
   }
-  if index > 0 && chunk_index == 0 {
+  if index > 0 {
+    result.append(chunk);
+  }
+  result
+}
+
+#[inline]
+pub(crate) fn chunked_by<Item, Chunk, Result>(
+  iterator: impl Iterator<Item = Item>, mut chunk_start: impl FnMut(&Item) -> bool,
+) -> Result
+where
+  Chunk: IntoIterator<Item = Item> + Sized + Default + Append<Item>,
+  Result: Default + Append<Chunk>,
+{
+  let mut result = Result::default();
+  let mut chunk = Chunk::default();
+  let mut index: usize = 0;
+  for item in iterator {
+    if index > 0 && chunk_start(&item) {
+      result.append(chunk);
+      chunk = Chunk::default();
+      index = 0;
+    }
+    chunk.append(item);
+    index += 1;
+  }
+  if index > 0 {
     result.append(chunk);
   }
   result
