@@ -18,8 +18,6 @@
 ///
 /// data.fold(0, |r, x| r + x);     // 6
 ///
-/// data.any(|&x| x == 1);          // true
-///
 /// # let data = source.clone();
 /// data.map(|x| x + 1);            // vec![2, 3, 4]
 ///
@@ -34,9 +32,6 @@
 ///
 /// # let data = source.clone();
 /// data.grouped_by(|x| x % 2);     // HashMap::from(vec![(0, vec![2]), (1, vec![1, 3])])
-///
-/// # let data = source.clone();
-/// data.partition(|&x| x > 1);     // (vec![3], vec![1, 2])
 ///
 /// # let data = source.clone();
 /// data.zip(vec![2, 3, 4]);        // vec![(1, 2), (2, 3), (3, 4)]
