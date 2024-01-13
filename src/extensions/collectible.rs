@@ -1,10 +1,11 @@
-use std::cmp::Reverse;
+use std::cmp::{Ordering, Reverse};
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
 use crate::extensions::iterable::Iterable;
+use crate::extensions::util::unfold::unfold;
 
 /// Consuming collection operations.
 ///
@@ -404,14 +405,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn largest(self, n: usize) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut heap = BinaryHeap::from_iter(self.into_iter());
-    let mut result = Self::default();
-    for _ in 0..n {
-      result.extend(iter::once(heap.pop().unwrap()));
-    }
-    result
+    unfold((), |_| heap.pop()).take(n).collect()
   }
 
   #[inline]
@@ -473,14 +470,52 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn smallest(self, n: usize) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut heap = BinaryHeap::from_iter(self.into_iter().map(|x| Reverse(x)));
-    let mut result = Self::default();
-    for _ in 0..n {
-      result.extend(iter::once(heap.pop().unwrap().0));
-    }
-    result
+    unfold((), |_| heap.pop().map(|x| x.0)).take(n).collect()
+  }
+
+  #[inline]
+  fn sorted(self) -> Self
+  where
+    Item: Ord,
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort();
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by(compare);
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_unstable(self) -> Self
+  where
+    Item: Ord,
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable();
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable_by(compare);
+    result.into_iter().collect()
   }
 
   #[inline]

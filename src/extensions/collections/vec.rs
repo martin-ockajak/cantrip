@@ -1,6 +1,4 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
-use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -60,6 +58,47 @@ impl<Item> Reversible<Item> for Vec<Item> {
 
 impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
+
+  #[inline]
+  fn sorted(self) -> Self
+  where
+    Item: Ord,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort();
+    result
+  }
+
+  #[inline]
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by(compare);
+    result
+  }
+
+  #[inline]
+  fn sorted_unstable(self) -> Self
+  where
+    Item: Ord,
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable();
+    result
+  }
+
+  #[inline]
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable_by(compare);
+    result
+  }
 }
 
 impl<Item> Sequence<Item> for Vec<Item> {
@@ -104,43 +143,5 @@ impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
     self.iter().scan(init, function).collect()
-  }
-}
-
-impl<Item> Indexed<Item> for Vec<Item> {
-  type This<I> = Vec<I>;
-
-  #[inline]
-  fn sorted(self) -> Self
-  where
-    Item: Ord,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort();
-    result
-  }
-
-  #[inline]
-  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_by(compare);
-    result
-  }
-
-  #[inline]
-  fn sorted_unstable(self) -> Self
-  where
-    Item: Ord,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable();
-    result
-  }
-
-  #[inline]
-  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable_by(compare);
-    result
   }
 }
