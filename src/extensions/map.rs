@@ -78,7 +78,12 @@ pub trait Map<Key, Value> {
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
   #[inline]
-  fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>;
+
+  #[inline]
+  fn filter_map_to<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<L, W>: FromIterator<(L, W)>,
@@ -87,7 +92,10 @@ pub trait Map<Key, Value> {
   }
 
   #[inline]
-  fn find_map<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
+  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
+
+  #[inline]
+  fn find_map_to<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
   {
@@ -254,6 +262,20 @@ pub(crate) fn fold_pairs<'a, K: 'a, V: 'a, B>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, init: B, function: impl FnMut(B, (&K, &V)) -> B,
 ) -> B {
   iterator.fold(init, function)
+}
+
+#[inline]
+pub(crate) fn filter_map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> Option<(L, W)>,
+) -> Result {
+  iterator.filter_map(function).collect()
+}
+
+#[inline]
+pub(crate) fn find_map_pairs<'a, K: 'a, V: 'a, B>(
+  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> Option<B>,
+) -> Option<B> {
+  iterator.find_map(function)
 }
 
 #[inline]

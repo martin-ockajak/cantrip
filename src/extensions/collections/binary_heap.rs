@@ -44,7 +44,7 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
 
   #[inline]
-  fn filter_map<B>(self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
   {
@@ -52,7 +52,7 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn find_map<B>(self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     find_map(self.iter(), function)
   }
 

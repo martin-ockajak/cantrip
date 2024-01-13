@@ -186,7 +186,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let filter_mapped = a.map(|&s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
-  fn filter_map<B>(self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>;
 
@@ -233,7 +233,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
     self.into_iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
   fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B> {
     self.into_iter().find_map(function)

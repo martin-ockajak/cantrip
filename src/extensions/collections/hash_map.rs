@@ -22,8 +22,21 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
+  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    filter_map_pairs(self.iter(), function)
+  }
+
+  #[inline]
   fn find(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)> {
     self.iter().find(|&x| predicate(x))
+  }
+
+  #[inline]
+  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
+    find_map_pairs(self.iter(), function)
   }
 
   #[inline]
