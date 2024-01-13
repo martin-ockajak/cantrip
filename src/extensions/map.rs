@@ -258,13 +258,6 @@ pub(crate) fn count_by_pairs<A>(iterator: impl Iterator<Item = A>, predicate: im
 }
 
 #[inline]
-pub(crate) fn fold_pairs<'a, K: 'a, V: 'a, B>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, init: B, function: impl FnMut(B, (&K, &V)) -> B,
-) -> B {
-  iterator.fold(init, function)
-}
-
-#[inline]
 pub(crate) fn filter_map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> Option<(L, W)>,
 ) -> Result {

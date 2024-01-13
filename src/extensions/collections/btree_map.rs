@@ -41,7 +41,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
 
   #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
-    fold_pairs(self.iter(), init, function)
+    self.fold(init, function)
   }
 
   #[inline]
