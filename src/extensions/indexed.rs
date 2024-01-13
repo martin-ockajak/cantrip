@@ -13,12 +13,6 @@ use std::hash::Hash;
 pub trait Indexed<Item> {
   type This<I>;
 
-  fn distinct(self) -> Self
-  where
-    Item: Eq + Hash;
-
-  fn distinct_by<K: Eq + Hash>(self, to_key: impl FnMut(&Item) -> K) -> Self;
-
   fn sorted(self) -> Self
   where
     Item: Ord;

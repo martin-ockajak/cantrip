@@ -1,8 +1,10 @@
-use crate::extensions::iterable::Iterable;
-use std::collections::{HashMap, HashSet};
+use std::cmp::Reverse;
+use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+
+use crate::extensions::iterable::Iterable;
 
 /// Consuming collection operations.
 ///
@@ -393,18 +395,24 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// ```
   fn map<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B> {
+    Self::This<B>: FromIterator<B>,
+  {
     self.into_iter().map(function).collect()
   }
 
-  // FIXME - implement n_largest
-  // fn largest_by(self, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  // where
-  //   Item: Ord,
-  //   Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
-  // {
-  //   largest_by(self, n, compare)
-  // }
+  #[inline]
+  fn largest(self, n: usize) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    let mut heap = BinaryHeap::from_iter(self.into_iter());
+    let mut result = Self::default();
+    for _ in 0..n {
+      result.extend(iter::once(heap.pop().unwrap()));
+    }
+    result
+  }
 
   #[inline]
   fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
@@ -462,6 +470,20 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   }
 
   #[inline]
+  fn smallest(self, n: usize) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    let mut heap = BinaryHeap::from_iter(self.into_iter().map(|x| Reverse(x)));
+    let mut result = Self::default();
+    for _ in 0..n {
+      result.extend(iter::once(heap.pop().unwrap().0));
+    }
+    result
+  }
+
+  #[inline]
   fn sum(self) -> Item
   where
     Item: Sum,
@@ -478,6 +500,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   }
 }
 
+// FIXME - implement largest_by and smallest_by
 // fn largest_by<Item, Collection>(
 //   collection: Collection, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering,
 // ) -> Collection

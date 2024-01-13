@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
 
@@ -27,26 +29,42 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
-  // FIXME - make this work
-  // #[inline]
-  // fn distinct(self) -> Self
-  // where
-  //   Item: Eq + Hash,
-  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  // {
-  //   let mut occurred: HashSet<&Item> = HashSet::new();
-  //   let mut iterator = self.into_iter();
-  //   iterator
-  //     .filter_map(|item| {
-  //       if occurred.contains(&item) {
-  //         None
-  //       } else {
-  //         occurred.insert(&item);
-  //         Some(item)
-  //       }
-  //     })
-  //     .collect()
-  // }
+  #[inline]
+  fn distinct(self) -> Self
+  where
+    Item: Eq + Hash,
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  {
+    let mut result = Self::default();
+    let mut occurred: HashSet<&Item> = HashSet::new();
+    for item in self.into_iter() {
+      if !occurred.contains(&item) {
+        result.extend(iter::once(item));
+      }
+    }
+    result
+  }
+
+  #[inline]
+  fn distinct_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+  where
+    K: Eq + Hash,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    let mut occurred: HashSet<K> = HashSet::new();
+    self
+      .into_iter()
+      .filter(|item| {
+        let key = to_key(&item);
+        if occurred.contains(&key) {
+          false
+        } else {
+          occurred.insert(key);
+          true
+        }
+      })
+      .collect()
+  }
 
   #[inline]
   fn enumerate(self) -> Self::This<(usize, Item)>

@@ -110,47 +110,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
 impl<Item> Indexed<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
-  fn distinct(self) -> Self
-  where
-    Item: Eq + Hash,
-  {
-    let mut occurred: HashSet<&Item> = HashSet::new();
-    let mut indices: HashSet<usize> = HashSet::new();
-    unsafe {
-      for index in 0..self.len() {
-        let value = self.get_unchecked(index);
-        if !occurred.contains(value) {
-          indices.insert(index);
-          occurred.insert(value);
-        }
-      }
-    }
-    self
-      .into_iter()
-      .enumerate()
-      .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
-      .collect()
-  }
-
-  fn distinct_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self {
-    let mut occurred: HashSet<K> = HashSet::new();
-    let mut indices: HashSet<usize> = HashSet::new();
-    unsafe {
-      for index in 0..self.len() {
-        let key = to_key(self.get_unchecked(index));
-        if !occurred.contains(&key) {
-          indices.insert(index);
-          occurred.insert(key);
-        }
-      }
-    }
-    self
-      .into_iter()
-      .enumerate()
-      .filter_map(|(index, value)| if indices.contains(&index) { Some(value) } else { None })
-      .collect()
-  }
-
   #[inline]
   fn sorted(self) -> Self
   where
