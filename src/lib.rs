@@ -19,10 +19,10 @@
 /// data.fold(0, |r, x| r + x);       // 6
 ///
 /// # let data = source.clone();
-/// data.map(|x| x + 1);              // vec![2, 3, 4]
+/// data.filter(|&x| x > 1);          // vec![2, 3]
 ///
 /// # let data = source.clone();
-/// data.filter(|&x| x > 1);          // vec![2, 3]
+/// data.map(|x| x + 1);              // vec![2, 3, 4]
 ///
 /// # let data = source.clone();
 /// data.add(1).distinct();           // vec![1, 2, 3]

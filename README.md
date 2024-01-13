@@ -20,9 +20,9 @@ It enables collection manipulation in a functional style without the usual Rust 
  
   data.fold(0, |r, x| r + x);       // 6
  
-  data.map(|x| x + 1);              // vec![2, 3, 4]
- 
   data.filter(|&x| x > 1);          // vec![2, 3]
+ 
+  data.map(|x| x + 1);              // vec![2, 3, 4]
  
   data.add(1).distinct();           // vec![1, 2, 3]
  
