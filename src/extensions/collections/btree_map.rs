@@ -40,6 +40,15 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  where
+    R: IntoIterator<Item = (L, W)>,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    flat_map_pairs(self.iter(), function)
+  }
+
+  #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     self.iter().fold(init, function)
   }

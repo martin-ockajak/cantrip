@@ -59,6 +59,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *find_map_to*        |             *             |               *               |         *         |       |
 | *find*               |             *             |               *               |         *         |   *   |
 | *flat_map*           |             *             |               *               |         *         |       |
+| *flat_map_to*        |             *             |               *               |         *         |       |
 | *flat*               |             *             |               *               |                   |       |
 | *fold*               |             *             |               *               |         *         |   *   |
 | *grouped_by*         |             *             |               *               |                   |       |

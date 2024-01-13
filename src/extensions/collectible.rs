@@ -93,7 +93,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![0i32, 1, 2];
   ///
@@ -107,7 +107,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// situation, where the type of the closure is a double reference:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![&0, &1, &2];
   ///
@@ -120,7 +120,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// one:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![&0, &1, &2];
   ///
@@ -132,7 +132,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// or both:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![&0, &1, &2];
   ///
@@ -167,7 +167,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
@@ -179,7 +179,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Here's the same example, but with [`filter`] and [`map`]:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
@@ -207,11 +207,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
-  /// let filter_mapped = a.filter_map(|s| s.parse::<i32>().ok());
+  /// let filter_mapped = a.filter_map_to(|s| s.parse::<i32>().ok());
   ///
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
@@ -219,13 +219,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Here's the same example, but with [`filter`] and [`map`]:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
   /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
+  #[inline]
   fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -235,6 +236,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
 
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
+  #[inline]
   fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B> {
     self.into_iter().find_map(function)
   }
@@ -249,7 +251,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![vec![1, 2, 3, 4], vec![5, 6]];
   /// let flattened = a.flat();
@@ -259,7 +261,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Mapping and then flattening:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -272,19 +274,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// in this case since it conveys intent more clearly:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let flattened: Vec<i32> = a.flat_map(|x| vec![x, -x]);
+  /// let flattened: Vec<i32> = a.flat_map(|&x| vec![x, -x]);
   /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
   /// ```
   ///
   /// Flattening works on any `IntoIterator` type, including `Option` and `Result`:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let options = vec![Some(123), Some(321), None, Some(231)];
   /// let flattened_options: Vec<_> = options.flat();
@@ -298,7 +300,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Flattening only removes one level of nesting at a time:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let d3 = vec![vec![vec![1, 2], vec![3, 4]], vec![vec![5, 6], vec![7, 8]]];
   ///
@@ -348,15 +350,51 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flattened: Vec<i32> = a.flat_map(|x| vec![x, -x]);
+  /// let flattened: Vec<i32> = a.flat_map(|&x| vec![x, -x]);
   /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
   /// ```
-  fn flat_map<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
+  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  where
+    R: IntoIterator<Item = B>,
+    Self::This<B>: FromIterator<B>;
+
+  /// Applies the given closure `f` to each element in the container and flattens the nested structure.
+  ///
+  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// argument produces values. If it produces an iterable value instead, there's
+  /// an extra layer of indirection. `flat_map()` will remove this extra layer
+  /// on its own.
+  ///
+  /// You can think of `flat_map(f)` as the semantic equivalent
+  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  ///
+  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
+  /// one item for each element, and `flat_map()`'s closure returns an
+  /// iterable value for each element.
+  ///
+  /// [`map`]: Collectible::map
+  /// [`flat`]: Collectible::flatten
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// // Vec is iterable because it implements IntoIterator
+  /// let flattened: Vec<i32> = a.flat_map_to(|x| vec![x, -x]);
+  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
+  /// ```
+  #[inline]
+  fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>,
@@ -385,7 +423,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// # Examples
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// use std::collections::HashSet;
   /// let a = vec![1, 2, 3];
@@ -524,7 +562,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// # Example
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use crate::cantrip::*;
   ///
   /// let reduced: i32 = (1..10).reduce(|acc, e| acc + e).unwrap();
   /// assert_eq!(reduced, 45);
@@ -578,6 +616,13 @@ pub(crate) fn find_map<'a, Item: 'a, B>(
   mut iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> Option<B>,
 ) -> Option<B> {
   iterator.find_map(function)
+}
+
+#[inline]
+pub(crate) fn flat_map<'a, Item: 'a, B, R: IntoIterator<Item = B>, Result: FromIterator<B>>(
+  iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> R,
+) -> Result {
+  iterator.flat_map(function).collect()
 }
 
 #[inline]

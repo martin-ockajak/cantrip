@@ -100,8 +100,13 @@ pub trait Map<Key, Value> {
     self.into_iter().find_map(function)
   }
 
+  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  where
+    R: IntoIterator<Item = (L, W)>,
+    Self::This<L, W>: FromIterator<(L, W)>;
+
   #[inline]
-  fn flat_map<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
+  fn flat_map_to<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -267,6 +272,13 @@ pub(crate) fn find_map_pairs<'a, K: 'a, V: 'a, B>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> Option<B>,
 ) -> Option<B> {
   iterator.find_map(function)
+}
+
+#[inline]
+pub(crate) fn flat_map_pairs<'a, K: 'a, V: 'a, L, W, R: IntoIterator<Item = (L, W)>, Result: FromIterator<(L, W)>>(
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> R,
+) -> Result {
+  iterator.flat_map(function).collect()
 }
 
 #[inline]
