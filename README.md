@@ -119,10 +119,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 
 # Tasks
 
-- Add methods not existing in Rust to initial examples
-
-- Add consuming versions of certain methods with the suffix '_to'
-
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - String
 
