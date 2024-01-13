@@ -171,6 +171,46 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
+  /// let filter_mapped = a.filter_map(|&s| s.parse::<i32>().ok());
+  ///
+  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter`] and [`map`]:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  ///
+  /// let filter_mapped = a.map(|&s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
+  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// ```
+  fn filter_map<B>(self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
+
+  /// Filters and maps a collection.
+  ///
+  /// The returned collection contains only the `value`s for which the supplied
+  /// closure returns `Some(value)`.
+  ///
+  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
+  /// concise. The example below shows how a `map().filter().map()` can be
+  /// shortened to a single call to `filter_map`.
+  ///
+  /// [`filter`]: Collectible::filter
+  /// [`map`]: Collectible::map
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::extensions::*;
+  ///
+  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  ///
   /// let filter_mapped = a.filter_map(|s| s.parse::<i32>().ok());
   ///
   /// assert_eq!(filter_mapped, vec![1, 5]);
@@ -186,14 +226,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
-  fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
+  fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
   {
     self.into_iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B> {
+  fn find_map<B>(self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+
+  fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B> {
     self.into_iter().find_map(function)
   }
 
@@ -522,6 +564,20 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     iter::once(value).collect()
   }
+}
+
+#[inline]
+pub(crate) fn filter_map<'a, Item: 'a, B, Result: FromIterator<B>>(
+  iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> Option<B>,
+) -> Result {
+  iterator.filter_map(function).collect()
+}
+
+#[inline]
+pub(crate) fn find_map<'a, Item: 'a, B>(
+  mut iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> Option<B>,
+) -> Option<B> {
+  iterator.find_map(function)
 }
 
 #[inline]
