@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+
 use crate::extensions::iterable::Iterable;
 
 /// Map operations.
@@ -117,7 +118,18 @@ pub trait Map<Key, Value> {
   }
 
   #[inline]
-  fn map<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
+  fn map<'c, L, W>(&'c self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  where
+    Key: 'c,
+    Value: 'c,
+    Self: Iterable<Item<'c> = (&'c Key, &'c Value)> + 'c,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.iterator().map(function).collect()
+  }
+
+  #[inline]
+  fn map_to<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<L, W>: FromIterator<(L, W)>,

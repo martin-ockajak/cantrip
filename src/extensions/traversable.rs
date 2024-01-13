@@ -28,7 +28,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -56,7 +56,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -77,7 +77,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -104,7 +104,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -145,7 +145,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = [1, 2, 3];
   ///
@@ -171,7 +171,7 @@ pub trait Traversable<Item> {
   /// and continuing with each element from the front until the back:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let numbers = [1, 2, 3, 4, 5];
   ///
@@ -190,7 +190,7 @@ pub trait Traversable<Item> {
   /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let numbers = [1, 2, 3, 4, 5];
   ///
@@ -218,7 +218,7 @@ pub trait Traversable<Item> {
   /// # Examples
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
   /// assert_eq!(*a.max_by(|x, y| x.cmp(y)).unwrap(), 5);
@@ -233,7 +233,7 @@ pub trait Traversable<Item> {
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
   /// incomparable. You can work around this by using [`Collectible::reduce`]:
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// assert_eq!(
   ///     vec![2.4, f32::NAN, 1.3]
@@ -248,7 +248,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   /// let b: Vec<u32> = Vec::new();
@@ -270,7 +270,7 @@ pub trait Traversable<Item> {
   /// # Examples
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
   /// assert_eq!(*a.min_by(|x, y| x.cmp(y)).unwrap(), -10);
@@ -285,7 +285,7 @@ pub trait Traversable<Item> {
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
   /// incomparable. You can work around this by using [`Collectible::reduce`]:
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// assert_eq!(
   ///     vec![2.4, f32::NAN, 1.3]
@@ -300,7 +300,7 @@ pub trait Traversable<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   /// let b: Vec<u32> = Vec::new();

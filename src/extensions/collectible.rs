@@ -32,7 +32,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// # Examples
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   /// let b = vec![4, 3, 4];
@@ -183,7 +183,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
-  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map(|s| s.unwrap());
+  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
   fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
@@ -222,7 +222,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let flattened: Vec<i32> = a.map(|x| vec![x, -x]).flat();
+  /// let flattened: Vec<i32> = a.map(|&x| vec![x, -x]).flat();
   /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
   /// ```
   ///
@@ -390,11 +390,48 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// # Examples
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
-  /// let result: Vec<i32> = vec![1, 2, 3].map(|x| x + 1);
+  /// let result: Vec<i32> = vec![1, 2, 3].map(|&x| x + 1);
   /// ```
-  fn map<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
+  #[inline]
+  fn map<'c, B>(&'c self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+    where
+      Item: 'c,
+      Self: Iterable<Item<'c> = &'c Item> + 'c,
+      Self::This<B>: FromIterator<B>,
+  {
+    self.iterator().map(function).collect()
+  }
+
+  /// Applies the given closure `f` to each element in the container.
+  ///
+  /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
+  /// The resulting other are collected into a new container of the same type.
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the container to apply the mapping to.
+  /// * `f` - the closure to apply to each element.
+  ///
+  /// # Returns
+  ///
+  /// A new container of the same type, containing the mapped other.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let result: Vec<i32> = vec![1, 2, 3].map_to(|x| x + 1);
+  /// ```
+  #[inline]
+  fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
   {

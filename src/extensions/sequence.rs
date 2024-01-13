@@ -81,16 +81,6 @@ pub trait Sequence<Item> {
   where
     Self: Default + Extend<Item>;
 
-  // FIXME - decide if the lifetime declarations are worth it
-  // fn map<'c, B>(&'c self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  //   where
-  //     Item: 'c,
-  //     Self: Iterable<Item<'c> = &'c Item> + 'c,
-  //     Self::This<B>: FromIterator<B>,
-  // {
-  //   self.iterator().map(function).collect()
-  // }
-
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
   #[inline]
@@ -220,7 +210,7 @@ pub trait Sequence<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[-1i32, 0, 1];
   ///
@@ -232,7 +222,7 @@ pub trait Sequence<Item> {
   /// situation, where the type of the closure argument is a double reference:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[&-1, &0, &1];
   ///
@@ -284,7 +274,7 @@ pub trait Sequence<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[-1i32, 0, 1];
   ///
@@ -296,7 +286,7 @@ pub trait Sequence<Item> {
   /// situation, where the type of the closure is a double reference:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[&-1, &0, &1];
   ///

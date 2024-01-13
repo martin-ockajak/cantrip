@@ -25,7 +25,7 @@ pub trait Slice<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[-1i32, 0, 1];
   ///
@@ -37,7 +37,7 @@ pub trait Slice<Item> {
   /// situation, where the type of the closure argument is a double reference:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[&-1, &0, &1];
   ///
@@ -63,7 +63,7 @@ pub trait Slice<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[-1i32, 0, 1];
   ///
@@ -75,7 +75,7 @@ pub trait Slice<Item> {
   /// situation, where the type of the closure is a double reference:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = &[&-1, &0, &1];
   ///

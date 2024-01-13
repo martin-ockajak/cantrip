@@ -29,7 +29,7 @@ pub trait Reversible<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -41,7 +41,7 @@ pub trait Reversible<Item> {
   /// Stopping at the first `true`:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -80,7 +80,7 @@ pub trait Reversible<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -95,7 +95,7 @@ pub trait Reversible<Item> {
   /// and continuing with each element from the back until the front:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let numbers = vec![1, 2, 3, 4, 5];
   ///
@@ -127,7 +127,7 @@ pub trait Reversible<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -139,7 +139,7 @@ pub trait Reversible<Item> {
   /// Stopping at the first `true`:
   ///
   /// ```
-  /// use crate::cantrip::extensions::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![-1, 2, 3, 4];
   ///

@@ -6,7 +6,7 @@ use crate::extensions::util::from;
 
 pub fn test_traversable<'a, C>()
 where
-  C: 'a + Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + PartialEq + Debug,
+  C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + PartialEq + Debug + 'a,
 {
   let values = from::<C>(&[1, 2, 3]);
   let empty = from::<C>(&[]);

@@ -64,6 +64,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *init*               |             *             |                               |                   |   *   |
 | *largest*            |             *             |               *               |                   |       |
 | *map*                |             *             |               *               |         *         |       |
+| *map_to*             |             *             |               *               |         *         |       |
 | *map_keys*           |                           |                               |         *         |       |
 | *map_values*         |                           |                               |         *         |       |
 | *map_while*          |             *             |                               |                   |       |
