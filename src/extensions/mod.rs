@@ -1,5 +1,6 @@
 pub use collectible::*;
 pub use indexed::*;
+pub use iterable::*;
 pub use map::*;
 pub use reversible::*;
 pub use sequence::*;
@@ -15,3 +16,4 @@ mod sequence;
 mod slice;
 mod traversable;
 mod util;
+mod iterable;

@@ -67,10 +67,10 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *map_values*         |                           |                               | *                 |       |
 | *map_while*          | *                         |                               |                   |       |
 | *max_by*             | *                         | *                             | *                 | *     |
-| *max_entry*          | *                         | *                             | *                 | *     |
+| *max_item*           | *                         | *                             | *                 | *     |
 | *merge*              | *                         | *                             | *                 |       |
 | *min_by*             | *                         | *                             | *                 | *     |
-| *min_entry*          | *                         | *                             | *                 | *     |
+| *min_item*           | *                         | *                             | *                 | *     |
 | *partition*          | *                         | *                             | *                 |       |
 | *position*           | *                         |                               |                   | *     |
 | *product*            | *                         | *                             |                   |       |

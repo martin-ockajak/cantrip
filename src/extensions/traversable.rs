@@ -253,11 +253,11 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 3];
   /// let b: Vec<u32> = Vec::new();
   ///
-  /// assert_eq!(a.max_entry(), Some(&3));
-  /// assert_eq!(b.max_entry(), None);
+  /// assert_eq!(a.max_item(), Some(&3));
+  /// assert_eq!(b.max_item(), None);
   /// ```
   #[inline]
-  fn max_entry(&self) -> Option<&Item> where Item: Ord {
+  fn max_item(&self) -> Option<&Item> where Item: Ord {
     self.max_by(Ord::cmp)
   }
 
@@ -305,11 +305,11 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 3];
   /// let b: Vec<u32> = Vec::new();
   ///
-  /// assert_eq!(a.min_entry(), Some(&1));
-  /// assert_eq!(b.min_entry(), None);
+  /// assert_eq!(a.min_item(), Some(&1));
+  /// assert_eq!(b.min_item(), None);
   /// ```
   #[inline]
-  fn min_entry(&self) -> Option<&Item> where Item: Ord {
+  fn min_item(&self) -> Option<&Item> where Item: Ord {
     self.min_by(Ord::cmp)
   }
 }

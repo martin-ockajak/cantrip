@@ -4,29 +4,16 @@ extern crate quickcheck;
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
-use crate::base::collections::*;
-use std::collections::{HashMap, HashSet};
+use std::collections::{HashMap, VecDeque};
 
-mod base;
+use crate::extensions::collections::*;
 
-#[quickcheck]
-fn vec_string(data: Vec<String>) -> bool {
-  test_vec(data)
-}
+mod extensions;
 
-#[quickcheck]
-fn vec_i64(data: Vec<i64>) -> bool {
-  test_numeric_vec(data)
-}
-
-#[quickcheck]
-fn hash_set_string(data: HashSet<String>) -> bool {
-  test_hash_set(data)
-}
-
-#[quickcheck]
-fn hash_set_i64(data: HashSet<i64>) -> bool {
-  test_numeric_hash_set(data)
+#[test]
+fn vectors() {
+  test_vector::<Vec<i64>>();
+  test_vector::<VecDeque<i64>>();
 }
 
 #[quickcheck]

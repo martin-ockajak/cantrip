@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::collections::iterable::Iterable;
+use crate::extensions::iterable::Iterable;
 
 /// Map operations.
 ///
