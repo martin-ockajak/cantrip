@@ -18,19 +18,19 @@ It enables collection manipulation in a functional style without the usual Rust 
 
   let data = vec![1, 2, 3];
  
-  data.fold(0, |r, x| r + x);     // 6
+  data.fold(0, |r, x| r + x);       // 6
  
-  data.map(|x| x + 1);            // vec![2, 3, 4]
+  data.map(|x| x + 1);              // vec![2, 3, 4]
  
-  data.filter(|&x| x > 1);        // vec![2, 3]
+  data.filter(|&x| x > 1);          // vec![2, 3]
  
-  data.add(1).distinct();         // vec![1, 2, 3]
+  data.add(1).distinct();           // vec![1, 2, 3]
  
-  data.delete(0).tail();          // vec![3]
+  data.delete(0).tail();            // vec![3]
+  
+  data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
  
-  data.grouped_by(|x| x % 2);     // HashMap::from(vec![(0, vec![2]), (1, vec![1, 3])])
- 
-  data.zip(vec![2, 3, 4]);        // vec![(1, 2), (2, 3), (3, 4)]
+  data.grouped_by(|x| x % 2);       // HashMap::from(vec![(0, vec![2]), (1, vec![1, 3])])
 ```
 
 ### Methods
