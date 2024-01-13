@@ -34,7 +34,7 @@ It enables collection manipulation in a functional style without the usual Rust 
  
   data.partition(|&x| x > 1);     // (vec![3], vec![1, 2])
  
-  data.clone().zip(data);         // vec![(1, 1), (2, 2), (3, 3)]
+  data.zip(vec![2, 3, 4]);        // vec![(1, 2), (2, 3), (3, 4)]
 ```
 
 ### Methods
@@ -134,8 +134,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 # Tasks
 
 - Add methods not existing in Rust to initial examples
-
-- Replace argument in the zip example with another collection
 
 - Add consuming versions of certain methods with the suffix '_to'
 
