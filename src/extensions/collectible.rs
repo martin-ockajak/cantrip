@@ -394,7 +394,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   ///
   /// let result: Vec<i32> = vec![1, 2, 3].map(|&x| x + 1);
   /// ```
-  #[inline]
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>;
