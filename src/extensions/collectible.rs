@@ -1,4 +1,4 @@
-use std::cmp::{Ordering, Reverse};
+use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
@@ -395,14 +395,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// let result: Vec<i32> = vec![1, 2, 3].map(|&x| x + 1);
   /// ```
   #[inline]
-  fn map<'c, B>(&'c self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-    where
-      Item: 'c,
-      Self: Iterable<Item<'c> = &'c Item> + 'c,
-      Self::This<B>: FromIterator<B>,
-  {
-    self.iterator().map(function).collect()
-  }
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
 
   /// Applies the given closure `f` to each element in the container.
   ///
@@ -514,48 +509,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   }
 
   #[inline]
-  fn sorted(self) -> Self
-  where
-    Item: Ord,
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort();
-    result.into_iter().collect()
-  }
-
-  #[inline]
-  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_by(compare);
-    result.into_iter().collect()
-  }
-
-  #[inline]
-  fn sorted_unstable(self) -> Self
-  where
-    Item: Ord,
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable();
-    result.into_iter().collect()
-  }
-
-  #[inline]
-  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable_by(compare);
-    result.into_iter().collect()
-  }
-
-  #[inline]
   fn sum(self) -> Item
   where
     Item: Sum,
@@ -570,6 +523,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   {
     iter::once(value).collect()
   }
+}
+
+#[inline]
+pub(crate) fn map<'a, Item: 'a, B, Result: FromIterator<B>>(
+  iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> B,
+) -> Result {
+  iterator.map(function).collect()
 }
 
 // FIXME - implement largest_by and smallest_by

@@ -43,4 +43,12 @@ impl<Item> Traversable<Item> for HashSet<Item> {
 
 impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    map(self.iter(), function)
+  }
 }

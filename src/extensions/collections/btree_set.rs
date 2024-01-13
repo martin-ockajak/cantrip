@@ -42,4 +42,12 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
 
 impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    map(self.iter(), function)
+  }
 }

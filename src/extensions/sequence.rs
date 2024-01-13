@@ -1,3 +1,4 @@
+use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
@@ -20,6 +21,25 @@ pub trait Sequence<Item> {
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>;
+
+  // #[inline]
+  // fn cycle(self, n: usize) -> Self
+  // where
+  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  // {
+  //   let mut iterator = self.into_iter();
+  //   let mut value = iter::once(element);
+  //   unfold(0_usize, |current| {
+  //     if *current == index {
+  //       *current += 1;
+  //       value.next()
+  //     } else {
+  //       *current += 1;
+  //       iterator.next()
+  //     }
+  //   })
+  //   .collect()
+  // }
 
   #[inline]
   fn delete(self, index: usize) -> Self
@@ -79,7 +99,10 @@ pub trait Sequence<Item> {
 
   fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
-    Self: Default + Extend<Item>;
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.into_iter().zip(iterable).map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).flatten().collect()
+  }
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
@@ -237,6 +260,48 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
+  fn sorted(self) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort();
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by(compare);
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_unstable(self) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable();
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable_by(compare);
+    result.into_iter().collect()
+  }
+
+  #[inline]
   fn step_by(self, step: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -379,26 +444,11 @@ where
 }
 
 #[inline]
-pub(crate) fn init<Item, Result, Iterable>(iterator: Iterable) -> Result
+pub(crate) fn init<Item, Iterable, Result>(iterator: Iterable) -> Result
 where
   Iterable: Iterator<Item = Item> + ExactSizeIterator,
   Result: Sized + FromIterator<Item>,
 {
   let size = iterator.len() - 1;
   iterator.skip(size).collect()
-}
-
-#[inline]
-pub(crate) fn interleave<Item, Result>(
-  iterator: impl Iterator<Item = Item>, iterable: impl IntoIterator<Item = Item>,
-) -> Result
-where
-  Result: Default + Append<Item>,
-{
-  let mut result = Result::default();
-  for (item1, item2) in iterator.zip(iterable) {
-    result.append(item1);
-    result.append(item2);
-  }
-  result
 }

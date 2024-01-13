@@ -118,15 +118,9 @@ pub trait Map<Key, Value> {
   }
 
   #[inline]
-  fn map<'c, L, W>(&'c self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
-    Key: 'c,
-    Value: 'c,
-    Self: Iterable<Item<'c> = (&'c Key, &'c Value)> + 'c,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iterator().map(function).collect()
-  }
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   #[inline]
   fn map_to<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
@@ -261,6 +255,13 @@ pub(crate) fn fold_pairs<'a, K: 'a, V: 'a, B>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, init: B, function: impl FnMut(B, (&K, &V)) -> B,
 ) -> B {
   iterator.fold(init, function)
+}
+
+#[inline]
+pub(crate) fn map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> (L, W),
+) -> Result {
+  iterator.map(function).collect()
 }
 
 #[inline]

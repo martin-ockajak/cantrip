@@ -59,6 +59,14 @@ impl<Item> Reversible<Item> for LinkedList<Item> {
 
 impl<Item> Collectible<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    map(self.iter(), function)
+  }
 }
 
 impl<Item> Sequence<Item> for LinkedList<Item> {
@@ -75,14 +83,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   #[inline]
   fn init(self) -> Self {
     init(self.into_iter())
-  }
-
-  #[inline]
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: Default + Extend<Item>,
-  {
-    interleave(self.into_iter(), iterable)
   }
 
   #[inline]

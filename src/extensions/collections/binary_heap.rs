@@ -42,4 +42,12 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
 
 impl<Item> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
+
+  #[inline]
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    map(self.iter(), function)
+  }
 }

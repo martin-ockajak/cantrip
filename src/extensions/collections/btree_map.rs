@@ -32,6 +32,14 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
+  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+    where
+      Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    map_pairs(self.iter(), function)
+  }
+
+  #[inline]
   fn max_by(&self, mut compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }

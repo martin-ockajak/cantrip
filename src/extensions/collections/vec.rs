@@ -60,44 +60,11 @@ impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
-  fn sorted(self) -> Self
+  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
-    Item: Ord,
+    Self::This<B>: FromIterator<B>,
   {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort();
-    result
-  }
-
-  #[inline]
-  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_by(compare);
-    result
-  }
-
-  #[inline]
-  fn sorted_unstable(self) -> Self
-  where
-    Item: Ord,
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable();
-    result
-  }
-
-  #[inline]
-  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where
-    Self: FromIterator<Item>,
-  {
-    let mut result = self.into_iter().collect::<Vec<Item>>();
-    result.sort_unstable_by(compare);
-    result
+    map(self.iter(), function)
   }
 }
 
@@ -118,14 +85,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: Default + Extend<Item>,
-  {
-    interleave(self.into_iter(), iterable)
-  }
-
-  #[inline]
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
@@ -143,5 +102,47 @@ impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
     self.iter().scan(init, function).collect()
+  }
+
+  #[inline]
+  fn sorted(self) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort();
+    result
+  }
+
+  #[inline]
+  fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by(compare);
+    result
+  }
+
+  #[inline]
+  fn sorted_unstable(self) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable();
+    result
+  }
+
+  #[inline]
+  fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable_by(compare);
+    result
   }
 }

@@ -43,6 +43,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *chunked*            |             *             |                               |                   |       |
 | *chunked_by*         |             *             |                               |                   |       |
 | *count_by*           |             *             |               *               |         *         |   *   |
+| *cycle*              |             *             |                               |                   |       |
 | *delete*             |             *             |                               |                   |       |
 | *diff*               |             *             |               *               |         *         |       |
 | *distinct*           |             *             |                               |                   |       |
