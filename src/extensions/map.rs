@@ -117,7 +117,6 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
-  #[inline]
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>;
