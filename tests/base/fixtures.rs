@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+
 pub trait TraversableFixture: Sized + Default {
   fn init_add() -> Self {
     Self::default()

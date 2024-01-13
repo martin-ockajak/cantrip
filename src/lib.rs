@@ -11,7 +11,7 @@
 /// ### Examples
 ///
 /// ```rust
-/// use cantrip::extensions::*;
+/// use cantrip::*;
 ///
 /// # let source = vec![1, 2, 3];
 /// let data = vec![1, 2, 3];
@@ -39,7 +39,7 @@
 /// data.partition(|&x| x > 1);     // (vec![3], vec![1, 2])
 ///
 /// # let data = source.clone();
-/// data.clone().zip(data);         // vec![(1, 1), (2, 2), (3, 3)]
+/// data.zip(vec![2, 3, 4]);        // vec![(1, 2), (2, 3), (3, 4)]
 /// ```
 ///
 /// ### Methods
@@ -109,3 +109,5 @@
 /// | *unzip*              | *                         |                               |                   |       |
 /// | *zip*                | *                         |                               |                   |       |
 pub mod extensions;
+
+pub use extensions::*;

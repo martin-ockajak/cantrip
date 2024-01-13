@@ -1,7 +1,7 @@
 use std::iter;
 use std::iter::{Product, Sum};
 
-use cantrip::extensions::*;
+use cantrip::*;
 
 use crate::base::fixtures::{AggregableFixture, TraversableFixture};
 

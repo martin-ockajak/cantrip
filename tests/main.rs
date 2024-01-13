@@ -4,9 +4,8 @@ extern crate quickcheck;
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
-use std::collections::{HashMap, HashSet};
-
 use crate::base::collections::*;
+use std::collections::{HashMap, HashSet};
 
 mod base;
 
