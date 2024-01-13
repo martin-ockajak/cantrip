@@ -105,31 +105,14 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *zip*                | *                         |                               |                   |       |
 
 
-## Inspirations
+## Inspiration
 
-- Rust
-  - [Iterator](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
-  - [Slice](https://doc.rust-lang.org/std/primitive.slice.html)
-  - [Array](https://doc.rust-lang.org/std/primitive.array.html)
-- Scala
-  - [IndexedSeq](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/IndexedSeq.html)
-  - [Set](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/Set.html)
-  - [Map](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/Map.html)
-  - [String](https://www.scala-lang.org/api/3.3.1/scala/collection/StringOps.html)
-- Python
-  - [set](https://python-reference.readthedocs.io/en/latest/docs/sets/index.html)
-  - [list](https://python-reference.readthedocs.io/en/latest/docs/list/index.html)
-  - [dict](https://python-reference.readthedocs.io/en/latest/docs/dict/index.html)
-  - [str](https://python-reference.readthedocs.io/en/latest/docs/str/index.html)
-- Qt
-  - [QList](https://doc.qt.io/qt-6/qlist.html)
-  - [QSet](https://doc.qt.io/qt-6/qset.html)
-  - [QMap](https://doc.qt.io/qt-6/qmap.html)
-  - [QString](https://doc.qt.io/qt-6/qstring.htm)
-- Misc
-  - [Toolz](https://toolz.readthedocs.io/en/latest/api.html)
-  - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
-  - [Array Tool](https://github.com/danielpclark/array_tool/tree/master)
+- [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
+- [Scala Collections](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/IndexedSeq.html)
+- [Haskell Collections](https://hackage.haskell.org/package/collections-api-1.0.0.0/docs/Data-Collections.html)
+- [Python Collections](https://python-reference.readthedocs.io/en/latest/docs/list/index.html)
+- [Qt Collections](https://doc.qt.io/qt-6/qlist.html)
+- [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
 
 # Tasks
 
@@ -148,8 +131,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 - Add global import
 
 - Additional collection methods
-
-- List libraries serving as an inspiration
 
 - Implement tests
 
