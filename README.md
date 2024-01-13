@@ -105,7 +105,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *unzip*              |             *             |                               |                   |       |
 | *zip*                |             *             |                               |                   |       |
 
-
 ## Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
