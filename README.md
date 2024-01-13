@@ -14,7 +14,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 ### Examples
 
 ```rust
-  use cantrip::extensions::*;
+  use cantrip::*;
 
   let data = vec![1, 2, 3];
  
@@ -123,8 +123,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - String
-
-- Add global import
 
 - Additional collection methods
 
