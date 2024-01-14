@@ -65,6 +65,10 @@ pub trait Sequence<Item> {
     result
   }
 
+  // FIXME - implement
+  // fn combinations(self, n: usize) -> Self::This<Self>;
+
+  // FIXME - implement
   // #[inline]
   // fn cycle(self, n: usize) -> Self
   // where
@@ -147,6 +151,9 @@ pub trait Sequence<Item> {
     self.into_iter().zip(iterable).map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).flatten().collect()
   }
 
+  // FIXME - implement
+  // fn intersperse(self, function: impl FnMut() -> Item, n: usize) -> Self
+
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
   #[inline]
@@ -156,6 +163,9 @@ pub trait Sequence<Item> {
   {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
+
+  // FIXME - implement
+  // fn permutations(self) -> Self::This<Self>;
 
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
@@ -425,6 +435,17 @@ pub trait Sequence<Item> {
   {
     self.into_iter().unzip()
   }
+
+  // FIXME - implement
+  // #[inline]
+  // fn windowed(self) -> Self::This<Self>
+  // where
+  //   Item: Clone,
+  //   Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  //   Self::This<Self>: Default + Extend<Self>,
+  // {
+  //   self.into_iter().unzip()
+  // }
 
   #[inline]
   fn zip<I: IntoIterator>(self, iterable: I) -> Self::This<(Item, I::Item)>

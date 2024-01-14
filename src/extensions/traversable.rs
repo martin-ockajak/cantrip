@@ -209,6 +209,9 @@ pub trait Traversable<Item> {
   /// ```
   fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B;
 
+  // FIXME - implement
+  // fn includes(&self, iterable: impl IntoIterator<Item = Item>) -> bool;
+
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
   ///
