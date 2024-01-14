@@ -417,11 +417,11 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn unzip<B, C>(self) -> (Self::This<B>, Self::This<C>)
+  fn unzip<A, B>(self) -> (Self::This<A>, Self::This<B>)
   where
-    Self: IntoIterator<Item = (B, C)> + Sized,
+    Self: IntoIterator<Item = (A, B)> + Sized,
+    Self::This<A>: Default + Extend<A>,
     Self::This<B>: Default + Extend<B>,
-    Self::This<C>: Default + Extend<C>,
   {
     self.into_iter().unzip()
   }
