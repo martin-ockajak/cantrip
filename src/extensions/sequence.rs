@@ -66,9 +66,6 @@ pub trait Sequence<Item> {
     result
   }
 
-  // FIXME - implement
-  // fn combinations(self, n: usize) -> Self::This<Self>;
-
   #[inline]
   fn cycle(self, n: usize) -> Self
   where
@@ -155,9 +152,18 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
+    self.intersperse_with(|| element.clone(), interval)
+  }
+
+  #[inline]
+  fn intersperse_with(self, mut element: impl FnMut() -> Item, interval: usize) -> Self
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
-    let mut value = iter::once(element).cycle();
+    let mut value = iter::once(element()).cycle();
     unfold((0_usize, false), |(position, inserted)| {
       let result = if !*inserted && *position % interval == 0 {
         *inserted = true;
@@ -253,6 +259,8 @@ pub trait Sequence<Item> {
   /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
+  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize>;
+
   #[inline]
   fn put(self, index: usize, element: Item) -> Self
   where
@@ -344,6 +352,28 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
+  fn sorted_by_cached_key<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
+  where
+    K: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by_cached_key(to_key);
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_by_key<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
+  where
+    K: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_by_key(to_key);
+    result.into_iter().collect()
+  }
+
+  #[inline]
   fn sorted_unstable(self) -> Self
   where
     Item: Ord,
@@ -361,6 +391,17 @@ pub trait Sequence<Item> {
   {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by(compare);
+    result.into_iter().collect()
+  }
+
+  #[inline]
+  fn sorted_unstable_by_key<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
+  where
+    K: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut result = self.into_iter().collect::<Vec<Item>>();
+    result.sort_unstable_by_key(to_key);
     result.into_iter().collect()
   }
 
@@ -470,6 +511,17 @@ where
 {
   let size = iterator.len() - 1;
   iterator.skip(size).collect()
+}
+
+#[inline]
+pub(crate) fn positions<'a, Item, Result>(
+  iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
+) -> Result
+where
+  Item: 'a,
+  Result: FromIterator<usize>,
+{
+  iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
 #[inline]

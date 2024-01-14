@@ -36,7 +36,7 @@ impl<Item> Traversable<Item> for HashSet<Item> {
   }
 
   #[inline]
-  fn max_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+  fn max_by_key<K: Ord>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item> {
     self.iter().max_by_key(|&x| to_key(x))
   }
 

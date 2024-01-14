@@ -228,7 +228,7 @@ pub trait Traversable<Item> {
   /// ```
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  fn max_by_key<B: Ord>(&self, to_key: impl FnMut(&Item) -> B) -> Option<&Item>;
+  fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
   /// Returns the maximum element of a collection.
   ///
@@ -282,7 +282,7 @@ pub trait Traversable<Item> {
   /// ```
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  fn min_by_key<B: Ord>(&self, to_key: impl FnMut(&Item) -> B) -> Option<&Item>;
+  fn min_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
   /// Returns the minimum element of an collection.
   ///

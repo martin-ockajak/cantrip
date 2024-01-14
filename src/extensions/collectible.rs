@@ -24,6 +24,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
+  // FIXME - implement
+  // fn combinations(self, n: usize) -> Self::This<Self>;
+
   /// Retains the values representing the difference,
   /// i.e., the values that are in `self` but not in `other`.
   ///
@@ -543,6 +546,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   {
     self.into_iter().partition(predicate)
   }
+
+  // FIXME - implement
+  // fn powerset(self) -> Self::This<Self>;
 
   #[inline]
   fn product(self) -> Item

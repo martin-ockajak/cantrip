@@ -35,7 +35,7 @@ impl<Item> Traversable<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn max_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+  fn max_by_key<K: Ord>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item> {
     self.iter().max_by_key(|&x| to_key(x))
   }
 
@@ -45,7 +45,7 @@ impl<Item> Traversable<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn min_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+  fn min_by_key<K: Ord>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item> {
     self.iter().max_by_key(|&x| to_key(x))
   }
 }
@@ -117,6 +117,11 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   #[inline]
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.iter().position(predicate)
+  }
+
+  #[inline]
+  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize> {
+    positions(self.iter(), predicate)
   }
 
   #[inline]
