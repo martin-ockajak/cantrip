@@ -95,14 +95,6 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
-  fn chunked(self, chunk_size: usize) -> Self::This<Self>
-  where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
-  {
-    chunked(self.into_iter(), chunk_size)
-  }
-
-  #[inline]
   fn init(self) -> Self {
     init(self.into_iter())
   }

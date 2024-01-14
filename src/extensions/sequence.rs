@@ -4,7 +4,6 @@ use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
 
-use crate::extensions::util::append::Append;
 use crate::extensions::util::unfold::unfold;
 
 /// Sequence operations.
@@ -18,9 +17,53 @@ use crate::extensions::util::unfold::unfold;
 pub trait Sequence<Item> {
   type This<I>;
 
+  #[inline]
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>;
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self::This<Self>: Default + Extend<Self>,
+  {
+    let mut result = Self::This::default();
+    let mut chunk = Self::default();
+    let mut index: usize = 0;
+    for item in self.into_iter() {
+      if index > 0 && index == chunk_size {
+        result.extend(iter::once(chunk));
+        chunk = Self::default();
+        index = 0;
+      }
+      chunk.extend(iter::once(item));
+      index += 1;
+    }
+    if index > 0 {
+      result.extend(iter::once(chunk));
+    }
+    result
+  }
+
+  #[inline]
+  fn chunked_by(self, mut chunk_start: impl FnMut(&Item) -> bool) -> Self::This<Self>
+  where
+    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self::This<Self>: Default + Extend<Self>,
+  {
+    let mut result = Self::This::default();
+    let mut chunk = Self::default();
+    let mut index: usize = 0;
+    for item in self.into_iter() {
+      if index > 0 && chunk_start(&item) {
+        result.extend(iter::once(chunk));
+        chunk = Self::default();
+        index = 0;
+      }
+      chunk.extend(iter::once(item));
+      index += 1;
+    }
+    if index > 0 {
+      result.extend(iter::once(chunk));
+    }
+    result
+  }
 
   // #[inline]
   // fn cycle(self, n: usize) -> Self
@@ -391,56 +434,6 @@ pub trait Sequence<Item> {
   {
     self.into_iter().zip(iterable).collect()
   }
-}
-
-#[inline]
-pub(crate) fn chunked<Item, Chunk, Result>(iterator: impl Iterator<Item = Item>, chunk_size: usize) -> Result
-where
-  Chunk: IntoIterator<Item = Item> + Sized + Default + Append<Item>,
-  Result: Default + Append<Chunk>,
-{
-  let mut result = Result::default();
-  let mut chunk = Chunk::default();
-  let mut index: usize = 0;
-  for item in iterator {
-    if index > 0 && index == chunk_size {
-      result.append(chunk);
-      chunk = Chunk::default();
-      index = 0;
-    }
-    chunk.append(item);
-    index += 1;
-  }
-  if index > 0 {
-    result.append(chunk);
-  }
-  result
-}
-
-#[inline]
-pub(crate) fn chunked_by<Item, Chunk, Result>(
-  iterator: impl Iterator<Item = Item>, mut chunk_start: impl FnMut(&Item) -> bool,
-) -> Result
-where
-  Chunk: IntoIterator<Item = Item> + Sized + Default + Append<Item>,
-  Result: Default + Append<Chunk>,
-{
-  let mut result = Result::default();
-  let mut chunk = Chunk::default();
-  let mut index: usize = 0;
-  for item in iterator {
-    if index > 0 && chunk_start(&item) {
-      result.append(chunk);
-      chunk = Chunk::default();
-      index = 0;
-    }
-    chunk.append(item);
-    index += 1;
-  }
-  if index > 0 {
-    result.append(chunk);
-  }
-  result
 }
 
 #[inline]
