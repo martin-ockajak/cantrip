@@ -69,8 +69,8 @@
 /// | *grouped_by*             |             *             |               *               |                   |       |
 /// | *interleave*             |             *             |                               |                   |       |
 /// | *intersect*              |             *             |               *               |         *         |       |
-/// | *intersperse*            |             *             |               *               |         *         |       |
-/// | *intersperse_with*       |             *             |               *               |         *         |       |
+/// | *intersperse*            |             *             |                               |                   |       |
+/// | *intersperse_with*       |             *             |                               |                   |       |
 /// | *init*                   |             *             |                               |                   |   *   |
 /// | *largest*                |             *             |               *               |                   |       |
 /// | *map*                    |             *             |               *               |         *         |       |
@@ -83,6 +83,8 @@
 /// | *merge*                  |             *             |               *               |         *         |       |
 /// | *min_by*                 |             *             |               *               |         *         |   *   |
 /// | *min_item*               |             *             |               *               |         *         |   *   |
+/// | *pad*                    |             *             |                               |                   |   *   |
+/// | *pad_with*               |             *             |                               |                   |   *   |
 /// | *partition*              |             *             |               *               |         *         |       |
 /// | *position*               |             *             |                               |                   |   *   |
 /// | *positions*              |             *             |                               |                   |   *   |

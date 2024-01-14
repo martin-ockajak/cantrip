@@ -65,8 +65,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *grouped_by*             |             *             |               *               |                   |       |
 | *interleave*             |             *             |                               |                   |       |
 | *intersect*              |             *             |               *               |         *         |       |
-| *intersperse*            |             *             |               *               |         *         |       |
-| *intersperse_with*       |             *             |               *               |         *         |       |
+| *intersperse*            |             *             |                               |                   |       |
+| *intersperse_with*       |             *             |                               |                   |       |
 | *init*                   |             *             |                               |                   |   *   |
 | *largest*                |             *             |               *               |                   |       |
 | *map*                    |             *             |               *               |         *         |       |
@@ -92,6 +92,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *rfind*                  |             *             |                               |                   |   *   |
 | *rfold*                  |             *             |                               |                   |   *   |
 | *rposition*              |             *             |                               |                   |   *   |
+| *pad*                    |             *             |                               |                   |   *   |
+| *pad_with*               |             *             |                               |                   |   *   |
 | *scan*                   |             *             |                               |                   |       |
 | *skip*                   |             *             |                               |                   |       |
 | *skip_while*             |             *             |                               |                   |   *   |

@@ -188,6 +188,24 @@ pub trait Sequence<Item> {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
 
+  #[inline]
+  fn pad(self, element: Item, size: usize) -> Self
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.into_iter().chain(iter::once(element).cycle()).take(size).collect()
+  }
+
+  #[inline]
+  fn pad_with(self, mut element: impl FnMut() -> Item, size: usize) -> Self
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.into_iter().chain(unfold((), |_| Some(element()))).take(size).collect()
+  }
+
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
 
