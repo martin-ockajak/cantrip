@@ -149,26 +149,6 @@ pub trait Sequence<Item> {
     self.into_iter().zip(iterable).map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).flatten().collect()
   }
 
-  // FIXME - fix
-  // #[inline]
-  // fn intersperse_by(self, element: Item, insert: impl FnMut(&Item) -> bool) -> Self
-  // where
-  //   Item: Clone,
-  //   Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  // {
-  //   let mut iterator = self.into_iter();
-  //   unfold(false, |inserted| {
-  //     iterator.next().map(|item| {
-  //       if !*inserted && insert(&item) {
-  //         [element.clone(), item].into_iter()
-  //       } else {
-  //         [item].into_iter()
-  //       }
-  //     })
-  //   })
-  //   .flatten().collect()
-  // }
-
   #[inline]
   fn intersperse(self, element: Item, interval: usize) -> Self
   where

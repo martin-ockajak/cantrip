@@ -116,6 +116,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 - [Haskell Collections](https://hackage.haskell.org/package/collections-api-1.0.0.0/docs/Data-Collections.html)
 - [Python Collections](https://python-reference.readthedocs.io/en/latest/docs/list/index.html)
 - [Qt Collections](https://doc.qt.io/qt-6/qlist.html)
+- [Itertools](https://docs.rs/itertools/latest/itertools/trait.Itertools.html)
 - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
 
 # Tasks
