@@ -169,4 +169,14 @@ impl<Item> Sequence<Item> for Vec<Item> {
     result.sort_unstable_by(compare);
     result
   }
+
+  #[inline]
+  fn windowed(&self, size: usize) -> Self::This<Self>
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Self::This<Self>: FromIterator<Self>,
+  {
+    windowed(self.iter(), size)
+  }
 }

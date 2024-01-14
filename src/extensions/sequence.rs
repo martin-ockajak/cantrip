@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
@@ -18,17 +18,17 @@ pub trait Sequence<Item> {
   type This<I>;
 
   #[inline]
-  fn chunked(self, chunk_size: usize) -> Self::This<Self>
+  fn chunked(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
   {
-    assert!(chunk_size != 0, "chunk size must be non-zero");
+    assert_ne!(size, 0, "chunk size must be non-zero");
     let mut result = Self::This::default();
     let mut chunk = Self::default();
     let mut index: usize = 0;
     for item in self.into_iter() {
-      if index > 0 && index == chunk_size {
+      if index > 0 && index == size {
         result.extend(iter::once(chunk));
         chunk = Self::default();
         index = 0;
@@ -43,7 +43,7 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn chunked_by(self, mut chunk_start: impl FnMut(&Item) -> bool) -> Self::This<Self>
+  fn chunked_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
@@ -52,7 +52,7 @@ pub trait Sequence<Item> {
     let mut chunk = Self::default();
     let mut index: usize = 0;
     for item in self.into_iter() {
-      if index > 0 && chunk_start(&item) {
+      if index > 0 && split_before(&item) {
         result.extend(iter::once(chunk));
         chunk = Self::default();
         index = 0;
@@ -155,19 +155,19 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    assert!(interval != 0, "interval must be non-zero");
+    assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
     let mut value = iter::once(element).cycle();
     unfold((0_usize, false), |(position, inserted)| {
-      if !*inserted && *position % interval == 0 {
-        *position += 1;
+      let result = if !*inserted && *position % interval == 0 {
         *inserted = true;
         value.next()
       } else {
-        *position += 1;
         *inserted = false;
         iterator.next()
-      }
+      };
+      *position += 1;
+      result
     })
     .collect()
   }
@@ -192,13 +192,9 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut values = replace_with.into_iter();
     unfold(0_usize, |position| {
-      if range.contains(position) {
-        *position += 1;
-        values.next()
-      } else {
-        *position += 1;
-        iterator.next()
-      }
+      let result = if range.contains(position) { values.next() } else { iterator.next() };
+      *position += 1;
+      result
     })
     .collect()
   }
@@ -265,13 +261,9 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut value = iter::once(element);
     unfold(0_usize, |position| {
-      if *position == index {
-        *position += 1;
-        value.next()
-      } else {
-        *position += 1;
-        iterator.next()
-      }
+      let result = if *position == index { value.next() } else { iterator.next() };
+      *position += 1;
+      result
     })
     .collect()
   }
@@ -454,16 +446,11 @@ pub trait Sequence<Item> {
     self.into_iter().unzip()
   }
 
-  // FIXME - implement
-  // #[inline]
-  // fn windowed(self) -> Self::This<Self>
-  // where
-  //   Item: Clone,
-  //   Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-  //   Self::This<Self>: Default + Extend<Self>,
-  // {
-  //   self.into_iter().unzip()
-  // }
+  fn windowed(&self, size: usize) -> Self::This<Self>
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Self::This<Self>: FromIterator<Self>;
 
   #[inline]
   fn zip<I: IntoIterator>(self, iterable: I) -> Self::This<(Item, I::Item)>
@@ -483,4 +470,32 @@ where
 {
   let size = iterator.len() - 1;
   iterator.skip(size).collect()
+}
+
+#[inline]
+pub(crate) fn windowed<'a, Item, Collection, Result>(
+  mut iterator: impl Iterator<Item = &'a Item>, size: usize,
+) -> Result
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item>,
+  Result: FromIterator<Collection>,
+{
+  assert_ne!(size, 0, "window size must be non-zero");
+  let current: LinkedList<Item> = LinkedList::new();
+  unfold((0_usize, current), |(index, current)| {
+    iterator.next().and_then(|item| {
+      current.push_back(item.clone());
+      let result = if *index >= size - 1 {
+        let window = Collection::from_iter(current.clone());
+        current.pop_front();
+        Some(window)
+      } else {
+        None
+      };
+      *index += 1;
+      result
+    })
+  })
+  .collect()
 }

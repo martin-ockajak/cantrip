@@ -111,6 +111,7 @@
 /// | *take_while*         |             *             |                               |                   |   *   |
 /// | *unit*               |             *             |               *               |         *         |       |
 /// | *unzip*              |             *             |                               |                   |       |
+/// | *windowed*           |             *             |                               |                   |       |
 /// | *zip*                |             *             |                               |                   |       |
 pub mod extensions;
 

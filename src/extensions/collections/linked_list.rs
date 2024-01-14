@@ -128,4 +128,14 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
     self.iter().scan(init, function).collect()
   }
+
+  #[inline]
+  fn windowed(&self, size: usize) -> Self::This<Self>
+    where
+      Item: Clone,
+      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+      Self::This<Self>: FromIterator<Self>,
+  {
+    windowed(self.iter(), size)
+  }
 }
