@@ -34,8 +34,18 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
+  fn max_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+    self.iter().max_by_key(|&x| to_key(x))
+  }
+
+  #[inline]
   fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().min_by(|&x, &y| compare(x, y))
+  }
+
+  #[inline]
+  fn min_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+    self.iter().max_by_key(|&x| to_key(x))
   }
 }
 

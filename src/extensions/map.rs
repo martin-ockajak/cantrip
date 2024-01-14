@@ -20,7 +20,7 @@ pub trait Map<Key, Value> {
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
@@ -35,7 +35,7 @@ pub trait Map<Key, Value> {
   fn diff<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     let mut removed: HashSet<&Key> = HashSet::new();
     removed.extend(iterable.iterator());
@@ -46,7 +46,7 @@ pub trait Map<Key, Value> {
   fn exclude(self, key: &Key) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
@@ -54,7 +54,7 @@ pub trait Map<Key, Value> {
   #[inline]
   fn filter(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
@@ -62,7 +62,7 @@ pub trait Map<Key, Value> {
   #[inline]
   fn filter_keys(self, mut predicate: impl FnMut(&Key) -> bool) -> Self
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
@@ -70,7 +70,7 @@ pub trait Map<Key, Value> {
   #[inline]
   fn filter_values(self, mut predicate: impl FnMut(&Value) -> bool) -> Self
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
@@ -121,7 +121,7 @@ pub trait Map<Key, Value> {
   fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     let mut retained: HashSet<&Key> = HashSet::new();
     retained.extend(iterable.iterator());
@@ -184,7 +184,7 @@ pub trait Map<Key, Value> {
   #[inline]
   fn merge(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().chain(iterable).collect()
   }
@@ -193,7 +193,7 @@ pub trait Map<Key, Value> {
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
     Self:
-      Sized + Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + Sized + FromIterator<(Key, Value)>,
+      Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().partition(|(k, v)| predicate((&k, &v)))
   }

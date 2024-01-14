@@ -20,9 +20,10 @@ pub trait Sequence<Item> {
   #[inline]
   fn chunked(self, chunk_size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
   {
+    assert!(chunk_size != 0, "chunk size must be non-zero");
     let mut result = Self::This::default();
     let mut chunk = Self::default();
     let mut index: usize = 0;
@@ -44,7 +45,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn chunked_by(self, mut chunk_start: impl FnMut(&Item) -> bool) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
   {
     let mut result = Self::This::default();
@@ -68,30 +69,21 @@ pub trait Sequence<Item> {
   // FIXME - implement
   // fn combinations(self, n: usize) -> Self::This<Self>;
 
-  // FIXME - implement
-  // #[inline]
-  // fn cycle(self, n: usize) -> Self
-  // where
-  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  // {
-  //   let mut iterator = self.into_iter();
-  //   let mut value = iter::once(element);
-  //   unfold(0_usize, |current| {
-  //     if *current == index {
-  //       *current += 1;
-  //       value.next()
-  //     } else {
-  //       *current += 1;
-  //       iterator.next()
-  //     }
-  //   })
-  //   .collect()
-  // }
+  #[inline]
+  fn cycle(self, n: usize) -> Self
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let values = self.into_iter().collect::<Vec<Item>>();
+    let size = values.len() * n;
+    values.into_iter().cycle().take(size).collect()
+  }
 
   #[inline]
   fn delete(self, index: usize) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
@@ -100,23 +92,29 @@ pub trait Sequence<Item> {
   fn distinct(self) -> Self
   where
     Item: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut result = Self::default();
-    let mut occurred: HashSet<&Item> = HashSet::new();
-    for item in self.into_iter() {
-      if !occurred.contains(&item) {
-        result.extend(iter::once(item));
-      }
-    }
-    result
+    let mut iterator = self.into_iter();
+    let occurred: HashSet<*const Item> = HashSet::new();
+    unfold(occurred, |occurred| {
+      iterator.next().and_then(|item| {
+        let pointer = &item as *const Item;
+        if !occurred.contains(&pointer) {
+          occurred.insert(pointer);
+          Some(item)
+        } else {
+          None
+        }
+      })
+    })
+    .collect()
   }
 
   #[inline]
   fn distinct_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut occurred: HashSet<K> = HashSet::new();
     self
@@ -151,15 +149,55 @@ pub trait Sequence<Item> {
     self.into_iter().zip(iterable).map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).flatten().collect()
   }
 
-  // FIXME - implement
-  // fn intersperse(self, function: impl FnMut() -> Item, n: usize) -> Self
+  // FIXME - fix
+  // #[inline]
+  // fn intersperse_by(self, element: Item, insert: impl FnMut(&Item) -> bool) -> Self
+  // where
+  //   Item: Clone,
+  //   Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  // {
+  //   let mut iterator = self.into_iter();
+  //   unfold(false, |inserted| {
+  //     iterator.next().map(|item| {
+  //       if !*inserted && insert(&item) {
+  //         [element.clone(), item].into_iter()
+  //       } else {
+  //         [item].into_iter()
+  //       }
+  //     })
+  //   })
+  //   .flatten().collect()
+  // }
+
+  #[inline]
+  fn intersperse(self, element: Item, interval: usize) -> Self
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    assert!(interval != 0, "interval must be non-zero");
+    let mut iterator = self.into_iter();
+    let mut value = iter::once(element).cycle();
+    unfold((0_usize, false), |(position, inserted)| {
+      if !*inserted && *position % interval == 0 {
+        *position += 1;
+        *inserted = true;
+        value.next()
+      } else {
+        *position += 1;
+        *inserted = false;
+        iterator.next()
+      }
+    })
+    .collect()
+  }
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
   #[inline]
   fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().chain(iterable.into_iter()).collect()
   }
@@ -169,16 +207,16 @@ pub trait Sequence<Item> {
 
   fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let mut values = replace_with.into_iter();
-    unfold(0_usize, |current| {
-      if range.contains(current) {
-        *current += 1;
+    unfold(0_usize, |position| {
+      if range.contains(position) {
+        *position += 1;
         values.next()
       } else {
-        *current += 1;
+        *position += 1;
         iterator.next()
       }
     })
@@ -242,16 +280,16 @@ pub trait Sequence<Item> {
   #[inline]
   fn put(self, index: usize, element: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let mut value = iter::once(element);
-    unfold(0_usize, |current| {
-      if *current == index {
-        *current += 1;
+    unfold(0_usize, |position| {
+      if *position == index {
+        *position += 1;
         value.next()
       } else {
-        *current += 1;
+        *position += 1;
         iterator.next()
       }
     })
@@ -265,7 +303,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn skip(self, n: usize) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().skip(n).collect()
   }
@@ -307,7 +345,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().skip_while(predicate).collect()
   }
@@ -357,7 +395,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn step_by(self, step: usize) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().step_by(step).collect()
   }
@@ -365,7 +403,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn tail(self) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().skip(1).collect()
   }
@@ -373,7 +411,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn take(self, n: usize) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().take(n).collect()
   }
@@ -413,7 +451,7 @@ pub trait Sequence<Item> {
   #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().take_while(predicate).collect()
   }
@@ -441,7 +479,7 @@ pub trait Sequence<Item> {
   // fn windowed(self) -> Self::This<Self>
   // where
   //   Item: Clone,
-  //   Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+  //   Self: IntoIterator<Item = Item> + Default + Extend<Item>,
   //   Self::This<Self>: Default + Extend<Self>,
   // {
   //   self.into_iter().unzip()
@@ -461,7 +499,7 @@ pub trait Sequence<Item> {
 pub(crate) fn init<Item, Iterable, Result>(iterator: Iterable) -> Result
 where
   Iterable: Iterator<Item = Item> + ExactSizeIterator,
-  Result: Sized + FromIterator<Item>,
+  Result: FromIterator<Item>,
 {
   let size = iterator.len() - 1;
   iterator.skip(size).collect()

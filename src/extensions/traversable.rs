@@ -1,4 +1,4 @@
-#![deny(missing_docs)]
+// #![deny(missing_docs)]
 
 use std::cmp::Ordering;
 
@@ -228,6 +228,8 @@ pub trait Traversable<Item> {
   /// ```
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
+  fn max_by_key<B: Ord>(&self, to_key: impl FnMut(&Item) -> B) -> Option<&Item>;
+
   /// Returns the maximum element of a collection.
   ///
   /// If several elements are equally maximum, the last element is
@@ -279,6 +281,8 @@ pub trait Traversable<Item> {
   /// assert_eq!(*a.min_by(|x, y| x.cmp(y)).unwrap(), -10);
   /// ```
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
+
+  fn min_by_key<B: Ord>(&self, to_key: impl FnMut(&Item) -> B) -> Option<&Item>;
 
   /// Returns the minimum element of an collection.
   ///

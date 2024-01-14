@@ -14,12 +14,12 @@ use crate::extensions::util::unfold::unfold;
 /// - Consumes the collection and its elements
 /// - May create a new collection
 ///
-pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
+pub trait Collectible<Item>: IntoIterator<Item = Item> {
   type This<I>;
 
   fn add(self, value: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().chain(iter::once(value)).collect()
   }
@@ -230,6 +230,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
+    Self: Sized,
   {
     self.into_iter().filter_map(function).collect()
   }
@@ -237,7 +238,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
   #[inline]
-  fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B> {
+  fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
+  where
+    Self: Sized,
+  {
     self.into_iter().find_map(function)
   }
 
@@ -398,6 +402,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   where
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>,
+    Self: Sized,
   {
     self.into_iter().flat_map(function).collect()
   }
@@ -508,6 +513,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
+    Self: Sized,
   {
     self.into_iter().map(function).collect()
   }
@@ -542,6 +548,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn product(self) -> Item
   where
     Item: Product,
+    Self: Sized,
   {
     self.into_iter().product()
   }
@@ -572,7 +579,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   /// assert_eq!(reduced, folded);
   /// ```
   #[inline]
-  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item> {
+  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
+  where
+    Self: Sized,
+  {
     let mut iterator = self.into_iter();
     iterator.next().map(|result| iterator.fold(result, function))
   }
@@ -591,6 +601,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> + Sized {
   fn sum(self) -> Item
   where
     Item: Sum,
+    Self: Sized,
   {
     self.into_iter().sum()
   }
