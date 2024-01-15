@@ -136,8 +136,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 
 # Tasks
 
-- Extend Rust collections type with methods available for iterators, slices and arrays
-  - String
+- Add String extensions
 
 - Implement tests
 
