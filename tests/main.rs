@@ -19,5 +19,6 @@ fn vectors() {
 #[quickcheck]
 fn hash_map_string(data: HashMap<String, String>) -> bool {
   data.len();
+  let x = "".to_string();
   true
 }

@@ -35,6 +35,7 @@ pub trait Sequence<Item> {
   // longest common suffix
   // combinations_with_replacement
   // powerset
+  // subset
   // subsequence / contains_slice / index_of_slice
   // group_map_fold
   // pad_left
@@ -50,6 +51,11 @@ pub trait Sequence<Item> {
   // replace_at
   // replace_all_at
   // move
+  // coalesce
+  // all_equal
+  // all_unique
+  // circular_windowed
+  // interleave_shortest
 
   #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
@@ -252,6 +258,7 @@ pub trait Sequence<Item> {
 
   fn init(self) -> Self;
 
+  // FIXME - add remaining elements to the end
   fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
