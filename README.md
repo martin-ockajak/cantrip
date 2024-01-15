@@ -38,6 +38,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
 | *add*                    |             *             |               *               |         *         |       |
+| *add_all*                |             *             |               *               |         *         |       |
 | *all*                    |             *             |               *               |         *         |   *   |
 | *any*                    |             *             |               *               |         *         |   *   |
 | *chunked*                |             *             |                               |                   |       |
@@ -45,13 +46,13 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *count_by*               |             *             |               *               |         *         |   *   |
 | *cycle*                  |             *             |                               |                   |       |
 | *delete*                 |             *             |                               |                   |       |
-| *diff*                   |             *             |               *               |         *         |       |
 | *distinct*               |             *             |                               |                   |       |
 | *distinct_by*            |             *             |                               |                   |       |
 | *duplicates*             |             *             |                               |                   |       |
 | *duplicates_by*          |             *             |                               |                   |       |
 | *enumerate*              |             *             |                               |                   |       |
 | *exclude*                |             *             |               *               |         *         |       |
+| *exclude_all*            |             *             |               *               |         *         |       |
 | *fill*                   |             *             |               *               |         *         |       |
 | *fill_with*              |             *             |               *               |         *         |       |
 | *filter*                 |             *             |               *               |         *         |       |
@@ -83,7 +84,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *map_while*              |             *             |                               |                   |       |
 | *max_by*                 |             *             |               *               |         *         |   *   |
 | *max_item*               |             *             |               *               |         *         |   *   |
-| *merge*                  |             *             |               *               |         *         |       |
 | *min_by*                 |             *             |               *               |         *         |   *   |
 | *min_item*               |             *             |               *               |         *         |   *   |
 | *partition*              |             *             |               *               |         *         |       |

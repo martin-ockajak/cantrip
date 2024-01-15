@@ -42,6 +42,7 @@
 /// | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 /// |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
 /// | *add*                    |             *             |               *               |         *         |       |
+/// | *add_all*                |             *             |               *               |         *         |       |
 /// | *all*                    |             *             |               *               |         *         |   *   |
 /// | *any*                    |             *             |               *               |         *         |   *   |
 /// | *chunked*                |             *             |                               |                   |       |
@@ -49,13 +50,13 @@
 /// | *count_by*               |             *             |               *               |         *         |   *   |
 /// | *cycle*                  |             *             |                               |                   |       |
 /// | *delete*                 |             *             |                               |                   |       |
-/// | *diff*                   |             *             |               *               |         *         |       |
 /// | *distinct*               |             *             |                               |                   |       |
 /// | *distinct_by*            |             *             |                               |                   |       |
 /// | *duplicates*             |             *             |                               |                   |       |
 /// | *duplicates_by*          |             *             |                               |                   |       |
 /// | *enumerate*              |             *             |                               |                   |       |
 /// | *exclude*                |             *             |               *               |         *         |       |
+/// | *exclude_all*            |             *             |               *               |         *         |       |
 /// | *fill*                   |             *             |               *               |         *         |       |
 /// | *fill_with*              |             *             |               *               |         *         |       |
 /// | *filter*                 |             *             |               *               |         *         |       |
@@ -87,11 +88,8 @@
 /// | *map_while*              |             *             |                               |                   |       |
 /// | *max_by*                 |             *             |               *               |         *         |   *   |
 /// | *max_item*               |             *             |               *               |         *         |   *   |
-/// | *merge*                  |             *             |               *               |         *         |       |
 /// | *min_by*                 |             *             |               *               |         *         |   *   |
 /// | *min_item*               |             *             |               *               |         *         |   *   |
-/// | *pad*                    |             *             |                               |                   |   *   |
-/// | *pad_with*               |             *             |                               |                   |   *   |
 /// | *partition*              |             *             |               *               |         *         |       |
 /// | *position*               |             *             |                               |                   |   *   |
 /// | *positions*              |             *             |                               |                   |   *   |
@@ -105,6 +103,8 @@
 /// | *rfind*                  |             *             |                               |                   |   *   |
 /// | *rfold*                  |             *             |                               |                   |   *   |
 /// | *rposition*              |             *             |                               |                   |   *   |
+/// | *pad*                    |             *             |                               |                   |   *   |
+/// | *pad_with*               |             *             |                               |                   |   *   |
 /// | *scan*                   |             *             |                               |                   |       |
 /// | *skip*                   |             *             |                               |                   |       |
 /// | *skip_while*             |             *             |                               |                   |   *   |

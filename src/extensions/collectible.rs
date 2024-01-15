@@ -23,45 +23,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
+  #[inline]
+  fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
+    where
+      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
+
   // FIXME - implement
   // fn combinations(self, n: usize) -> Self::This<Self>;
-
-  /// Retains the values representing the difference,
-  /// i.e., the values that are in `self` but not in `other`.
-  ///
-  /// The order or retained values is preserved for ordered collections.
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  /// let b = vec![4, 3, 4];
-  ///
-  /// // Can be seen as `a - b`.
-  /// // Print 1, 2.
-  /// for x in a.clone().diff(&b) {
-  ///     println!("{x}");
-  /// }
-  ///
-  /// let diff: Vec<_> = a.clone().diff(&b);
-  /// assert_eq!(diff, vec![1, 2]);
-  ///
-  /// // Note that difference is not symmetric,
-  /// // and `b - a` means something else:
-  /// let diff: Vec<_> = b.diff(&a);
-  /// assert_eq!(diff, vec![4, 4]);
-  /// ```
-  #[inline]
-  fn diff<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
-  where
-    Item: Eq + Hash + 'a,
-    Self: FromIterator<Item>,
-  {
-    let mut removed: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
-    self.into_iter().filter(|x| !removed.contains(x)).collect()
-  }
 
   #[inline]
   fn exclude(self, value: &Item) -> Self
@@ -81,6 +52,43 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
         }
       })
       .collect()
+  }
+
+  /// Retains the values representing the difference,
+  /// i.e., the values that are in `self` but not in `other`.
+  ///
+  /// The order or retained values is preserved for ordered collections.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let b = vec![4, 3, 4];
+  ///
+  /// // Can be seen as `a - b`.
+  /// // Print 1, 2.
+  /// for x in a.clone().exclude_all(&b) {
+  ///     println!("{x}");
+  /// }
+  ///
+  /// let diff: Vec<_> = a.clone().exclude_all(&b);
+  /// assert_eq!(diff, vec![1, 2]);
+  ///
+  /// // Note that difference is not symmetric,
+  /// // and `b - a` means something else:
+  /// let diff: Vec<_> = b.exclude_all(&a);
+  /// assert_eq!(diff, vec![4, 4]);
+  /// ```
+  #[inline]
+  fn exclude_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+    where
+      Item: Eq + Hash + 'a,
+      Self: FromIterator<Item>,
+  {
+    let mut removed: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
+    self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
   #[inline]
@@ -552,14 +560,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       }
     }
     heap.into_iter().map(|x| x.0).collect()
-  }
-
-  #[inline]
-  fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    self.into_iter().chain(iterable).collect()
   }
 
   #[inline]

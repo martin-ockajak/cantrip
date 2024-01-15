@@ -27,6 +27,15 @@ pub trait Sequence<Item> {
   // minmax_by_key
   // coalesce
   // cartesian_product
+  // sample
+  // same_elements
+  // rtake
+  // rskip
+  // longest common prefix
+  // longest common suffix
+  // combinations_with_replacement
+  // powerset
+  // subsequence
 
   #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
