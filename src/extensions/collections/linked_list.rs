@@ -48,6 +48,16 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   fn min_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
     self.iter().max_by_key(|&x| to_key(x))
   }
+
+  #[inline]
+  fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)> {
+    minmax_by(self.iter(), compare)
+  }
+
+  #[inline]
+  fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)> {
+    minmax_by_key(self.iter(), to_key)
+  }
 }
 
 impl<Item> Reversible<Item> for LinkedList<Item> {

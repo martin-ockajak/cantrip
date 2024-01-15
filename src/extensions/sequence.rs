@@ -22,9 +22,6 @@ pub trait Sequence<Item> {
   // FIXME - implement these methods
   // zip_all
   // unzip_all
-  // minmax
-  // minmax_by
-  // minmax_by_key
   // coalesce
   // cartesian_product
   // sample
@@ -46,7 +43,6 @@ pub trait Sequence<Item> {
   // scan
   // rscan
   // segment_range
-  // windowed
   // replace
   // replace_at
   // replace_all_at
@@ -164,9 +160,8 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn distinct_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+  fn distinct_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
@@ -209,9 +204,8 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+  fn duplicates_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
@@ -257,9 +251,8 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn frequencies_by<K>(self, mut to_key: impl FnMut(Item) -> K) -> HashMap<K, usize>
+  fn frequencies_by<K: Eq + Hash>(self, mut to_key: impl FnMut(Item) -> K) -> HashMap<K, usize>
   where
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized,
   {
     let iterator = self.into_iter();
@@ -501,9 +494,8 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn sorted_by_cached_key<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
+  fn sorted_by_cached_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
-    K: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut result = self.into_iter().collect::<Vec<Item>>();
@@ -512,9 +504,8 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn sorted_by_key<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
+  fn sorted_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
-    K: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut result = self.into_iter().collect::<Vec<Item>>();
@@ -544,9 +535,8 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn sorted_unstable_by_key<K>(self, to_key: impl FnMut(&Item) -> K) -> Self
+  fn sorted_unstable_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
-    K: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut result = self.into_iter().collect::<Vec<Item>>();

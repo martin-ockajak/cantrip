@@ -496,7 +496,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut retained: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
+    let retained: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 

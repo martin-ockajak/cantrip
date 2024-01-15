@@ -262,7 +262,10 @@ pub trait Traversable<Item> {
   /// assert_eq!(b.max_item(), None);
   /// ```
   #[inline]
-  fn max_item(&self) -> Option<&Item> where Item: Ord {
+  fn max_item(&self) -> Option<&Item>
+  where
+    Item: Ord,
+  {
     self.max_by(Ord::cmp)
   }
 
@@ -316,31 +319,94 @@ pub trait Traversable<Item> {
   /// assert_eq!(b.min_item(), None);
   /// ```
   #[inline]
-  fn min_item(&self) -> Option<&Item> where Item: Ord {
+  fn min_item(&self) -> Option<&Item>
+  where
+    Item: Ord,
+  {
     self.min_by(Ord::cmp)
+  }
+
+  fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
+
+  fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>;
+
+  #[inline]
+  fn minmax_item(&self) -> Option<(&Item, &Item)>
+  where
+    Item: Ord,
+  {
+    self.minmax_by(Ord::cmp)
   }
 }
 
 #[inline]
-pub(crate) fn all<'a, A: 'a>(mut iterator: impl Iterator<Item = &'a A>, predicate: impl FnMut(&A) -> bool) -> bool {
+pub(crate) fn all<'a, Item: 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, predicate: impl FnMut(&Item) -> bool,
+) -> bool {
   iterator.all(predicate)
 }
 
 #[inline]
-pub(crate) fn any<'a, A: 'a>(mut iterator: impl Iterator<Item = &'a A>, predicate: impl FnMut(&A) -> bool) -> bool {
+pub(crate) fn any<'a, Item: 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, predicate: impl FnMut(&Item) -> bool,
+) -> bool {
   iterator.any(predicate)
 }
 
 #[inline]
-pub(crate) fn count_by<'a, A: 'a>(
-  iterator: impl Iterator<Item = &'a A>, mut predicate: impl FnMut(&A) -> bool,
+pub(crate) fn count_by<'a, Item: 'a>(
+  iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
 ) -> usize {
   iterator.filter(|&x| predicate(x)).count()
 }
 
 #[inline]
-pub(crate) fn fold<'a, A: 'a, B>(
-  iterator: impl Iterator<Item = &'a A>, init: B, function: impl FnMut(B, &A) -> B,
+pub(crate) fn minmax_by<'a, Item: 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering,
+) -> Option<(&'a Item, &'a Item)> {
+  match iterator.next() {
+    Some(item) => {
+      let mut min: &Item = item;
+      let mut max: &Item = min;
+      for item in iterator {
+        if compare(item, min) == Ordering::Less {
+          min = item;
+        }
+        if compare(item, max) == Ordering::Greater {
+          max = item;
+        }
+      }
+      Some((min, max))
+    }
+    None => None,
+  }
+}
+
+#[inline]
+pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
+  mut iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
+) -> Option<(&'a Item, &'a Item)> {
+  match iterator.next() {
+    Some(item) => {
+      let mut min: &Item = item;
+      let mut max: &Item = min;
+      for item in iterator {
+        if to_key(item) < to_key(min) {
+          min = item;
+        }
+        if to_key(item) > to_key(max) {
+          max = item;
+        }
+      }
+      Some((min, max))
+    }
+    None => None,
+  }
+}
+
+#[inline]
+pub(crate) fn fold<'a, Item: 'a, B>(
+  iterator: impl Iterator<Item = &'a Item>, init: B, function: impl FnMut(B, &Item) -> B,
 ) -> B {
   iterator.fold(init, function)
 }
