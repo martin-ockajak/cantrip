@@ -1,7 +1,6 @@
 Convenient extension methods for Rust standard library collections.
 
-It enables collection manipulation in a functional style without the usual Rust boilerplate.
-
+Enables collection manipulation in a functional style without the usual Rust boilerplate.
 
 ### Features
 
@@ -84,9 +83,14 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *map_values*             |                           |                               |         *         |       |
 | *map_while*              |             *             |                               |                   |       |
 | *max_by*                 |             *             |               *               |         *         |   *   |
+| *max_by_key*             |             *             |               *               |         *         |   *   |
 | *max_item*               |             *             |               *               |         *         |   *   |
 | *min_by*                 |             *             |               *               |         *         |   *   |
+| *min_by_key*             |             *             |               *               |         *         |   *   |
 | *min_item*               |             *             |               *               |         *         |   *   |
+| *minmax_by*              |             *             |               *               |         *         |   *   |
+| *minmax_by_key*          |             *             |               *               |         *         |   *   |
+| *minmax_item*            |             *             |               *               |         *         |   *   |
 | *partition*              |             *             |               *               |         *         |       |
 | *position*               |             *             |                               |                   |   *   |
 | *positions*              |             *             |                               |                   |   *   |
