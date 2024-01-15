@@ -437,6 +437,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     for item in iterator {
       result.entry(to_key(&item)).or_default().extend(iter::once(item));
     }
+    result.shrink_to_fit();
     result
   }
 

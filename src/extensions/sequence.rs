@@ -148,10 +148,10 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
-    let occurred: HashMap<Item, usize> = HashMap::with_capacity(size);
-    unfold(occurred, |occurred| {
+    let frequencies: HashMap<Item, usize> = HashMap::with_capacity(size);
+    unfold(frequencies, |frequencies| {
       iterator.next().and_then(|item| {
-        let count = occurred.entry(item.clone()).or_default();
+        let count = frequencies.entry(item.clone()).or_default();
         *count += 1;
         if *count == 1 {
           Some(item)
@@ -171,10 +171,10 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
-    let occurred: HashMap<K, usize> = HashMap::with_capacity(size);
-    unfold(occurred, |occurred| {
+    let frequencies: HashMap<K, usize> = HashMap::with_capacity(size);
+    unfold(frequencies, |frequencies| {
       iterator.next().and_then(|item| {
-        let count = occurred.entry(to_key(&item)).or_default();
+        let count = frequencies.entry(to_key(&item)).or_default();
         *count += 1;
         if *count == 1 {
           Some(item)
@@ -207,6 +207,7 @@ pub trait Sequence<Item> {
     for item in iterator {
       *result.entry(item).or_default() += 1;
     }
+    result.shrink_to_fit();
     result
   }
 
@@ -222,6 +223,7 @@ pub trait Sequence<Item> {
     for item in iterator {
       *result.entry(to_key(item)).or_default() += 1;
     }
+    result.shrink_to_fit();
     result
   }
 
@@ -282,6 +284,7 @@ pub trait Sequence<Item> {
           result.push_str(separator);
           write!(&mut result, "{}", item).unwrap();
         }
+        result.shrink_to_fit();
         result
       }
       None => String::new(),

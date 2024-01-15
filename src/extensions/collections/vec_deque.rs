@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, VecDeque};
-use std::hash::Hash;
+use std::collections::VecDeque;
 
 use crate::extensions::*;
 
