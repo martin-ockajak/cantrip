@@ -15,15 +15,15 @@ where
   assert_equal(values.clone().add(1), &[1, 2, 3, 1]);
   assert_equal(empty.clone().add(1), &[1]);
 
-  // exclude
-  assert_equal(values.clone().exclude(&1), &[2, 3]);
-  assert_equal(values.clone().exclude(&4), &[1, 2, 3]);
-  assert_equal(empty.clone().exclude(&1), &[]);
+  // delete
+  assert_equal(values.clone().delete(&1), &[2, 3]);
+  assert_equal(values.clone().delete(&4), &[1, 2, 3]);
+  assert_equal(empty.clone().delete(&1), &[]);
 
-  // exclude_all
-  assert_equal(values.clone().exclude_all(&vec![1, 2, 4]), &[3]);
-  assert_equal(values.clone().exclude_all(&vec![]), &[1, 2, 3]);
-  assert_equal(empty.clone().exclude_all(&vec![1, 2, 4]), &[]);
+  // delete_all
+  assert_equal(values.clone().delete_all(&vec![1, 2, 4]), &[3]);
+  assert_equal(values.clone().delete_all(&vec![]), &[1, 2, 3]);
+  assert_equal(empty.clone().delete_all(&vec![1, 2, 4]), &[]);
 
   // filter
   assert_equal(values.clone().filter(|&x| x > 1), &[2, 3]);
