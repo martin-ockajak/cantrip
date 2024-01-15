@@ -66,6 +66,8 @@
 /// | *flat_map_to*            |             *             |               *               |         *         |       |
 /// | *flat*                   |             *             |               *               |                   |       |
 /// | *fold*                   |             *             |               *               |         *         |   *   |
+/// | *frequencies*            |             *             |                               |                   |       |
+/// | *frequencies_by*         |             *             |                               |                   |       |
 /// | *grouped_by*             |             *             |               *               |                   |       |
 /// | *interleave*             |             *             |                               |                   |       |
 /// | *intersect*              |             *             |               *               |         *         |       |

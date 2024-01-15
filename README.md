@@ -62,6 +62,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *flat_map_to*            |             *             |               *               |         *         |       |
 | *flat*                   |             *             |               *               |                   |       |
 | *fold*                   |             *             |               *               |         *         |   *   |
+| *frequencies*            |             *             |                               |                   |       |
+| *frequencies_by*         |             *             |                               |                   |       |
 | *grouped_by*             |             *             |               *               |                   |       |
 | *interleave*             |             *             |                               |                   |       |
 | *intersect*              |             *             |               *               |         *         |       |

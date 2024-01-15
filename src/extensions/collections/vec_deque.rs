@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
+use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -85,9 +86,9 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
 
   #[inline]
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-    where
-      R: IntoIterator<Item = B>,
-      Self::This<B>: FromIterator<B>,
+  where
+    R: IntoIterator<Item = B>,
+    Self::This<B>: FromIterator<B>,
   {
     flat_map(self.iter(), function)
   }
@@ -136,10 +137,10 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
 
   #[inline]
   fn windowed(&self, size: usize) -> Self::This<Self>
-    where
-      Item: Clone,
-      Self: IntoIterator<Item = Item> + FromIterator<Item>,
-      Self::This<Self>: FromIterator<Self>,
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Self::This<Self>: FromIterator<Self>,
   {
     windowed(self.iter(), size)
   }

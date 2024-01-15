@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashSet, LinkedList};
+use std::collections::{HashMap, HashSet, LinkedList};
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -27,7 +27,6 @@ pub trait Sequence<Item> {
   // minmax_by_key
   // duplicates
   // duplicates_by
-  // frequencies
   // frequencies_by
   // coalesce
   // cartesian_product
@@ -153,6 +152,36 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().collect()
   }
 
+  #[inline]
+  fn frequencies(self) -> HashMap<Item, usize>
+  where
+    Item: Eq + Hash,
+    Self: IntoIterator<Item = Item> + Sized,
+  {
+    let iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let mut result: HashMap<Item, usize> = HashMap::with_capacity(size);
+    for item in iterator {
+      result.entry(item).and_modify(|count| *count += 1).or_default();
+    }
+    result
+  }
+
+  #[inline]
+  fn frequencies_by<K>(self, mut to_key: impl FnMut(Item) -> K) -> HashMap<K, usize>
+  where
+    K: Eq + Hash,
+    Self: IntoIterator<Item = Item> + Sized,
+  {
+    let iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let mut result: HashMap<K, usize> = HashMap::with_capacity(size);
+    for item in iterator {
+      result.entry(to_key(item)).and_modify(|count| *count += 1).or_default();
+    }
+    result
+  }
+
   fn init(self) -> Self;
 
   fn interleave(self, iterable: impl IntoIterator<Item = Item>) -> Self
@@ -203,8 +232,8 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     match iterator.next() {
       Some(item) => {
-        let (lower, _) = iterator.size_hint();
-        let mut result = String::with_capacity(separator.len() * lower);
+        let (size, _) = iterator.size_hint();
+        let mut result = String::with_capacity(separator.len() * size);
         write!(&mut result, "{}", item).unwrap();
         for item in iterator {
           result.push_str(separator);
