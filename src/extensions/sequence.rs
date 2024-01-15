@@ -107,7 +107,8 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    let occurred: HashSet<*const Item> = HashSet::new();
+    let (size, _) = iterator.size_hint();
+    let occurred: HashSet<*const Item> = HashSet::with_capacity(size);
     unfold(occurred, |occurred| {
       iterator.next().and_then(|item| {
         let pointer = &item as *const Item;
@@ -128,9 +129,10 @@ pub trait Sequence<Item> {
     K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut occurred: HashSet<K> = HashSet::new();
-    self
-      .into_iter()
+    let iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let mut occurred: HashSet<K> = HashSet::with_capacity(size);
+    iterator
       .filter(|item| {
         let key = to_key(&item);
         if occurred.contains(&key) {

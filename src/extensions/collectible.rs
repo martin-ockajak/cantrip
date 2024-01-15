@@ -59,8 +59,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut removed: HashSet<&Item> = HashSet::new();
-    removed.extend(iterable.iterator());
+    let mut removed: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|x| !removed.contains(x)).collect()
   }
 
@@ -414,8 +413,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
-    let mut result: HashMap<K, Self> = HashMap::new();
-    for item in self.into_iter() {
+    let iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let mut result: HashMap<K, Self> = HashMap::with_capacity(size);
+    for item in iterator {
       let key = to_key(&item);
       result.entry(key).and_modify(|values| values.extend(iter::once(item))).or_default();
     }
@@ -450,8 +451,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut retained: HashSet<&Item> = HashSet::new();
-    retained.extend(iterable.iterator());
+    let mut retained: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 

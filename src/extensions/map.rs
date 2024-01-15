@@ -37,8 +37,7 @@ pub trait Map<Key, Value> {
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let mut removed: HashSet<&Key> = HashSet::new();
-    removed.extend(iterable.iterator());
+    let mut removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
@@ -123,8 +122,7 @@ pub trait Map<Key, Value> {
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let mut retained: HashSet<&Key> = HashSet::new();
-    retained.extend(iterable.iterator());
+    let mut retained: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
