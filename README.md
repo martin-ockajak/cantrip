@@ -48,6 +48,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *diff*                   |             *             |               *               |         *         |       |
 | *distinct*               |             *             |                               |                   |       |
 | *distinct_by*            |             *             |                               |                   |       |
+| *duplicates*             |             *             |                               |                   |       |
+| *duplicates_by*          |             *             |                               |                   |       |
 | *enumerate*              |             *             |                               |                   |       |
 | *exclude*                |             *             |               *               |         *         |       |
 | *fill*                   |             *             |               *               |         *         |       |

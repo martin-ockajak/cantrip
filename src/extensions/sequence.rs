@@ -25,8 +25,6 @@ pub trait Sequence<Item> {
   // minmax
   // minmax_by
   // minmax_by_key
-  // duplicates
-  // duplicates_by
   // coalesce
   // cartesian_product
 
@@ -140,6 +138,52 @@ pub trait Sequence<Item> {
         }
       })
       .collect()
+  }
+
+  #[inline]
+  fn duplicates(self) -> Self
+  where
+    Item: Eq + Hash + Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let occurred: HashMap<Item, usize> = HashMap::with_capacity(size);
+    unfold(occurred, |occurred| {
+      iterator.next().and_then(|item| {
+        let count = occurred.entry(item.clone()).or_default();
+        *count += 1;
+        if *count == 1 {
+          Some(item)
+        } else {
+          None
+        }
+      })
+    })
+    .collect()
+  }
+
+  #[inline]
+  fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+  where
+    K: Eq + Hash,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let occurred: HashMap<K, usize> = HashMap::with_capacity(size);
+    unfold(occurred, |occurred| {
+      iterator.next().and_then(|item| {
+        let count = occurred.entry(to_key(&item)).or_default();
+        *count += 1;
+        if *count == 1 {
+          Some(item)
+        } else {
+          None
+        }
+      })
+    })
+    .collect()
   }
 
   #[inline]

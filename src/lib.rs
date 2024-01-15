@@ -52,6 +52,8 @@
 /// | *diff*                   |             *             |               *               |         *         |       |
 /// | *distinct*               |             *             |                               |                   |       |
 /// | *distinct_by*            |             *             |                               |                   |       |
+/// | *duplicates*             |             *             |                               |                   |       |
+/// | *duplicates_by*          |             *             |                               |                   |       |
 /// | *enumerate*              |             *             |                               |                   |       |
 /// | *exclude*                |             *             |               *               |         *         |       |
 /// | *fill*                   |             *             |               *               |         *         |       |
