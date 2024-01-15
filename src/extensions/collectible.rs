@@ -660,20 +660,3 @@ pub(crate) fn map<'a, Item: 'a, B, Result: FromIterator<B>>(
 ) -> Result {
   iterator.map(function).collect()
 }
-
-// FIXME - implement largest_by and smallest_by
-// fn largest_by<Item, Collection>(
-//   collection: Collection, n: usize, compare: impl FnMut(&Item, &Item) -> Ordering,
-// ) -> Collection
-// where
-//   Item: Ord,
-//   Collection: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
-// {
-//   let heap = BinaryHeap::new_by(compare);
-//   heap.extend(collection);
-//   let mut result = Collection::default();
-//   for _ in 0..n {
-//     result.extend(iter::once(heap.pop().unwrap()));
-//   }
-//   result
-// }
