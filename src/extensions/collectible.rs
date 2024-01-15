@@ -25,17 +25,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   #[inline]
   fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
-    where
-      Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable).collect()
   }
 
-  // FIXME - implement
-  // fn combinations(self, n: usize) -> Self::This<Self>;
-
   #[inline]
-  fn exclude(self, value: &Item) -> Self
+  fn delete(self, value: &Item) -> Self
   where
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -69,27 +66,49 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// // Can be seen as `a - b`.
   /// // Print 1, 2.
-  /// for x in a.clone().exclude_all(&b) {
+  /// for x in a.clone().delete_all(&b) {
   ///     println!("{x}");
   /// }
   ///
-  /// let diff: Vec<_> = a.clone().exclude_all(&b);
+  /// let diff: Vec<_> = a.clone().delete_all(&b);
   /// assert_eq!(diff, vec![1, 2]);
   ///
   /// // Note that difference is not symmetric,
   /// // and `b - a` means something else:
-  /// let diff: Vec<_> = b.exclude_all(&a);
+  /// let diff: Vec<_> = b.delete_all(&a);
   /// assert_eq!(diff, vec![4, 4]);
   /// ```
+  // FIXME - improve description
   #[inline]
-  fn exclude_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
-    where
-      Item: Eq + Hash + 'a,
-      Self: FromIterator<Item>,
+  fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  where
+    Item: Eq + Hash + 'a,
+    Self: FromIterator<Item>,
   {
-    let mut removed: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
-    self.into_iter().filter(|x| !removed.contains(x)).collect()
+    let iterator = iterable.iterator();
+    let (size, _) = iterator.size_hint();
+    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(size);
+    for item in iterator {
+      *removed.entry(item).or_default() += 1;
+    }
+    self
+      .into_iter()
+      .filter(|x| match removed.get_mut(x) {
+        Some(count) => {
+          if *count > 0 {
+            *count -= 1;
+            false
+          } else {
+            true
+          }
+        }
+        None => true,
+      })
+      .collect()
   }
+
+  // FIXME - implement
+  // fn combinations(self, n: usize) -> Self::This<Self>;
 
   #[inline]
   fn fill(value: Item, size: usize) -> Self

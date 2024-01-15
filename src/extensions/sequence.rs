@@ -59,6 +59,21 @@ pub trait Sequence<Item> {
   // slice
 
   #[inline]
+  fn add_at(self, index: usize, element: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut value = iter::once(element);
+    unfold(0_usize, |position| {
+      let result = if *position == index { value.next() } else { iterator.next() };
+      *position += 1;
+      result
+    })
+    .collect()
+  }
+
+  #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -119,7 +134,7 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn delete(self, index: usize) -> Self
+  fn delete_at(self, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
@@ -354,21 +369,6 @@ pub trait Sequence<Item> {
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
 
-  // FIXME - harmonize this with add_all_at and replaceing single elements
-  fn replace(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let mut values = replace_with.into_iter();
-    unfold(0_usize, |position| {
-      let result = if range.contains(position) { values.next() } else { iterator.next() };
-      *position += 1;
-      result
-    })
-    .collect()
-  }
-
   /// Searches for an element in an iterator, returning its index.
   ///
   /// `position()` takes a closure that returns `true` or `false`. It applies
@@ -424,21 +424,6 @@ pub trait Sequence<Item> {
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize>;
-
-  #[inline]
-  fn put(self, index: usize, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let mut value = iter::once(element);
-    unfold(0_usize, |position| {
-      let result = if *position == index { value.next() } else { iterator.next() };
-      *position += 1;
-      result
-    })
-    .collect()
-  }
 
   fn rev(self) -> Self;
 
@@ -567,6 +552,21 @@ pub trait Sequence<Item> {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by_key(to_key);
     result.into_iter().collect()
+  }
+
+  #[inline]
+  fn splice(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut values = replace_with.into_iter();
+    unfold(0_usize, |position| {
+      let result = if range.contains(position) { values.next() } else { iterator.next() };
+      *position += 1;
+      result
+    })
+    .collect()
   }
 
   #[inline]

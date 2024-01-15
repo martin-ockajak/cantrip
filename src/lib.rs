@@ -28,7 +28,7 @@
 /// data.add(1).distinct();           // vec![1, 2, 3]
 ///
 /// # let data = source.clone();
-/// data.delete(0).tail();            // vec![3]
+/// data.delete_at(0).tail();            // vec![3]
 ///
 /// # let data = source.clone();
 /// data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
@@ -39,94 +39,94 @@
 ///
 /// ### Methods
 ///
-/// | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
-/// |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
-/// | *add*                    |             *             |               *               |         *         |       |
-/// | *add_all*                |             *             |               *               |         *         |       |
-/// | *all*                    |             *             |               *               |         *         |   *   |
-/// | *any*                    |             *             |               *               |         *         |   *   |
-/// | *chunked*                |             *             |                               |                   |       |
-/// | *chunked_by*             |             *             |                               |                   |       |
-/// | *count_by*               |             *             |               *               |         *         |   *   |
-/// | *cycle*                  |             *             |                               |                   |       |
-/// | *delete*                 |             *             |                               |                   |       |
-/// | *distinct*               |             *             |                               |                   |       |
-/// | *distinct_by*            |             *             |                               |                   |       |
-/// | *duplicates*             |             *             |                               |                   |       |
-/// | *duplicates_by*          |             *             |                               |                   |       |
-/// | *enumerate*              |             *             |                               |                   |       |
-/// | *exclude*                |             *             |               *               |         *         |       |
-/// | *exclude_all*            |             *             |               *               |         *         |       |
-/// | *fill*                   |             *             |               *               |         *         |       |
-/// | *fill_with*              |             *             |               *               |         *         |       |
-/// | *filter*                 |             *             |               *               |         *         |       |
-/// | *filter_keys*            |                           |                               |         *         |       |
-/// | *filter_map*             |             *             |               *               |         *         |       |
-/// | *filter_map_to*          |             *             |               *               |         *         |       |
-/// | *filter_values*          |                           |                               |         *         |       |
-/// | *find_map*               |             *             |               *               |         *         |       |
-/// | *find_map_to*            |             *             |               *               |         *         |       |
-/// | *find*                   |             *             |               *               |         *         |   *   |
-/// | *flat_map*               |             *             |               *               |         *         |       |
-/// | *flat_map_to*            |             *             |               *               |         *         |       |
-/// | *flat*                   |             *             |               *               |                   |       |
-/// | *fold*                   |             *             |               *               |         *         |   *   |
-/// | *frequencies*            |             *             |                               |                   |       |
-/// | *frequencies_by*         |             *             |                               |                   |       |
-/// | *grouped_by*             |             *             |               *               |                   |       |
-/// | *interleave*             |             *             |                               |                   |       |
-/// | *intersect*              |             *             |               *               |         *         |       |
-/// | *intersperse*            |             *             |                               |                   |       |
-/// | *intersperse_with*       |             *             |                               |                   |       |
-/// | *init*                   |             *             |                               |                   |   *   |
-/// | *join_items*             |             *             |                               |                   |       |
-/// | *largest*                |             *             |               *               |                   |       |
-/// | *map*                    |             *             |               *               |         *         |       |
-/// | *map_to*                 |             *             |               *               |         *         |       |
-/// | *map_keys*               |                           |                               |         *         |       |
-/// | *map_values*             |                           |                               |         *         |       |
-/// | *map_while*              |             *             |                               |                   |       |
-/// | *max_by*                 |             *             |               *               |         *         |   *   |
-/// | *max_item*               |             *             |               *               |         *         |   *   |
-/// | *min_by*                 |             *             |               *               |         *         |   *   |
-/// | *min_item*               |             *             |               *               |         *         |   *   |
-/// | *partition*              |             *             |               *               |         *         |       |
-/// | *position*               |             *             |                               |                   |   *   |
-/// | *positions*              |             *             |                               |                   |   *   |
-/// | *product*                |             *             |               *               |                   |       |
-/// | *product_keys*           |                           |                               |         *         |       |
-/// | *product_values*         |                           |                               |         *         |       |
-/// | *put*                    |             *             |                               |                   |       |
-/// | *reduce*                 |             *             |               *               |         *         |   *   |
-/// | *replace*                |             *             |                               |                   |       |
-/// | *rev*                    |             *             |                               |                   |       |
-/// | *rfind*                  |             *             |                               |                   |   *   |
-/// | *rfold*                  |             *             |                               |                   |   *   |
-/// | *rposition*              |             *             |                               |                   |   *   |
-/// | *pad*                    |             *             |                               |                   |   *   |
-/// | *pad_with*               |             *             |                               |                   |   *   |
-/// | *scan*                   |             *             |                               |                   |       |
-/// | *skip*                   |             *             |                               |                   |       |
-/// | *skip_while*             |             *             |                               |                   |   *   |
-/// | *smallest*               |             *             |               *               |                   |       |
-/// | *sorted*                 |             *             |                               |                   |       |
-/// | *sorted_by*              |             *             |                               |                   |       |
-/// | *sorted_by_cached_key*   |             *             |                               |                   |       |
-/// | *sorted_by_key*          |             *             |                               |                   |       |
-/// | *sorted_unstable*        |             *             |                               |                   |       |
-/// | *sorted_unstable_by*     |             *             |                               |                   |       |
-/// | *sorted_unstable_by_key* |             *             |                               |                   |       |
-/// | *step_by*                |             *             |                               |                   |       |
-/// | *sum*                    |             *             |               *               |                   |       |
-/// | *sum_keys*               |                           |                               |         *         |       |
-/// | *sum_values*             |                           |                               |         *         |       |
-/// | *tail*                   |             *             |                               |                   |   *   |
-/// | *take*                   |             *             |                               |                   |       |
-/// | *take_while*             |             *             |                               |                   |   *   |
-/// | *unit*                   |             *             |               *               |         *         |       |
-/// | *unzip*                  |             *             |                               |                   |       |
-/// | *windowed*               |             *             |                               |                   |       |
-/// | *zip*                    |             *             |                               |                   |       |
+// | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
+// |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
+// | *add*                    |             *             |               *               |         *         |       |
+// | *add_all*                |             *             |               *               |         *         |       |
+// | *add_at*                 |             *             |                               |                   |       |
+// | *all*                    |             *             |               *               |         *         |   *   |
+// | *any*                    |             *             |               *               |         *         |   *   |
+// | *chunked*                |             *             |                               |                   |       |
+// | *chunked_by*             |             *             |                               |                   |       |
+// | *count_by*               |             *             |               *               |         *         |   *   |
+// | *cycle*                  |             *             |                               |                   |       |
+// | *delete*                 |             *             |                               |                   |       |
+// | *delete_all*             |             *             |               *               |         *         |       |
+// | *delete_at*              |             *             |               *               |         *         |       |
+// | *distinct*               |             *             |                               |                   |       |
+// | *distinct_by*            |             *             |                               |                   |       |
+// | *duplicates*             |             *             |                               |                   |       |
+// | *duplicates_by*          |             *             |                               |                   |       |
+// | *enumerate*              |             *             |                               |                   |       |
+// | *fill*                   |             *             |               *               |         *         |       |
+// | *fill_with*              |             *             |               *               |         *         |       |
+// | *filter*                 |             *             |               *               |         *         |       |
+// | *filter_keys*            |                           |                               |         *         |       |
+// | *filter_map*             |             *             |               *               |         *         |       |
+// | *filter_map_to*          |             *             |               *               |         *         |       |
+// | *filter_values*          |                           |                               |         *         |       |
+// | *find_map*               |             *             |               *               |         *         |       |
+// | *find_map_to*            |             *             |               *               |         *         |       |
+// | *find*                   |             *             |               *               |         *         |   *   |
+// | *flat_map*               |             *             |               *               |         *         |       |
+// | *flat_map_to*            |             *             |               *               |         *         |       |
+// | *flat*                   |             *             |               *               |                   |       |
+// | *fold*                   |             *             |               *               |         *         |   *   |
+// | *frequencies*            |             *             |                               |                   |       |
+// | *frequencies_by*         |             *             |                               |                   |       |
+// | *grouped_by*             |             *             |               *               |                   |       |
+// | *interleave*             |             *             |                               |                   |       |
+// | *intersect*              |             *             |               *               |         *         |       |
+// | *intersperse*            |             *             |                               |                   |       |
+// | *intersperse_with*       |             *             |                               |                   |       |
+// | *init*                   |             *             |                               |                   |   *   |
+// | *join_items*             |             *             |                               |                   |       |
+// | *largest*                |             *             |               *               |                   |       |
+// | *map*                    |             *             |               *               |         *         |       |
+// | *map_to*                 |             *             |               *               |         *         |       |
+// | *map_keys*               |                           |                               |         *         |       |
+// | *map_values*             |                           |                               |         *         |       |
+// | *map_while*              |             *             |                               |                   |       |
+// | *max_by*                 |             *             |               *               |         *         |   *   |
+// | *max_item*               |             *             |               *               |         *         |   *   |
+// | *min_by*                 |             *             |               *               |         *         |   *   |
+// | *min_item*               |             *             |               *               |         *         |   *   |
+// | *partition*              |             *             |               *               |         *         |       |
+// | *position*               |             *             |                               |                   |   *   |
+// | *positions*              |             *             |                               |                   |   *   |
+// | *product*                |             *             |               *               |                   |       |
+// | *product_keys*           |                           |                               |         *         |       |
+// | *product_values*         |                           |                               |         *         |       |
+// | *reduce*                 |             *             |               *               |         *         |   *   |
+// | *rev*                    |             *             |                               |                   |       |
+// | *rfind*                  |             *             |                               |                   |   *   |
+// | *rfold*                  |             *             |                               |                   |   *   |
+// | *rposition*              |             *             |                               |                   |   *   |
+// | *pad*                    |             *             |                               |                   |   *   |
+// | *pad_with*               |             *             |                               |                   |   *   |
+// | *scan*                   |             *             |                               |                   |       |
+// | *skip*                   |             *             |                               |                   |       |
+// | *skip_while*             |             *             |                               |                   |   *   |
+// | *smallest*               |             *             |               *               |                   |       |
+// | *sorted*                 |             *             |                               |                   |       |
+// | *sorted_by*              |             *             |                               |                   |       |
+// | *sorted_by_cached_key*   |             *             |                               |                   |       |
+// | *sorted_by_key*          |             *             |                               |                   |       |
+// | *sorted_unstable*        |             *             |                               |                   |       |
+// | *sorted_unstable_by*     |             *             |                               |                   |       |
+// | *sorted_unstable_by_key* |             *             |                               |                   |       |
+// | *splice*                 |             *             |                               |                   |       |
+// | *step_by*                |             *             |                               |                   |       |
+// | *sum*                    |             *             |               *               |                   |       |
+// | *sum_keys*               |                           |                               |         *         |       |
+// | *sum_values*             |                           |                               |         *         |       |
+// | *tail*                   |             *             |                               |                   |   *   |
+// | *take*                   |             *             |                               |                   |       |
+// | *take_while*             |             *             |                               |                   |   *   |
+// | *unit*                   |             *             |               *               |         *         |       |
+// | *unzip*                  |             *             |                               |                   |       |
+// | *windowed*               |             *             |                               |                   |       |
+// | *zip*                    |             *             |                               |                   |       |
 pub mod extensions;
 
 pub use extensions::*;

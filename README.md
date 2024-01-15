@@ -39,6 +39,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
 | *add*                    |             *             |               *               |         *         |       |
 | *add_all*                |             *             |               *               |         *         |       |
+| *add_at*                 |             *             |                               |                   |       |
 | *all*                    |             *             |               *               |         *         |   *   |
 | *any*                    |             *             |               *               |         *         |   *   |
 | *chunked*                |             *             |                               |                   |       |
@@ -46,13 +47,13 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *count_by*               |             *             |               *               |         *         |   *   |
 | *cycle*                  |             *             |                               |                   |       |
 | *delete*                 |             *             |                               |                   |       |
+| *delete_all*             |             *             |               *               |         *         |       |
+| *delete_at*              |             *             |               *               |         *         |       |
 | *distinct*               |             *             |                               |                   |       |
 | *distinct_by*            |             *             |                               |                   |       |
 | *duplicates*             |             *             |                               |                   |       |
 | *duplicates_by*          |             *             |                               |                   |       |
 | *enumerate*              |             *             |                               |                   |       |
-| *exclude*                |             *             |               *               |         *         |       |
-| *exclude_all*            |             *             |               *               |         *         |       |
 | *fill*                   |             *             |               *               |         *         |       |
 | *fill_with*              |             *             |               *               |         *         |       |
 | *filter*                 |             *             |               *               |         *         |       |
@@ -92,9 +93,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *product*                |             *             |               *               |                   |       |
 | *product_keys*           |                           |                               |         *         |       |
 | *product_values*         |                           |                               |         *         |       |
-| *put*                    |             *             |                               |                   |       |
 | *reduce*                 |             *             |               *               |         *         |   *   |
-| *replace*                |             *             |                               |                   |       |
 | *rev*                    |             *             |                               |                   |       |
 | *rfind*                  |             *             |                               |                   |   *   |
 | *rfold*                  |             *             |                               |                   |   *   |
@@ -112,6 +111,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *sorted_unstable*        |             *             |                               |                   |       |
 | *sorted_unstable_by*     |             *             |                               |                   |       |
 | *sorted_unstable_by_key* |             *             |                               |                   |       |
+| *splice*                 |             *             |                               |                   |       |
 | *step_by*                |             *             |                               |                   |       |
 | *sum*                    |             *             |               *               |                   |       |
 | *sum_keys*               |                           |                               |         *         |       |
