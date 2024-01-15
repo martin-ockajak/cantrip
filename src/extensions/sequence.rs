@@ -161,7 +161,7 @@ pub trait Sequence<Item> {
     let (size, _) = iterator.size_hint();
     let mut result: HashMap<Item, usize> = HashMap::with_capacity(size);
     for item in iterator {
-      result.entry(item).and_modify(|count| *count += 1).or_default();
+      *result.entry(item).or_default() += 1;
     }
     result
   }
@@ -176,7 +176,7 @@ pub trait Sequence<Item> {
     let (size, _) = iterator.size_hint();
     let mut result: HashMap<K, usize> = HashMap::with_capacity(size);
     for item in iterator {
-      result.entry(to_key(item)).and_modify(|count| *count += 1).or_default();
+      *result.entry(to_key(item)).or_default() += 1;
     }
     result
   }

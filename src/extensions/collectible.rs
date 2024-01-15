@@ -417,8 +417,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let (size, _) = iterator.size_hint();
     let mut result: HashMap<K, Self> = HashMap::with_capacity(size);
     for item in iterator {
-      let key = to_key(&item);
-      result.entry(key).and_modify(|values| values.extend(iter::once(item))).or_default();
+      result.entry(to_key(&item)).or_default().extend(iter::once(item));
     }
     result
   }
