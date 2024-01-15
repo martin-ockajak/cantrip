@@ -131,7 +131,7 @@ pub trait Sequence<Item> {
     let mut occurred: HashSet<K> = HashSet::with_capacity(size);
     iterator
       .filter(|item| {
-        let key = to_key(&item);
+        let key = to_key(item);
         if occurred.contains(&key) {
           false
         } else {
@@ -187,7 +187,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.into_iter().zip(iterable).map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).flatten().collect()
+    self.into_iter().zip(iterable).flat_map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).collect()
   }
 
   #[inline]
@@ -207,7 +207,7 @@ pub trait Sequence<Item> {
   {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
-    let mut value = iter::once(element()).cycle();
+    let mut value = iter::repeat(element());
     unfold((0_usize, false), |(position, inserted)| {
       let result = if !*inserted && *position % interval == 0 {
         *inserted = true;
@@ -260,7 +260,7 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.into_iter().chain(iter::once(element).cycle()).take(size).collect()
+    self.into_iter().chain(iter::repeat(element)).take(size).collect()
   }
 
   #[inline]

@@ -83,6 +83,24 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
+  #[inline]
+  fn fill(value: Item, size: usize) -> Self
+  where
+    Item: Clone,
+    Self: FromIterator<Item>,
+  {
+    iter::repeat(value).take(size).collect()
+  }
+
+  #[inline]
+  fn fill_with(mut value: impl FnMut() -> Item, size: usize) -> Self
+  where
+    Item: Clone,
+    Self: FromIterator<Item>,
+  {
+    iter::repeat(value()).take(size).collect()
+  }
+
   /// Filters a collection using a closure to determine if an element should be retained.
   ///
   /// Given an element the closure must return `true` or `false`. The returned

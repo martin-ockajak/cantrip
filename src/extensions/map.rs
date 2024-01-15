@@ -37,7 +37,7 @@ pub trait Map<Key, Value> {
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let mut removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
+    let removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
@@ -48,6 +48,26 @@ pub trait Map<Key, Value> {
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
+  }
+
+  #[inline]
+  fn fill(key: Key, value: Value, size: usize) -> Self
+  where
+    Key: Clone,
+    Value: Clone,
+    Self: FromIterator<(Key, Value)>,
+  {
+    iter::repeat((key, value)).take(size).collect()
+  }
+
+  #[inline]
+  fn fill_with(mut value: impl FnMut() -> (Key, Value), size: usize) -> Self
+  where
+    Key: Clone,
+    Value: Clone,
+    Self: FromIterator<(Key, Value)>,
+  {
+    iter::repeat(value()).take(size).collect()
   }
 
   #[inline]
@@ -122,7 +142,7 @@ pub trait Map<Key, Value> {
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let mut retained: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
+    let retained: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
@@ -190,8 +210,7 @@ pub trait Map<Key, Value> {
   #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
-    Self:
-      Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+    Self: Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().partition(|(k, v)| predicate((&k, &v)))
   }

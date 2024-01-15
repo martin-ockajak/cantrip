@@ -54,6 +54,8 @@
 /// | *distinct_by*            |             *             |                               |                   |       |
 /// | *enumerate*              |             *             |                               |                   |       |
 /// | *exclude*                |             *             |               *               |         *         |       |
+/// | *fill*                   |             *             |               *               |         *         |       |
+/// | *fill_with*              |             *             |               *               |         *         |       |
 /// | *filter*                 |             *             |               *               |         *         |       |
 /// | *filter_keys*            |                           |                               |         *         |       |
 /// | *filter_map*             |             *             |               *               |         *         |       |

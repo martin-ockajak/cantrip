@@ -50,6 +50,8 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *distinct_by*            |             *             |                               |                   |       |
 | *enumerate*              |             *             |                               |                   |       |
 | *exclude*                |             *             |               *               |         *         |       |
+| *fill*                   |             *             |               *               |         *         |       |
+| *fill_with*              |             *             |               *               |         *         |       |
 | *filter*                 |             *             |               *               |         *         |       |
 | *filter_keys*            |                           |                               |         *         |       |
 | *filter_map*             |             *             |               *               |         *         |       |
