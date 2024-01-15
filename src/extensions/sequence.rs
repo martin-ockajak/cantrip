@@ -56,6 +56,7 @@ pub trait Sequence<Item> {
   // all_unique
   // circular_windowed
   // interleave_shortest
+  // slice
 
   #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
