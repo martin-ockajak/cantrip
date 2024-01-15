@@ -22,7 +22,6 @@ pub trait Sequence<Item> {
   // FIXME - implement these methods
   // zip_all
   // unzip_all
-  // join_items
   // minmax
   // minmax_by
   // minmax_by_key
