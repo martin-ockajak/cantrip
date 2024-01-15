@@ -133,8 +133,6 @@ It enables collection manipulation in a functional style without the usual Rust 
 - Extend Rust collections type with methods available for iterators, slices and arrays
   - String
 
-- Additional collection methods
-
 - Implement tests
 
 - Write documentation
