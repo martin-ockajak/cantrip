@@ -527,8 +527,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut heap = BinaryHeap::from_iter(self.into_iter());
-    unfold((), |_| heap.pop()).take(n).collect()
+    let mut iterator = self.into_iter();
+    let mut heap = iterator.by_ref().map(|x| Reverse(x)).take(n).collect::<BinaryHeap<_>>();
+    for item in iterator {
+      if (*heap.peek().unwrap()).0 < item {
+        *heap.peek_mut().unwrap() = Reverse(item);
+      }
+    }
+    heap.into_iter().map(|x| x.0).collect()
   }
 
   #[inline]
@@ -599,8 +605,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut heap = BinaryHeap::from_iter(self.into_iter().map(|x| Reverse(x)));
-    unfold((), |_| heap.pop().map(|x| x.0)).take(n).collect()
+    let mut iterator = self.into_iter();
+    let mut heap = iterator.by_ref().take(n).collect::<BinaryHeap<_>>();
+    for item in iterator {
+      if *heap.peek().unwrap() > item {
+        *heap.peek_mut().unwrap() = item;
+      }
+    }
+    heap.into_iter().collect()
   }
 
   #[inline]

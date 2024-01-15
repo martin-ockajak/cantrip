@@ -68,6 +68,7 @@ It enables collection manipulation in a functional style without the usual Rust 
 | *intersperse*            |             *             |                               |                   |       |
 | *intersperse_with*       |             *             |                               |                   |       |
 | *init*                   |             *             |                               |                   |   *   |
+| *join_items*             |             *             |                               |                   |       |
 | *largest*                |             *             |               *               |                   |       |
 | *map*                    |             *             |               *               |         *         |       |
 | *map_to*                 |             *             |               *               |         *         |       |

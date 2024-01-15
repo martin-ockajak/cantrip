@@ -1,5 +1,7 @@
 use std::cmp::Ordering;
 use std::collections::{HashSet, LinkedList};
+use std::fmt::Display;
+use std::fmt::Write;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
@@ -16,6 +18,20 @@ use crate::extensions::util::unfold::unfold;
 ///
 pub trait Sequence<Item> {
   type This<I>;
+
+  // FIXME - implement these methods
+  // zip_all
+  // unzip_all
+  // join_items
+  // minmax
+  // minmax_by
+  // minmax_by_key
+  // duplicates
+  // duplicates_by
+  // frequencies
+  // frequencies_by
+  // coalesce
+  // cartesian_product
 
   #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
@@ -85,6 +101,7 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
+  // FIXME - make this work
   #[inline]
   fn distinct(self) -> Self
   where
@@ -176,6 +193,28 @@ pub trait Sequence<Item> {
       result
     })
     .collect()
+  }
+
+  #[inline]
+  fn join_items(self, separator: &str) -> String
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+    Item: Display,
+  {
+    let mut iterator = self.into_iter();
+    match iterator.next() {
+      Some(item) => {
+        let (lower, _) = iterator.size_hint();
+        let mut result = String::with_capacity(separator.len() * lower);
+        write!(&mut result, "{}", item).unwrap();
+        for item in iterator {
+          result.push_str(separator);
+          write!(&mut result, "{}", item).unwrap();
+        }
+        result
+      }
+      None => String::new(),
+    }
   }
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
