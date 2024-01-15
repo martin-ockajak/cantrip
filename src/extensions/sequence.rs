@@ -27,7 +27,6 @@ pub trait Sequence<Item> {
   // minmax_by_key
   // duplicates
   // duplicates_by
-  // frequencies_by
   // coalesce
   // cartesian_product
 
