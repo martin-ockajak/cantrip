@@ -98,21 +98,19 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
-  // FIXME - make this work
   #[inline]
   fn distinct(self) -> Self
   where
-    Item: Eq + Hash,
+    Item: Eq + Hash + Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
-    let occurred: HashSet<*const Item> = HashSet::with_capacity(size);
+    let occurred: HashSet<Item> = HashSet::with_capacity(size);
     unfold(occurred, |occurred| {
       iterator.next().and_then(|item| {
-        let pointer = &item as *const Item;
-        if !occurred.contains(&pointer) {
-          occurred.insert(pointer);
+        if !occurred.contains(&item) {
+          occurred.insert(item.clone());
           Some(item)
         } else {
           None
