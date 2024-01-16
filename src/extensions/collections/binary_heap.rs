@@ -35,7 +35,7 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
 
   #[inline]
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    find_map(self.iter(), function)
+    self.iter().find_map(function)
   }
 
   #[inline]
@@ -90,7 +90,7 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    filter_map(self.iter(), function)
+    self.iter().filter_map(function).collect()
   }
 
   #[inline]
@@ -99,7 +99,7 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>,
   {
-    flat_map(self.iter(), function)
+    self.iter().flat_map(function).collect()
   }
 
   #[inline]
@@ -107,6 +107,6 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    map(self.iter(), function)
+    self.iter().map(function).collect()
   }
 }

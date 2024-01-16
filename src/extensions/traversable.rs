@@ -217,7 +217,7 @@ pub trait Traversable<Item> {
   /// // they're the same
   /// assert_eq!(result, result2);
   /// ```
-  fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B;
+  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
   fn join_items(&self, separator: &str) -> String
   where

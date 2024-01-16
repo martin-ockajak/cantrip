@@ -33,8 +33,6 @@ pub trait Sequence<Item> {
   // pad_left
   // partition_at
   // partition_map
-  // scan
-  // rscan
   // segment_range
   // move
   // coalesce
@@ -367,6 +365,15 @@ pub trait Sequence<Item> {
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize>;
 
   fn rev(self) -> Self;
+
+  fn rscan<S, B, I>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
+  where
+    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<B>,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().rev().scan(initial_state, function).collect()
+  }
 
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>;
 

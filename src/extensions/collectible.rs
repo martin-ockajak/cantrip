@@ -677,6 +677,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
+  // fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  // where
+  //   Self: IntoIterator<Item = Item> + FromIterator<B>,
+  //   Self::This<B>: FromIterator<B>;
+
+  fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<B>,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().scan(initial_state, function).collect()
+  }
+
   fn smallest(self, n: usize) -> Self
   where
     Item: Ord,
@@ -708,32 +721,4 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   {
     iter::once(value).collect()
   }
-}
-
-#[inline]
-pub(crate) fn filter_map<'a, Item: 'a, B, Result: FromIterator<B>>(
-  iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> Option<B>,
-) -> Result {
-  iterator.filter_map(function).collect()
-}
-
-#[inline]
-pub(crate) fn find_map<'a, Item: 'a, B>(
-  mut iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> Option<B>,
-) -> Option<B> {
-  iterator.find_map(function)
-}
-
-#[inline]
-pub(crate) fn flat_map<'a, Item: 'a, B, R: IntoIterator<Item = B>, Result: FromIterator<B>>(
-  iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> R,
-) -> Result {
-  iterator.flat_map(function).collect()
-}
-
-#[inline]
-pub(crate) fn map<'a, Item: 'a, B, Result: FromIterator<B>>(
-  iterator: impl Iterator<Item = &'a Item>, function: impl FnMut(&Item) -> B,
-) -> Result {
-  iterator.map(function).collect()
 }

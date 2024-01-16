@@ -117,9 +117,10 @@
 /// | *rfold*                  |             *             |                               |                   |   *   |
 /// | *rposition*              |             *             |                               |                   |   *   |
 /// | *rskip*                  |             *             |                               |                   |       |
-/// | *rskip_while*            |             *             |                               |                   |   *   |
+/// | *rskip_while*            |             *             |                               |                   |       |
+/// | *rscan*                  |             *             |                               |                   |       |
 /// | *rtake*                  |             *             |                               |                   |       |
-/// | *rtake_while*            |             *             |                               |                   |   *   |
+/// | *rtake_while*            |             *             |                               |                   |       |
 /// | *pad*                    |             *             |                               |                   |   *   |
 /// | *pad_with*               |             *             |                               |                   |   *   |
 /// | *scan*                   |             *             |                               |                   |       |

@@ -1,4 +1,5 @@
 use std::cmp::{max, min, Ordering};
+use std::collections::VecDeque;
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -35,7 +36,7 @@ impl<Item> Traversable<Item> for [Item] {
 
   #[inline]
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    find_map(self.iter(), function)
+    self.iter().find_map(function)
   }
 
   #[inline]

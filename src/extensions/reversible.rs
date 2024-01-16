@@ -1,3 +1,5 @@
+use std::collections::hash_map::IntoIter;
+
 /// Reversible collection operations.
 ///
 /// Methods have the following properties:
@@ -107,7 +109,7 @@ pub trait Reversible<Item> {
   ///
   /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
   /// ```
-  fn rfold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B;
+  fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
   /// Searches for an element in an collection from the right, returning its
   /// index.
@@ -150,8 +152,8 @@ pub trait Reversible<Item> {
   #[inline]
   fn rskip<I>(self, n: usize) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
     I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
     self.into_iter().rev().skip(n).collect()
   }
@@ -159,8 +161,8 @@ pub trait Reversible<Item> {
   #[inline]
   fn rskip_while<I>(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
     I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
     self.into_iter().rev().skip_while(predicate).collect()
   }
@@ -168,8 +170,8 @@ pub trait Reversible<Item> {
   #[inline]
   fn rtake<I>(self, n: usize) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
     I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
     self.into_iter().rev().take(n).collect()
   }
@@ -177,8 +179,8 @@ pub trait Reversible<Item> {
   #[inline]
   fn rtake_while<I>(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
     I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
     self.into_iter().rev().take_while(predicate).collect()
   }

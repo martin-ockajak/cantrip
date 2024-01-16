@@ -36,7 +36,7 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
 
   #[inline]
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    find_map(self.iter(), function)
+    self.iter().find_map(function)
   }
 
   #[inline]
@@ -91,7 +91,7 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    filter_map(self.iter(), function)
+    self.iter().filter_map(function).collect()
   }
 
   #[inline]
@@ -100,7 +100,7 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>,
   {
-    flat_map(self.iter(), function)
+    self.iter().flat_map(function).collect()
   }
 
   #[inline]
@@ -108,6 +108,6 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   where
     Self::This<B>: FromIterator<B>,
   {
-    map(self.iter(), function)
+    self.iter().map(function).collect()
   }
 }
