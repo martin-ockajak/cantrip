@@ -24,7 +24,6 @@ pub trait Sequence<Item> {
   // unzip_all
   // coalesce
   // cartesian_product
-  // sample
   // same_elements
   // rtake
   // rskip
