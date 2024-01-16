@@ -25,6 +25,14 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
 
+  #[inline]
+  fn add_all(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
+    where
+      Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    self.into_iter().chain(iterable).collect()
+  }
+
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
@@ -32,22 +40,22 @@ pub trait Map<Key, Value> {
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
 
   #[inline]
-  fn diff<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
-  where
-    Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  fn delete(self, key: &Key) -> Self
+    where
+      Key: PartialEq,
+      Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
-    self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
+    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
   #[inline]
-  fn exclude(self, key: &Key) -> Self
-  where
-    Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
+    where
+      Key: Eq + Hash + 'a,
+      Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
+    let removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
+    self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
   #[inline]
@@ -180,7 +188,7 @@ pub trait Map<Key, Value> {
   fn max_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
   #[inline]
-  fn max_entry(&self) -> Option<(&Key, &Value)>
+  fn max_item(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
     Value: Ord,
@@ -191,20 +199,12 @@ pub trait Map<Key, Value> {
   fn min_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
   #[inline]
-  fn min_entry(&self) -> Option<(&Key, &Value)>
+  fn min_item(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
     Value: Ord,
   {
     self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
-  }
-
-  #[inline]
-  fn merge(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
-    self.into_iter().chain(iterable).collect()
   }
 
   #[inline]
