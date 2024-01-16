@@ -3,6 +3,7 @@ use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
+use std::slice::IterMut;
 
 use crate::extensions::util::unfold::unfold;
 
@@ -30,7 +31,6 @@ pub trait Sequence<Item> {
   // subset
   // subsequence / contains_slice / index_of_slice
   // group_map_fold
-  // partition_at
   // partition_map
   // segment_range
   // move
@@ -275,6 +275,8 @@ pub trait Sequence<Item> {
     })
     .collect()
   }
+
+  fn last(&self) -> Option<&Item>;
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
