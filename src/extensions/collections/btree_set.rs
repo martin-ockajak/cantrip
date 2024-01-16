@@ -1,7 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::BTreeSet;
 use std::fmt::Display;
-use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -109,6 +108,15 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
     Self::This<B>: FromIterator<B>,
   {
     self.iter().map(function).collect()
+  }
+
+  #[inline]
+  fn partition_map<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  where
+    Self::This<A>: Default + Extend<A>,
+    Self::This<B>: Default + Extend<B>,
+  {
+    partition_map(self.iter(), function)
   }
 
   #[inline]

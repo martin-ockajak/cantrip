@@ -241,10 +241,17 @@ pub trait Map<Key, Value> {
   #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
-    Self: Default + Extend<(Key, Value)> + IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+    Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)>,
   {
     self.into_iter().partition(|(k, v)| predicate((&k, &v)))
   }
+
+  fn partition_map<L1, W1, L2, W2>(
+    &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
+  ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
+  where
+    Self::This<L1, W1>: Default + Extend<(L1, W1)>,
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>;
 
   #[inline]
   fn product_keys<S>(self) -> Key
@@ -368,7 +375,7 @@ pub(crate) fn join_items_pairs<'a, K: Display + 'a, V: Display + 'a>(
     Some((key, value)) => {
       let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
       write!(&mut result, "{},{}", key, value).unwrap();
-      for item in iterator {
+      for (key, value) in iterator {
         result.push_str(separator);
         write!(&mut result, "{},{}", key, value).unwrap();
       }
@@ -412,6 +419,26 @@ pub(crate) fn minmax_by_key_pairs<'a, K: 'a, V: 'a, E: Ord>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, mut to_key: impl FnMut((&K, &V)) -> E,
 ) -> Option<((&'a K, &'a V), (&'a K, &'a V))> {
   minmax_by_pairs(iterator, |x, y| to_key(x).cmp(&to_key(y)))
+}
+
+pub(crate) fn partition_map_pairs<'a, K, V, L1, W1, L2, W2, Left, Right>(
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V)) -> Result<(L1, W1), (L2, W2)>,
+) -> (Left, Right)
+where
+  K: 'a,
+  V: 'a,
+  Left: Default + Extend<(L1, W1)>,
+  Right: Default + Extend<(L2, W2)>,
+{
+  let mut result_left = Left::default();
+  let mut result_right = Right::default();
+  for item in iterator {
+    match function(item) {
+      Ok(value) => result_left.extend(iter::once(value)),
+      Err(value) => result_right.extend(iter::once(value)),
+    }
+  }
+  (result_left, result_right)
 }
 
 #[inline]

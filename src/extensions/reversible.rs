@@ -1,5 +1,4 @@
 use crate::extensions::util::unfold::unfold;
-use std::collections::hash_map::IntoIter;
 
 /// Reversible collection operations.
 ///

@@ -582,8 +582,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().partition(predicate)
   }
 
+  fn partition_map<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  where
+    Self::This<A>: Default + Extend<A>,
+    Self::This<B>: Default + Extend<B>;
+
   #[inline]
-  fn partition_map<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  fn partition_map_to<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<A>: Default + Extend<A>,
@@ -738,4 +743,18 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   {
     iter::once(value).collect()
   }
+}
+
+pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right: Default + Extend<B>>(
+  iterator: impl Iterator<Item = &'a Item>, mut function: impl FnMut(&Item) -> Result<A, B>,
+) -> (Left, Right) {
+  let mut result_left = Left::default();
+  let mut result_right = Right::default();
+  for item in iterator {
+    match function(item) {
+      Ok(value) => result_left.extend(iter::once(value)),
+      Err(value) => result_right.extend(iter::once(value)),
+    }
+  }
+  (result_left, result_right)
 }

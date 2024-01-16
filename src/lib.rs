@@ -103,6 +103,7 @@
 /// | *minmax_item*            |             *             |               *               |         *         |   *   |
 /// | *partition*              |             *             |               *               |         *         |       |
 /// | *partition_map*          |             *             |               *               |         *         |       |
+/// | *partition_map_to*       |             *             |               *               |         *         |       |
 /// | *position*               |             *             |                               |                   |   *   |
 /// | *positions*              |             *             |                               |                   |   *   |
 /// | *product*                |             *             |               *               |                   |       |

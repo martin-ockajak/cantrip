@@ -112,6 +112,15 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   }
 
   #[inline]
+  fn partition_map<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  where
+    Self::This<A>: Default + Extend<A>,
+    Self::This<B>: Default + Extend<B>,
+  {
+    partition_map(self.iter(), function)
+  }
+
+  #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

@@ -1,4 +1,3 @@
-use std::fmt::Display;
 use std::hash::Hash;
 
 /// Slice operations.
