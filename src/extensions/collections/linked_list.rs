@@ -45,6 +45,14 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   }
 
   #[inline]
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
+    join_items(self.iter(), separator)
+  }
+
+  #[inline]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
@@ -126,8 +134,8 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
 
   #[inline]
   fn all_unique(&self) -> bool
-    where
-      Item: Eq + Hash,
+  where
+    Item: Eq + Hash,
   {
     all_unique(self.iter())
   }
@@ -135,11 +143,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   #[inline]
   fn init(self) -> Self {
     init(self.into_iter())
-  }
-
-  #[inline]
-  fn join_items(&self, separator: &str) -> String where Item: Display {
-    join_items(self.iter(), separator)
   }
 
   #[inline]

@@ -44,6 +44,14 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
+    join_items(self.iter(), separator)
+  }
+
+  #[inline]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
@@ -103,14 +111,6 @@ impl<Item> Slice<Item> for [Item] {
   #[inline]
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]
-  }
-
-  #[inline]
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display,
-  {
-    join_items(self.iter(), separator)
   }
 
   #[inline]

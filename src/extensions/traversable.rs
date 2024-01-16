@@ -2,6 +2,8 @@
 
 use std::cmp::Ordering;
 use std::collections::HashSet;
+use std::fmt::Display;
+use std::fmt::Write;
 use std::hash::Hash;
 
 /// Non-consuming collection operations.
@@ -217,6 +219,10 @@ pub trait Traversable<Item> {
   /// ```
   fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B;
 
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display;
+
   // FIXME - implement
   // fn includes(&self, iterable: impl IntoIterator<Item = Item>) -> bool;
 
@@ -405,15 +411,33 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
 }
 
 #[inline]
-pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
-  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
-) -> Option<(&'a Item, &'a Item)> {
-  minmax_by(iterator, |x, y| to_key(x).cmp(&to_key(y)))
-}
-
-#[inline]
 pub(crate) fn fold<'a, Item: 'a, B>(
   iterator: impl Iterator<Item = &'a Item>, init: B, function: impl FnMut(B, &Item) -> B,
 ) -> B {
   iterator.fold(init, function)
+}
+
+pub(crate) fn join_items<'a, Item: Display + 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
+) -> String {
+  match iterator.next() {
+    Some(item) => {
+      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
+      write!(&mut result, "{}", item).unwrap();
+      for item in iterator {
+        result.push_str(separator);
+        write!(&mut result, "{}", item).unwrap();
+      }
+      result.shrink_to_fit();
+      result
+    }
+    None => String::new(),
+  }
+}
+
+#[inline]
+pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
+  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
+) -> Option<(&'a Item, &'a Item)> {
+  minmax_by(iterator, |x, y| to_key(x).cmp(&to_key(y)))
 }

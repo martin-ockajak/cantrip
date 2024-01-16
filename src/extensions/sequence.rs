@@ -1,7 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::fmt::Display;
-use std::fmt::Write;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
@@ -282,10 +281,6 @@ pub trait Sequence<Item> {
     })
     .collect()
   }
-
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display;
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
@@ -667,24 +662,6 @@ where
 {
   let size = iterator.len() - 1;
   iterator.skip(size).collect()
-}
-
-pub(crate) fn join_items<'a, Item: Display + 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
-) -> String {
-  match iterator.next() {
-    Some(item) => {
-      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
-      write!(&mut result, "{}", item).unwrap();
-      for item in iterator {
-        result.push_str(separator);
-        write!(&mut result, "{}", item).unwrap();
-      }
-      result.shrink_to_fit();
-      result
-    }
-    None => String::new(),
-  }
 }
 
 #[inline]

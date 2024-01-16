@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
+use std::fmt::Display;
 
 use crate::extensions::*;
 
@@ -40,6 +41,14 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     fold(self.iter(), init, function)
+  }
+
+  #[inline]
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
+    join_items(self.iter(), separator)
   }
 
   #[inline]

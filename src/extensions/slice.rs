@@ -16,10 +16,6 @@ pub trait Slice<Item> {
 
   fn init(&self) -> &Self;
 
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display;
-
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
   /// Creates an slice without initial elements based on a predicate.
