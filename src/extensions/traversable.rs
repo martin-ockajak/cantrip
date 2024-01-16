@@ -388,8 +388,8 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
 ) -> Option<(&'a Item, &'a Item)> {
   match iterator.next() {
     Some(item) => {
-      let mut min: &Item = item;
-      let mut max: &Item = min;
+      let mut min = item;
+      let mut max = min;
       for item in iterator {
         if compare(item, min) == Ordering::Less {
           min = item;
@@ -404,6 +404,7 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
   }
 }
 
+#[inline]
 pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
   iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
 ) -> Option<(&'a Item, &'a Item)> {
