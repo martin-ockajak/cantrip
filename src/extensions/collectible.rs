@@ -577,9 +577,27 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   #[inline]
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
-    Self: Sized + Default + Extend<Item> + IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: Default + Extend<Item> + IntoIterator<Item = Item>,
   {
     self.into_iter().partition(predicate)
+  }
+
+  #[inline]
+  fn partition_map<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<A>: Default + Extend<A>,
+    Self::This<B>: Default + Extend<B>,
+  {
+    let mut result_left: Self::This<A> = Self::This::default();
+    let mut result_right: Self::This<B> = Self::This::default();
+    for item in self.into_iter() {
+      match function(item) {
+        Ok(value) => result_left.extend(iter::once(value)),
+        Err(value) => result_right.extend(iter::once(value)),
+      }
+    }
+    (result_left, result_right)
   }
 
   // FIXME - implement
@@ -633,7 +651,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
+    let iterator = self.into_iter();
     let mut replaced = false;
     let mut replaced_item = iter::once(replacement);
     iterator

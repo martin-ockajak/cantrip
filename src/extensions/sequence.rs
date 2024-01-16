@@ -3,7 +3,6 @@ use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
-use std::slice::IterMut;
 
 use crate::extensions::util::unfold::unfold;
 
@@ -147,7 +146,7 @@ pub trait Sequence<Item> {
     Item: Eq + Hash + Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
+    let iterator = self.into_iter();
     let mut frequencies: HashMap<Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
@@ -166,7 +165,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
+    let iterator = self.into_iter();
     let mut frequencies: HashMap<K, usize> = HashMap::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
@@ -275,8 +274,6 @@ pub trait Sequence<Item> {
     })
     .collect()
   }
-
-  fn last(&self) -> Option<&Item>;
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
@@ -590,7 +587,7 @@ pub trait Sequence<Item> {
     Item: Eq + Hash + Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
+    let iterator = self.into_iter();
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
@@ -679,7 +676,7 @@ where
 }
 
 pub(crate) fn windowed<'a, Item, Collection, Result>(
-  mut iterator: impl Iterator<Item = &'a Item>, size: usize,
+  iterator: impl Iterator<Item = &'a Item>, size: usize,
 ) -> Result
 where
   Item: Clone + 'a,
