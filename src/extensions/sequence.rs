@@ -38,8 +38,6 @@ pub trait Sequence<Item> {
   // pad_left
   // partition_at
   // partition_map
-  // add_all_at
-  // delete_all_at
   // scan
   // rscan
   // segment_range
@@ -52,15 +50,27 @@ pub trait Sequence<Item> {
   // interleave_shortest
   // slice
 
-  fn add_at(self, index: usize, element: Item) -> Self
+  #[inline]
+  fn add_at(self, element: Item, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
+    self.add_all_at(iter::once(element), index)
+  }
+
+  fn add_all_at(self, iterable: impl IntoIterator<Item = Item>, index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
-    let mut value = iter::once(element);
+    let mut added = iterable.into_iter();
     unfold(0_usize, |position| {
-      let result = if *position == index { value.next() } else { iterator.next() };
-      *position += 1;
+      let result = if *position >= index {
+        added.next().or(iterator.next())
+      } else {
+        *position += 1;
+        iterator.next()
+      };
       result
     })
     .collect()
@@ -133,7 +143,15 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
+    self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
+  }
+
+  #[inline]
+  fn delete_range(self, range: impl RangeBounds<usize>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.into_iter().enumerate().filter_map(|(i, x)| if range.contains(&i) { None } else { Some(x) }).collect()
   }
 
   fn duplicates(self) -> Self
