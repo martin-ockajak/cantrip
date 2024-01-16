@@ -280,8 +280,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
-
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
   where

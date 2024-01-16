@@ -43,6 +43,11 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   }
 
   #[inline]
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+    find_map(self.iter(), function)
+  }
+
+  #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     fold(self.iter(), init, function)
   }
@@ -104,11 +109,6 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
     Self::This<B>: FromIterator<B>,
   {
     filter_map(self.iter(), function)
-  }
-
-  #[inline]
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    find_map(self.iter(), function)
   }
 
   #[inline]

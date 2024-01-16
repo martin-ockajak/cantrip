@@ -124,6 +124,8 @@ pub trait Traversable<Item> {
   /// ```
   fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
+  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+
   /// Folds every element into an accumulator by applying an operation,
   /// returning the final result.
   ///

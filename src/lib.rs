@@ -67,7 +67,7 @@
 /// | *filter_map*             |             *             |               *               |         *         |       |
 /// | *filter_map_to*          |             *             |               *               |         *         |       |
 /// | *filter_values*          |                           |                               |         *         |       |
-/// | *find_map*               |             *             |               *               |         *         |       |
+/// | *find_map*               |             *             |               *               |         *         |   *   |
 /// | *find_map_to*            |             *             |               *               |         *         |       |
 /// | *find*                   |             *             |               *               |         *         |   *   |
 /// | *flat_map*               |             *             |               *               |         *         |       |

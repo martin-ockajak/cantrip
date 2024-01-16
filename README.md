@@ -67,7 +67,7 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *filter_map*             |             *             |               *               |         *         |       |
 | *filter_map_to*          |             *             |               *               |         *         |       |
 | *filter_values*          |                           |                               |         *         |       |
-| *find_map*               |             *             |               *               |         *         |       |
+| *find_map*               |             *             |               *               |         *         |   *   |
 | *find_map_to*            |             *             |               *               |         *         |       |
 | *find*                   |             *             |               *               |         *         |   *   |
 | *flat_map*               |             *             |               *               |         *         |       |
@@ -82,7 +82,7 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *intersperse*            |             *             |                               |                   |       |
 | *intersperse_with*       |             *             |                               |                   |       |
 | *init*                   |             *             |                               |                   |   *   |
-| *join_items*             |             *             |                               |                   |       |
+| *join_items*             |             *             |                               |                   |   *   |
 | *largest*                |             *             |               *               |                   |       |
 | *map*                    |             *             |               *               |         *         |       |
 | *map_to*                 |             *             |               *               |         *         |       |
