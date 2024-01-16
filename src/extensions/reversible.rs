@@ -1,3 +1,4 @@
+use crate::extensions::util::unfold::unfold;
 use std::collections::hash_map::IntoIter;
 
 /// Reversible collection operations.
@@ -110,6 +111,34 @@ pub trait Reversible<Item> {
   /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
   /// ```
   fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+
+  #[inline]
+  fn rpad<I>(self, size: usize, element: Item) -> Self
+  where
+    Item: Clone,
+    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
+    self.rpad_with(size, || element.clone())
+  }
+
+  #[inline]
+  fn rpad_with<I>(self, size: usize, mut to_element: impl FnMut() -> Item) -> Self
+  where
+    Item: Clone,
+    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter().rev();
+    unfold(0_usize, |position| {
+      iterator.next().or_else(|| {
+        let result = if *position < size { Some(to_element()) } else { None };
+        *position += 1;
+        result
+      })
+    })
+    .collect()
+  }
 
   /// Searches for an element in an collection from the right, returning its
   /// index.

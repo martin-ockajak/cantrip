@@ -30,7 +30,6 @@ pub trait Sequence<Item> {
   // subset
   // subsequence / contains_slice / index_of_slice
   // group_map_fold
-  // pad_left
   // partition_at
   // partition_map
   // segment_range
