@@ -43,7 +43,6 @@ pub trait Sequence<Item> {
   // move
   // coalesce
   // circular_windowed
-  // interleave_shortest
   // slice
 
   #[inline]
@@ -227,8 +226,26 @@ pub trait Sequence<Item> {
 
   fn init(self) -> Self;
 
-  // FIXME - add remaining elements to the end
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator_left = self.into_iter();
+    let mut iterator_right = elements.into_iter();
+    unfold(true, |left| {
+      let result = if *left {
+        iterator_left.next().or(iterator_right.next())
+      } else {
+        iterator_right.next().or(iterator_left.next())
+      };
+      *left = !*left;
+      result
+    })
+    .collect()
+  }
+
+  #[inline]
+  fn interleave_shortest(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {

@@ -80,6 +80,7 @@
 /// | *frequencies_by*         |             *             |                               |                   |       |
 /// | *grouped_by*             |             *             |               *               |                   |       |
 /// | *interleave*             |             *             |                               |                   |       |
+/// | *interleave_shortest*    |             *             |                               |                   |       |
 /// | *intersect*              |             *             |               *               |         *         |       |
 /// | *intersperse*            |             *             |                               |                   |       |
 /// | *intersperse_with*       |             *             |                               |                   |       |
