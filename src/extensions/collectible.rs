@@ -79,7 +79,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(diff, vec![4, 4]);
   /// ```
   // FIXME - improve description
-  #[inline]
   fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
@@ -453,7 +452,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flat_map(function).collect()
   }
 
-  #[inline]
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
@@ -565,7 +563,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(function).collect()
   }
 
-  #[inline]
   fn largest(self, n: usize) -> Self
   where
     Item: Ord,
@@ -635,7 +632,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
-  #[inline]
   fn smallest(self, n: usize) -> Self
   where
     Item: Ord,

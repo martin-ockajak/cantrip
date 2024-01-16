@@ -11,6 +11,22 @@ impl<Item> Traversable<Item> for HashSet<Item> {
   }
 
   #[inline]
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq,
+  {
+    all_equal(self.iter())
+  }
+
+  #[inline]
+  fn all_distinct(&self) -> bool
+  where
+    Item: Eq + Hash,
+  {
+    all_unique(self.iter())
+  }
+
+  #[inline]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
@@ -79,9 +95,9 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
 
   #[inline]
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-    where
-      R: IntoIterator<Item = B>,
-      Self::This<B>: FromIterator<B>,
+  where
+    R: IntoIterator<Item = B>,
+    Self::This<B>: FromIterator<B>,
   {
     flat_map(self.iter(), function)
   }

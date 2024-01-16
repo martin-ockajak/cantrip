@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
+use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -7,6 +8,22 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
+  }
+
+  #[inline]
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq,
+  {
+    all_equal(self.iter())
+  }
+
+  #[inline]
+  fn all_distinct(&self) -> bool
+  where
+    Item: Eq + Hash,
+  {
+    all_unique(self.iter())
   }
 
   #[inline]
@@ -78,9 +95,9 @@ impl<Item> Collectible<Item> for BinaryHeap<Item> {
 
   #[inline]
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-    where
-      R: IntoIterator<Item = B>,
-      Self::This<B>: FromIterator<B>,
+  where
+    R: IntoIterator<Item = B>,
+    Self::This<B>: FromIterator<B>,
   {
     flat_map(self.iter(), function)
   }

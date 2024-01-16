@@ -48,13 +48,10 @@ pub trait Sequence<Item> {
   // replace_all_at
   // move
   // coalesce
-  // all_equal
-  // all_unique
   // circular_windowed
   // interleave_shortest
   // slice
 
-  #[inline]
   fn add_at(self, index: usize, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -69,7 +66,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -94,7 +90,6 @@ pub trait Sequence<Item> {
     result
   }
 
-  #[inline]
   fn chunked_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -137,50 +132,6 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i != index { Some(x) } else { None }).collect()
   }
 
-  #[inline]
-  fn distinct(self) -> Self
-  where
-    Item: Eq + Hash + Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let (size, _) = iterator.size_hint();
-    let occurred: HashSet<Item> = HashSet::with_capacity(size);
-    unfold(occurred, |occurred| {
-      iterator.next().and_then(|item| {
-        if !occurred.contains(&item) {
-          occurred.insert(item.clone());
-          Some(item)
-        } else {
-          None
-        }
-      })
-    })
-    .collect()
-  }
-
-  #[inline]
-  fn distinct_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let iterator = self.into_iter();
-    let (size, _) = iterator.size_hint();
-    let mut occurred: HashSet<K> = HashSet::with_capacity(size);
-    iterator
-      .filter(|item| {
-        let key = to_key(item);
-        if occurred.contains(&key) {
-          false
-        } else {
-          occurred.insert(key);
-          true
-        }
-      })
-      .collect()
-  }
-
-  #[inline]
   fn duplicates(self) -> Self
   where
     Item: Eq + Hash + Clone,
@@ -203,7 +154,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  #[inline]
   fn duplicates_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -234,7 +184,6 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().collect()
   }
 
-  #[inline]
   fn frequencies(self) -> HashMap<Item, usize>
   where
     Item: Eq + Hash,
@@ -242,7 +191,7 @@ pub trait Sequence<Item> {
   {
     let iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
-    let mut result: HashMap<Item, usize> = HashMap::with_capacity(size);
+    let mut result = HashMap::with_capacity(size);
     for item in iterator {
       *result.entry(item).or_default() += 1;
     }
@@ -250,14 +199,13 @@ pub trait Sequence<Item> {
     result
   }
 
-  #[inline]
   fn frequencies_by<K: Eq + Hash>(self, mut to_key: impl FnMut(Item) -> K) -> HashMap<K, usize>
   where
     Self: IntoIterator<Item = Item> + Sized,
   {
     let iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
-    let mut result: HashMap<K, usize> = HashMap::with_capacity(size);
+    let mut result = HashMap::with_capacity(size);
     for item in iterator {
       *result.entry(to_key(item)).or_default() += 1;
     }
@@ -284,7 +232,6 @@ pub trait Sequence<Item> {
     self.intersperse_with(|| element.clone(), interval)
   }
 
-  #[inline]
   fn intersperse_with(self, mut element: impl FnMut() -> Item, interval: usize) -> Self
   where
     Item: Clone,
@@ -307,7 +254,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  #[inline]
   fn join_items(self, separator: &str) -> String
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -544,7 +490,6 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  #[inline]
   fn splice(self, range: impl RangeBounds<usize>, replace_with: Self) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -623,6 +568,47 @@ pub trait Sequence<Item> {
     self.into_iter().take_while(predicate).collect()
   }
 
+  fn unique(self) -> Self
+    where
+      Item: Eq + Hash + Clone,
+      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let occurred = HashSet::with_capacity(size);
+    unfold(occurred, |occurred| {
+      iterator.next().and_then(|item| {
+        if !occurred.contains(&item) {
+          occurred.insert(item.clone());
+          Some(item)
+        } else {
+          None
+        }
+      })
+    })
+      .collect()
+  }
+
+  fn unique_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+    where
+      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let iterator = self.into_iter();
+    let (size, _) = iterator.size_hint();
+    let mut occurred = HashSet::with_capacity(size);
+    iterator
+      .filter(|item| {
+        let key = to_key(item);
+        if occurred.contains(&key) {
+          false
+        } else {
+          occurred.insert(key);
+          true
+        }
+      })
+      .collect()
+  }
+
   #[inline]
   fn unit(value: Item) -> Self
   where
@@ -678,7 +664,6 @@ where
   iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
-#[inline]
 pub(crate) fn windowed<'a, Item, Collection, Result>(
   mut iterator: impl Iterator<Item = &'a Item>, size: usize,
 ) -> Result

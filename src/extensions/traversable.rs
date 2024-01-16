@@ -1,6 +1,8 @@
 // #![deny(missing_docs)]
 
 use std::cmp::Ordering;
+use std::collections::HashSet;
+use std::hash::Hash;
 
 /// Non-consuming collection operations.
 ///
@@ -37,6 +39,14 @@ pub trait Traversable<Item> {
   /// assert!(!a.all(|&x| x > 2));
   /// ```
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
+
+  fn all_distinct(&self) -> bool
+  where
+    Item: Eq + Hash;
+
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq;
 
   /// Tests if any element of the collection matches a predicate.
   ///
@@ -347,6 +357,21 @@ pub(crate) fn all<'a, Item: 'a>(
 }
 
 #[inline]
+pub(crate) fn all_equal<'a, Item: PartialEq + 'a>(mut iterator: impl Iterator<Item = &'a Item>) -> bool {
+  match iterator.next() {
+    Some(head) => iterator.all(|x| x == head),
+    None => false,
+  }
+}
+
+#[inline]
+pub(crate) fn all_unique<'a, Item: Eq + Hash + 'a>(mut iterator: impl Iterator<Item = &'a Item>) -> bool {
+  let (size, _) = iterator.size_hint();
+  let mut items = HashSet::with_capacity(size);
+  iterator.all(|x| items.insert(x))
+}
+
+#[inline]
 pub(crate) fn any<'a, Item: 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, predicate: impl FnMut(&Item) -> bool,
 ) -> bool {
@@ -360,7 +385,6 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
-#[inline]
 pub(crate) fn minmax_by<'a, Item: 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering,
 ) -> Option<(&'a Item, &'a Item)> {
@@ -382,7 +406,6 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
   }
 }
 
-#[inline]
 pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
   mut iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
 ) -> Option<(&'a Item, &'a Item)> {

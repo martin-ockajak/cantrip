@@ -13,26 +13,33 @@ Enables collection manipulation in a functional style without the usual Rust boi
 ### Examples
 
 ```rust
-  use cantrip::*;
+use cantrip::*;
 
-  let data = vec![1, 2, 3];
- 
-  data.fold(0, |r, x| r + x);       // 6
- 
-  data.filter(|&x| x > 1);          // vec![2, 3]
- 
-  data.map(|x| x + 1);              // vec![2, 3, 4]
- 
-  data.add(1).distinct();           // vec![1, 2, 3]
- 
-  data.delete(0).tail();            // vec![3]
-  
-  data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
- 
-  data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
+# let source = vec![1, 2, 3];
+let data = vec![1, 2, 3];
+
+data.fold(0, |r, x| r + x);       // 6
+
+# let data = source.clone();
+data.filter(|&x| x > 1);          // vec![2, 3]
+
+# let data = source.clone();
+data.map(|x| x + 1);              // vec![2, 3, 4]
+
+# let data = source.clone();
+data.add(1).unique();             // vec![1, 2, 3]
+
+# let data = source.clone();
+data.delete_at(0).tail();         // vec![3]
+
+# let data = source.clone();
+data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
+
+# let data = source.clone();
+data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 ```
 
-### Methods
+/ ### Methods
 
 | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
@@ -40,6 +47,8 @@ Enables collection manipulation in a functional style without the usual Rust boi
 | *add_all*                |             *             |               *               |         *         |       |
 | *add_at*                 |             *             |                               |                   |       |
 | *all*                    |             *             |               *               |         *         |   *   |
+| *all_equal*              |             *             |               *               |         *         |   *   |
+| *all_unique*             |             *             |               *               |         *         |   *   |
 | *any*                    |             *             |               *               |         *         |   *   |
 | *chunked*                |             *             |                               |                   |       |
 | *chunked_by*             |             *             |                               |                   |       |
@@ -48,8 +57,6 @@ Enables collection manipulation in a functional style without the usual Rust boi
 | *delete*                 |             *             |                               |                   |       |
 | *delete_all*             |             *             |               *               |         *         |       |
 | *delete_at*              |             *             |               *               |         *         |       |
-| *distinct*               |             *             |                               |                   |       |
-| *distinct_by*            |             *             |                               |                   |       |
 | *duplicates*             |             *             |                               |                   |       |
 | *duplicates_by*          |             *             |                               |                   |       |
 | *enumerate*              |             *             |                               |                   |       |
@@ -123,11 +130,12 @@ Enables collection manipulation in a functional style without the usual Rust boi
 | *tail*                   |             *             |                               |                   |   *   |
 | *take*                   |             *             |                               |                   |       |
 | *take_while*             |             *             |                               |                   |   *   |
+| *unique*                 |             *             |                               |                   |       |
+| *unique_by*              |             *             |                               |                   |       |
 | *unit*                   |             *             |               *               |         *         |       |
 | *unzip*                  |             *             |                               |                   |       |
 | *windowed*               |             *             |                               |                   |       |
 | *zip*                    |             *             |                               |                   |       |
-
 ## Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)

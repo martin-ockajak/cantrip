@@ -27,10 +27,10 @@
 /// data.map(|x| x + 1);              // vec![2, 3, 4]
 ///
 /// # let data = source.clone();
-/// data.add(1).distinct();           // vec![1, 2, 3]
+/// data.add(1).unique();             // vec![1, 2, 3]
 ///
 /// # let data = source.clone();
-/// data.delete_at(0).tail();            // vec![3]
+/// data.delete_at(0).tail();         // vec![3]
 ///
 /// # let data = source.clone();
 /// data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
@@ -47,6 +47,8 @@
 /// | *add_all*                |             *             |               *               |         *         |       |
 /// | *add_at*                 |             *             |                               |                   |       |
 /// | *all*                    |             *             |               *               |         *         |   *   |
+/// | *all_equal*              |             *             |               *               |         *         |   *   |
+/// | *all_unique*             |             *             |               *               |         *         |   *   |
 /// | *any*                    |             *             |               *               |         *         |   *   |
 /// | *chunked*                |             *             |                               |                   |       |
 /// | *chunked_by*             |             *             |                               |                   |       |
@@ -55,8 +57,6 @@
 /// | *delete*                 |             *             |                               |                   |       |
 /// | *delete_all*             |             *             |               *               |         *         |       |
 /// | *delete_at*              |             *             |               *               |         *         |       |
-/// | *distinct*               |             *             |                               |                   |       |
-/// | *distinct_by*            |             *             |                               |                   |       |
 /// | *duplicates*             |             *             |                               |                   |       |
 /// | *duplicates_by*          |             *             |                               |                   |       |
 /// | *enumerate*              |             *             |                               |                   |       |
@@ -130,6 +130,8 @@
 /// | *tail*                   |             *             |                               |                   |   *   |
 /// | *take*                   |             *             |                               |                   |       |
 /// | *take_while*             |             *             |                               |                   |   *   |
+/// | *unique*                 |             *             |                               |                   |       |
+/// | *unique_by*              |             *             |                               |                   |       |
 /// | *unit*                   |             *             |               *               |         *         |       |
 /// | *unzip*                  |             *             |                               |                   |       |
 /// | *windowed*               |             *             |                               |                   |       |
