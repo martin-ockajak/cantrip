@@ -19,14 +19,6 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash,
-  {
-    all_unique(self.iter())
-  }
-
-  #[inline]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
@@ -101,12 +93,23 @@ impl<Item> Reversible<Item> for [Item] {
 
 impl<Item> Slice<Item> for [Item] {
   #[inline]
+  fn all_unique(&self) -> bool
+  where
+    Item: Eq + Hash,
+  {
+    all_unique(self.iter())
+  }
+
+  #[inline]
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]
   }
 
   #[inline]
-  fn join_items(&self, separator: &str) -> String where Item: Display {
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
     join_items(self.iter(), separator)
   }
 

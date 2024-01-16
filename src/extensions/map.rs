@@ -27,13 +27,18 @@ pub trait Map<Key, Value> {
 
   #[inline]
   fn add_all(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
-    where
-      Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().chain(iterable).collect()
   }
 
   fn all(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> bool;
+
+  fn all_equal(&self) -> bool
+  where
+    Key: PartialEq,
+    Value: PartialEq;
 
   fn any(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> bool;
 
@@ -41,18 +46,18 @@ pub trait Map<Key, Value> {
 
   #[inline]
   fn delete(self, key: &Key) -> Self
-    where
-      Key: PartialEq,
-      Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  where
+    Key: PartialEq,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
   #[inline]
   fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
-    where
-      Key: Eq + Hash + 'a,
-      Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  where
+    Key: Eq + Hash + 'a,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     let removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
@@ -267,17 +272,31 @@ pub trait Map<Key, Value> {
 }
 
 #[inline]
-pub(crate) fn all_pairs<A>(mut iterator: impl Iterator<Item = A>, mut predicate: impl FnMut(&A) -> bool) -> bool {
+pub(crate) fn all_pairs<Item>(
+  mut iterator: impl Iterator<Item = Item>, mut predicate: impl FnMut(&Item) -> bool,
+) -> bool {
   iterator.all(|x| predicate(&x))
 }
 
 #[inline]
-pub(crate) fn any_pairs<A>(mut iterator: impl Iterator<Item = A>, mut predicate: impl FnMut(&A) -> bool) -> bool {
+pub(crate) fn all_equal_pairs<Item: PartialEq>(mut iterator: impl Iterator<Item = Item>) -> bool {
+  match iterator.next() {
+    Some(head) => iterator.all(|x| x == head),
+    None => false,
+  }
+}
+
+#[inline]
+pub(crate) fn any_pairs<Item>(
+  mut iterator: impl Iterator<Item = Item>, mut predicate: impl FnMut(&Item) -> bool,
+) -> bool {
   iterator.any(|x| predicate(&x))
 }
 
 #[inline]
-pub(crate) fn count_by_pairs<A>(iterator: impl Iterator<Item = A>, predicate: impl FnMut(&A) -> bool) -> usize {
+pub(crate) fn count_by_pairs<Item>(
+  iterator: impl Iterator<Item = Item>, predicate: impl FnMut(&Item) -> bool,
+) -> usize {
   iterator.filter(predicate).count()
 }
 

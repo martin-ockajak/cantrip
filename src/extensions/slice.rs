@@ -1,4 +1,5 @@
 use std::fmt::Display;
+use std::hash::Hash;
 
 /// Slice operations.
 ///
@@ -9,11 +10,15 @@ use std::fmt::Display;
 /// - Does not create a new collection
 ///
 pub trait Slice<Item> {
+  fn all_unique(&self) -> bool
+  where
+    Item: Eq + Hash;
+
   fn init(&self) -> &Self;
 
   fn join_items(&self, separator: &str) -> String
-    where
-      Item: Display;
+  where
+    Item: Display;
 
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 

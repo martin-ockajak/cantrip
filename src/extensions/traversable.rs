@@ -44,10 +44,6 @@ pub trait Traversable<Item> {
   where
     Item: PartialEq;
 
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash;
-
   /// Tests if any element of the collection matches a predicate.
   ///
   /// `any()` takes a closure that returns `true` or `false`. It applies

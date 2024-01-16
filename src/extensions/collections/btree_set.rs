@@ -19,14 +19,6 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
   }
 
   #[inline]
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash,
-  {
-    all_unique(self.iter())
-  }
-
-  #[inline]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }

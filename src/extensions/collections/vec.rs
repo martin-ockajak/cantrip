@@ -19,14 +19,6 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash,
-  {
-    all_unique(self.iter())
-  }
-
-  #[inline]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
@@ -132,12 +124,23 @@ impl<Item> Sequence<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
+  fn all_unique(&self) -> bool
+  where
+    Item: Eq + Hash,
+  {
+    all_unique(self.iter())
+  }
+
+  #[inline]
   fn init(self) -> Self {
     init(self.into_iter())
   }
 
   #[inline]
-  fn join_items(&self, separator: &str) -> String where Item: Display {
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
     join_items(self.iter(), separator)
   }
 

@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use std::hash::Hash;
 
 use crate::extensions::*;
 
@@ -16,14 +15,6 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
     Item: PartialEq,
   {
     all_equal(self.iter())
-  }
-
-  #[inline]
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash,
-  {
-    all_unique(self.iter())
   }
 
   #[inline]

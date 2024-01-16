@@ -66,6 +66,10 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+  fn all_unique(&self) -> bool
+  where
+    Item: Eq + Hash;
+
   fn chunked(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,

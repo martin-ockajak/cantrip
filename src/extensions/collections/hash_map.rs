@@ -12,6 +12,15 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
+  fn all_equal(&self) -> bool
+  where
+    Key: PartialEq,
+    Value: PartialEq,
+  {
+    all_equal_pairs(self.iter())
+  }
+
+  #[inline]
   fn any(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> bool {
     any_pairs(self.iter(), predicate)
   }
