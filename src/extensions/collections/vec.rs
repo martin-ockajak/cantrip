@@ -127,6 +127,14 @@ impl<Item> Collectible<Item> for Vec<Item> {
   {
     self.iter().map(function).collect()
   }
+
+  #[inline]
+  fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().scan(initial_state, function).collect()
+  }
 }
 
 impl<Item> Sequence<Item> for Vec<Item> {
@@ -163,11 +171,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn rev(self) -> Self {
     self.into_iter().rev().collect()
-  }
-
-  #[inline]
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
-    self.iter().scan(init, function).collect()
   }
 
   #[inline]

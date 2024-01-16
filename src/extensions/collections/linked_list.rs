@@ -127,6 +127,14 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   {
     self.iter().map(function).collect()
   }
+
+  #[inline]
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().scan(init, function).collect()
+  }
 }
 
 impl<Item> Sequence<Item> for LinkedList<Item> {
@@ -163,11 +171,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   #[inline]
   fn rev(self) -> Self {
     self.into_iter().rev().collect()
-  }
-
-  #[inline]
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B> {
-    self.iter().scan(init, function).collect()
   }
 
   #[inline]

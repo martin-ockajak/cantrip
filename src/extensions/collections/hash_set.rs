@@ -110,4 +110,12 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   {
     self.iter().map(function).collect()
   }
+
+  #[inline]
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().scan(init, function).collect()
+  }
 }

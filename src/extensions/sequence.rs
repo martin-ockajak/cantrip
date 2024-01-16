@@ -375,8 +375,6 @@ pub trait Sequence<Item> {
     self.into_iter().rev().scan(initial_state, function).collect()
   }
 
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>;
-
   #[inline]
   fn skip(self, n: usize) -> Self
   where

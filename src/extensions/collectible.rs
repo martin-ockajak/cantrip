@@ -677,14 +677,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  // fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  // where
-  //   Self: IntoIterator<Item = Item> + FromIterator<B>,
-  //   Self::This<B>: FromIterator<B>;
+  fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
 
   fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
-    Self: IntoIterator<Item = Item> + FromIterator<B>,
+    Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
   {
     self.into_iter().scan(initial_state, function).collect()

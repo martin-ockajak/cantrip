@@ -266,6 +266,22 @@ pub trait Map<Key, Value> {
 
   fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
+  fn scan<S, L, W>(
+    self, initial_state: S, function: impl FnMut(&mut S, (&Key, &Value)) -> Option<(L, W)>,
+  ) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>;
+
+  fn scan_to<S, L, W>(
+    self, initial_state: S, function: impl FnMut(&mut S, (Key, Value)) -> Option<(L, W)>,
+  ) -> Self::This<L, W>
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().scan(initial_state, function).collect()
+  }
+
   #[inline]
   fn sum_keys(self) -> Key
   where
