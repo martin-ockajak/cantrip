@@ -45,10 +45,11 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
 | *add*                    |             *             |               *               |         *         |       |
 | *add_all*                |             *             |               *               |         *         |       |
+| *add_all_at*             |             *             |                               |                   |       |
 | *add_at*                 |             *             |                               |                   |       |
 | *all*                    |             *             |               *               |         *         |   *   |
 | *all_equal*              |             *             |               *               |         *         |   *   |
-| *all_unique*             |             *             |               *               |         *         |   *   |
+| *all_unique*             |             *             |                               |                   |   *   |
 | *any*                    |             *             |               *               |         *         |   *   |
 | *chunked*                |             *             |                               |                   |       |
 | *chunked_by*             |             *             |                               |                   |       |
@@ -57,6 +58,7 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *delete*                 |             *             |                               |                   |       |
 | *delete_all*             |             *             |               *               |         *         |       |
 | *delete_at*              |             *             |               *               |         *         |       |
+| *delete_range*           |             *             |               *               |         *         |       |
 | *duplicates*             |             *             |                               |                   |       |
 | *duplicates_by*          |             *             |                               |                   |       |
 | *enumerate*              |             *             |                               |                   |       |
