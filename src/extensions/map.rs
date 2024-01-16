@@ -1,5 +1,7 @@
 use std::cmp::Ordering;
 use std::collections::HashSet;
+use std::fmt::Display;
+use std::fmt::Write;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -158,6 +160,11 @@ pub trait Map<Key, Value> {
     let retained: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
+
+  fn join_items(&self, separator: &str) -> String
+  where
+    Key: Display,
+    Value: Display;
 
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
@@ -336,6 +343,24 @@ pub(crate) fn flat_map_pairs<'a, K: 'a, V: 'a, L, W, R: IntoIterator<Item = (L, 
   iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> R,
 ) -> Result {
   iterator.flat_map(|x| function(&x)).collect()
+}
+
+pub(crate) fn join_items_pairs<'a, K: Display + 'a, V: Display + 'a>(
+  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, separator: &str,
+) -> String {
+  match iterator.next() {
+    Some((key, value)) => {
+      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
+      write!(&mut result, "{},{}", key, value).unwrap();
+      for item in iterator {
+        result.push_str(separator);
+        write!(&mut result, "{},{}", key, value).unwrap();
+      }
+      result.shrink_to_fit();
+      result
+    }
+    None => String::new(),
+  }
 }
 
 #[inline]

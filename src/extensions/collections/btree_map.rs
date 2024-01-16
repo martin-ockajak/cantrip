@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
+use std::fmt::Display;
 
 use crate::extensions::*;
 
@@ -60,6 +61,11 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     self.iter().fold(init, function)
+  }
+
+  #[inline]
+  fn join_items(&self, separator: &str) -> String where Key: Display, Value: Display {
+    join_items_pairs(self.iter(), separator)
   }
 
   #[inline]
