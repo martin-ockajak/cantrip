@@ -254,27 +254,9 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  fn join_items(self, separator: &str) -> String
+  fn join_items(&self, separator: &str) -> String
   where
-    Self: IntoIterator<Item = Item> + Sized,
-    Item: Display,
-  {
-    let mut iterator = self.into_iter();
-    match iterator.next() {
-      Some(item) => {
-        let (size, _) = iterator.size_hint();
-        let mut result = String::with_capacity(separator.len() * size);
-        write!(&mut result, "{}", item).unwrap();
-        for item in iterator {
-          result.push_str(separator);
-          write!(&mut result, "{}", item).unwrap();
-        }
-        result.shrink_to_fit();
-        result
-      }
-      None => String::new(),
-    }
-  }
+    Item: Display;
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
@@ -569,9 +551,9 @@ pub trait Sequence<Item> {
   }
 
   fn unique(self) -> Self
-    where
-      Item: Eq + Hash + Clone,
-      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  where
+    Item: Eq + Hash + Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
@@ -586,12 +568,12 @@ pub trait Sequence<Item> {
         }
       })
     })
-      .collect()
+    .collect()
   }
 
   fn unique_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
-    where
-      Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
     let (size, _) = iterator.size_hint();
@@ -651,6 +633,25 @@ where
 {
   let size = iterator.len() - 1;
   iterator.skip(size).collect()
+}
+
+pub(crate) fn join_items<'a, Item: Display + 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
+) -> String {
+  match iterator.next() {
+    Some(item) => {
+      let (size, _) = iterator.size_hint();
+      let mut result = String::with_capacity(separator.len() * size);
+      write!(&mut result, "{}", item).unwrap();
+      for item in iterator {
+        result.push_str(separator);
+        write!(&mut result, "{}", item).unwrap();
+      }
+      result.shrink_to_fit();
+      result
+    }
+    None => String::new(),
+  }
 }
 
 #[inline]

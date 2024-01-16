@@ -40,13 +40,13 @@ pub trait Traversable<Item> {
   /// ```
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
-  fn all_distinct(&self) -> bool
-  where
-    Item: Eq + Hash;
-
   fn all_equal(&self) -> bool
   where
     Item: PartialEq;
+
+  fn all_unique(&self) -> bool
+  where
+    Item: Eq + Hash;
 
   /// Tests if any element of the collection matches a predicate.
   ///

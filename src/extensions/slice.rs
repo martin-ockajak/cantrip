@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 /// Slice operations.
 ///
 /// Methods have the following properties:
@@ -8,6 +10,12 @@
 ///
 pub trait Slice<Item> {
   fn init(&self) -> &Self;
+
+  fn join_items(&self, separator: &str) -> String
+    where
+      Item: Display;
+
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
   /// Creates an slice without initial elements based on a predicate.
   ///
@@ -44,8 +52,6 @@ pub trait Slice<Item> {
   /// assert_eq!(a.skip_while(|x| **x < 0), &[&0, &1]); // need two *s!
   /// ```
   fn skip_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
-
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
   fn tail(&self) -> &Self;
 

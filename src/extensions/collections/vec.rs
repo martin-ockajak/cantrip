@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -18,7 +19,7 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn all_distinct(&self) -> bool
+  fn all_unique(&self) -> bool
   where
     Item: Eq + Hash,
   {
@@ -133,6 +134,11 @@ impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn init(self) -> Self {
     init(self.into_iter())
+  }
+
+  #[inline]
+  fn join_items(&self, separator: &str) -> String where Item: Display {
+    join_items(self.iter(), separator)
   }
 
   #[inline]

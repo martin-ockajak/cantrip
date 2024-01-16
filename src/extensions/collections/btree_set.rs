@@ -19,7 +19,7 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
   }
 
   #[inline]
-  fn all_distinct(&self) -> bool
+  fn all_unique(&self) -> bool
   where
     Item: Eq + Hash,
   {

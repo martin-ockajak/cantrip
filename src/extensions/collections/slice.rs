@@ -1,4 +1,5 @@
 use std::cmp::{max, min, Ordering};
+use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -18,7 +19,7 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn all_distinct(&self) -> bool
+  fn all_unique(&self) -> bool
   where
     Item: Eq + Hash,
   {
@@ -94,14 +95,22 @@ impl<Item> Reversible<Item> for [Item] {
 }
 
 impl<Item> Slice<Item> for [Item] {
+  #[inline]
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]
   }
 
+  #[inline]
+  fn join_items(&self, separator: &str) -> String where Item: Display {
+    join_items(self.iter(), separator)
+  }
+
+  #[inline]
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.iter().position(predicate)
   }
 
+  #[inline]
   fn skip_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[min(index, self.len())..self.len()],
@@ -109,10 +118,12 @@ impl<Item> Slice<Item> for [Item] {
     }
   }
 
+  #[inline]
   fn tail(&self) -> &Self {
     &self[min(1, self.len())..self.len()]
   }
 
+  #[inline]
   fn take_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[0..min(index, self.len())],

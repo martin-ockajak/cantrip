@@ -33,11 +33,11 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iterable).collect()
   }
 
-  fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
+  fn all(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> bool;
 
-  fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
+  fn any(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> bool;
 
-  fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
+  fn count_by(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> usize;
 
   #[inline]
   fn delete(self, key: &Key) -> Self
@@ -102,9 +102,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
-  fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
-
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  fn filter_map<L, W>(&self, function: impl FnMut(&(&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
@@ -117,7 +115,9 @@ pub trait Map<Key, Value> {
     self.into_iter().filter_map(function).collect()
   }
 
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
+  fn find(&self, predicate: impl FnMut(&(&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
+
+  fn find_map<B>(&self, function: impl FnMut(&(&Key, &Value)) -> Option<B>) -> Option<B>;
 
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
@@ -127,7 +127,7 @@ pub trait Map<Key, Value> {
     self.into_iter().find_map(function)
   }
 
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  fn flat_map<L, W, R>(&self, function: impl FnMut(&(&Key, &Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
     Self::This<L, W>: FromIterator<(L, W)>;
@@ -154,7 +154,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
   }
 
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  fn map<L, W>(&self, function: impl FnMut(&(&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
@@ -185,7 +185,9 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 
-  fn max_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+  fn max_by(&self, compare: impl FnMut(&(&Key, &Value), &(&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+
+  fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&(&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
 
   #[inline]
   fn max_item(&self) -> Option<(&Key, &Value)>
@@ -196,7 +198,9 @@ pub trait Map<Key, Value> {
     self.max_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
   }
 
-  fn min_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+  fn min_by(&self, compare: impl FnMut(&(&Key, &Value), &(&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+
+  fn min_by_key<K: Ord>(&self, to_key: impl FnMut(&(&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
 
   #[inline]
   fn min_item(&self) -> Option<(&Key, &Value)>
@@ -279,30 +283,30 @@ pub(crate) fn count_by_pairs<A>(iterator: impl Iterator<Item = A>, predicate: im
 
 #[inline]
 pub(crate) fn filter_map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> Option<(L, W)>,
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> Option<(L, W)>,
 ) -> Result {
-  iterator.filter_map(function).collect()
+  iterator.filter_map(|x| function(&x)).collect()
 }
 
 #[inline]
 pub(crate) fn find_map_pairs<'a, K: 'a, V: 'a, B>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> Option<B>,
+  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> Option<B>,
 ) -> Option<B> {
-  iterator.find_map(function)
+  iterator.find_map(|x| function(&x))
 }
 
 #[inline]
 pub(crate) fn flat_map_pairs<'a, K: 'a, V: 'a, L, W, R: IntoIterator<Item = (L, W)>, Result: FromIterator<(L, W)>>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> R,
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> R,
 ) -> Result {
-  iterator.flat_map(function).collect()
+  iterator.flat_map(|x| function(&x)).collect()
 }
 
 #[inline]
 pub(crate) fn map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, function: impl FnMut((&K, &V)) -> (L, W),
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> (L, W),
 ) -> Result {
-  iterator.map(function).collect()
+  iterator.map(|x| function(&x)).collect()
 }
 
 #[inline]
