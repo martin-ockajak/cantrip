@@ -82,7 +82,7 @@
 /// | *intersperse*            |             *             |                               |                   |       |
 /// | *intersperse_with*       |             *             |                               |                   |       |
 /// | *init*                   |             *             |                               |                   |   *   |
-/// | *join_items*             |             *             |                               |                   |       |
+/// | *join_items*             |             *             |                               |                   |   *   |
 /// | *largest*                |             *             |               *               |                   |       |
 /// | *map*                    |             *             |               *               |         *         |       |
 /// | *map_to*                 |             *             |               *               |         *         |       |

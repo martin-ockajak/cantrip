@@ -260,14 +260,6 @@ pub trait Sequence<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
-  #[inline]
-  fn merge(self, iterable: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.into_iter().chain(iterable.into_iter()).collect()
-  }
-
   // FIXME - do not cut the collection
   #[inline]
   fn pad(self, element: Item, size: usize) -> Self
