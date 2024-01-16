@@ -107,6 +107,10 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *product_keys*           |                           |                               |         *         |       |
 | *product_values*         |                           |                               |         *         |       |
 | *reduce*                 |             *             |               *               |         *         |   *   |
+| *replace*                |             *             |               *               |         *         |       |
+| *replace_all*            |             *             |               *               |         *         |       |
+| *replace_at*             |             *             |                               |                   |       |
+| *replace_range*          |             *             |                               |                   |       |
 | *rev*                    |             *             |                               |                   |       |
 | *rfind*                  |             *             |                               |                   |   *   |
 | *rfold*                  |             *             |                               |                   |   *   |

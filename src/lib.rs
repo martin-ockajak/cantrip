@@ -107,6 +107,10 @@
 /// | *product_keys*           |                           |                               |         *         |       |
 /// | *product_values*         |                           |                               |         *         |       |
 /// | *reduce*                 |             *             |               *               |         *         |   *   |
+/// | *replace*                |             *             |               *               |         *         |       |
+/// | *replace_all*            |             *             |               *               |         *         |       |
+/// | *replace_at*             |             *             |                               |                   |       |
+/// | *replace_range*          |             *             |                               |                   |       |
 /// | *rev*                    |             *             |                               |                   |       |
 /// | *rfind*                  |             *             |                               |                   |   *   |
 /// | *rfold*                  |             *             |                               |                   |   *   |

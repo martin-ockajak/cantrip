@@ -79,14 +79,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(diff, vec![4, 4]);
   /// ```
   // FIXME - improve description
-  fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let iterator = iterable.iterator();
-    let (size, _) = iterator.size_hint();
-    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(size);
+    let iterator = elements.iterator();
+    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       *removed.entry(item).or_default() += 1;
     }
@@ -455,8 +454,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {
     let iterator = self.into_iter();
-    let (size, _) = iterator.size_hint();
-    let mut result: HashMap<K, Self> = HashMap::with_capacity(size);
+    let mut result: HashMap<K, Self> = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       result.entry(to_key(&item)).or_default().extend(iter::once(item));
     }
@@ -487,12 +485,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(intersection, [2, 3]);
   /// ```
   #[inline]
-  fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let retained: HashSet<&Item> = HashSet::from_iter(iterable.iterator());
+    let retained: HashSet<&Item> = HashSet::from_iter(elements.iterator());
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
@@ -628,6 +626,55 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   {
     let mut iterator = self.into_iter();
     iterator.next().map(|result| iterator.fold(result, function))
+  }
+
+  fn replace(self, value: &Item, replacement: Item) -> Self
+  where
+    Item: PartialEq,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut replaced = false;
+    let mut replaced_item = iter::once(replacement);
+    iterator
+      .flat_map(|item| {
+        if !replaced && item.eq(value) {
+          replaced = true;
+          replaced_item.next()
+        } else {
+          Some(item)
+        }
+      })
+      .collect()
+  }
+
+  fn replace_all<'a>(
+    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
+  ) -> Self
+  where
+    Item: Eq + Hash + 'a,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let iterator = elements.iterator();
+    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      *removed.entry(item).or_default() += 1;
+    }
+    let mut replacement_items = replacement.into_iter();
+    self
+      .into_iter()
+      .flat_map(|item| match removed.get_mut(&item) {
+        Some(count) => {
+          if *count > 0 {
+            *count -= 1;
+            replacement_items.next().or(Some(item))
+          } else {
+            Some(item)
+          }
+        }
+        None => Some(item),
+      })
+      .collect()
   }
 
   fn smallest(self, n: usize) -> Self
