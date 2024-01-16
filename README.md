@@ -80,11 +80,12 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *frequencies_by*         |             *             |                               |                   |       |
 | *grouped_by*             |             *             |               *               |                   |       |
 | *interleave*             |             *             |                               |                   |       |
+| *interleave_shortest*    |             *             |                               |                   |       |
 | *intersect*              |             *             |               *               |         *         |       |
 | *intersperse*            |             *             |                               |                   |       |
 | *intersperse_with*       |             *             |                               |                   |       |
 | *init*                   |             *             |                               |                   |   *   |
-| *join_items*             |             *             |                               |                   |   *   |
+| *join_items*             |             *             |               *               |         *         |   *   |
 | *largest*                |             *             |               *               |                   |       |
 | *map*                    |             *             |               *               |         *         |       |
 | *map_to*                 |             *             |               *               |         *         |       |
@@ -115,6 +116,10 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *rfind*                  |             *             |                               |                   |   *   |
 | *rfold*                  |             *             |                               |                   |   *   |
 | *rposition*              |             *             |                               |                   |   *   |
+| *rskip*                  |             *             |                               |                   |       |
+| *rskip_while*            |             *             |                               |                   |   *   |
+| *rtake*                  |             *             |                               |                   |       |
+| *rtake_while*            |             *             |                               |                   |   *   |
 | *pad*                    |             *             |                               |                   |   *   |
 | *pad_with*               |             *             |                               |                   |   *   |
 | *scan*                   |             *             |                               |                   |       |

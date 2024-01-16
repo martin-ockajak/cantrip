@@ -146,4 +146,40 @@ pub trait Reversible<Item> {
   /// assert_eq!(a.rposition(|&x| x >= 2), Some(3));
   /// ```
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
+
+  #[inline]
+  fn rskip<I>(self, n: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: DoubleEndedIterator<Item = Item>,
+  {
+    self.into_iter().rev().skip(n).collect()
+  }
+
+  #[inline]
+  fn rskip_while<I>(self, predicate: impl FnMut(&Item) -> bool) -> Self
+  where
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: DoubleEndedIterator<Item = Item>,
+  {
+    self.into_iter().rev().skip_while(predicate).collect()
+  }
+
+  #[inline]
+  fn rtake<I>(self, n: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: DoubleEndedIterator<Item = Item>,
+  {
+    self.into_iter().rev().take(n).collect()
+  }
+
+  #[inline]
+  fn rtake_while<I>(self, predicate: impl FnMut(&Item) -> bool) -> Self
+  where
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: DoubleEndedIterator<Item = Item>,
+  {
+    self.into_iter().rev().take_while(predicate).collect()
+  }
 }

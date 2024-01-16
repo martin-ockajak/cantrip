@@ -23,8 +23,6 @@ pub trait Sequence<Item> {
   // coalesce
   // cartesian_product
   // same_elements
-  // rtake
-  // rskip
   // longest common prefix
   // longest common suffix
   // combinations_with_replacement
