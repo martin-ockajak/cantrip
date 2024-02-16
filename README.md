@@ -39,7 +39,7 @@ data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
 data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 ```
 
-/ ### Methods
+### Methods
 
 | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|
