@@ -4,7 +4,7 @@ Enables collection manipulation in a functional style without the usual Rust boi
 
 ### Features
 
-- Equivalents of suitable iterator methods are added to standard library collections
+- Equivalents of standard iterator methods are added to standard library collections
 - Additional utility methods commonly found in collection libraries are also included
 - Transformation methods return a new collection instance instead of returning an iterator
 - All methods consider collection instances to be immutable although some may consume them
