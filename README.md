@@ -15,27 +15,20 @@ Enables direct collection manipulation without the usual Rust iterator boilerpla
 ```rust
 use cantrip::*;
 
-# let source = vec![1, 2, 3];
 let data = vec![1, 2, 3];
 
 data.fold(0, |r, x| r + x);       // 6
 
-# let data = source.clone();
 data.filter(|&x| x > 1);          // vec![2, 3]
 
-# let data = source.clone();
 data.map(|x| x + 1);              // vec![2, 3, 4]
 
-# let data = source.clone();
 data.add(1).unique();             // vec![1, 2, 3]
 
-# let data = source.clone();
 data.delete_at(0).tail();         // vec![3]
 
-# let data = source.clone();
 data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
 
-# let data = source.clone();
 data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 ```
 
