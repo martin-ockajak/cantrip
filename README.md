@@ -157,10 +157,3 @@ data.grouped_by(|x| x % 2);       // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 - [Itertools](https://docs.rs/itertools/latest/itertools/trait.Itertools.html)
 - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
 
-# Tasks
-
-- Add String extensions
-
-- Implement tests
-
-- Write documentation
