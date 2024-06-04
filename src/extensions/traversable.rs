@@ -42,6 +42,27 @@ pub trait Traversable<Item> {
   /// ```
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
+  /// Tests if all elements of the collection are equal.
+  ///
+  /// `all_equal()` returns `true` if all elements of the collection are equal
+  /// and `false` if a pair of unequal elements exist.
+  ///
+  /// An empty collection returns `true`.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 1, 1];
+  /// let b = vec![1, 2, 3];
+  ///
+  /// assert!(a.all_equal());
+  ///
+  /// assert!(!b.all_equal());
+  /// ```
   fn all_equal(&self) -> bool
   where
     Item: PartialEq;
