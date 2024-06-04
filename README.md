@@ -1,6 +1,6 @@
 Convenient extension methods for Rust standard library collections.
 
-Enables collection manipulation in a functional style without the usual Rust boilerplate.
+Enables direct collection manipulation without the usual Rust iterator boilerplate.
 
 ### Features
 
