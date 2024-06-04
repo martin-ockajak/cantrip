@@ -674,9 +674,7 @@ where
   iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
-pub(crate) fn windowed<'a, Item, Collection, Result>(
-  iterator: impl Iterator<Item = &'a Item>, size: usize,
-) -> Result
+pub(crate) fn windowed<'a, Item, Collection, Result>(iterator: impl Iterator<Item = &'a Item>, size: usize) -> Result
 where
   Item: Clone + 'a,
   Collection: FromIterator<Item>,
