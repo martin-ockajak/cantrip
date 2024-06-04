@@ -69,7 +69,7 @@ impl<Item> Traversable<Item> for HashSet<Item> {
 
   #[inline]
   fn min_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
-    self.iter().max_by_key(|&x| to_key(x))
+    self.iter().min_by_key(|&x| to_key(x))
   }
 
   #[inline]

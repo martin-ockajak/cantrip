@@ -95,7 +95,7 @@ pub trait Traversable<Item> {
   /// ```
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
-  /// Counts elements of an collection that satisfy a predicate.
+  /// Counts elements of a collection that satisfy a predicate.
   ///
   /// `count_by()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of the collection, and counts those which
@@ -116,7 +116,7 @@ pub trait Traversable<Item> {
   /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
 
-  /// Searches for an element of an collection that satisfies a predicate.
+  /// Searches for an element of a collection that satisfies a predicate.
   ///
   /// `find()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of the collection, and if any of them return
@@ -143,6 +143,26 @@ pub trait Traversable<Item> {
   /// ```
   fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
+  /// Applies function to the elements of a collection and returns
+  /// the first non-none result.
+  ///
+  /// `find_map` can be used to make chains of [`find`] and [`map`] more
+  /// concise.
+  ///
+  /// `find_map(f)` is equivalent to `find().map()`.
+  ///
+  /// [`find`]: Traversable::find
+  /// [`map`]: Traversable::map
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// let a = ["lol", "NaN", "2", "5"];
+  ///
+  /// let first_number = a.iter().find_map(|s| s.parse().ok());
+  ///
+  /// assert_eq!(first_number, Some(2));
+  /// ```
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
   /// Folds every element into an accumulator by applying an operation,
@@ -240,6 +260,17 @@ pub trait Traversable<Item> {
   /// ```
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
+  /// Combine all collection elements into one `String`, separated by `sep`.
+  ///
+  /// Use the `Display` implementation of each element.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = [1, 2, 3];
+  ///
+  /// assert_eq!(a.join_items(", "), "1, 2, 3");
+  /// ```
   fn join_items(&self, separator: &str) -> String
   where
     Item: Display;
@@ -259,10 +290,24 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// assert_eq!(*a.max_by(|x, y| x.cmp(y)).unwrap(), 5);
+  /// assert_eq!(a.max_by(|x, y| x.cmp(y)).unwrap(), &5);
   /// ```
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
+  /// Returns the element that gives the maximum value with respect to the
+  /// specified key function.
+  ///
+  /// If several elements are equally maximum, the last element is
+  /// returned. If the collection is empty, [`None`] is returned.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// assert_eq!(a.max_by_key(|x| x.abs()).unwrap(), &-10);
+  /// ```
   fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
   /// Returns the maximum element of a collection.
@@ -316,13 +361,27 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// assert_eq!(*a.min_by(|x, y| x.cmp(y)).unwrap(), -10);
+  /// assert_eq!(a.min_by(|x, y| x.cmp(y)).unwrap(), &-10);
   /// ```
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
+  /// Returns the element that gives the minimum value with respect to the
+  /// specified key function.
+  ///
+  /// If several elements are equally minimum, the last element is
+  /// returned. If the collection is empty, [`None`] is returned.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// assert_eq!(a.min_by_key(|x| x.abs()).unwrap(), &0);
+  /// ```
   fn min_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
-  /// Returns the minimum element of an collection.
+  /// Returns the minimum element of a collection.
   ///
   /// If several elements are equally minimum, the first element is returned.
   /// If the collection is empty, [`None`] is returned.

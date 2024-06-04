@@ -68,7 +68,7 @@ impl<Item> Traversable<Item> for Vec<Item> {
 
   #[inline]
   fn min_by_key<K: Ord>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item> {
-    self.iter().max_by_key(|&x| to_key(x))
+    self.iter().min_by_key(|&x| to_key(x))
   }
 
   #[inline]

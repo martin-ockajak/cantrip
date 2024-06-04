@@ -200,7 +200,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// closure returns `Some(value)`.
   ///
   /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
-  /// concise. The example below shows how a `map().filter().map()` can be
+  /// concise. The example below shows how a `map().filter().map_to()` can be
   /// shortened to a single call to `filter_map`.
   ///
   /// [`filter`]: Collectible::filter
