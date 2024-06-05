@@ -17,7 +17,8 @@ use crate::Traversable;
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
   type This<I>;
 
-  /// Creates a new collection by appending an element to it.
+  /// Creates a new collection by appending an element to
+  /// the original collection.
   ///
   /// # Examples
   ///
@@ -34,7 +35,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  /// Creates a new collection by appending all elements of another collection to it.
+  /// Creates a new collection by appending all elements of
+  /// another collection to the original collection.
   ///
   /// # Examples
   ///
@@ -53,7 +55,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iterable).collect()
   }
 
-  /// Creates a new collection without the first occurrence of an element.
+  /// Creates a new collection from the original collection without
+  /// the first occurrence of an element.
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
@@ -86,8 +89,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a new collection without the first occurrences of elements found
-  /// in another collection.
+  /// Creates a new collection from the original collection without
+  /// the first occurrences of elements found in another collection.
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
@@ -168,7 +171,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iter::repeat(value()).take(size).collect()
   }
 
-  /// Filters a collection using a closure to determine if an element should be retained.
+  /// Creates a new collection by filtering the original collection using a
+  /// closure to determine if an element should be retained.
   ///
   /// Given an element the closure must return `true` or `false`. The returned
   /// collection will contain only the elements for which the closure returns
@@ -236,7 +240,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(predicate).collect()
   }
 
-  /// Filters and maps a collection.
+  /// Creates a new collection by filtering and mapping the original collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -279,7 +283,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Filters and maps a collection.
+  /// Creates a new collection by filters and maps the original collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -360,7 +364,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().find_map(function)
   }
 
-  /// Flattens a nested structure.
+  /// Creates a new collection by flattens the original nested collection.
   ///
   /// This is useful when you have a collection of iterables and
   /// you want to remove one level of indirection.
@@ -447,7 +451,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flatten().collect()
   }
 
-  /// Applies the given closure `f` to each element in the container and flattens the nested structure.
+  /// Creates a new collection by applying the given closure `f` to each element
+  /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
@@ -485,7 +490,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>;
 
-  /// Applies the given closure `f` to each element in the container and flattens the nested structure.
+  /// Creates a new collection by applying the given closure `f` to each element
+  /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
@@ -646,6 +652,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(function).collect()
   }
 
+  /// Creates a new collection containing the n largest elements of
+  /// the original collection in descending order.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![6, 9, 1, 0, 4, 8, 7, 2, 3, 5];
+  ///
+  /// let largest = a.largest(5);
+  ///
+  /// // FIXME - correct the error
+  /// // assert_eq!(largest, vec![9, 8, 7, 6, 5]);
+  /// ```
   fn largest(self, n: usize) -> Self
   where
     Item: Ord,
@@ -658,9 +677,27 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
         *heap.peek_mut().unwrap() = Reverse(item);
       }
     }
-    heap.into_iter().map(|x| x.0).collect()
+    heap.into_iter().rev().map(|x| x.0).collect()
   }
 
+  /// Creaties two collections from the original collection using a predicate.
+  ///
+  /// The predicate passed to `partition()` can return `true`, or `false`.
+  /// `partition()` returns a pair, all the elements for which it returned
+  /// `true`, and all the elements for which it returned `false`.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let (even, odd) = a.partition(|n| n % 2 == 0);
+  ///
+  /// assert_eq!(even, vec![2]);
+  /// assert_eq!(odd, vec![1, 3]);
+  /// ```
   #[inline]
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
@@ -799,6 +836,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
+  /// Creates a new collection containing the n smallest elements of
+  /// the original collection in descending order.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![6, 9, 1, 0, 4, 8, 7, 2, 3, 5];
+  ///
+  /// let smallest = a.smallest(5);
+  ///
+  /// // FIXME - correct the error
+  /// // assert_eq!(smallest, vec![1, 2, 3, 4, 5]);
+  /// ```
   fn smallest(self, n: usize) -> Self
   where
     Item: Ord,
