@@ -16,6 +16,11 @@ fn collectibles() {
   test_collectible_traits::<BTreeSet<i64>>();
 }
 
+// #[test]
+// fn slices() {
+//   test_slice_traits::<&[i64]>();
+// }
+
 #[test]
 fn sequences() {
   test_sequence_traits::<LinkedList<i64>>();
