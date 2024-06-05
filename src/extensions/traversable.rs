@@ -1,7 +1,8 @@
 #![deny(missing_docs)]
 
+use crate::Iterable;
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -59,7 +60,6 @@ pub trait Traversable<Item> {
   /// let b = vec![1, 2, 3];
   ///
   /// assert!(a.all_equal());
-  ///
   /// assert!(!b.all_equal());
   /// ```
   fn all_equal(&self) -> bool
@@ -279,8 +279,27 @@ pub trait Traversable<Item> {
   where
     Item: Display;
 
-  // FIXME - implement
-  // fn includes(&self, iterable: impl IntoIterator<Item = Item>) -> bool;
+  /// Tests if a collection contains all elements of another collection as
+  /// many times as their appear in the other collection.
+  ///
+  /// Return `true` if another collection is empty.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3];
+  ///
+  /// assert!(a.includes(&vec![1, 2, 2]));
+  /// assert!(!a.includes(&vec![1, 2, 2, 2]));
+  /// assert!(!a.includes(&vec![2, 4]));
+  /// ```
+  fn includes<'a>(&self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
 
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
@@ -517,6 +536,58 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
+#[inline]
+pub(crate) fn fold<'a, Item: 'a, B>(
+  iterator: impl Iterator<Item = &'a Item>, init: B, function: impl FnMut(B, &Item) -> B,
+) -> B {
+  iterator.fold(init, function)
+}
+
+#[inline]
+pub(crate) fn includes<'a, Item: 'a>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+  for item in elements_iterator {
+    *excluded.entry(item).or_default() += 1;
+  }
+  let mut remaining = excluded.len();
+  iterator.for_each(|x| {
+    excluded.get_mut(x).map(|count|
+      if *count > 0 {
+        *count -= 1;
+      } else {
+        remaining -= 1;
+        ()
+      }
+    );
+    ()
+  });
+  remaining <= 0
+}
+
+pub(crate) fn join_items<'a, Item: Display + 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
+) -> String {
+  match iterator.next() {
+    Some(item) => {
+      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
+      write!(&mut result, "{}", item).unwrap();
+      for item in iterator {
+        result.push_str(separator);
+        write!(&mut result, "{}", item).unwrap();
+      }
+      result.shrink_to_fit();
+      result
+    }
+    None => String::new(),
+  }
+}
+
 pub(crate) fn minmax_by<'a, Item: 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering,
 ) -> Option<(&'a Item, &'a Item)> {
@@ -535,31 +606,6 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
       Some((min, max))
     }
     None => None,
-  }
-}
-
-#[inline]
-pub(crate) fn fold<'a, Item: 'a, B>(
-  iterator: impl Iterator<Item = &'a Item>, init: B, function: impl FnMut(B, &Item) -> B,
-) -> B {
-  iterator.fold(init, function)
-}
-
-pub(crate) fn join_items<'a, Item: Display + 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
-) -> String {
-  match iterator.next() {
-    Some(item) => {
-      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
-      write!(&mut result, "{}", item).unwrap();
-      for item in iterator {
-        result.push_str(separator);
-        write!(&mut result, "{}", item).unwrap();
-      }
-      result.shrink_to_fit();
-      result
-    }
-    None => String::new(),
   }
 }
 

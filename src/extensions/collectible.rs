@@ -112,13 +112,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: FromIterator<Item>,
   {
     let iterator = elements.iterator();
-    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut redundant: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
-      *removed.entry(item).or_default() += 1;
+      *redundant.entry(item).or_default() += 1;
     }
     self
       .into_iter()
-      .filter(|x| match removed.get_mut(x) {
+      .filter(|x| match redundant.get_mut(x) {
         Some(count) => {
           if *count > 0 {
             *count -= 1;

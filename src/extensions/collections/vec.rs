@@ -42,6 +42,13 @@ impl<Item> Traversable<Item> for Vec<Item> {
   fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     fold(self.iter(), init, function)
   }
+  
+  #[inline]
+  fn includes<'a>(&self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+    where
+      Item: Eq + Hash + 'a {
+    includes(self.iter(), iterable)
+  }
 
   #[inline]
   fn join_items(&self, separator: &str) -> String
