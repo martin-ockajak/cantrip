@@ -129,6 +129,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // FIXME - implement
   // fn combinations(self, n: usize) -> Self::This<Self>;
 
+  /// Creates a new collection containing an element
+  /// specified number of times.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// assert_eq!(Vec::fill(1, 2), vec![1, 1]);
+  /// ```
   #[inline]
   fn fill(value: Item, size: usize) -> Self
   where
@@ -138,6 +148,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iter::repeat(value).take(size).collect()
   }
 
+  /// Creates a new collection containing a result of a function
+  /// specified number of times.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// assert_eq!(Vec::fill_with(|| 1, 2), vec![1, 1]);
+  /// ```
   #[inline]
   fn fill_with(mut value: impl FnMut() -> Item, size: usize) -> Self
   where
