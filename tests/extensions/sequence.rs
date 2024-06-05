@@ -2,11 +2,11 @@ use std::fmt::Debug;
 
 use cantrip::{Iterable, Sequence};
 
-use crate::extensions::util::from;
+use crate::extensions::util::{Equal, from};
 
 pub fn test_sequence<'a, C>()
 where
-  C: Sequence<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + PartialEq + Debug + 'a,
+  C: Sequence<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
   let values = from::<C>(&[1, 2, 2, 3]);
   // let empty = from::<C>(&[]);

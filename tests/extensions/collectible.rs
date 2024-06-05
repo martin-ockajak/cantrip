@@ -2,11 +2,11 @@ use std::fmt::Debug;
 
 use cantrip::{Collectible, Iterable};
 
-use crate::extensions::util::{assert_equal, from};
+use crate::extensions::util::{assert_equal, Equal, from};
 
 pub fn test_collectible<'a, C>(sequence: bool)
 where
-  C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + PartialEq + Debug + 'a,
+  C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
   let distinct = from::<C>(&[0, 1, 2]);
   let repeated = from::<C>(&[0, 1, 1, 2]);

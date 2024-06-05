@@ -7,6 +7,7 @@ use crate::extensions::reversible::test_reversible;
 use crate::extensions::traversable::test_traversable;
 use crate::extensions::sequence::test_sequence;
 use crate::extensions::slice::test_slice;
+use crate::extensions::util::Equal;
 
 pub fn test_collectible_traits<'a, C>()
   where
@@ -15,7 +16,7 @@ pub fn test_collectible_traits<'a, C>()
     + FromIterator<i64>
     + Iterable<Item<'a> = &'a i64>
     + Clone
-    + PartialEq
+    + Equal
     + Debug
     + 'a,
 {
@@ -32,6 +33,7 @@ pub fn test_slice_traits<'a, C>()
     + FromIterator<i64>
     + Iterable<Item<'a> = &'a i64>
     + Clone
+    + Equal
     + PartialEq
     + Debug
     + 'a,
@@ -51,7 +53,7 @@ where
     + FromIterator<i64>
     + Iterable<Item<'a> = &'a i64>
     + Clone
-    + PartialEq
+    + Equal
     + Debug
     + 'a,
 {
