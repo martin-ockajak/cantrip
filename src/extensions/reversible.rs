@@ -244,6 +244,37 @@ pub trait Reversible<Item> {
     self.into_iter().rev().skip_while(predicate).collect()
   }
 
+  /// Creates a collection that yields the last `n` elements, or fewer
+  /// if the original collection has fewer than `n` elements.
+  ///
+  /// `take(n)` yields elements until `n` elements are yielded or the start of
+  /// the collection is reached (whichever happens first).
+  /// The returned collection is a suffix of length `n` if the original collection
+  /// contains at least `n` elements, otherwise it contains all the
+  /// (fewer than `n`) elements of the original collection.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.rtake(2), vec![3, 2]);
+  /// ```
+  ///
+  /// If less than `n` elements are available,
+  /// `take` will limit itself to the size of the original collection:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2];
+  ///
+  /// assert_eq!(a.rtake(5), vec![2, 1]);
+  /// ```
   #[inline]
   fn rtake<I>(self, n: usize) -> Self
   where

@@ -620,6 +620,37 @@ pub trait Sequence<Item> {
     self.into_iter().skip(1).collect()
   }
 
+  /// Creates a collection that yields the first `n` elements, or fewer
+  /// if the original collection has fewer than `n` elements.
+  ///
+  /// `take(n)` yields elements until `n` elements are yielded or the end of
+  /// the collection is reached (whichever happens first).
+  /// The returned collection is a prefix of length `n` if the original collection
+  /// contains at least `n` elements, otherwise it contains all the
+  /// (fewer than `n`) elements of the original collection.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.take(2), vec![1, 2]);
+  /// ```
+  ///
+  /// If less than `n` elements are available,
+  /// `take` will limit itself to the size of the original collection:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2];
+  ///
+  /// assert_eq!(a.take(5), vec![1, 2]);
+  /// ```
   #[inline]
   fn take(self, n: usize) -> Self
   where
