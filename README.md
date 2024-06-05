@@ -82,7 +82,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *includes*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *index_of*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *index_of_sequence*      |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *indices_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+| *indices_of*             |    :heavy_check_mark:     |                    |                               |                    |
 | *interleave*             |    :heavy_check_mark:     |                    |                               |                    |
 | *interleave_shortest*    |    :heavy_check_mark:     |                    |                               |                    |
 | *intersect*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
@@ -107,9 +107,10 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *minmax_by*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *minmax_by_key*          |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *minmax_item*            |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+| *move*                   |    :heavy_check_mark:     |                    |                               |                    |
 | *partition*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *position*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *positions*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+| *positions*              |    :heavy_check_mark:     |                    |                               |                    |
 | *product*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product_keys*           |                           |                    |                               | :heavy_check_mark: |
 | *product_values*         |                           |                    |                               | :heavy_check_mark: |
