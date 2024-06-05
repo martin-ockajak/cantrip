@@ -867,6 +867,22 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
+  /// Creates a new collection from the original collection by replacing the
+  /// given occurrences of elements found in another collection with elements
+  /// of a replacement collection.
+  ///
+  /// The order or retained values is preserved for ordered collections.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 3];
+  /// let b = vec![2, 3];
+  ///
+  /// assert_eq!(a.replace_all(&b, vec![4, 5]), vec![1, 4, 5, 3]);
+  /// ```
   fn replace_all<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
   ) -> Self
@@ -896,10 +912,92 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
+  /// A collection adapter which, like [`fold`], holds internal state, but
+  /// unlike [`fold`], produces a new collection.
+  ///
+  /// [`fold`]: Traversable::fold
+  ///
+  /// `scan()` takes two arguments: an initial value which seeds the internal
+  /// state, and a closure with two arguments, the first being a mutable
+  /// reference to the internal state and the second a collection element.
+  /// The closure can assign to the internal state to share state between
+  /// iterations.
+  ///
+  /// On iteration, the closure will be applied to each element of the
+  /// collection and the return value from the closure, an [`Option`], is
+  /// returned by the `next` method. The closure can return
+  /// `Some(value)` to yield `value`, or `None` to end the iteration.
+  ///
+  /// This is a non-consuming variant of [`scan_to`].
+  ///
+  /// [`scan_to`]: Collectible::scan_to
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4];
+  ///
+  /// let mut scan = a.scan(1, |state, &x| {
+  ///     // each iteration, we'll multiply the state by the element ...
+  ///     *state = *state * x;
+  ///
+  ///     // ... and terminate if the state exceeds 6
+  ///     if *state > 6 {
+  ///         return None;
+  ///     }
+  ///     // ... else yield the negation of the state
+  ///     Some(-*state)
+  /// });
+  ///
+  /// assert_eq!(scan, vec![-1, -2, -6]);
+  /// ```
   fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>;
 
+  /// A collection adapter which, like [`fold`], holds internal state, but
+  /// unlike [`fold`], produces a new collection.
+  ///
+  /// [`fold`]: Traversable::fold
+  ///
+  /// `scan()` takes two arguments: an initial value which seeds the internal
+  /// state, and a closure with two arguments, the first being a mutable
+  /// reference to the internal state and the second a collection element.
+  /// The closure can assign to the internal state to share state between
+  /// iterations.
+  ///
+  /// On iteration, the closure will be applied to each element of the
+  /// collection and the return value from the closure, an [`Option`], is
+  /// returned by the `next` method. The closure can return
+  /// `Some(value)` to yield `value`, or `None` to end the iteration.
+  ///
+  /// This is a consuming variant of [`scan`].
+  ///
+  /// [`scan`]: Collectible::scan
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4];
+  ///
+  /// let mut scan = a.scan_to(1, |state, x| {
+  ///     // each iteration, we'll multiply the state by the element ...
+  ///     *state = *state * x;
+  ///
+  ///     // ... and terminate if the state exceeds 6
+  ///     if *state > 6 {
+  ///         return None;
+  ///     }
+  ///     // ... else yield the negation of the state
+  ///     Some(-*state)
+  /// });
+  ///
+  /// assert_eq!(scan, vec![-1, -2, -6]);
+  /// ```
   fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
