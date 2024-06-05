@@ -644,9 +644,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[-1i32, 0, 1];
+  /// let a = vec![-1i32, 0, 1];
   ///
-  /// assert_eq!(a.take_while(|x| x.is_negative()), &[-1]);
+  /// assert_eq!(a.take_while(|x| x.is_negative()), vec![-1]);
   /// ```
   ///
   /// Because the closure passed to `take_while()` takes a reference, and some
@@ -656,9 +656,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[&-1, &0, &1];
+  /// let a = vec![-1, 0, 1];
   ///
-  /// assert_eq!(a.take_while(|x| **x < 0), &[&-1]); // need two *s!
+  /// assert_eq!(a.take_while(|x| *x < 0), vec![-1]);
   /// ```
   #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
