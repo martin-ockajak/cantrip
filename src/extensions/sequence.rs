@@ -431,6 +431,22 @@ pub trait Sequence<Item> {
     self.into_iter().rev().scan(initial_state, function).collect()
   }
 
+  /// Creates a collection that skips the first `n` elements from the original collection.
+  ///
+  /// `skip(n)` skips elements until `n` elements are skipped or the end of the
+  /// collection is reached (whichever happens first). After that, all the remaining
+  /// elements are yielded. In particular, if the original collection is too short,
+  /// then the returned collection is empty.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.skip(2), vec![3]);
+  /// ```
   #[inline]
   fn skip(self, n: usize) -> Self
   where

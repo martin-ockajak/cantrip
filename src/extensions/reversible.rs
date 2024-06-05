@@ -175,6 +175,23 @@ pub trait Reversible<Item> {
   /// ```
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
+  /// Creates a collection that skips the first `n` elements from the original collection,
+  /// starting from the back.
+  ///
+  /// `skip(n)` skips elements until `n` elements are skipped or the beginning of the
+  /// collection is reached (whichever happens first). After that, all the remaining
+  /// elements are yielded. In particular, if the original collection is too short,
+  /// then the returned collection is empty.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.rskip(2), vec![1]);
+  /// ```
   #[inline]
   fn rskip<I>(self, n: usize) -> Self
   where
