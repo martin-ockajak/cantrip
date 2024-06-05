@@ -2,14 +2,14 @@ use std::fmt::Debug;
 
 use cantrip::{Iterable, Traversable};
 
-use crate::extensions::util::from;
+use crate::extensions::util::from_slice;
 
 pub fn test_traversable<'a, C>()
 where
   C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Debug + 'a,
 {
-  let values = from::<C>(&[0, 0, 1, 2]);
-  let empty = from::<C>(&[]);
+  let values = from_slice::<C>(&[0, 0, 1, 2]);
+  let empty = from_slice::<C>(&[]);
 
   // all
   assert_eq!(values.all(|&x| x >= 0), true);

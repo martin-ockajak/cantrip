@@ -2,15 +2,15 @@ use std::fmt::Debug;
 
 use cantrip::{Collectible, Iterable};
 
-use crate::extensions::util::{assert_equal, Equal, from};
+use crate::extensions::util::{assert_equal, Equal, from_slice};
 
 pub fn test_collectible<'a, C>(sequence: bool)
 where
   C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
-  let distinct = from::<C>(&[0, 1, 2]);
-  let repeated = from::<C>(&[0, 1, 1, 2]);
-  let empty = from::<C>(&[]);
+  let distinct = from_slice::<C>(&[0, 1, 2]);
+  let repeated = from_slice::<C>(&[0, 1, 1, 2]);
+  let empty = from_slice::<C>(&[]);
 
   // add
   assert_equal(distinct.clone().add(3), &[0, 1, 2, 3]);

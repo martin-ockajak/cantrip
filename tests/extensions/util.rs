@@ -67,10 +67,10 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
 }
 
 pub(crate) fn assert_equal<C: FromIterator<i64> + Equal + Debug>(values: C, expected: &[i64]) -> () {
-  assert_equal!(values, from(expected))
+  assert_equal!(values, from_slice(expected))
 }
 
-pub(crate) fn from<C: FromIterator<i64>>(values: &[i64]) -> C {
+pub(crate) fn from_slice<C: FromIterator<i64>>(values: &[i64]) -> C {
   C::from_iter(values.into_iter().map(|x| x.clone()))
 }
 
