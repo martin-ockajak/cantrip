@@ -1,4 +1,4 @@
-// #![deny(missing_docs)]
+#![deny(missing_docs)]
 
 use std::cmp::Ordering;
 use std::collections::HashSet;
@@ -294,8 +294,8 @@ pub trait Traversable<Item> {
   /// ```
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  /// Returns the element that gives the maximum value with respect to the
-  /// specified key function.
+  /// Returns the element that gives the maximum value from the
+  /// specified function.
   ///
   /// If several elements are equally maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
@@ -365,10 +365,10 @@ pub trait Traversable<Item> {
   /// ```
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  /// Returns the element that gives the minimum value with respect to the
-  /// specified key function.
+  /// Returns the element that gives the minimum value from the
+  /// specified function.
   ///
-  /// If several elements are equally minimum, the last element is
+  /// If several elements are equally minimum, the fist element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// # Examples
@@ -420,10 +420,54 @@ pub trait Traversable<Item> {
     self.min_by(Ord::cmp)
   }
 
+  /// Return the minimum and maximum element of a collection with respect to the
+  /// specified comparison function.
+  ///
+  /// For the minimum, the first minimal element is returned. For the maximum,
+  /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
+  /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// assert_eq!(a.minmax_by(|x, y| x.cmp(y)).unwrap(), (&-10, &5));
+  /// ```
   fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
 
+  /// Return the minimum and maximum element of a collection from the
+  /// specified function.
+  ///
+  /// For the minimum, the first minimal element is returned. For the maximum,
+  /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
+  /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// assert_eq!(a.minmax_by_key(|x| x.abs()).unwrap(), (&0, &-10));
+  /// ```
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>;
 
+  /// Return the minimum and maximum element of a collection.
+  ///
+  /// For the minimum, the first minimal element is returned. For the maximum,
+  /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
+  /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// assert_eq!(a.minmax_item().unwrap(), (&-10, &5));
+  /// ```
   #[inline]
   fn minmax_item(&self) -> Option<(&Item, &Item)>
   where
@@ -480,7 +524,7 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
         if compare(item, min) == Ordering::Less {
           min = item;
         }
-        if compare(item, max) == Ordering::Greater {
+        if compare(item, max) != Ordering::Less {
           max = item;
         }
       }
