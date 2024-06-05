@@ -548,7 +548,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let grouped_by = a.grouped_by(|x| x % 2);
-  /// assert_eq!(grouped_by, HashMap::from([(0, vec![2]), (1, vec![1, 3])]));
+  /// assert_eq!(grouped_by, HashMap::from([
+  ///   (0, vec![2]),
+  ///   (1, vec![1, 3])
+  /// ]));
   /// ```
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
