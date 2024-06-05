@@ -439,7 +439,7 @@ pub trait Sequence<Item> {
     self.into_iter().skip(n).collect()
   }
 
-  /// Creates an collection without initial elements based on a predicate.
+  /// Creates a collection without initial elements based on a predicate.
   ///
   /// [`skip`]: Collectible::skip
   ///
@@ -612,7 +612,7 @@ pub trait Sequence<Item> {
     self.into_iter().take(n).collect()
   }
 
-  /// Creates an collection without trailing elements based on a predicate.
+  /// Creates a collection without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
   /// closure on each element of the collection, and yield elements
