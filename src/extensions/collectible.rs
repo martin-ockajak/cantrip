@@ -54,6 +54,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a new collection without the first occurrence of an element.
   ///
+  /// The order or retained values is preserved for ordered collections.
+  ///
   /// # Examples
   ///
   /// ```
@@ -83,8 +85,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Retains the values representing the difference,
-  /// i.e., the values that are in `self` but not in `other`.
+  /// Creates a new collection without the first occurrences of elements found
+  /// in another collection.
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
@@ -93,24 +95,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3];
-  /// let b = vec![4, 3, 4];
+  /// let a = vec![1, 2, 3, 3];
+  /// let b = vec![1, 3];
   ///
-  /// // Can be seen as `a - b`.
-  /// // Print 1, 2.
-  /// for x in a.clone().delete_all(&b) {
-  ///     println!("{x}");
-  /// }
-  ///
-  /// let diff: Vec<_> = a.clone().delete_all(&b);
-  /// assert_eq!(diff, vec![1, 2]);
-  ///
-  /// // Note that difference is not symmetric,
-  /// // and `b - a` means something else:
-  /// let diff: Vec<_> = b.delete_all(&a);
-  /// assert_eq!(diff, vec![4, 4]);
+  /// assert_eq!(a.delete_all(&b), vec![2, 3]);
   /// ```
-  // FIXME - improve description
   fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
