@@ -29,6 +29,12 @@ fn sequences() {
   test_sequence_traits::<VecDeque<i64>>();
 }
 
+#[test]
+fn maps() {
+  // test_map_traits::<HashMap<i64, i64>>();
+  // test_map_traits::<BTreeMap<i64, i64>>();
+}
+
 #[quickcheck]
 fn hash_map_string(data: HashMap<String, String>) -> bool {
   data.len();

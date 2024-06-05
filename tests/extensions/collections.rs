@@ -1,8 +1,9 @@
 use std::fmt::Debug;
 
-use cantrip::{Collectible, Iterable, Reversible, Sequence, Slice, Traversable};
+use cantrip::{Collectible, Iterable, Map, Reversible, Sequence, Slice, Traversable};
 
 use crate::extensions::collectible::test_collectible;
+use crate::extensions::map::test_map;
 use crate::extensions::reversible::test_reversible;
 use crate::extensions::traversable::test_traversable;
 use crate::extensions::sequence::test_sequence;
@@ -61,4 +62,17 @@ where
   test_collectible::<C>(true);
   test_reversible::<C>();
   test_sequence::<C>();
+}
+
+pub fn test_map_traits<'a, C>()
+  where
+    C: Map<i64, i64>
+    + FromIterator<(i64, i64)>
+    + Iterator<Item = (i64, i64)>
+    + Clone
+    + Equal
+    + Debug
+    + 'a,
+{
+  test_map::<C>();
 }
