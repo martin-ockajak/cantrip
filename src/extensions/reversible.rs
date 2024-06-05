@@ -9,7 +9,7 @@ use crate::extensions::util::unfold::unfold;
 /// - Does not create a new collection
 ///
 pub trait Reversible<Item> {
-  /// Searches for an element of an collection from the back that satisfies a predicate.
+  /// Searches for an element of a collection that satisfies a predicate, starting from the back.
   ///
   /// `rfind()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of the collection, starting at the end, and if any
@@ -86,7 +86,7 @@ pub trait Reversible<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // the sum of all of the elements of a
+  /// // the sum of all the elements of a
   /// let sum = a.rfold(0, |acc, &x| acc + x);
   ///
   /// assert_eq!(sum, 6);
@@ -175,6 +175,23 @@ pub trait Reversible<Item> {
   /// ```
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
+  /// Creates a collection that skips the first `n` elements from the original collection,
+  /// starting from the back.
+  ///
+  /// `skip(n)` skips elements until `n` elements are skipped or the beginning of the
+  /// collection is reached (whichever happens first). After that, all the remaining
+  /// elements are yielded. In particular, if the original collection is too short,
+  /// then the returned collection is empty.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.rskip(2), vec![1]);
+  /// ```
   #[inline]
   fn rskip<I>(self, n: usize) -> Self
   where

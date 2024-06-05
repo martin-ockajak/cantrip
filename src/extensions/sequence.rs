@@ -431,6 +431,22 @@ pub trait Sequence<Item> {
     self.into_iter().rev().scan(initial_state, function).collect()
   }
 
+  /// Creates a collection that skips the first `n` elements from the original collection.
+  ///
+  /// `skip(n)` skips elements until `n` elements are skipped or the end of the
+  /// collection is reached (whichever happens first). After that, all the remaining
+  /// elements are yielded. In particular, if the original collection is too short,
+  /// then the returned collection is empty.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.skip(2), vec![3]);
+  /// ```
   #[inline]
   fn skip(self, n: usize) -> Self
   where
@@ -439,7 +455,7 @@ pub trait Sequence<Item> {
     self.into_iter().skip(n).collect()
   }
 
-  /// Creates an collection without initial elements based on a predicate.
+  /// Creates a collection without initial elements based on a predicate.
   ///
   /// [`skip`]: Collectible::skip
   ///
@@ -612,7 +628,7 @@ pub trait Sequence<Item> {
     self.into_iter().take(n).collect()
   }
 
-  /// Creates an collection without trailing elements based on a predicate.
+  /// Creates a collection without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
   /// closure on each element of the collection, and yield elements
