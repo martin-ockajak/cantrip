@@ -37,7 +37,6 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert!(a.all(|&x| x > 0));
-  ///
   /// assert!(!a.all(|&x| x > 2));
   /// ```
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool;

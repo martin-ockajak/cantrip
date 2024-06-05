@@ -62,6 +62,26 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+  /// Tests if all elements of the collection are unique.
+  ///
+  /// `all_equal()` returns `true` if all elements of the collection are unique
+  /// and `false` if a pair of equal elements exist.
+  ///
+  /// An empty collection returns `true`.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 1, 1];
+  /// let b = vec![1, 2, 3];
+  ///
+  /// assert!(!a.all_unique());
+  /// assert!(b.all_unique());
+  /// ```
   fn all_unique(&self) -> bool
   where
     Item: Eq + Hash;
@@ -317,10 +337,10 @@ pub trait Sequence<Item> {
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
 
-  /// Searches for an element in an iterator, returning its index.
+  /// Searches for an element in a collection, returning its index.
   ///
   /// `position()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the iterator, and if one of them
+  /// this closure to each element of the collection, and if one of them
   /// returns `true`, then `position()` returns [`Some(index)`]. If all of
   /// them return `false`, it returns [`None`].
   ///
@@ -336,7 +356,7 @@ pub trait Sequence<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if the iterator has more than `usize::MAX`
+  /// This function might panic if the collection has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(index)`]: Some
@@ -346,33 +366,60 @@ pub trait Sequence<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// let a = [1, 2, 3];
+  /// use crate::cantrip::*;
   ///
-  /// assert_eq!(a.iter().position(|&x| x == 2), Some(1));
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.iter().position(|&x| x == 5), None);
-  /// ```
-  ///
-  /// Stopping at the first `true`:
-  ///
-  /// ```
-  /// let a = [1, 2, 3, 4];
-  ///
-  /// let mut iter = a.iter();
-  ///
-  /// assert_eq!(iter.position(|&x| x >= 2), Some(1));
-  ///
-  /// // we can still use `iter`, as there are more elements.
-  /// assert_eq!(iter.next(), Some(&3));
-  ///
-  /// // The returned index depends on iterator state
-  /// assert_eq!(iter.position(|&x| x == 4), Some(0));
-  ///
+  /// assert_eq!(a.position(|&x| x == 2), Some(1));
+  /// assert_eq!(a.position(|&x| x == 5), None);
   /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
+  /// Searches for an element in a collection, returning all its indices.
+  ///
+  /// `positions()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each element of the collection, and if one of them
+  /// returns `true`, then `position()` add the element index to its result.
+  ///
+  /// # Overflow Behavior
+  ///
+  /// The method does no guarding against overflows, so if there are more
+  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
+  /// result or panics. If debug assertions are enabled, a panic is
+  /// guaranteed.
+  ///
+  /// # Panics
+  ///
+  /// This function might panic if the collection has more than `usize::MAX`
+  /// non-matching elements.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.positions(|&x| x % 2 == 0), vec![1]);
+  /// assert_eq!(a.positions(|&x| x % 2 == 1), vec![0, 2]);
+  /// ```
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize>;
 
+  /// Creates a collection by reversing the original collection's direction.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let reversed = a.rev();
+  ///
+  /// assert_eq!(reversed, vec![3, 2, 1]);
+  /// ```
   fn rev(self) -> Self;
 
   fn rscan<S, B, I>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>

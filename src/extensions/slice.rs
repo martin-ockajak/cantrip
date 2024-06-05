@@ -1,4 +1,4 @@
-// #![deny(missing_docs)]
+#![deny(missing_docs)]
 
 use std::hash::Hash;
 
@@ -11,6 +11,26 @@ use std::hash::Hash;
 /// - Does not create a new collection
 ///
 pub trait Slice<Item> {
+  /// Tests if all elements of the slice are unique.
+  ///
+  /// `all_equal()` returns `true` if all elements of the slice are unique
+  /// and `false` if a pair of equal elements exist.
+  ///
+  /// An empty slice returns `true`.
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = &[1, 1, 1];
+  /// let b = &[1, 2, 3];
+  ///
+  /// assert!(!a.all_unique());
+  /// assert!(b.all_unique());
+  /// ```
   fn all_unique(&self) -> bool
   where
     Item: Eq + Hash;
@@ -28,6 +48,42 @@ pub trait Slice<Item> {
   /// ```
   fn init(&self) -> &Self;
 
+  /// Searches for an element in a slice, returning its index.
+  ///
+  /// `position()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each element of the slice, and if one of them
+  /// returns `true`, then `position()` returns [`Some(index)`]. If all of
+  /// them return `false`, it returns [`None`].
+  ///
+  /// `position()` is short-circuiting; in other words, it will stop
+  /// processing as soon as it finds a `true`.
+  ///
+  /// # Overflow Behavior
+  ///
+  /// The method does no guarding against overflows, so if there are more
+  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
+  /// result or panics. If debug assertions are enabled, a panic is
+  /// guaranteed.
+  ///
+  /// # Panics
+  ///
+  /// This function might panic if the slice has more than `usize::MAX`
+  /// non-matching elements.
+  ///
+  /// [`Some(index)`]: Some
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = &[1, 2, 3];
+  ///
+  /// assert_eq!(a.position(|&x| x == 2), Some(1));
+  /// assert_eq!(a.position(|&x| x == 5), None);
+  /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
   /// Creates a slice without initial elements based on a predicate.
