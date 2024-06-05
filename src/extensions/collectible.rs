@@ -5,6 +5,7 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 use crate::extensions::iterable::Iterable;
+use crate::Traversable;
 
 /// Consuming collection operations.
 ///
@@ -244,8 +245,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// concise. The example below shows how a `map().filter().map_to()` can be
   /// shortened to a single call to `filter_map`.
   ///
+  /// This is a non-consuming variant of [`filter_map_to`].
+  ///
   /// [`filter`]: Collectible::filter
   /// [`map`]: Collectible::map
+  /// [`filter_map_to`]: Collectible::filter_map_to
   ///
   /// # Examples
   ///
@@ -284,8 +288,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// concise. The example below shows how a `map().filter().map()` can be
   /// shortened to a single call to `filter_map`.
   ///
+  /// This is a consuming variant of [`filter_map`].
+  ///
   /// [`filter`]: Collectible::filter
   /// [`map`]: Collectible::map
+  /// [`filter_map`]: Collectible::filter_map
   ///
   /// # Examples
   ///
@@ -320,6 +327,31 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter_map(function).collect()
   }
 
+  /// Applies function to the elements of a collection and returns
+  /// the first non-none result.
+  ///
+  /// `find_map_to` can be used to make chains of [`find`] and [`map`] more
+  /// concise.
+  ///
+  /// `find_map_to(f)` is equivalent to `find().map()`.
+  ///
+  /// This is a consuming variant of [`find_map`].
+  ///
+  /// [`find`]: Traversable::find
+  /// [`map`]: Traversable::map
+  /// [`find_map`]: Traversable::find_map
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec!["lol", "NaN", "2", "5"];
+  ///
+  /// let first_number = a.find_map_to(|s| s.parse().ok());
+  ///
+  /// assert_eq!(first_number, Some(2));
+  /// ```
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
   where
@@ -429,8 +461,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// one item for each element, and `flat_map()`'s closure returns an
   /// iterable value for each element.
   ///
+  /// This is a non-consuming variant of [`flat_map_to`].
+  ///
   /// [`map`]: Collectible::map
   /// [`flat`]: Collectible::flatten
+  /// [`flat_map_to`]: Collectible::flat_map_to
   ///
   /// # Examples
   ///
@@ -464,8 +499,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// one item for each element, and `flat_map()`'s closure returns an
   /// iterable value for each element.
   ///
+  /// This is a consuming variant of [`flat_map`].
+  ///
   /// [`map`]: Collectible::map
   /// [`flat`]: Collectible::flatten
+  /// [`flat_map`]: Collectible::flat_map
   ///
   /// # Examples
   ///
@@ -540,6 +578,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
   /// The resulting other are collected into a new container of the same type.
   ///
+  /// This is a non-consuming variant of [`map_to`].
+  ///
+  /// [`map_to`]: Collectible::map_to
+  ///
   /// # Arguments
   ///
   /// * `self` - the container to apply the mapping to.
@@ -569,6 +611,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
   /// The resulting other are collected into a new container of the same type.
+  ///
+  /// This is a consuming variant of [`map`].
+  ///
+  /// [`map`]: Collectible::map
   ///
   /// # Arguments
   ///

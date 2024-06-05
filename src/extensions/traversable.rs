@@ -149,10 +149,13 @@ pub trait Traversable<Item> {
   /// `find_map` can be used to make chains of [`find`] and [`map`] more
   /// concise.
   ///
-  /// `find_map(f)` is equivalent to `find().map()`.
+  /// `find_map_to(f)` is equivalent to `find().map()`.
+  ///
+  /// This is a non-consuming variant of [`find_map_to`].
   ///
   /// [`find`]: Traversable::find
   /// [`map`]: Traversable::map
+  /// [`find_map_to`]: crate::Collectible::find_map_to
   ///
   /// # Examples
   ///
