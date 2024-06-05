@@ -16,6 +16,16 @@ use crate::extensions::iterable::Iterable;
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
   type This<I>;
 
+  /// Creates a new collection by appending an element to it.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2];
+  /// assert_eq!(a.add(3), [1, 2, 3]);
+  /// ```
   fn add(self, value: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -23,6 +33,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
+  /// Creates a new collection by appending all elements of another collection to it.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2];
+  ///
+  /// assert_eq!(a.add_all(vec![3, 4]), [1, 2, 3, 4]);
+  /// ```
   #[inline]
   fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
@@ -31,6 +52,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iterable).collect()
   }
 
+  /// Creates a new collection without the first occurrence of an element.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2, 2, 3];
+  ///
+  /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
+  /// ```
   #[inline]
   fn delete(self, value: &Item) -> Self
   where
@@ -41,11 +73,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self
       .into_iter()
       .filter(|x| {
-        if removed {
-          true
-        } else {
+        if !removed && value == x {
           removed = true;
-          value != x
+          false
+        } else {
+          true
         }
       })
       .collect()
