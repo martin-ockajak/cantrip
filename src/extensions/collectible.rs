@@ -547,8 +547,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     result
   }
 
-  /// Retains the values representing the intersection,
-  /// i.e., the values that are both in `self` and `other`.
+  /// Creates a new collection by retaining the values representing the intersection
+  /// of the original collection with another collection i.e., the values that are
+  /// both in `self` and `other`.
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
@@ -579,10 +580,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  /// Applies the given closure `f` to each element in the container.
+  /// Creates a new collection by applying the given closure `f` to each element in
+  /// the original collection.
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
-  /// The resulting other are collected into a new container of the same type.
+  /// The resulting other are collected into a new collection of the same type.
   ///
   /// This is a non-consuming variant of [`map_to`].
   ///
@@ -590,12 +592,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # Arguments
   ///
-  /// * `self` - the container to apply the mapping to.
+  /// * `self` - the collection to apply the mapping to.
   /// * `f` - the closure to apply to each element.
   ///
   /// # Returns
   ///
-  /// A new container of the same type, containing the mapped other.
+  /// A new collection of the same type, containing the mapped other.
   ///
   /// # Safety
   ///
@@ -613,10 +615,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Applies the given closure `f` to each element in the container.
+  /// Creates a new collection by applying the given closure `f` to each element in
+  /// the original collection.
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
-  /// The resulting other are collected into a new container of the same type.
+  /// The resulting other are collected into a new collection of the same type.
   ///
   /// This is a consuming variant of [`map`].
   ///
@@ -624,12 +627,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # Arguments
   ///
-  /// * `self` - the container to apply the mapping to.
+  /// * `self` - the collection to apply the mapping to.
   /// * `f` - the closure to apply to each element.
   ///
   /// # Returns
   ///
-  /// A new container of the same type, containing the mapped other.
+  /// A new collection of the same type, containing the mapped other.
   ///
   /// # Safety
   ///
@@ -680,7 +683,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     heap.into_iter().rev().map(|x| x.0).collect()
   }
 
-  /// Creaties two collections from the original collection using a predicate.
+  /// Creates two new collections from the original collection using by applying
+  /// specified predicate.
   ///
   /// The predicate passed to `partition()` can return `true`, or `false`.
   /// `partition()` returns a pair, all the elements for which it returned
@@ -706,11 +710,55 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().partition(predicate)
   }
 
+  /// Creates two new collections with arbitrary element types from the original collection
+  /// by applying specified function.
+  ///
+  /// The function passed to `partition()` can return `Ok`, or `Err`.
+  /// `partition()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  ///
+  /// This is a non-consuming variant of [`partition_map_to`].
+  ///
+  /// [`partition_map_to`]: Collectible::partition_map_to
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let (even, odd) = a.partition_map(|n| if n % 2 == 0 { Ok(n + 3) } else { Err(*n) });
+  ///
+  /// assert_eq!(even, vec![5]);
+  /// assert_eq!(odd, vec![1, 3]);
+  /// ```
   fn partition_map<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,
     Self::This<B>: Default + Extend<B>;
 
+  /// Creates two new collections with arbitrary element types from the original collection
+  /// by applying specified function.
+  ///
+  /// The function passed to `partition()` can return `Ok`, or `Err`.
+  /// `partition()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  ///
+  /// This is a consuming variant of [`partition_map`].
+  ///
+  /// [`partition_map`]: Collectible::partition_map
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let (even, odd) = a.partition_map_to(|n| if n % 2 == 0 { Ok(n + 3) } else { Err(n) });
+  ///
+  /// assert_eq!(even, vec![5]);
+  /// assert_eq!(odd, vec![1, 3]);
+  /// ```
   #[inline]
   fn partition_map_to<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
