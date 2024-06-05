@@ -50,4 +50,8 @@ where
   // min_item
   assert_eq!(values.min_item(), Some(&1));
   assert_eq!(empty.min_item(), None);
+
+  //minmax_item
+  assert_eq!(values.minmax_item(), Some((&1, &3)));
+  assert_eq!(empty.minmax_item(), None);
 }
