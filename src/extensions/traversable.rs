@@ -124,248 +124,248 @@ pub trait Traversable<Item> {
   ///
   /// `find()` is short-circuiting; in other words, it will stop processing
   /// as soon as the closure returns `true`.
-  ///
-  /// If you need the index of the element, see [`position()`].
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.find(|&x| x == 2), Some(&2));
-  ///
-  /// assert_eq!(a.find(|&x| x == 5), None);
-  /// ```
-  fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
+    ///
+    /// If you need the index of the element, see [`position()`].
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = vec![1, 2, 3];
+    ///
+    /// assert_eq!(a.find(|&x| x == 2), Some(&2));
+    ///
+    /// assert_eq!(a.find(|&x| x == 5), None);
+    /// ```
+    fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  /// Applies function to the elements of a collection and returns
-  /// the first non-none result.
-  ///
-  /// `find_map` can be used to make chains of [`find`] and [`map`] more
-  /// concise.
-  ///
-  /// `find_map_to(f)` is equivalent to `find().map()`.
-  ///
-  /// This is a non-consuming variant of [`find_map_to`].
-  ///
-  /// [`find`]: Traversable::find
-  /// [`map`]: Traversable::map
-  /// [`find_map_to`]: crate::Collectible::find_map_to
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = ["lol", "NaN", "2", "5"];
-  ///
-  /// let first_number = a.find_map(|s| s.parse().ok());
-  ///
-  /// assert_eq!(first_number, Some(2));
-  /// ```
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+    /// Applies function to the elements of a collection and returns
+    /// the first non-none result.
+    ///
+    /// `find_map` can be used to make chains of [`find`] and [`map`] more
+    /// concise.
+    ///
+    /// `find_map_to(f)` is equivalent to `find().map()`.
+    ///
+    /// This is a non-consuming variant of [`find_map_to`].
+    ///
+    /// [`find`]: Traversable::find
+    /// [`map`]: Traversable::map
+    /// [`find_map_to`]: crate::Collectible::find_map_to
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = ["lol", "NaN", "2", "5"];
+    ///
+    /// let first_number = a.find_map(|s| s.parse().ok());
+    ///
+    /// assert_eq!(first_number, Some(2));
+    /// ```
+    fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  /// Folds every element into an accumulator by applying an operation,
-  /// returning the final result.
-  ///
-  /// `fold()` takes two arguments: an initial value, and a closure with two
-  /// arguments: an 'accumulator', and an element. The closure returns the value that
-  /// the accumulator should have for the next iteration.
-  ///
-  /// The initial value is the value the accumulator will have on the first
-  /// call.
-  ///
-  /// After applying this closure to every element of the collection, `fold()`
-  /// returns the accumulator.
-  ///
-  /// This operation is sometimes called 'reduce' or 'inject'.
-  ///
-  /// Folding is useful whenever you have a collection of something, and want
-  /// to produce a single value from it.
-  ///
-  /// Note: [`reduce()`] can be used to use the first element as the initial
-  /// value, if the accumulator type and item type is the same.
-  ///
-  /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
-  /// operators like `+`, the order the elements are combined in is not important, but for non-associative
-  /// operators like `-` the order will affect the final result.
-  /// For a *right-associative* version of `fold()`, see [`rfold()`].
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = [1, 2, 3];
-  ///
-  /// // the sum of all of the elements of the array
-  /// let sum = a.fold(0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(sum, 6);
-  /// ```
-  ///
-  /// Let's walk through each step of the iteration here:
-  ///
-  /// | element | acc | x | result |
-  /// |---------|-----|---|--------|
-  /// |         | 0   |   |        |
-  /// | 1       | 0   | 1 | 1      |
-  /// | 2       | 1   | 2 | 3      |
-  /// | 3       | 3   | 3 | 6      |
-  ///
-  /// And so, our final result, `6`.
-  ///
-  /// This example demonstrates the left-associative nature of `fold()`:
-  /// it builds a string, starting with an initial value
-  /// and continuing with each element from the front until the back:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let numbers = [1, 2, 3, 4, 5];
-  ///
-  /// let zero = "0".to_string();
-  ///
-  /// let result = numbers.fold(zero, |acc, &x| {
-  ///     format!("({acc} + {x})")
-  /// });
-  ///
-  /// assert_eq!(result, "(((((0 + 1) + 2) + 3) + 4) + 5)");
-  /// ```
-  /// It's common for people who haven't used collections a lot to
-  /// use a `for` loop with a list of things to build up a result. Those
-  /// can be turned into `fold()`s:
-  ///
-  /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let numbers = [1, 2, 3, 4, 5];
-  ///
-  /// let mut result = 0;
-  ///
-  /// // for loop:
-  /// for i in &numbers {
-  ///     result = result + i;
-  /// }
-  ///
-  /// // fold:
-  /// let result2 = numbers.fold(0, |acc, &x| acc + x);
-  ///
-  /// // they're the same
-  /// assert_eq!(result, result2);
-  /// ```
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+    /// Folds every element into an accumulator by applying an operation,
+    /// returning the final result.
+    ///
+    /// `fold()` takes two arguments: an initial value, and a closure with two
+    /// arguments: an 'accumulator', and an element. The closure returns the value that
+    /// the accumulator should have for the next iteration.
+    ///
+    /// The initial value is the value the accumulator will have on the first
+    /// call.
+    ///
+    /// After applying this closure to every element of the collection, `fold()`
+    /// returns the accumulator.
+    ///
+    /// This operation is sometimes called 'reduce' or 'inject'.
+    ///
+    /// Folding is useful whenever you have a collection of something, and want
+    /// to produce a single value from it.
+    ///
+    /// Note: [`reduce()`] can be used to use the first element as the initial
+    /// value, if the accumulator type and item type is the same.
+    ///
+    /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
+    /// operators like `+`, the order the elements are combined in is not important, but for non-associative
+    /// operators like `-` the order will affect the final result.
+    /// For a *right-associative* version of `fold()`, see [`rfold()`].
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = [1, 2, 3];
+    ///
+    /// // the sum of all of the elements of the array
+    /// let sum = a.fold(0, |acc, x| acc + x);
+    ///
+    /// assert_eq!(sum, 6);
+    /// ```
+    ///
+    /// Let's walk through each step of the iteration here:
+    ///
+    /// | element | acc | x | result |
+    /// |---------|-----|---|--------|
+    /// |         | 0   |   |        |
+    /// | 1       | 0   | 1 | 1      |
+    /// | 2       | 1   | 2 | 3      |
+    /// | 3       | 3   | 3 | 6      |
+    ///
+    /// And so, our final result, `6`.
+    ///
+    /// This example demonstrates the left-associative nature of `fold()`:
+    /// it builds a string, starting with an initial value
+    /// and continuing with each element from the front until the back:
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let numbers = [1, 2, 3, 4, 5];
+    ///
+    /// let zero = "0".to_string();
+    ///
+    /// let result = numbers.fold(zero, |acc, &x| {
+    ///     format!("({acc} + {x})")
+    /// });
+    ///
+    /// assert_eq!(result, "(((((0 + 1) + 2) + 3) + 4) + 5)");
+    /// ```
+    /// It's common for people who haven't used collections a lot to
+    /// use a `for` loop with a list of things to build up a result. Those
+    /// can be turned into `fold()`s:
+    ///
+    /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let numbers = [1, 2, 3, 4, 5];
+    ///
+    /// let mut result = 0;
+    ///
+    /// // for loop:
+    /// for i in &numbers {
+    ///     result = result + i;
+    /// }
+    ///
+    /// // fold:
+    /// let result2 = numbers.fold(0, |acc, &x| acc + x);
+    ///
+    /// // they're the same
+    /// assert_eq!(result, result2);
+    /// ```
+    fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
-  /// Combine all collection elements into one `String`, separated by `sep`.
-  ///
-  /// Use the `Display` implementation of each element.
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = [1, 2, 3];
-  ///
-  /// assert_eq!(a.join_items(", "), "1, 2, 3");
-  /// ```
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display;
+    /// Combine all collection elements into one `String`, separated by `sep`.
+    ///
+    /// Use the `Display` implementation of each element.
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = [1, 2, 3];
+    ///
+    /// assert_eq!(a.join_items(", "), "1, 2, 3");
+    /// ```
+    fn join_items(&self, separator: &str) -> String
+    where
+      Item: Display;
 
-  // FIXME - implement
-  // fn includes(&self, iterable: impl IntoIterator<Item = Item>) -> bool;
+    // FIXME - implement
+    // fn includes(&self, iterable: impl IntoIterator<Item = Item>) -> bool;
 
-  /// Returns the element that gives the maximum value with respect to the
-  /// specified comparison function.
-  ///
-  /// If several elements are equally maximum, the last element is
-  /// returned. If the collection is empty, [`None`] is returned.
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// assert_eq!(a.max_by(|x, y| x.cmp(y)).unwrap(), &5);
-  /// ```
-  fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
+    /// Returns the element that gives the maximum value with respect to the
+    /// specified comparison function.
+    ///
+    /// If several elements are equally maximum, the last element is
+    /// returned. If the collection is empty, [`None`] is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = vec![-3_i32, 0, 1, 5, -10];
+    /// assert_eq!(a.max_by(|x, y| x.cmp(y)).unwrap(), &5);
+    /// ```
+    fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
-  /// Returns the element that gives the maximum value from the
-  /// specified function.
-  ///
-  /// If several elements are equally maximum, the last element is
-  /// returned. If the collection is empty, [`None`] is returned.
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// assert_eq!(a.max_by_key(|x| x.abs()).unwrap(), &-10);
-  /// ```
-  fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
+    /// Returns the element that gives the maximum value from the
+    /// specified function.
+    ///
+    /// If several elements are equally maximum, the last element is
+    /// returned. If the collection is empty, [`None`] is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = vec![-3_i32, 0, 1, 5, -10];
+    /// assert_eq!(a.max_by_key(|x| x.abs()).unwrap(), &-10);
+    /// ```
+    fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
-  /// Returns the maximum element of a collection.
-  ///
-  /// If several elements are equally maximum, the last element is
-  /// returned. If the collection is empty, [`None`] is returned.
-  ///
-  /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
-  /// incomparable. You can work around this by using [`Collectible::reduce`]:
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// assert_eq!(
-  ///     vec![2.4, f32::NAN, 1.3]
-  ///         .reduce(f32::max)
-  ///         .unwrap(),
-  ///     2.4
-  /// );
-  /// ```
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  /// let b: Vec<u32> = Vec::new();
-  ///
-  /// assert_eq!(a.max_item(), Some(&3));
-  /// assert_eq!(b.max_item(), None);
-  /// ```
-  #[inline]
-  fn max_item(&self) -> Option<&Item>
-  where
-    Item: Ord,
-  {
-    self.max_by(Ord::cmp)
-  }
+    /// Returns the maximum element of a collection.
+    ///
+    /// If several elements are equally maximum, the last element is
+    /// returned. If the collection is empty, [`None`] is returned.
+    ///
+    /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
+    /// incomparable. You can work around this by using [`Collectible::reduce`]:
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// assert_eq!(
+    ///     vec![2.4, f32::NAN, 1.3]
+    ///         .reduce(f32::max)
+    ///         .unwrap(),
+    ///     2.4
+    /// );
+    /// ```
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = vec![1, 2, 3];
+    /// let b: Vec<u32> = Vec::new();
+    ///
+    /// assert_eq!(a.max_item(), Some(&3));
+    /// assert_eq!(b.max_item(), None);
+    /// ```
+    #[inline]
+    fn max_item(&self) -> Option<&Item>
+    where
+      Item: Ord,
+    {
+      self.max_by(Ord::cmp)
+    }
 
-  /// Returns the element that gives the minimum value with respect to the
-  /// specified comparison function.
-  ///
-  /// If several elements are equally minimum, the first element is
-  /// returned. If the collection is empty, [`None`] is returned.
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// assert_eq!(a.min_by(|x, y| x.cmp(y)).unwrap(), &-10);
+    /// Returns the element that gives the minimum value with respect to the
+    /// specified comparison function.
+    ///
+    /// If several elements are equally minimum, the first element is
+    /// returned. If the collection is empty, [`None`] is returned.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use cantrip::*;
+    ///
+    /// let a = vec![-3_i32, 0, 1, 5, -10];
+    /// assert_eq!(a.min_by(|x, y| x.cmp(y)).unwrap(), &-10);
   /// ```
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
