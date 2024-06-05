@@ -18,21 +18,18 @@ pub trait Sequence<Item> {
   type This<I>;
 
   // FIXME - implement these methods
-  // zip_all
-  // unzip_all
+  // index_of
+  // index_of_sequence
+  // indices_of
+  // zip_fill
   // coalesce
-  // cartesian_product
-  // same_elements
   // longest common prefix
-  // longest common suffix
-  // combinations_with_replacement
-  // powerset
-  // subset
-  // subsequence / contains_slice / index_of_slice
-  // group_map_fold
+  // variations
+  // variations_rep
+  // permutations
+  // subsequence
   // segment_range
   // move
-  // coalesce
   // circular_windowed
   // slice
 
@@ -160,6 +157,7 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if range.contains(&i) { None } else { Some(x) }).collect()
   }
 
+  // FIXME - consider creating a non-consuming version or removing clone bound
   fn duplicates(self) -> Self
   where
     Item: Eq + Hash + Clone,
@@ -180,6 +178,7 @@ pub trait Sequence<Item> {
       .collect()
   }
 
+  // FIXME - consider creating a non-consuming version or removing clone bound
   fn duplicates_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,

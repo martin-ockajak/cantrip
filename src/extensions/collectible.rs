@@ -16,6 +16,17 @@ use crate::extensions::iterable::Iterable;
 /// - May create a new collection
 ///
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
+  // FIXME - implement these methods
+  // cartesian_product
+  // combinations
+  // combinations_rep
+  // powerset
+  // subset
+  // superset
+  // group_fold
+  // group_fold_with
+  // group_reduce
+
   /// Original collection type
   type This<I>;
 
@@ -547,13 +558,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let grouped_by = a.grouped_by(|x| x % 2);
-  /// assert_eq!(grouped_by, HashMap::from([
+  /// let grouped = a.group_by(|x| x % 2);
+  /// assert_eq!(grouped, HashMap::from([
   ///   (0, vec![2]),
   ///   (1, vec![1, 3])
   /// ]));
   /// ```
-  fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn group_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
   {

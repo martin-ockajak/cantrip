@@ -15,6 +15,10 @@ use std::hash::Hash;
 /// - Does not create a new collection
 ///
 pub trait Traversable<Item> {
+  // FIXME - implement these methods
+  // same_items
+  // subset
+
   /// Tests if every element of the collection matches a predicate.
   ///
   /// `all()` takes a closure that returns `true` or `false`. It applies

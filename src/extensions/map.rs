@@ -19,6 +19,19 @@ use crate::extensions::iterable::Iterable;
 pub trait Map<Key, Value> {
   type This<K, V>;
 
+  // FIXME - implement these methods
+  // includes
+  // combinations_with_replacement
+  // powerset
+  // subset
+  // superset
+  // subsequence / contains_slice / index_of_slice
+  // group_map_fold
+  // segment_range
+  // move
+  // circular_windowed
+  // slice
+
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
   where

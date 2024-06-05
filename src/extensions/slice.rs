@@ -11,6 +11,14 @@ use std::hash::Hash;
 /// - Does not create a new collection
 ///
 pub trait Slice<Item> {
+  // FIXME - implement these methods
+  // index_of
+  // index_of_sequence
+  // indices_of
+  // subsequence
+  // subset
+  // superset
+
   /// Tests if all elements of the slice are unique.
   ///
   /// `all_equal()` returns `true` if all elements of the slice are unique

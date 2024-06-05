@@ -11,6 +11,9 @@ use crate::extensions::util::unfold::unfold;
 /// - Does not create a new collection
 ///
 pub trait Reversible<Item> {
+  // FIXME - implement these methods
+  // longest common suffix
+
   /// Searches for an element of a collection that satisfies a predicate, starting from the back.
   ///
   /// `rfind()` takes a closure that returns `true` or `false`. It applies
