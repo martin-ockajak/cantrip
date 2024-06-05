@@ -620,14 +620,6 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn unit(value: Item) -> Self
-  where
-    Self: FromIterator<Item>,
-  {
-    iter::once(value).collect()
-  }
-
-  #[inline]
   fn unzip<A, B>(self) -> (Self::This<A>, Self::This<B>)
   where
     Self: IntoIterator<Item = (A, B)> + Sized,

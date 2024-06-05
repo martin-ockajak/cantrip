@@ -1,3 +1,5 @@
+#![deny(missing_docs)]
+
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
@@ -5,7 +7,6 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 use crate::extensions::iterable::Iterable;
-use crate::Traversable;
 
 /// Consuming collection operations.
 ///
@@ -15,6 +16,7 @@ use crate::Traversable;
 /// - May create a new collection
 ///
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
+  /// Original collection type
   type This<I>;
 
   /// Creates a new collection by appending an element to
@@ -341,9 +343,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// This is a consuming variant of [`find_map`].
   ///
-  /// [`find`]: Traversable::find
-  /// [`map`]: Traversable::map
-  /// [`find_map`]: Traversable::find_map
+  /// [`find`]: crate::Traversable::find
+  /// [`map`]: crate::Traversable::map
+  /// [`find_map`]: crate::Traversable::find_map
   ///
   /// # Examples
   ///
@@ -534,6 +536,20 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flat_map(function).collect()
   }
 
+  /// Creates `HashMap` of keys mapped to collections of elements according to
+  /// specified discriminator function.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let grouped_by = a.grouped_by(|x| x % 2);
+  /// assert_eq!(grouped_by, HashMap::from([(0, vec![2]), (1, vec![1, 3])]));
+  /// ```
   fn grouped_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
@@ -824,7 +840,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// [`fold()`]: Traversable::fold
+  /// [`fold()`]: crate::Traversable::fold
   ///
   /// # Example
   ///
@@ -847,6 +863,21 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
+  /// Creates a new collection from the original collection by replacing the
+  /// first occurrence of an element with a replacement value.
+  ///
+  /// The order or retained values is preserved for ordered collections.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 3];
+  /// let b = vec![2, 3];
+  ///
+  /// assert_eq!(a.replace(&3, 4), vec![1, 2, 4, 3]);
+  /// ```
   fn replace(self, value: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
@@ -857,7 +888,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let mut replaced_item = iter::once(replacement);
     iterator
       .flat_map(|item| {
-        if !replaced && item.eq(value) {
+        if !replaced && &item == value {
           replaced = true;
           replaced_item.next()
         } else {
@@ -915,7 +946,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// A collection adapter which, like [`fold`], holds internal state, but
   /// unlike [`fold`], produces a new collection.
   ///
-  /// [`fold`]: Traversable::fold
+  /// [`fold`]: crate::Traversable::fold
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
@@ -960,7 +991,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// A collection adapter which, like [`fold`], holds internal state, but
   /// unlike [`fold`], produces a new collection.
   ///
-  /// [`fold`]: Traversable::fold
+  /// [`fold`]: crate::Traversable::fold
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
@@ -1034,7 +1065,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     heap.into_iter().collect()
   }
 
-  /// Sums the elements of an collection.
+  /// Sums the elements of a collection.
   ///
   /// Takes each element, adds them together, and returns the result.
   ///
@@ -1068,6 +1099,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().sum()
   }
 
+  /// Creates a collection containing a single element.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = Vec::unit(1);
+  ///
+  /// assert_eq!(a, vec![1]);
   #[inline]
   fn unit(value: Item) -> Self
   where
