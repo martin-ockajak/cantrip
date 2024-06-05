@@ -308,28 +308,50 @@ pub trait Sequence<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
+  /// Creates a collection by padding the original collection to a minimum length of
+  /// `size` and filling missing elements with specified value.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let padded = a.pad(5, 4);
+  /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
+  /// ```
   #[inline]
   fn pad(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.pad_with(size, || element.clone())
+    self.pad_with(size, |_| element.clone())
   }
 
+  /// Creates a collection by padding the original collection to a minimum length of
+  /// `size` and filling missing elements using a closure `to_element`.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let padded = a.pad_with(5, |i| 2 * i);
+  /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
+  /// ```
   #[inline]
-  fn pad_with(self, size: usize, mut to_element: impl FnMut() -> Item) -> Self
+  fn pad_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     unfold(0_usize, |position| {
-      iterator.next().or_else(|| {
-        let result = if *position < size { Some(to_element()) } else { None };
-        *position += 1;
-        result
-      })
+      let result = iterator.next().or_else(|| {
+        if *position < size { Some(to_element(*position)) } else { None }
+      });
+      *position += 1;
+      result
     })
     .collect()
   }
