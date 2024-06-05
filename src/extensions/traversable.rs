@@ -293,13 +293,13 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert!(a.includes(&vec![1, 2, 2]));
-  /// assert!(!a.includes(&vec![1, 2, 2, 2]));
-  /// assert!(!a.includes(&vec![2, 4]));
+  /// // assert!(a.includes(&vec![1, 2, 2]));
+  /// // assert!(!a.includes(&vec![1, 2, 2, 2]));
+  /// // assert!(!a.includes(&vec![2, 4]));
   /// ```
-  fn includes<'a>(&self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a;
+  // fn includes<'a>(&self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  // where
+  //   Item: Eq + Hash + 'a;
 
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
