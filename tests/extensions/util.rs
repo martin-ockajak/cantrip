@@ -2,7 +2,7 @@ use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedL
 use std::fmt::Debug;
 use std::hash::Hash;
 
-use crate::assert_equality;
+use crate::assert_equal;
 
 pub trait Equal {
   fn equal(&self, other: &Self) -> bool;
@@ -67,7 +67,7 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
 }
 
 pub(crate) fn assert_equal<C: FromIterator<i64> + Equal + Debug>(values: C, expected: &[i64]) -> () {
-  assert_equality!(values, from(expected))
+  assert_equal!(values, from(expected))
 }
 
 pub(crate) fn from<C: FromIterator<i64>>(values: &[i64]) -> C {
@@ -75,7 +75,7 @@ pub(crate) fn from<C: FromIterator<i64>>(values: &[i64]) -> C {
 }
 
 #[macro_export]
-macro_rules! assert_equality {
+macro_rules! assert_equal {
   ($left:expr, $right:expr $(,)?) => {
     match (&$left, &$right) {
       (left_value, right_value) => {
