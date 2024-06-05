@@ -139,8 +139,7 @@ pub trait Reversible<Item> {
     .collect()
   }
 
-  /// Searches for an element in an collection from the right, returning its
-  /// index.
+  /// Searches for an element in a collection from the right, returning its index.
   ///
   /// `rposition()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of the collection, starting from the end,
@@ -162,7 +161,6 @@ pub trait Reversible<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.rposition(|&x| x == 3), Some(2));
-  ///
   /// assert_eq!(a.rposition(|&x| x == 5), None);
   /// ```
   ///
