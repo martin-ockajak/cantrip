@@ -20,7 +20,7 @@ pub fn test_collectible_traits<'a, C>()
     + 'a,
 {
   test_traversable::<C>();
-  // test_collectible::<C>();
+  test_collectible::<C>(false);
 }
 
 pub fn test_slice_traits<'a, C>()
@@ -37,7 +37,7 @@ pub fn test_slice_traits<'a, C>()
     + 'a,
 {
   test_traversable::<C>();
-  test_collectible::<C>();
+  test_collectible::<C>(true);
   test_reversible::<C>();
   test_slice::<C>();
 }
@@ -56,7 +56,7 @@ where
     + 'a,
 {
   test_traversable::<C>();
-  test_collectible::<C>();
+  test_collectible::<C>(true);
   test_reversible::<C>();
   test_sequence::<C>();
 }
