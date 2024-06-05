@@ -780,6 +780,30 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // FIXME - implement
   // fn powerset(self) -> Self::This<Self>;
 
+  /// Iterates over the entire collection, multiplying all the elements
+  ///
+  /// An empty collection returns the one value of the type.
+  ///
+  /// `product()` can be used to multiply any type implementing [`Product`],
+  ///
+  /// [`Product`]: Product
+  ///
+  /// # Panics
+  ///
+  /// When calling `product()` and a primitive integer type is being returned,
+  /// method will panic if the computation overflows and debug assertions are
+  /// enabled.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![2, 3, 4];
+  /// let product = a.product();
+  ///
+  /// assert_eq!(product, 24);
+  /// ```
   #[inline]
   fn product(self) -> Item
   where
@@ -912,6 +936,31 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     heap.into_iter().collect()
   }
 
+  /// Sums the elements of an collection.
+  ///
+  /// Takes each element, adds them together, and returns the result.
+  ///
+  /// An empty collection returns the zero value of the type.
+  ///
+  /// `sum()` can be used to multiply any type implementing [`Sum`],
+  ///
+  /// [`Sum`]: Sum
+  ///
+  /// # Panics
+  ///
+  /// When calling `sum()` and a primitive integer type is being returned, this
+  /// method will panic if the computation overflows and debug assertions are
+  /// enabled.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let sum = a.sum();
+  ///
+  /// assert_eq!(sum, 6);
   #[inline]
   fn sum(self) -> Item
   where
