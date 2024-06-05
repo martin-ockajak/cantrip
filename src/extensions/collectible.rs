@@ -19,7 +19,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Original collection type
   type This<I>;
 
-  /// Creates a new collection by appending an element to
+  /// Creates a collection by appending an element to
   /// the original collection.
   ///
   /// # Examples
@@ -37,7 +37,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  /// Creates a new collection by appending all elements of
+  /// Creates a collection by appending all elements of
   /// another collection to the original collection.
   ///
   /// # Examples
@@ -57,7 +57,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iterable).collect()
   }
 
-  /// Creates a new collection from the original collection without
+  /// Creates a collection from the original collection without
   /// the first occurrence of an element.
   ///
   /// The order or retained values is preserved for ordered collections.
@@ -91,7 +91,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a new collection from the original collection without
+  /// Creates a collection from the original collection without
   /// the first occurrences of elements found in another collection.
   ///
   /// The order or retained values is preserved for ordered collections.
@@ -135,7 +135,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // FIXME - implement
   // fn combinations(self, n: usize) -> Self::This<Self>;
 
-  /// Creates a new collection containing an element
+  /// Creates a collection containing an element
   /// specified number of times.
   ///
   /// # Examples
@@ -154,7 +154,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iter::repeat(value).take(size).collect()
   }
 
-  /// Creates a new collection containing a result of a function
+  /// Creates a collection containing a result of a function
   /// specified number of times.
   ///
   /// # Examples
@@ -173,7 +173,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iter::repeat(value()).take(size).collect()
   }
 
-  /// Creates a new collection by filtering the original collection using a
+  /// Creates a collection by filtering the original collection using a
   /// closure to determine if an element should be retained.
   ///
   /// Given an element the closure must return `true` or `false`. The returned
@@ -242,7 +242,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(predicate).collect()
   }
 
-  /// Creates a new collection by filtering and mapping the original collection.
+  /// Creates a collection by filtering and mapping the original collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -285,7 +285,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a new collection by filters and maps the original collection.
+  /// Creates a collection by filters and maps the original collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -366,7 +366,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().find_map(function)
   }
 
-  /// Creates a new collection by flattens the original nested collection.
+  /// Creates a collection by flattens the original nested collection.
   ///
   /// This is useful when you have a collection of iterables and
   /// you want to remove one level of indirection.
@@ -380,7 +380,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![vec![1, 2, 3, 4], vec![5, 6]];
   /// let flattened = a.flat();
-  /// assert_eq!(flattened, &[1, 2, 3, 4, 5, 6]);
+  /// assert_eq!(flattened, vec![1, 2, 3, 4, 5, 6]);
   /// ```
   ///
   /// Mapping and then flattening:
@@ -391,8 +391,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let flattened: Vec<i32> = a.map(|&x| vec![x, -x]).flat();
-  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
+  /// let flattened = a.map(|&x| vec![x, -x]).flat();
+  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   ///
   /// You can also rewrite this in terms of [`flat_map()`], which is preferable
@@ -404,8 +404,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it supports IntoIterator
-  /// let flattened: Vec<i32> = a.flat_map(|&x| vec![x, -x]);
-  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
+  /// let flattened = a.flat_map(|&x| vec![x, -x]);
+  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   ///
   /// Flattening works on any `IntoIterator` type, including `Option` and `Result`:
@@ -453,7 +453,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flatten().collect()
   }
 
-  /// Creates a new collection by applying the given closure `f` to each element
+  /// Creates a collection by applying the given closure `f` to each element
   /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -484,15 +484,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flattened: Vec<i32> = a.flat_map(|&x| vec![x, -x]);
-  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
+  /// let flattened = a.flat_map(|&x| vec![x, -x]);
+  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a new collection by applying the given closure `f` to each element
+  /// Creates a collection by applying the given closure `f` to each element
   /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -523,8 +523,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flattened: Vec<i32> = a.flat_map_to(|x| vec![x, -x]);
-  /// assert_eq!(flattened, [1, -1, 2, -2, 3, -3]);
+  /// let flattened = a.flat_map_to(|x| vec![x, -x]);
+  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   #[inline]
   fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
@@ -563,7 +563,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     result
   }
 
-  /// Creates a new collection by retaining the values representing the intersection
+  /// Creates a collection by retaining the values representing the intersection
   /// of the original collection with another collection i.e., the values that are
   /// both in `self` and `other`.
   ///
@@ -596,7 +596,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  /// Creates a new collection by applying the given closure `f` to each element in
+  /// Creates a collection by applying the given closure `f` to each element in
   /// the original collection.
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
@@ -625,13 +625,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let result: Vec<i32> = vec![1, 2, 3].map(|&x| x + 1);
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let mapped = a.map(|&x| x + 1);
+  /// assert_eq!(mapped, vec![2, 3, 4]);
   /// ```
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a new collection by applying the given closure `f` to each element in
+  /// Creates a collection by applying the given closure `f` to each element in
   /// the original collection.
   ///
   /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
@@ -660,7 +663,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let result: Vec<i32> = vec![1, 2, 3].map_to(|x| x + 1);
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let mapped = a.map_to(|x| x + 1);
+  /// assert_eq!(mapped, vec![2, 3, 4]);
   /// ```
   #[inline]
   fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
@@ -671,7 +677,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(function).collect()
   }
 
-  /// Creates a new collection containing the n largest elements of
+  /// Creates a collection containing the n largest elements of
   /// the original collection in descending order.
   ///
   /// ```
@@ -863,7 +869,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
-  /// Creates a new collection from the original collection by replacing the
+  /// Creates a collection from the original collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
   /// The order or retained values is preserved for ordered collections.
@@ -898,7 +904,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a new collection from the original collection by replacing the
+  /// Creates a collection from the original collection by replacing the
   /// given occurrences of elements found in another collection with elements
   /// of a replacement collection.
   ///
@@ -1037,7 +1043,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
-  /// Creates a new collection containing the n smallest elements of
+  /// Creates a collection containing the n smallest elements of
   /// the original collection in descending order.
   ///
   /// ```

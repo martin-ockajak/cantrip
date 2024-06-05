@@ -215,6 +215,18 @@ pub trait Sequence<Item> {
     result
   }
 
+  /// Creates a new collection from the original collection without
+  /// the last element.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.init(), vec![1, 2]);
+  /// ```
   fn init(self) -> Self;
 
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
@@ -525,6 +537,18 @@ pub trait Sequence<Item> {
     self.into_iter().step_by(step).collect()
   }
 
+  /// Creates a new collection from the original collection without
+  /// the first element.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.tail(), vec![2, 3]);
+  /// ```
   #[inline]
   fn tail(self) -> Self
   where
@@ -652,7 +676,7 @@ where
   Result: FromIterator<Item>,
 {
   let size = iterator.len() - 1;
-  iterator.skip(size).collect()
+  iterator.take(size).collect()
 }
 
 #[inline]

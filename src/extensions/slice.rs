@@ -1,3 +1,5 @@
+// #![deny(missing_docs)]
+
 use std::hash::Hash;
 
 /// Slice operations.
@@ -13,11 +15,22 @@ pub trait Slice<Item> {
   where
     Item: Eq + Hash;
 
+  /// Creates a slice from the original slice without the last element.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = &[1, 2, 3];
+  ///
+  /// assert_eq!(a.init(), &[1, 2]);
+  /// ```
   fn init(&self) -> &Self;
 
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
-  /// Creates an slice without initial elements based on a predicate.
+  /// Creates a slice without initial elements based on a predicate.
   ///
   /// [`skip`]: Slice::skip
   ///
@@ -53,9 +66,20 @@ pub trait Slice<Item> {
   /// ```
   fn skip_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 
+  /// Creates a slice from the original slice without the first element.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = &[1, 2, 3];
+  ///
+  /// assert_eq!(a.tail(), &[2, 3]);
+  /// ```
   fn tail(&self) -> &Self;
 
-  /// Creates an slice without trailing elements based on a predicate.
+  /// Creates a slice without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
   /// closure on each element of the slice, and yield elements
