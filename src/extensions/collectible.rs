@@ -30,8 +30,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Original collection type
   type This<I>;
 
-  /// Creates a collection by appending an element to
-  /// the original collection.
+  /// Creates a collection by appending an element to the original collection.
   ///
   /// # Examples
   ///
@@ -39,6 +38,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let mut a = vec![1, 2];
+  ///
   /// assert_eq!(a.add(3), [1, 2, 3]);
   /// ```
   fn add(self, value: Item) -> Self
@@ -48,8 +48,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  /// Creates a collection by appending all elements of
-  /// another collection to the original collection.
+  /// Creates a collection by appending all elements of another collection to
+  /// the original collection.
   ///
   /// # Examples
   ///

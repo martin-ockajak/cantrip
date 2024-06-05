@@ -31,6 +31,21 @@ pub trait Sequence<Item> {
   // circular_windowed
   // slice
 
+  /// Creates a collection by inserting an element into specified index
+  /// in the original collection.
+  ///
+  /// if the specified index is exceeds the collection size, no elements are inserted.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2];
+  ///
+  /// assert_eq!(a.clone().add_at(1, 3), [1, 3, 2]);
+  /// assert_eq!(a.add_at(3, 3), [1, 2]);
+  /// ```
   #[inline]
   fn add_at(self, index: usize, element: Item) -> Self
   where
@@ -39,6 +54,21 @@ pub trait Sequence<Item> {
     self.add_all_at(index, iter::once(element))
   }
 
+  /// Creates a collection by inserting all elements of another collection
+  /// into specified index in the original collection.
+  ///
+  /// if the specified index is exceeds the collection size, no elements are inserted.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2];
+  ///
+  /// assert_eq!(a.clone().add_all_at(1, vec![3, 4]), [1, 3, 4, 2]);
+  /// assert_eq!(a.add_all_at(3, vec![3, 4]), [1, 2]);
+  /// ```
   fn add_all_at(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -47,7 +77,10 @@ pub trait Sequence<Item> {
     let mut added = elements.into_iter();
     unfold(0_usize, |position| {
       let result = if *position >= index {
-        added.next().or(iterator.next())
+        added.next().or_else(|| {
+          *position += 1;
+          iterator.next()
+        })
       } else {
         *position += 1;
         iterator.next()
