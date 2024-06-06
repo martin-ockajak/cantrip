@@ -98,8 +98,6 @@ pub trait Sequence<Item> {
   ///
   /// # Examples
   ///
-  /// Basic usage:
-  ///
   /// ```
   /// use cantrip::*;
   ///
@@ -113,30 +111,77 @@ pub trait Sequence<Item> {
   where
     Item: Eq + Hash;
 
+  /// Creates a collection by splitting the original collection elements
+  /// into non-overlapping subsequences of specified `size`.
+  ///
+  /// The last group will be shorter if there are not enough elements left.
+  ///
+  /// # Panics
+  ///
+  /// Panics if `size` is 0.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, -1, 1, 2];
+  ///
+  /// let chunked = a.chunked(2);
+  /// assert_eq!(chunked, vec![vec![1, 2], vec![-1, 1], vec![2]])
+  /// ```
   fn chunked(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
   {
-    assert_ne!(size, 0, "chunk size must be non-zero");
-    let mut result = Self::This::default();
-    let mut chunk = Self::default();
-    let mut index: usize = 0;
-    for item in self.into_iter() {
-      if index > 0 && index == size {
-        result.extend(iter::once(chunk));
-        chunk = Self::default();
-        index = 0;
-      }
-      chunk.extend(iter::once(item));
-      index += 1;
-    }
-    if index > 0 {
-      result.extend(iter::once(chunk));
-    }
-    result
+    chunked(self, size, false)
   }
 
+  /// Creates a collection by splitting the original collection elements
+  /// into non-overlapping subsequences of specified `size`.
+  ///
+  /// The last group will be shorter if there are not enough elements left.
+  ///
+  /// # Panics
+  ///
+  /// Panics if `size` is 0.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, -1, 1, 2];
+  ///
+  /// let chunked = a.chunked(2);
+  /// assert_eq!(chunked, vec![vec![1, 2], vec![-1, 1], vec![2]])
+  /// ```
+  fn chunked_exact(self, size: usize) -> Self::This<Self>
+    where
+      Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+      Self::This<Self>: Default + Extend<Self>,
+  {
+    chunked(self, size, true)
+  }
+
+  /// Creates a collection by splitting the original collection into non-overlpping
+  /// subsequences according to specified discriminator function.
+  ///
+  /// Consecutive elements that map to the same key (“runs”) are assigned
+  /// to the same subsequence.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, -1, 1, 2];
+  ///
+  /// let chunked = a.chunked_by(|&x| x >= 0);
+  /// // FIXME - correct errors
+  /// // assert_eq!(chunked, vec![vec![1, 2], vec![-1], vec![1, 2]])
+  /// ```
   fn chunked_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -484,6 +529,8 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
+    assert_ne!(source_index, 0, "source index must be non-zero");
+    assert_ne!(source_index, 0, "source index must be non-zero");
     let mut iterator = self.into_iter();
     let mut stored = LinkedList::<Item>::new();
     unfold(0_usize, |position| {
@@ -939,6 +986,30 @@ pub trait Sequence<Item> {
   {
     self.into_iter().zip(elements).collect()
   }
+}
+
+pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
+  where
+    Collection: IntoIterator<Item = Item> + Default + Extend<Item>,
+    Result: Default + Extend<Collection>,
+{
+  assert_ne!(size, 0, "chunk size must be non-zero");
+  let mut result = Result::default();
+  let mut chunk = Collection::default();
+  let mut index: usize = 0;
+  for item in collection.into_iter() {
+    if index > 0 && index == size {
+      result.extend(iter::once(chunk));
+      chunk = Collection::default();
+      index = 0;
+    }
+    chunk.extend(iter::once(item));
+    index += 1;
+  }
+  if index > 0 && !exact {
+    result.extend(iter::once(chunk));
+  }
+  result
 }
 
 #[inline]
