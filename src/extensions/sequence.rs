@@ -137,7 +137,7 @@ pub trait Sequence<Item> {
     result
   }
 
-  fn chunk_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
+  fn chunked_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
