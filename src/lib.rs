@@ -155,6 +155,4 @@
 /// | *zip*                    |             *             |                               |                   |       |
 pub mod extensions;
 
-// FIXME - add String extensions
-
 pub use extensions::*;
