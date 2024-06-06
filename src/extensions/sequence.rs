@@ -23,6 +23,7 @@ pub trait Sequence<Item> {
   // index_of_sequence
   // zip_fill
   // coalesce
+  // chunked_by
   // longest common prefix
   // variations
   // variations_rep
@@ -184,6 +185,7 @@ pub trait Sequence<Item> {
     chunked(self, size, true)
   }
 
+  // FIXME - implement
   // /// Creates a collection by splitting the original collection into non-overlpping
   // /// subsequences according to specified separator predicate.
   // ///
@@ -230,6 +232,53 @@ pub trait Sequence<Item> {
   //     }
   //   });
   //   result
+  // }
+  
+  // FIXME - implement
+  // fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
+  // where
+  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  // {
+  //   self.into_iter().scan(None, |last, item| {
+  //     match last {
+  //       Some(value) => match function(*value, item) {
+  //         Ok(current) => None,
+  //         Err((xx, current)) => None,
+  //       },
+  //       None => {
+  //         *last = Some(item);
+  //         None
+  //       },
+  //     }
+  //   })
+  //   // let mut prev = None;
+  //   // let mut next = None;
+  //   // self
+  //   //   .into_iter()
+  //   //   .filter_map(|item| match next {
+  //   //     Some(value) => {
+  //   //       next = None;
+  //   //       Some(value)
+  //   //     }
+  //   //     None => match prev {
+  //   //       Some(prev_value) => match function(prev_value, item) {
+  //   //         Ok(value) => {
+  //   //           prev = None;
+  //   //           Some(value)
+  //   //         }
+  //   //         Err((value, next_value)) => {
+  //   //           prev = None;
+  //   //           next = Some(next_value);
+  //   //           Some(value)
+  //   //         }
+  //   //       },
+  //   //       None => {
+  //   //         prev = Some(item);
+  //   //         None
+  //   //       }
+  //   //     },
+  //   //   })
+  //     .collect()
   // }
 
   #[inline]

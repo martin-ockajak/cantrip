@@ -7,6 +7,7 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 use crate::extensions::iterable::Iterable;
+use crate::extensions::util::unfold::unfold;
 
 /// Consuming collection operations.
 ///
@@ -144,7 +145,53 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   // FIXME - implement
-  // fn combinations(self, n: usize) -> Self::This<Self>;
+  // fn combinations(self, k: usize) -> Self::This<Self>
+  // where
+  //   Item: Clone,
+  //   Self: FromIterator<Item> + Sized,
+  //   Self::This<Self>: FromIterator<Self>,
+  // {
+  //   if k == 0 {
+  //     return Self::This::from_iter(iter::empty());
+  //   }
+  //   let values = Vec::from_iter(self.into_iter());
+  //   if k > values.len() {
+  //     return Self::This::from_iter(iter::empty());
+  //   }
+  //   let mut indices = Vec::from_iter(0..k);
+  //   /// [1, 2, 3]
+  //   /// [1, 2, 4]
+  //   /// [1, 2, 5]
+  //   /// [1, 3, 4]
+  //   /// [1, 3, 5]
+  //   /// [1, 4, 5]
+  //   /// [2, 3, 4]
+  //   /// [2, 3, 5]
+  //   /// [2, 4, 5]
+  //   /// [3, 4, 5]
+  //   unfold(k - 1, |slot| {
+  //     if *slot >= k {
+  //       return None;
+  //     }
+  //     let result = Some(Self::from_iter(indices.iter().map(|index| values[*index].clone())));
+  //     if indices[*slot] < *slot + k {
+  //       indices[*slot] += 1;
+  //       for index in (*slot + 1)..k {
+  //         indices[index] = indices[index - 1] + 1;
+  //       }
+  //     } else {
+  //       while indices[*slot] >= *slot + k {
+  //         if *slot > 0 {
+  //           *slot -= 1;
+  //         } else {
+  //           *slot = k;
+  //         }
+  //       }
+  //     }
+  //     result
+  //   })
+  //   .collect()
+  // }
 
   /// Creates a collection containing an element
   /// specified number of times.
