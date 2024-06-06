@@ -137,7 +137,7 @@ pub trait Sequence<Item> {
     result
   }
 
-  fn chunked_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
+  fn chunk_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
     Self::This<Self>: Default + Extend<Self>,
@@ -475,6 +475,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.clone().move_item(1, 3), vec![1, 3, 4, 2, 5]);
   /// assert_eq!(a.clone().move_item(1, 5), vec![1, 3, 4, 5]);
+  /// assert_eq!(a.clone().move_item(3, 3), vec![1, 2, 3, 4, 5]);
   /// assert_eq!(a.clone().move_item(3, 1), vec![1, 4, 2, 3, 5]);
   /// assert_eq!(a.clone().move_item(5, 1), vec![1, 2, 3, 4, 5]);
   /// ```
