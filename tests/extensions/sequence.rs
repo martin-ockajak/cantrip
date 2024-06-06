@@ -8,9 +8,10 @@ pub fn test_sequence<'a, C>()
 where
   C: Sequence<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
-  let values = from_slice::<C>(&[1, 2, 2, 3]);
+  // FIXME - implement test for all trait methods
+  let repeated = from_slice::<C>(&[1, 2, 2, 3]);
   // let empty = from::<C>(&[]);
 
   // position
-  assert_eq!(values.position(|&x| x == 2), Some(1));
+  assert_eq!(repeated.position(|&x| x == 2), Some(1));
 }

@@ -1,4 +1,4 @@
-use std::collections::{BTreeSet, BinaryHeap, HashSet, LinkedList, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 
 pub trait Iterable {
   type Item<'collection>
@@ -165,5 +165,61 @@ impl<Item> Iterable for BinaryHeap<Item> {
 
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     BinaryHeapIterator { iterator: self.iter() }
+  }
+}
+
+pub struct HashMapIterator<'c, Key, Value> {
+  pub iterator: std::collections::hash_map::Iter<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
+  type Item = (&'c Key, &'c Value);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+impl<Key, Value> Iterable for HashMap<Key, Value> {
+  type Item<'c> = (&'c Key, &'c Value)
+    where
+      Key: 'c,
+      Value: 'c;
+
+  type Iterator<'c> = HashMapIterator<'c, Key, Value>
+    where
+      Key: 'c,
+      Value: 'c;
+
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    HashMapIterator { iterator: self.iter() }
+  }
+}
+
+pub struct BTreeMapIterator<'c, Key, Value> {
+  pub iterator: std::collections::btree_map::Iter<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
+  type Item = (&'c Key, &'c Value);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+impl<Key, Value> Iterable for BTreeMap<Key, Value> {
+  type Item<'c> = (&'c Key, &'c Value)
+    where
+      Key: 'c,
+      Value: 'c;
+
+  type Iterator<'c> = BTreeMapIterator<'c, Key, Value>
+    where
+      Key: 'c,
+      Value: 'c;
+
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    BTreeMapIterator { iterator: self.iter() }
   }
 }

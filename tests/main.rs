@@ -4,7 +4,7 @@ extern crate quickcheck;
 #[macro_use(quickcheck)]
 extern crate quickcheck_macros;
 
-use std::collections::{BinaryHeap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 
 use crate::extensions::collections::*;
 
@@ -19,6 +19,7 @@ fn collectibles() {
 
 #[test]
 fn slices() {
+  // FIXME - fix slice tests
   // test_slice_traits::<&[i64]>();
 }
 
@@ -31,8 +32,8 @@ fn sequences() {
 
 #[test]
 fn maps() {
-  // test_map_traits::<HashMap<i64, i64>>();
-  // test_map_traits::<BTreeMap<i64, i64>>();
+  test_map_traits::<HashMap<i64, i64>>();
+  test_map_traits::<BTreeMap<i64, i64>>();
 }
 
 #[quickcheck]

@@ -156,7 +156,5 @@
 pub mod extensions;
 
 // FIXME - add String extensions
-// FIXME - implement tests
-// FIXME - add documentation
 
 pub use extensions::*;

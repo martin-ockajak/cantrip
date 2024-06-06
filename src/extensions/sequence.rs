@@ -18,6 +18,7 @@ use crate::extensions::util::unfold::unfold;
 pub trait Sequence<Item> {
   type This<I>;
 
+  // FIXME - add documentation
   // FIXME - implement these methods
   // index_of_sequence
   // zip_fill

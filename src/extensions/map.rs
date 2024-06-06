@@ -19,6 +19,7 @@ use crate::extensions::iterable::Iterable;
 pub trait Map<Key, Value> {
   type This<K, V>;
 
+  // FIXME - add documentation
   // FIXME - implement these methods
   // includes
   // combinations_with_replacement

@@ -68,7 +68,7 @@ pub fn test_map_traits<'a, C>()
   where
     C: Map<i64, i64>
     + FromIterator<(i64, i64)>
-    + Iterator<Item = (i64, i64)>
+    + Iterable<Item<'a> = (&'a i64, &'a i64)>
     + Clone
     + Equal
     + Debug
