@@ -22,8 +22,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // combinations
   // combinations_rep
   // powerset
-  // subset
-  // superset
   // group_fold
   // group_fold_with
   // group_reduce
