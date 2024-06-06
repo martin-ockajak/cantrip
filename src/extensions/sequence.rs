@@ -114,11 +114,19 @@ pub trait Sequence<Item> {
   /// Creates a collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
-  /// The last group will be shorter if there are not enough elements left.
+  /// The chunks are collections and do not overlap. If `size` does not divide
+  /// the length of the slice, then the last chunk will not have length `size`.
+  ///
+  /// See [`chunked_exact`] for a variant of this function that returns chunks of always exactly
+  /// `chunk_size` elements, and [`rchunked`] for the same function but starting at the
+  /// end of the collection.
+  ///
+  /// [`chunked_exact`]: Sequence::chunked_exact
+  /// [`rchunked`]: crate::Reversible::rchunked
   ///
   /// # Panics
   ///
-  /// Panics if `size` is 0.
+  /// Panics if chunk `size` is 0.
   ///
   /// # Examples
   ///
@@ -141,11 +149,21 @@ pub trait Sequence<Item> {
   /// Creates a collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
-  /// The last group will be shorter if there are not enough elements left.
+  /// The chunks are collections and do not overlap. If `size` does not divide
+  /// the length of the slice, then the last up to `size-1` elements will be omitted.
+  ///
+  /// Due to each chunk having exactly `chunk_size` elements, the compiler can often optimize the
+  /// resulting code better than in the case of [`chunks`].
+  ///
+  /// See [`chunked`] for a variant of this function that also returns the remainder as a smaller
+  /// chunk, and [`rchunked_exact`] for the same function but starting at the end of the collection.
+  ///
+  /// [`chunked`]: Sequence::chunked
+  /// [`rchunked_exact`]: crate::Reversible::rchunked_exact
   ///
   /// # Panics
   ///
-  /// Panics if `size` is 0.
+  /// Panics if chunk `size` is 0.
   ///
   /// # Examples
   ///
@@ -165,45 +183,53 @@ pub trait Sequence<Item> {
     chunked(self, size, true)
   }
 
-  /// Creates a collection by splitting the original collection into non-overlpping
-  /// subsequences according to specified discriminator function.
-  ///
-  /// Consecutive elements that map to the same key (“runs”) are assigned
-  /// to the same subsequence.
-  ///
-  /// # Examples
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, -1, 1, 2];
-  ///
-  /// let chunked = a.chunked_by(|&x| x >= 0);
-  /// // FIXME - correct errors
-  /// // assert_eq!(chunked, vec![vec![1, 2], vec![-1], vec![1, 2]])
-  /// ```
-  fn chunked_by(self, mut split_before: impl FnMut(&Item) -> bool) -> Self::This<Self>
-  where
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-    Self::This<Self>: Default + Extend<Self>,
-  {
-    let mut result = Self::This::default();
-    let mut chunk = Self::default();
-    let mut index: usize = 0;
-    for item in self.into_iter() {
-      if index > 0 && split_before(&item) {
-        result.extend(iter::once(chunk));
-        chunk = Self::default();
-        index = 0;
-      }
-      chunk.extend(iter::once(item));
-      index += 1;
-    }
-    if index > 0 {
-      result.extend(iter::once(chunk));
-    }
-    result
-  }
+  // /// Creates a collection by splitting the original collection into non-overlpping
+  // /// subsequences according to specified separator predicate.
+  // ///
+  // /// The predicate is called for every pair of consecutive elements,
+  // /// meaning that it is called on `slice[0]` and `slice[1]`,
+  // /// followed by `slice[1]` and `slice[2]`, and so on.
+  // ///
+  // /// # Examples
+  // ///
+  // /// ```
+  // /// use cantrip::*;
+  // ///
+  // /// let a = vec![1, 2, -1, 1, 2];
+  // ///
+  // /// let chunked = a.chunked_by(|&x| x >= 0);
+  // /// // FIXME - correct errors
+  // /// assert_eq!(chunked, vec![vec![1, 2], vec![-1], vec![1, 2]])
+  // /// ```
+  // fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
+  // where
+  //   Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+  //   Self::This<Self>: Default + Extend<Self>,
+  // {
+  //   let mut result = Self::This::default();
+  //   let mut chunk = Self::default();
+  //   let mut index: usize = 0;
+  //   let mut iterator = self.into_iter();
+  //   iterator.next().map(|first| {
+  //     let mut prev = first;
+  //     for item in iterator {
+  //       if index > 0 && predicate(&prev, &item) {
+  //         chunk.extend(iter::once(prev));
+  //         result.extend(iter::once(chunk));
+  //         chunk = Self::default();
+  //         index = 0;
+  //       } else {
+  //         chunk.extend(iter::once(prev));
+  //       }
+  //       chunk.extend(iter::once(item));
+  //       index += 1;
+  //     }
+  //     if index > 0 {
+  //       result.extend(iter::once(chunk));
+  //     }
+  //   });
+  //   result
+  // }
 
   #[inline]
   fn cycle(self, n: usize) -> Self
