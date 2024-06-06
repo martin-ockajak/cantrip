@@ -1,5 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
+use std::fmt::Debug;
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
@@ -27,14 +28,13 @@ pub trait Sequence<Item> {
   // permutations
   // subsequence
   // segment_range
-  // move
   // circular_windowed
   // slice
 
   /// Creates a collection by inserting an element into specified index
   /// in the original collection.
   ///
-  /// if the specified index is exceeds the collection size, no elements are inserted.
+  /// if the specified index exceeds the collection size, no elements are inserted.
   ///
   /// # Examples
   ///
@@ -57,7 +57,7 @@ pub trait Sequence<Item> {
   /// Creates a collection by inserting all elements of another collection
   /// into specified index in the original collection.
   ///
-  /// if the specified index is exceeds the collection size, no elements are inserted.
+  /// if the specified index exceeds the collection size, no elements are inserted.
   ///
   /// # Examples
   ///
@@ -76,7 +76,7 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut added = elements.into_iter();
     unfold(0_usize, |position| {
-      let result = if *position >= index {
+      if *position >= index {
         added.next().or_else(|| {
           *position += 1;
           iterator.next()
@@ -84,8 +84,7 @@ pub trait Sequence<Item> {
       } else {
         *position += 1;
         iterator.next()
-      };
-      result
+      }
     })
     .collect()
   }
@@ -457,6 +456,59 @@ pub trait Sequence<Item> {
       let result = iterator.next().or_else(|| if *position < size { Some(to_element(*position)) } else { None });
       *position += 1;
       result
+    })
+    .collect()
+  }
+
+  /// Creates a collection by moving an element at an index into specified index
+  /// in the original collection.
+  ///
+  /// if the source index exceeds the collection size, no elements are moved.
+  /// if the target index exceeds the collection size, the element is only removed.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let mut a = vec![1, 2, 3, 4, 5];
+  ///
+  /// assert_eq!(a.clone().move_item(1, 3), vec![1, 3, 4, 2, 5]);
+  /// assert_eq!(a.clone().move_item(1, 5), vec![1, 3, 4, 5]);
+  /// assert_eq!(a.clone().move_item(3, 1), vec![1, 4, 2, 3, 5]);
+  /// assert_eq!(a.clone().move_item(5, 1), vec![1, 2, 3, 4, 5]);
+  /// ```
+  #[inline]
+  fn move_item(self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut stored = LinkedList::<Item>::new();
+    unfold(0_usize, |position| {
+      if *position >= source_index {
+        if *position >= target_index {
+          stored.pop_front().or_else(|| iterator.next())
+        } else {
+          if *position == source_index {
+            iterator.next().map(|x| stored.push_back(x));
+          }
+          *position += 1;
+          iterator.next()
+        }
+      } else {
+        if *position >= target_index {
+          let mut store = true;
+          while store && *position < source_index {
+            iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
+            *position += 1;
+          }
+          iterator.next().or_else(|| stored.pop_front())
+        } else {
+          *position += 1;
+          iterator.next()
+        }
+      }
     })
     .collect()
   }
