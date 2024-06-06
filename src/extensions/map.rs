@@ -21,17 +21,15 @@ pub trait Map<Key, Value> {
 
   // FIXME - add documentation
   // FIXME - implement these methods
+  // all_unique
+  // any
+  // combinations
+  // combinations_repetitive
   // includes
-  // combinations_with_replacement
   // powerset
   // subset
-  // superset
-  // subsequence / contains_slice / index_of_slice
-  // group_map_fold
-  // segment_range
-  // move
-  // circular_windowed
-  // slice
+  // replace
+  // replace_all
 
   #[inline]
   fn add(self, key: Key, value: Value) -> Self

@@ -20,18 +20,19 @@ pub trait Sequence<Item> {
 
   // FIXME - add documentation
   // FIXME - implement these methods
-  // index_of_sequence
-  // zip_fill
   // coalesce
   // chunked_by
+  // index_of_sequence
   // longest common prefix
-  // variations
-  // variations_rep
   // permutations
-  // subsequence
-  // segment_range
-  // circular_windowed
+  // powersequence
   // slice
+  // subsequence
+  // variations
+  // variations_repetitive
+  // windowed
+  // windowed_circular
+  // zip_fill
 
   /// Creates a collection by inserting an element into specified index
   /// in the original collection.

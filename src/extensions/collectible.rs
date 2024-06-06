@@ -20,11 +20,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // FIXME - implement these methods
   // cartesian_product
   // combinations
-  // combinations_rep
+  // combinations_repetitive
   // powerset
   // group_fold
   // group_fold_with
   // group_reduce
+  // partition_map_to
 
   /// Original collection type
   type This<I>;

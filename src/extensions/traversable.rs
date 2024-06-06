@@ -18,7 +18,6 @@ pub trait Traversable<Item> {
   // FIXME - implement these methods
   // same_items
   // subset
-  // superset
 
   /// Tests if every element of the collection matches a predicate.
   ///
