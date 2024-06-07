@@ -28,7 +28,6 @@ pub trait Map<Key, Value> {
   // includes
   // powerset
   // subset
-  // replace
   // replace_all
 
   #[inline]
