@@ -24,9 +24,7 @@ pub trait Slice<Item> {
   ///
   /// An empty slice returns `true`.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -63,9 +61,7 @@ pub trait Slice<Item> {
   ///
   /// [`Some(index)`]: Some
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -85,7 +81,7 @@ pub trait Slice<Item> {
 
   /// Creates a slice from the original slice without the last element.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -119,9 +115,7 @@ pub trait Slice<Item> {
   ///
   /// [`Some(index)`]: Some
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -144,7 +138,7 @@ pub trait Slice<Item> {
   /// After `false` is returned, `skip_while()`'s job is over, and the
   /// rest of the elements are yielded.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// Basic usage:
   ///
@@ -171,7 +165,7 @@ pub trait Slice<Item> {
 
   /// Creates a slice from the original slice without the first element.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;

@@ -32,9 +32,7 @@ pub trait Traversable<Item> {
   ///
   /// An empty collection returns `true`.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -53,9 +51,7 @@ pub trait Traversable<Item> {
   ///
   /// An empty collection returns `true`.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -83,9 +79,7 @@ pub trait Traversable<Item> {
   ///
   /// An empty collection returns `false`.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -104,9 +98,7 @@ pub trait Traversable<Item> {
   /// this closure to each element of the collection, and counts those which
   /// return `true`, disregarding those which return `false`.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -131,9 +123,7 @@ pub trait Traversable<Item> {
   ///
   /// If you need the index of the element, see [`position()`].
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -160,7 +150,7 @@ pub trait Traversable<Item> {
   /// [`map`]: Traversable::map
   /// [`find_map_to`]: crate::Collectible::find_map_to
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -208,7 +198,7 @@ pub trait Traversable<Item> {
   ///
   /// let a = [1, 2, 3];
   ///
-  /// // the sum of all of the elements of the array
+  /// // the sum of all the elements of the array
   /// let sum = a.fold(0, |acc, x| acc + x);
   ///
   /// assert_eq!(sum, 6);
@@ -272,6 +262,8 @@ pub trait Traversable<Item> {
   ///
   /// Use the `Display` implementation of each element.
   ///
+  /// # Example
+  ///
   /// ```
   /// use cantrip::*;
   ///
@@ -286,11 +278,9 @@ pub trait Traversable<Item> {
   /// Tests if a collection contains all elements of another collection as
   /// many times as their appear in the other collection.
   ///
-  /// Return `true` if another collection is empty.
+  /// Returns `true` if the other collection is empty.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -311,7 +301,7 @@ pub trait Traversable<Item> {
   /// If several elements are equally maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -327,7 +317,7 @@ pub trait Traversable<Item> {
   /// If several elements are equally maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -355,7 +345,7 @@ pub trait Traversable<Item> {
   /// );
   /// ```
   ///
-  /// # Examples
+  /// # Example
   ///
   /// Basic usage:
   ///
@@ -382,7 +372,7 @@ pub trait Traversable<Item> {
   /// If several elements are equally minimum, the first element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -398,7 +388,7 @@ pub trait Traversable<Item> {
   /// If several elements are equally minimum, the fist element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -415,6 +405,7 @@ pub trait Traversable<Item> {
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
   /// incomparable. You can work around this by using [`Collectible::reduce`]:
+  ///
   /// ```
   /// use cantrip::*;
   ///
@@ -426,9 +417,7 @@ pub trait Traversable<Item> {
   /// );
   /// ```
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -447,14 +436,14 @@ pub trait Traversable<Item> {
     self.min_by(Ord::cmp)
   }
 
-  /// Return the minimum and maximum element of a collection with respect to the
+  /// Returns the minimum and maximum element of a collection with respect to the
   /// specified comparison function.
   ///
   /// For the minimum, the first minimal element is returned. For the maximum,
   /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
   /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -464,14 +453,14 @@ pub trait Traversable<Item> {
   /// ```
   fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
 
-  /// Return the minimum and maximum element of a collection from the
+  /// Returns the minimum and maximum element of a collection from the
   /// specified function.
   ///
   /// For the minimum, the first minimal element is returned. For the maximum,
   /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
   /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -487,7 +476,7 @@ pub trait Traversable<Item> {
   /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
   /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -502,6 +491,24 @@ pub trait Traversable<Item> {
   {
     self.minmax_by(Ord::cmp)
   }
+
+  // /// Tests if all the elements of a collection can be found in another collection.
+  // ///
+  // /// Returns `true` if this collection is empty.
+  // ///
+  // /// # Example
+  // ///
+  // /// ```
+  // /// use cantrip::*;
+  // ///
+  // /// let a = vec![1, 2, 2];
+  // ///
+  // /// assert!(a.subset(&vec![1, 2, 3]));
+  // /// assert!(!a.subset(&vec![1, 2]));
+  // /// ```
+  // fn subset<'a>(&self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  // where
+  //   Item: Eq + Hash + 'a;
 }
 
 #[inline]
@@ -548,7 +555,7 @@ pub(crate) fn fold<'a, Item: 'a, B>(
 }
 
 #[inline]
-pub(crate) fn includes<'a, Item: 'a>(
+pub(crate) fn includes<'a, Item>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool
 where
@@ -561,17 +568,36 @@ where
   }
   let mut remaining = excluded.len();
   iterator.for_each(|x| {
-    excluded.get_mut(x).map(|count|
+    excluded.get_mut(x).map(|count| {
       if *count > 0 {
         *count -= 1;
       } else {
         remaining -= 1;
         ()
       }
-    );
+    });
     ()
   });
   remaining <= 0
+}
+
+pub(crate) fn subset<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let mut occured: HashSet<&Item> = HashSet::with_capacity(elements_iterator.size_hint().0);
+  for item in elements_iterator {
+    occured.insert(item);
+  }
+  for item in iterator {
+    if !occured.contains(item) {
+      return false;
+    }
+  }
+  true
 }
 
 pub(crate) fn join_items<'a, Item: Display + 'a>(

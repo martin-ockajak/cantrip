@@ -32,7 +32,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a collection by appending an element to the original collection.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -51,7 +51,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection by appending all elements of another collection to
   /// the original collection.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -73,7 +73,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -107,7 +107,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -195,7 +195,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection containing an element
   /// specified number of times.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -214,7 +214,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection containing a result of a function
   /// specified number of times.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -393,8 +393,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Applies function to the elements of a collection and returns
   /// the first non-none result.
   ///
-  /// `find_map_to` can be used to make chains of [`find`] and [`map`] more
-  /// concise.
+  /// `find_map_to` can be used to make chains of [`find`] and [`map`] more concise.
   ///
   /// `find_map_to(f)` is equivalent to `find().map()`.
   ///
@@ -404,7 +403,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// [`map`]: crate::Traversable::map
   /// [`find_map`]: crate::Traversable::find_map
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -531,9 +530,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// [`flat`]: Collectible::flatten
   /// [`flat_map_to`]: Collectible::flat_map_to
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -570,9 +567,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// [`flat`]: Collectible::flatten
   /// [`flat_map`]: Collectible::flat_map
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -629,7 +624,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -680,7 +675,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The caller must ensure that the closure does not mutate any shared state while being executed.
   /// The closure must not panic while being executed, as this will lead to undefined behavior.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -718,7 +713,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The caller must ensure that the closure does not mutate any shared state while being executed.
   /// The closure must not panic while being executed, as this will lead to undefined behavior.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -739,6 +734,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a collection containing the n largest elements of
   /// the original collection in descending order.
+  ///
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -772,7 +769,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// `partition()` returns a pair, all the elements for which it returned
   /// `true`, and all the elements for which it returned `false`.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -802,7 +799,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// [`partition_map_to`]: Collectible::partition_map_to
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -829,7 +826,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// [`partition_map`]: Collectible::partition_map
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -876,7 +873,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -934,7 +931,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -970,7 +967,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// The order or retained values is preserved for ordered collections.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -1029,7 +1026,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// [`scan_to`]: Collectible::scan_to
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -1074,7 +1071,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// [`scan`]: Collectible::scan
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -1105,6 +1102,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a collection containing the n smallest elements of
   /// the original collection in descending order.
+  ///
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -1147,7 +1146,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -1167,7 +1166,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a collection containing a single element.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;

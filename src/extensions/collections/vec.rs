@@ -87,6 +87,13 @@ impl<Item> Traversable<Item> for Vec<Item> {
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)> {
     minmax_by_key(self.iter(), to_key)
   }
+
+  // #[inline]
+  // fn subset<'a>(&self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  //   where
+  //     Item: Eq + Hash + 'a, {
+  //   subset(self.iter(), elements)
+  // }
 }
 
 impl<Item> Reversible<Item> for Vec<Item> {

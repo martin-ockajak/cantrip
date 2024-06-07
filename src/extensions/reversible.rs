@@ -31,9 +31,7 @@ pub trait Reversible<Item> {
   ///
   /// [`Some(element)`]: Some
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -41,18 +39,7 @@ pub trait Reversible<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.rfind(|&x| x == 2), Some(&2));
-  ///
   /// assert_eq!(a.rfind(|&x| x == 5), None);
-  /// ```
-  ///
-  /// Stopping at the first `true`:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.rfind(|&x| x == 2), Some(&2));
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
@@ -119,6 +106,8 @@ pub trait Reversible<Item> {
   /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value, starting from the back.
   ///
+  /// # Example
+  ///
   /// ```
   /// use cantrip::*;
   ///
@@ -140,6 +129,8 @@ pub trait Reversible<Item> {
 
   /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`, starting from the back.
+  ///
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -212,7 +203,7 @@ pub trait Reversible<Item> {
   /// elements are yielded. In particular, if the original collection is too short,
   /// then the returned collection is empty.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;

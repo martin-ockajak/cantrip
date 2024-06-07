@@ -39,7 +39,7 @@ pub trait Sequence<Item> {
   ///
   /// if the specified index exceeds the collection size, no elements are inserted.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -62,7 +62,7 @@ pub trait Sequence<Item> {
   ///
   /// if the specified index exceeds the collection size, no elements are inserted.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -99,7 +99,7 @@ pub trait Sequence<Item> {
   ///
   /// An empty collection returns `true`.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -131,7 +131,7 @@ pub trait Sequence<Item> {
   ///
   /// Panics if chunk `size` is 0.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -168,7 +168,7 @@ pub trait Sequence<Item> {
   ///
   /// Panics if chunk `size` is 0.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -194,7 +194,7 @@ pub trait Sequence<Item> {
   // /// meaning that it is called on `slice[0]` and `slice[1]`,
   // /// followed by `slice[1]` and `slice[2]`, and so on.
   // ///
-  // /// # Examples
+  // /// # Example
   // ///
   // /// ```
   // /// use cantrip::*;
@@ -408,9 +408,7 @@ pub trait Sequence<Item> {
   ///
   /// [`Some(index)`]: Some
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -444,9 +442,7 @@ pub trait Sequence<Item> {
   /// This function might panic if the collection has more than `usize::MAX`
   /// non-matching elements.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -466,7 +462,7 @@ pub trait Sequence<Item> {
   /// Creates a new collection from the original collection without
   /// the last element.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -539,6 +535,8 @@ pub trait Sequence<Item> {
   /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value.
   ///
+  /// # Example
+  ///
   /// ```
   /// use cantrip::*;
   ///
@@ -558,6 +556,8 @@ pub trait Sequence<Item> {
 
   /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`.
+  ///
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -588,7 +588,7 @@ pub trait Sequence<Item> {
   /// if the source index exceeds the collection size, no elements are moved.
   /// if the target index exceeds the collection size, the element is only removed.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -664,9 +664,7 @@ pub trait Sequence<Item> {
   ///
   /// [`Some(index)`]: Some
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -695,9 +693,7 @@ pub trait Sequence<Item> {
   /// This function might panic if the collection has more than `usize::MAX`
   /// non-matching elements.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -711,7 +707,7 @@ pub trait Sequence<Item> {
 
   /// Creates a collection by reversing the original collection's direction.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -740,7 +736,7 @@ pub trait Sequence<Item> {
   /// elements are yielded. In particular, if the original collection is too short,
   /// then the returned collection is empty.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -905,7 +901,7 @@ pub trait Sequence<Item> {
   /// Creates a new collection from the original collection without
   /// the first element.
   ///
-  /// # Examples
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
@@ -985,6 +981,8 @@ pub trait Sequence<Item> {
   /// Because the closure passed to `take_while()` takes a reference, and some
   /// collections contain references, this leads to a possibly confusing
   /// situation, where the type of the closure is a double reference:
+  ///
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
