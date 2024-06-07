@@ -306,11 +306,10 @@ pub trait Map<Key, Value> {
   ///   (4, "d"),
   /// ]));
   /// ```
-
   fn replace(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
   where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
     Key: PartialEq,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     let mut replaced = Some((replacement_key, replacement_value));
     self
