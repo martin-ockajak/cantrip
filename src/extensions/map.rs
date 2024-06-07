@@ -285,6 +285,39 @@ pub trait Map<Key, Value> {
 
   fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
+  /// Creates a map from the original map by replacing the specified key
+  /// and its value with a different key/value pair.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.replace(&3, 4, "d"), HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (4, "d"),
+  /// ]));
+  /// ```
+  fn replace(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
+  where
+    Key: PartialEq,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    let mut replaced = Some((replacement_key, replacement_value));
+    self
+      .into_iter()
+      .map(|(key, val)| if &key == value { replaced.take().unwrap_or((key, val)) } else { (key, val) })
+      .collect()
+  }
+
   fn scan<S, L, W>(
     self, initial_state: S, function: impl FnMut(&mut S, (&Key, &Value)) -> Option<(L, W)>,
   ) -> Self::This<L, W>
