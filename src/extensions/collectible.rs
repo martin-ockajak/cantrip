@@ -946,19 +946,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let iterator = self.into_iter();
-    let mut replaced = false;
-    let mut replaced_item = iter::once(replacement);
-    iterator
-      .flat_map(|item| {
-        if !replaced && &item == value {
-          replaced = true;
-          replaced_item.next()
-        } else {
-          Some(item)
-        }
-      })
-      .collect()
+    let mut replaced = Some(replacement);
+    self.into_iter().map(|item| {
+      if &item == value {
+        replaced.take().unwrap_or(item)
+      } else {
+        item
+      }
+    }).collect()
   }
 
   /// Creates a collection from the original collection by replacing the
