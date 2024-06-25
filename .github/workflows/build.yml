@@ -36,5 +36,5 @@ jobs:
           key: cargo-${{ runner.os }}-${{ hashFiles('**/*.toml') }}
 
       - name: Build project
-        run: cargo test --all-features
+        run: cargo test --release --all-features
 
