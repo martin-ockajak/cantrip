@@ -9,7 +9,6 @@ on:
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  RUSTFLAGS: ''
 
 permissions:
   contents: read
@@ -28,6 +27,8 @@ jobs:
 
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          rustflags: ''
 
       - name: Build project
         run: cargo test --release --all-features

@@ -9,7 +9,6 @@ quickcheck_macros = "1.0.0"
 
 [build]
 rustflags = [
-  "-D warnings",
   "-W absolute-paths-not-starting-with-crate",
   "-W box_pointers",
   "-W elided-lifetimes-in-paths",
@@ -50,7 +49,8 @@ rustflags = [
   "-W unused_qualifications",
   "-W unused_results",
   "-W unused_tuple_struct_fields",
-  "-W variant_size_differences"
+  "-W variant_size_differences",
+  "-D warnings"
 ]
 incremental = true
 
