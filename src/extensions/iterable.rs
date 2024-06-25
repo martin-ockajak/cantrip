@@ -9,6 +9,7 @@ pub trait Iterable {
   where
     Self: 'collection;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c>;
 }
 
@@ -33,6 +34,7 @@ impl<Item> Iterable for Vec<Item> {
   where
       Item: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     SliceIterator { iterator: self.iter() }
   }
@@ -59,6 +61,7 @@ impl<Item> Iterable for LinkedList<Item> {
   where
       Item: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     LinkedListIterator { iterator: self.iter() }
   }
@@ -85,6 +88,7 @@ impl<Item> Iterable for VecDeque<Item> {
     where
       Item: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     VecDequeIterator { iterator: self.iter() }
   }
@@ -111,6 +115,7 @@ impl<Item> Iterable for HashSet<Item> {
     where
       Item: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     HashSetIterator { iterator: self.iter() }
   }
@@ -137,6 +142,7 @@ impl<Item> Iterable for BTreeSet<Item> {
     where
       Item: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     BTreeSetIterator { iterator: self.iter() }
   }
@@ -163,6 +169,7 @@ impl<Item> Iterable for BinaryHeap<Item> {
     where
       Item: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     BinaryHeapIterator { iterator: self.iter() }
   }
@@ -191,6 +198,7 @@ impl<Key, Value> Iterable for HashMap<Key, Value> {
       Key: 'c,
       Value: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     HashMapIterator { iterator: self.iter() }
   }
@@ -219,6 +227,7 @@ impl<Key, Value> Iterable for BTreeMap<Key, Value> {
       Key: 'c,
       Value: 'c;
 
+  #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     BTreeMapIterator { iterator: self.iter() }
   }

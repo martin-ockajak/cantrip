@@ -39,7 +39,7 @@
 /// data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 /// ```
 ///
-//// ### Methods
+/// ### Methods
 ///
 /// | Method                   | Vec, VecDeque, LinkedList | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Slice |
 /// |--------------------------|:-------------------------:|:-----------------------------:|:-----------------:|:-----:|

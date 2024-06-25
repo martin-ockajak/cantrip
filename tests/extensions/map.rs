@@ -25,9 +25,9 @@ where
   assert_map_equal(empty.clone(), &[]);
 
   // all
-  assert_eq!(distinct.all(|(&k, &v)| k >= 0 && v >= 0), true);
-  assert_eq!(distinct.all(|(&k, &v)| k == 1 && v >= 0), false);
-  assert_eq!(empty.all(|(&k, &v)| k == 0 && v == 0), true);
+  assert!(distinct.all(|(&k, &v)| k >= 0 && v >= 0));
+  assert!(!distinct.all(|(&k, &v)| k == 1 && v >= 0));
+  assert!(empty.all(|(&k, &v)| k == 0 && v == 0));
   
   // replace
   assert_map_equal(distinct.clone().replace(&0, 0, 1), &[(0, 1), (1, 1), (2, 2)]);

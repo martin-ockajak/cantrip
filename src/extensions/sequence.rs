@@ -186,7 +186,7 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - implement
-  // /// Creates a collection by splitting the original collection into non-overlpping
+  // /// Creates a collection by splitting the original collection into non-overlapping
   // /// subsequences according to specified separator predicate.
   // ///
   // /// The predicate is called for every pair of consecutive elements,
@@ -516,15 +516,14 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut value = iter::repeat(to_element());
     unfold((0_usize, false), |(position, inserted)| {
-      let result = if !*inserted && *position % interval == 0 {
+      if !*inserted && *position % interval == 0 {
         *inserted = true;
         value.next()
       } else {
         *inserted = false;
         *position += 1;
         iterator.next()
-      };
-      result
+      }
     })
     .collect()
   }
@@ -615,23 +614,21 @@ pub trait Sequence<Item> {
           stored.pop_front().or_else(|| iterator.next())
         } else {
           if *position == source_index {
-            iterator.next().map(|x| stored.push_back(x));
+            if let Some(x) = iterator.next() { stored.push_back(x) }
           }
           *position += 1;
           iterator.next()
         }
+      } else if *position >= target_index {
+        let mut store = true;
+        while store && *position < source_index {
+          iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
+          *position += 1;
+        }
+        iterator.next().or_else(|| stored.pop_front())
       } else {
-        if *position >= target_index {
-          let mut store = true;
-          while store && *position < source_index {
-            iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
-            *position += 1;
-          }
-          iterator.next().or_else(|| stored.pop_front())
-        } else {
-          *position += 1;
-          iterator.next()
-        }
+        *position += 1;
+        iterator.next()
       }
     })
     .collect()
@@ -1119,14 +1116,13 @@ where
     .enumerate()
     .flat_map(|(index, item)| {
       current.push_back(item.clone());
-      let result = if index >= size - 1 {
+      if index >= size - 1 {
         let window = Collection::from_iter(current.clone());
         current.pop_front();
         Some(window)
       } else {
         None
-      };
-      result
+      }
     })
     .collect()
 }

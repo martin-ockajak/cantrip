@@ -13,14 +13,14 @@ where
   let empty = from_slice::<C>(&[]);
 
   // all
-  assert_eq!(repeated.all(|&x| x >= 0), true);
-  assert_eq!(repeated.all(|&x| x == 1), false);
-  assert_eq!(empty.all(|&x| x == 0), true);
+  assert!(repeated.all(|&x| x >= 0));
+  assert!(!repeated.all(|&x| x == 1));
+  assert!(empty.all(|&x| x == 0));
 
   // any
-  assert_eq!(repeated.any(|&x| x == 1), true);
-  assert_eq!(repeated.any(|&x| x < 0), false);
-  assert_eq!(empty.any(|&x| x == 0), false);
+  assert!(repeated.any(|&x| x == 1));
+  assert!(!repeated.any(|&x| x < 0));
+  assert!(!empty.any(|&x| x == 0));
 
   // count_by
   assert_eq!(repeated.count_by(|&x| x % 2 == 1), 1);

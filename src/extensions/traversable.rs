@@ -587,12 +587,12 @@ pub(crate) fn fold<'a, Item: 'a, B>(
 //   Item: Eq + Hash + 'a,
 // {
 //   let elements_iterator = elements.iterator();
-//   let mut occured: HashSet<&Item> = HashSet::with_capacity(elements_iterator.size_hint().0);
+//   let mut occurred: HashSet<&Item> = HashSet::with_capacity(elements_iterator.size_hint().0);
 //   for item in elements_iterator {
-//     occured.insert(item);
+//     occurred.insert(item);
 //   }
 //   for item in iterator {
-//     if !occured.contains(item) {
+//     if !occurred.contains(item) {
 //       return false;
 //     }
 //   }

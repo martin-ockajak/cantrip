@@ -113,11 +113,6 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
-    reduce_pairs(self.iter(), function)
-  }
-
-  #[inline]
   fn partition_map<L1, W1, L2, W2>(
     &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
@@ -126,6 +121,11 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
     Self::This<L2, W2>: Default + Extend<(L2, W2)>,
   {
     partition_map_pairs(self.iter(), function)
+  }
+
+  #[inline]
+  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
+    reduce_pairs(self.iter(), function)
   }
 
   #[inline]

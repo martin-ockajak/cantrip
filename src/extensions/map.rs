@@ -254,7 +254,7 @@ pub trait Map<Key, Value> {
   where
     Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)>,
   {
-    self.into_iter().partition(|(k, v)| predicate((&k, &v)))
+    self.into_iter().partition(|(k, v)| predicate((k, v)))
   }
 
   fn partition_map<L1, W1, L2, W2>(

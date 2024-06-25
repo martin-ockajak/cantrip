@@ -43,7 +43,7 @@ pub trait Reversible<Item> {
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  /// An collection method that reduces the collection's elements to a single,
+  /// A collection method that reduces the collection's elements to a single,
   /// final value, starting from the back.
   ///
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
@@ -221,7 +221,7 @@ pub trait Reversible<Item> {
     self.into_iter().rev().skip(n).collect()
   }
 
-  /// Creates a collection without trailing elements based on a predicate,.
+  /// Creates a collection without trailing elements based on a predicate.
   ///
   /// [`rskip`]: Reversible::rskip
   ///

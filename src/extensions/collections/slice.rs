@@ -135,7 +135,7 @@ impl<Item> Slice<Item> for [Item] {
   fn take_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[0..min(index, self.len())],
-      None => &self,
+      None => self,
     }
   }
 }

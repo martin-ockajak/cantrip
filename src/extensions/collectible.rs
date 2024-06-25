@@ -754,7 +754,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().map(|x| Reverse(x)).take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
-      if (*heap.peek().unwrap()).0 < item {
+      if heap.peek().unwrap().0 < item {
         *heap.peek_mut().unwrap() = Reverse(item);
       }
     }

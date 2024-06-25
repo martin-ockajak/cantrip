@@ -1,4 +1,5 @@
 too-many-arguments-threshold = 9
+type-complexity-threshold = 500
 upper-case-acronyms-aggressive = true
 
 
