@@ -187,7 +187,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 #### Requirements
 
 - [Rust](https://www.rust-lang.org) 1.79+
-- [Cargo Make](https://github.com/sagiegurari/cargo-make)
+- [Cargo Make](https://github.com/sagiegurari/cargo-make) 0.37+
 
 #### Command
 
