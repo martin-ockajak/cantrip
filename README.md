@@ -1,5 +1,5 @@
 [![Documentation](https://img.shields.io/badge/Website-documentation-purple)](https://github.com/martin-ockajak/cantrip)
-[![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=yellowgreen)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
 Convenient extension methods for Rust standard library collections.
