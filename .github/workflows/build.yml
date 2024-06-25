@@ -28,7 +28,7 @@ jobs:
       - name: Setup Rust
         uses: actions-rust-lang/setup-rust-toolchain@v1
         with:
-          rustflags: ''
+          rustflags: '-D warnings'
 
       - name: Build project
         run: cargo test --release --all-features
