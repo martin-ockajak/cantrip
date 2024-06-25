@@ -172,7 +172,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *zip*                     |    :heavy_check_mark:     |                    |                               |                    |
 | *zip_fill*                |    :heavy_check_mark:     |                    |                               |                    |
 
-## Inspiration
+### Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
 - [Scala Collections](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/IndexedSeq.html)
@@ -182,3 +182,17 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 - [Itertools](https://docs.rs/itertools/latest/itertools/trait.Itertools.html)
 - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
 
+### Build
+
+#### Requirements
+
+- [Rust](https://www.rust-lang.org) 1.79+
+- [Cargo Make](https://github.com/sagiegurari/cargo-make)
+
+#### Command
+
+```shell
+makers build
+```
+
+- 
