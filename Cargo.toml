@@ -9,6 +9,7 @@ quickcheck_macros = "1.0.0"
 
 [build]
 rustflags = [
+  "-D warnings",
   "-W absolute-paths-not-starting-with-crate",
   "-W box_pointers",
   "-W elided-lifetimes-in-paths",
