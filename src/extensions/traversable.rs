@@ -1,8 +1,7 @@
 #![deny(missing_docs)]
 
-use crate::Iterable;
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -553,52 +552,52 @@ pub(crate) fn fold<'a, Item: 'a, B>(
 ) -> B {
   iterator.fold(init, function)
 }
-
-#[inline]
-pub(crate) fn includes<'a, Item>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-where
-  Item: Eq + Hash + 'a,
-{
-  let elements_iterator = elements.iterator();
-  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-  for item in elements_iterator {
-    *excluded.entry(item).or_default() += 1;
-  }
-  let mut remaining = excluded.len();
-  iterator.for_each(|x| {
-    excluded.get_mut(x).map(|count| {
-      if *count > 0 {
-        *count -= 1;
-      } else {
-        remaining -= 1;
-        ()
-      }
-    });
-    ()
-  });
-  remaining <= 0
-}
-
-pub(crate) fn subset<'a, Item>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-where
-  Item: Eq + Hash + 'a,
-{
-  let elements_iterator = elements.iterator();
-  let mut occured: HashSet<&Item> = HashSet::with_capacity(elements_iterator.size_hint().0);
-  for item in elements_iterator {
-    occured.insert(item);
-  }
-  for item in iterator {
-    if !occured.contains(item) {
-      return false;
-    }
-  }
-  true
-}
+//
+// #[inline]
+// pub(crate) fn includes<'a, Item>(
+//   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+// ) -> bool
+// where
+//   Item: Eq + Hash + 'a,
+// {
+//   let elements_iterator = elements.iterator();
+//   let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+//   for item in elements_iterator {
+//     *excluded.entry(item).or_default() += 1;
+//   }
+//   let mut remaining = excluded.len();
+//   iterator.for_each(|x| {
+//     excluded.get_mut(x).map(|count| {
+//       if *count > 0 {
+//         *count -= 1;
+//       } else {
+//         remaining -= 1;
+//         ()
+//       }
+//     });
+//     ()
+//   });
+//   remaining <= 0
+// }
+//
+// pub(crate) fn subset<'a, Item>(
+//   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+// ) -> bool
+// where
+//   Item: Eq + Hash + 'a,
+// {
+//   let elements_iterator = elements.iterator();
+//   let mut occured: HashSet<&Item> = HashSet::with_capacity(elements_iterator.size_hint().0);
+//   for item in elements_iterator {
+//     occured.insert(item);
+//   }
+//   for item in iterator {
+//     if !occured.contains(item) {
+//       return false;
+//     }
+//   }
+//   true
+// }
 
 pub(crate) fn join_items<'a, Item: Display + 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, separator: &str,

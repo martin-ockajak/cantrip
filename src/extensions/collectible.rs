@@ -7,7 +7,6 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 use crate::extensions::iterable::Iterable;
-use crate::extensions::util::unfold::unfold;
 
 /// Consuming collection operations.
 ///

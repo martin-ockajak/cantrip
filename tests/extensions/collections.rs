@@ -19,6 +19,7 @@ where
   test_collectible::<C>(false);
 }
 
+#[allow(dead_code)]
 pub fn test_slice_traits<'a, C>()
 where
   C: Traversable<i64>
