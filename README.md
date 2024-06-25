@@ -1,3 +1,6 @@
+[![Documentation](https://img.shields.io/badge/Website-documentation-purple)](https://github.com/martin-ockajak/cantrip)
+[![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
+
 Convenient extension methods for Rust standard library collections.
 
 Enables direct functional-style collection manipulation without the usual iterator boilerplate.
