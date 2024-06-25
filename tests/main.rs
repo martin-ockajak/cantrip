@@ -1,9 +1,3 @@
-#[cfg(test)]
-extern crate quickcheck;
-#[cfg(test)]
-#[macro_use(quickcheck)]
-extern crate quickcheck_macros;
-
 use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 
 use crate::extensions::collections::*;
@@ -34,10 +28,4 @@ fn sequences() {
 fn maps() {
   test_map_traits::<HashMap<i64, i64>>();
   test_map_traits::<BTreeMap<i64, i64>>();
-}
-
-#[quickcheck]
-fn hash_map_string(data: HashMap<String, String>) -> bool {
-  data.len();
-  true
 }
