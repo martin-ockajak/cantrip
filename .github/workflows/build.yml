@@ -30,6 +30,9 @@ jobs:
         with:
           rustflags: '-D warnings'
 
+      - name: Check project
+        run: echo cargo clippy
+
       - name: Build project
         run: cargo test --release --all-features
 
