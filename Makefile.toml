@@ -1,0 +1,33 @@
+[tasks.compile]
+command = "cargo"
+args = ["build"]
+
+[tasks.check]
+command = "cargo"
+args = ["clippy"]
+
+[tasks.test]
+command = "cargo"
+args = ["test"]
+
+[tasks.retest]
+install_crate = "cargo-watch"
+command = "cargo"
+args = ["watch", "-c", "-w", "src", "-w", "tests", "-x", "test"]
+
+[tasks.release]
+install_crate = "cargo-release"
+command = "cargo"
+args = ["release", "--help"]
+
+[tasks.clean]
+command = "cargo"
+args = ["clean"]
+
+[tasks.build]
+dependencies = [
+  "compile",
+  "check",
+  "test"
+]
+
