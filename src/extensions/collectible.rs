@@ -24,7 +24,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // group_fold
   // group_fold_with
   // group_reduce
-  // partition_map_to
 
   /// Original collection type
   type This<I>;
@@ -423,8 +422,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a collection by flattens the original nested collection.
   ///
-  /// This is useful when you have a collection of iterables and
-  /// you want to remove one level of indirection.
+  /// This is useful when you have a collection of iterables,
+  /// and you want to remove one level of indirection.
   ///
   /// # Examples
   ///
@@ -791,8 +790,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates two new collections with arbitrary element types from the original collection
   /// by applying specified function.
   ///
-  /// The function passed to `partition()` can return `Ok`, or `Err`.
-  /// `partition()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  /// The function passed to `partition_map()` can return `Ok`, or `Err`.
+  /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
   /// This is a non-consuming variant of [`partition_map_to`].
   ///
@@ -818,8 +817,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates two new collections with arbitrary element types from the original collection
   /// by applying specified function.
   ///
-  /// The function passed to `partition()` can return `Ok`, or `Err`.
-  /// `partition()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
+  /// `partition_map_to()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
   /// This is a consuming variant of [`partition_map`].
   ///
