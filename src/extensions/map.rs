@@ -25,7 +25,6 @@ pub trait Map<Key, Value> {
   // FIXME - implement these methods
   // all_unique
   // includes
-  // powerset
   // subset
   // replace_all
 

@@ -125,7 +125,7 @@
 /// | *position*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *positions*               |    :heavy_check_mark:     |                    |                               |                    |
 /// | *powersequence*           |    :heavy_check_mark:     |                    |                               |                    |
-/// | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *product_keys*            |                           |                    |                               | :heavy_check_mark: |
 /// | *product_values*          |                           |                    |                               | :heavy_check_mark: |
