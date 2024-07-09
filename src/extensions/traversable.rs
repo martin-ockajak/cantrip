@@ -580,7 +580,7 @@ pub(crate) fn fold<'a, Item: 'a, B>(
 }
 
 pub(crate) fn group_fold<'a, Item, K: Eq + Hash, B>(
-  mut iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: &B,
+  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: &B,
   mut function: impl FnMut(B, &Item) -> B,
 ) -> HashMap<K, B>
 where
