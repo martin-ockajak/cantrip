@@ -13,7 +13,7 @@ args = ["test"]
 [tasks.retest]
 install_crate = "cargo-watch"
 command = "cargo"
-args = ["watch", "-c", "-w", "src", "-w", "tests", "-x", "test"]
+args = ["watch", "-c", "-w", "src", "-w", "tests", "-x", "clippy", "-x", "test"]
 
 [tasks.release]
 install_crate = "cargo-release"
