@@ -1017,7 +1017,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///   vec![1, 2, 3]]
   /// );
   /// ```
-  fn powerset(self) -> Vec<Self>
+  fn powerset(&self) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized;

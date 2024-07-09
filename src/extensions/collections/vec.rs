@@ -149,7 +149,7 @@ impl<Item> Collectible<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn powerset(self) -> Vec<Self>
+  fn powerset(&self) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized,

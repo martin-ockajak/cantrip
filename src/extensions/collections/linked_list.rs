@@ -136,7 +136,7 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn powerset(self) -> Vec<Self>
+  fn powerset(&self) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized,

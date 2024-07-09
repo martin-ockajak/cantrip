@@ -124,7 +124,7 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   }
 
   #[inline]
-  fn powerset(self) -> Vec<Self>
+  fn powerset(&self) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized,
