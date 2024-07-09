@@ -1,11 +1,14 @@
-#![allow(missing_docs)]
+[![Documentation](https://img.shields.io/badge/Website-documentation-blue)](https://github.com/martin-ockajak/cantrip)
+[![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
+[![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
+
 Convenient extension methods for Rust standard library collections.
 
-Enables collection manipulation in a functional style without the usual Rust boilerplate.
+Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 
 ### Features
 
-- Equivalents of suitable iterator methods are added to standard library collections
+- Equivalents of standard iterator methods are added to standard library collections
 - Additional utility methods commonly found in collection libraries are also included
 - Transformation methods return a new collection instance instead of returning an iterator
 - All methods consider collection instances to be immutable although some may consume them
@@ -21,22 +24,16 @@ let data = vec![1, 2, 3];
 
 data.fold(0, |r, x| r + x);       // 6
 
-# let data = source.clone();
 data.filter(|&x| x > 1);          // vec![2, 3]
 
-# let data = source.clone();
 data.map(|x| x + 1);              // vec![2, 3, 4]
 
-# let data = source.clone();
 data.add(1).unique();             // vec![1, 2, 3]
 
-# let data = source.clone();
 data.delete_at(0).tail();         // vec![3]
 
-# let data = source.clone();
 data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
 
-# let data = source.clone();
 data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 ```
 
