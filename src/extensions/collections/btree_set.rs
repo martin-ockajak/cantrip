@@ -1,8 +1,8 @@
+use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::BTreeSet;
 use std::fmt::Display;
-
-use crate::extensions::*;
+use std::hash::Hash;
 
 impl<Item> Traversable<Item> for BTreeSet<Item> {
   #[inline]
@@ -126,9 +126,20 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   fn powerset(&self) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized
+    Self: Sized,
   {
     powerset(self.iter())
+  }
+
+  #[inline]
+  fn replace_all<'a>(
+    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
+  ) -> Self
+  where
+    Item: Eq + Hash + 'a,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    replace_all(self, elements, replacement)
   }
 
   #[inline]

@@ -133,6 +133,17 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   }
 
   #[inline]
+  fn replace_all<'a>(
+    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
+  ) -> Self
+  where
+    Item: 'a,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    replace_all(self, elements, replacement)
+  }
+
+  #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

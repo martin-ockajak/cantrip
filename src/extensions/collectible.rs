@@ -14,7 +14,6 @@ use std::iter::{Product, Sum};
 /// - May create a new collection
 ///
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
-
   /// Original collection type
   type This<I>;
 
@@ -1402,4 +1401,16 @@ where
   iter::once(Collection::from_iter(iter::empty()))
     .chain(sizes.flat_map(|size| compute_combinations::<Item, Collection>(&values, size)))
     .collect()
+}
+
+pub(crate) fn replace_all<'a, Item, Collection>(
+  collection: Collection, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
+) -> Collection
+where
+  Item: Eq + Hash + 'a,
+  Collection: IntoIterator<Item = Item> + FromIterator<Item>,
+{
+  let iterator = elements.iterator();
+  let removed: HashSet<&Item> = HashSet::from_iter(iterator);
+  collection.into_iter().filter(|x| !removed.contains(x)).chain(replacement).collect()
 }
