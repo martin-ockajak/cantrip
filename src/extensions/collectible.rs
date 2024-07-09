@@ -7,6 +7,7 @@ use std::iter;
 use std::iter::{Product, Sum};
 
 use crate::extensions::iterable::Iterable;
+use crate::extensions::util::unfold::unfold;
 
 /// Consuming collection operations.
 ///
@@ -20,7 +21,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // cartesian_product
   // combinations
   // combinations_repetitive
-  // powerset
   // group_fold
   // group_fold_with
   // group_reduce
@@ -141,54 +141,60 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  // FIXME - implement
-  // fn combinations(self, k: usize) -> Self::This<Self>
-  // where
-  //   Item: Clone,
-  //   Self: FromIterator<Item> + Sized,
-  //   Self::This<Self>: FromIterator<Self>,
-  // {
-  //   if k == 0 {
-  //     return Self::This::from_iter(iter::empty());
-  //   }
-  //   let values = Vec::from_iter(self.into_iter());
-  //   if k > values.len() {
-  //     return Self::This::from_iter(iter::empty());
-  //   }
-  //   let mut indices = Vec::from_iter(0..k);
-  //   /// [1, 2, 3]
-  //   /// [1, 2, 4]
-  //   /// [1, 2, 5]
-  //   /// [1, 3, 4]
-  //   /// [1, 3, 5]
-  //   /// [1, 4, 5]
-  //   /// [2, 3, 4]
-  //   /// [2, 3, 5]
-  //   /// [2, 4, 5]
-  //   /// [3, 4, 5]
-  //   unfold(k - 1, |slot| {
-  //     if *slot >= k {
-  //       return None;
-  //     }
-  //     let result = Some(Self::from_iter(indices.iter().map(|index| values[*index].clone())));
-  //     if indices[*slot] < *slot + k {
-  //       indices[*slot] += 1;
-  //       for index in (*slot + 1)..k {
-  //         indices[index] = indices[index - 1] + 1;
-  //       }
-  //     } else {
-  //       while indices[*slot] >= *slot + k {
-  //         if *slot > 0 {
-  //           *slot -= 1;
-  //         } else {
-  //           *slot = k;
-  //         }
-  //       }
-  //     }
-  //     result
-  //   })
-  //   .collect()
-  // }
+  /// Creates a collection containing all combinations of specified size from the elements
+  /// of the original collection.
+  ///
+  /// The order or combined values is preserved for ordered collections.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let x: Vec<Vec<i32>> = Vec::new();
+  /// assert_eq!(a.clone().combinations(4), x);
+  /// assert_eq!(a.clone().combinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.clone().combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
+  /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
+  /// ```
+  fn combinations(self, k: usize) -> Self::This<Self>
+  where
+    Item: Clone,
+    Self: FromIterator<Item> + Sized,
+    Self::This<Self>: FromIterator<Self>,
+  {
+    if k == 0 {
+      return Self::This::from_iter(iter::once(Self::from_iter(iter::empty())));
+    }
+    let values = Vec::from_iter(self);
+    let size = values.len();
+    let mut combination_indices = Vec::from_iter(0..k);
+    unfold(k > size, |done| {
+      if *done {
+        return None;
+      }
+      let result = Some(Self::from_iter(combination_indices.iter().map(|index| values[*index].clone())));
+      let mut current_slot = k - 1;
+      while combination_indices[current_slot] >= size + current_slot - k {
+        if current_slot > 0 {
+          current_slot -= 1;
+        } else {
+          *done = true;
+          return result;
+        }
+      }
+      let mut current_index = combination_indices[current_slot];
+      #[allow(clippy::needless_range_loop)]
+      for slot in current_slot..k {
+        current_index += 1;
+        combination_indices[slot] = current_index;
+      }
+      result
+    })
+    .collect()
+  }
 
   /// Creates a collection containing an element
   /// specified number of times.
@@ -854,8 +860,31 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  // FIXME - implement
-  // fn powerset(self) -> Self::This<Self>;
+  // /// Creates a collection containing all subsets of the original collection.
+  // ///
+  // /// The order or subset values is preserved for ordered collections.
+  // ///
+  // /// # Example
+  // ///
+  // /// ```
+  // /// use cantrip::*;
+  // ///
+  // /// let a = vec![1, 2, 3];
+  // ///
+  // /// assert_eq!(a.powerset(), vec![
+  // ///   vec![],
+  // ///   vec![0], vec![1], vec![2],
+  // ///   vec![0, 1], vec![0, 2], vec![1, 2],
+  // ///   vec![1, 2, 3]]
+  // /// );
+  // /// ```
+  // fn powerset(self) -> Self::This<Self>
+  // where
+  //   Item: Clone,
+  //   Self: FromIterator<Item> + Sized,
+  //   Self::This<Self>: FromIterator<Self> {
+  //   self.combinations(2)
+  // }
 
   /// Iterates over the entire collection, multiplying all the elements
   ///

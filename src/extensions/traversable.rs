@@ -15,6 +15,7 @@ use std::hash::Hash;
 ///
 pub trait Traversable<Item> {
   // FIXME - implement these methods
+  // includes
   // same_items
   // subset
 
