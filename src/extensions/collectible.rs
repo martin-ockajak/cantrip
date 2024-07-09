@@ -135,6 +135,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// of the original collection.
   ///
   /// The order or combined values is preserved for ordered collections.
+  /// Combinations for ordered collections are generated based on element positions, not values.
+  ///
+  /// To obtain combinations of unique elements for ordered collections, use `.unique().combinations()`.
   ///
   /// # Example
   ///

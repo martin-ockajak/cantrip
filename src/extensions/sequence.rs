@@ -117,7 +117,10 @@ pub trait Sequence<Item> {
   /// Creates a collection containing members of k-fold cartesian product of specified size
   /// from the elements of the original collection.
   ///
-  /// The order or combined values is preserved for ordered collections.
+  /// The order or combined values is preserved.
+  /// Combinations are generated based on element positions, not values.
+  ///
+  /// To obtain cartesian product of unique elements, use `.unique().cartesian_product()`.
   ///
   /// # Example
   ///
@@ -143,7 +146,10 @@ pub trait Sequence<Item> {
   /// Creates a collection containing combinations with repetition of specified size
   /// from the elements of the original collection.
   ///
-  /// The order or combined values is preserved for ordered collections.
+  /// The order or combined values is preserved.
+  /// Combinations are generated based on element positions, not values.
+  ///
+  /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
   ///
   /// # Example
   ///
