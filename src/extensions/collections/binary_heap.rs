@@ -128,6 +128,15 @@ impl<Item: Ord> Collectible<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
+  fn powerset(self) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized
+  {
+    powerset(self.iter())
+  }
+
+  #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

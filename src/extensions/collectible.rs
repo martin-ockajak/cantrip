@@ -1,13 +1,13 @@
 #![deny(missing_docs)]
 
+use crate::extensions::iterable::Iterable;
+use crate::extensions::util::unfold::unfold;
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-
-use crate::extensions::iterable::Iterable;
-use crate::extensions::util::unfold::unfold;
+use std::thread::panicking;
 
 /// Consuming collection operations.
 ///
@@ -152,10 +152,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let x: Vec<Vec<i32>> = Vec::new();
-  /// assert_eq!(a.clone().combinations(4), x);
-  /// assert_eq!(a.clone().combinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// assert_eq!(a.clone().combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
+  /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
@@ -827,31 +825,28 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  // /// Creates a collection containing all subsets of the original collection.
-  // ///
-  // /// The order or subset values is preserved for ordered collections.
-  // ///
-  // /// # Example
-  // ///
-  // /// ```
-  // /// use cantrip::*;
-  // ///
-  // /// let a = vec![1, 2, 3];
-  // ///
-  // /// assert_eq!(a.powerset(), vec![
-  // ///   vec![],
-  // ///   vec![0], vec![1], vec![2],
-  // ///   vec![0, 1], vec![0, 2], vec![1, 2],
-  // ///   vec![1, 2, 3]]
-  // /// );
-  // /// ```
-  // fn powerset(self) -> Self::This<Self>
-  // where
-  //   Item: Clone,
-  //   Self: FromIterator<Item> + Sized,
-  //   Self::This<Self>: FromIterator<Self> {
-  //   self.combinations(2)
-  // }
+  /// Creates a collection containing all subsets of the original collection.
+  ///
+  /// The order or subset values is preserved for ordered collections.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.powerset(), vec![
+  ///   vec![],
+  ///   vec![1], vec![2], vec![3],
+  ///   vec![1, 2], vec![1, 3], vec![2, 3],
+  ///   vec![1, 2, 3]]
+  /// );
+  /// ```
+  fn powerset(self) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
 
   /// Iterates over the entire collection, multiplying all the elements
   ///
@@ -1174,7 +1169,15 @@ where
   if k == 0 {
     return Vec::from_iter(iter::once(Collection::from_iter(iter::empty())));
   }
-  let values = Vec::from_iter(iterator.cloned());
+  let values = Vec::from_iter(iterator);
+  compute_combinations(&values, k)
+}
+
+pub(crate) fn compute_combinations<'a, Item, Collection>(values: &[&Item], k: usize) -> Vec<Collection>
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item> + Sized,
+{
   let size = values.len();
   let mut combination_indices = Vec::from_iter(0..k);
   unfold(k > size, |done| {
@@ -1214,4 +1217,16 @@ pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right
     }
   }
   (result_left, result_right)
+}
+
+pub(crate) fn powerset<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>) -> Vec<Collection>
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item> + Sized,
+{
+  let values = Vec::from_iter(iterator);
+  let sizes = 1..=values.len();
+  iter::once(Collection::from_iter(iter::empty()))
+    .chain(sizes.flat_map(|size| compute_combinations::<Item, Collection>(&values, size)))
+    .collect()
 }

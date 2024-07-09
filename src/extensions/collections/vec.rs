@@ -159,6 +159,15 @@ impl<Item> Collectible<Item> for Vec<Item> {
   }
 
   #[inline]
+  fn powerset(self) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized
+  {
+    powerset(self.iter())
+  }
+
+  #[inline]
   fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
