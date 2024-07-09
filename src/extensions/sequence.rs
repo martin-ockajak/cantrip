@@ -1251,15 +1251,15 @@ where
   Result: FromIterator<Collection>,
 {
   assert_ne!(size, 0, "window size must be non-zero");
-  let mut current: LinkedList<Item> = LinkedList::new();
+  let mut window: LinkedList<Item> = LinkedList::new();
   iterator
     .enumerate()
     .flat_map(|(index, item)| {
-      current.push_back(item.clone());
+      window.push_back(item.clone());
       if index >= size - 1 {
-        let window = Collection::from_iter(current.clone());
-        current.pop_front();
-        Some(window)
+        let result = Collection::from_iter(window.clone());
+        window.pop_front();
+        Some(result)
       } else {
         None
       }
