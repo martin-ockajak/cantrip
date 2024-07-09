@@ -19,7 +19,6 @@ Enables direct functional-style collection manipulation without the usual iterat
 ```rust
 use cantrip::*;
 
-# let source = vec![1, 2, 3];
 let data = vec![1, 2, 3];
 
 data.fold(0, |r, x| r + x);       // 6
@@ -172,6 +171,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *windowed_circular*       |    :heavy_check_mark:     |                    |                               |                    |
 | *zip*                     |    :heavy_check_mark:     |                    |                               |                    |
 | *zip_fill*                |    :heavy_check_mark:     |                    |                               |                    |
+
 ### Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
