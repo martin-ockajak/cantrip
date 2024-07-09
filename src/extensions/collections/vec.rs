@@ -198,11 +198,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn rev(self) -> Self {
-    self.into_iter().rev().collect()
-  }
-
-  #[inline]
   fn sorted(self) -> Self
   where
     Item: Ord,

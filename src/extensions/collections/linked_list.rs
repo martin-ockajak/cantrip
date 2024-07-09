@@ -185,11 +185,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn rev(self) -> Self {
-    self.into_iter().rev().collect()
-  }
-
-  #[inline]
   fn windowed(&self, size: usize) -> Self::This<Self>
   where
     Item: Clone,

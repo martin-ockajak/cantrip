@@ -565,7 +565,6 @@ pub trait Sequence<Item> {
   /// let padded = a.pad_with(5, |i| 2 * i);
   /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
   /// ```
-  #[inline]
   fn pad_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
@@ -716,7 +715,14 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(reversed, vec![3, 2, 1]);
   /// ```
-  fn rev(self) -> Self;
+  #[inline]
+  fn rev<I>(self) -> Self where
+    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
+    let iterator = self.into_iter();
+    iterator.rev().collect()
+  }
 
   fn rscan<S, B, I>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
