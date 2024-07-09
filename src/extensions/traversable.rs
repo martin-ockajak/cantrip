@@ -589,10 +589,10 @@ where
 {
   let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
   for item in iterator {
-    let key = to_key(&item);
+    let key = to_key(item);
     let new_value = match result.remove(&key) {
-      Some(value) => function(value, &item),
-      None => function(initial_value.clone(), &item),
+      Some(value) => function(value, item),
+      None => function(initial_value.clone(), item),
     };
     result.insert(key, new_value);
   }
