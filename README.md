@@ -48,9 +48,9 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *all_equal*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *all_unique*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *any*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-| *cartesian_product*       |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
+| *cartesian_product*       |    :heavy_check_mark:     |                    |                               |                    |
 | *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-| *combinations_repetitive* |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+| *combinations_repetitive* |    :heavy_check_mark:     |                    |                               | :heavy_check_mark: |
 | *chunked*                 |    :heavy_check_mark:     |                    |                               |                    |
 | *chunked_by*              |    :heavy_check_mark:     |                    |                               |                    |
 | *chunked_exact*           |    :heavy_check_mark:     |                    |                               |                    |

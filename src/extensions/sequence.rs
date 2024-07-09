@@ -5,7 +5,7 @@ use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
-
+use crate::Collectible;
 use crate::extensions::util::unfold::unfold;
 
 /// Sequence operations.
@@ -31,7 +31,6 @@ pub trait Sequence<Item> {
   // subsequence
   // variations
   // variations_repetitive
-  // windowed
   // windowed_circular
   // zip_fill
 
@@ -114,6 +113,61 @@ pub trait Sequence<Item> {
   fn all_unique(&self) -> bool
   where
     Item: Eq + Hash;
+
+  /// Creates a collection containing members of k-fold cartesian product of specified size
+  /// from the elements of the original collection.
+  ///
+  /// The order or combined values is preserved for ordered collections.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.cartesian_product(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(
+  ///   a.cartesian_product(2), vec![
+  ///     vec![1, 1], vec![1, 2], vec![1, 3],
+  ///     vec![2, 1], vec![2, 2], vec![2, 3],
+  ///     vec![3, 1], vec![3, 2], vec![3, 3],
+  ///   ]
+  /// );
+  /// ```
+  fn cartesian_product(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
+
+  /// Creates a collection containing combinations with repetition of specified size
+  /// from the elements of the original collection.
+  ///
+  /// The order or combined values is preserved for ordered collections.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(
+  ///   a.multicombinations(2),
+  ///   vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
+  /// );
+  /// assert_eq!(
+  ///   a.multicombinations(3), vec![
+  ///     vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
+  ///     vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
+  ///   ]
+  /// );
+  /// ```
+  fn multicombinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
 
   /// Creates a collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
@@ -1076,6 +1130,77 @@ pub trait Sequence<Item> {
   {
     self.into_iter().zip(elements).collect()
   }
+}
+
+pub(crate) fn cartesian_product<'a, Item, Collection>(
+  iterator: impl Iterator<Item = &'a Item>, k: usize,
+) -> Vec<Collection>
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item> + Sized,
+{
+  let values = Vec::from_iter(iterator);
+  let size = values.len();
+  let mut combination = Vec::fill(0, k);
+  unfold(k > size, |done| {
+    if *done {
+      return None;
+    }
+    let result = Some(Collection::from_iter(combination.iter().map(|index| values[*index].clone())));
+    let mut current_slot = k - 1;
+    while combination[current_slot] >= size - 1 {
+      if current_slot > 0 {
+        current_slot -= 1;
+      } else {
+        *done = true;
+        return result;
+      }
+    }
+    combination[current_slot] += 1;
+    #[allow(clippy::needless_range_loop)]
+    for slot in (current_slot + 1)..k {
+      combination[slot] = 0;
+    }
+    result
+  })
+    .collect()
+}
+
+pub(crate) fn multicombinations<'a, Item, Collection>(
+  iterator: impl Iterator<Item = &'a Item>, k: usize,
+) -> Vec<Collection>
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item> + Sized,
+{
+  if k == 0 {
+    return Vec::from_iter(iter::once(Collection::from_iter(iter::empty())));
+  }
+  let values = Vec::from_iter(iterator);
+  let size = values.len();
+  let mut combination = Vec::fill(0, k);
+  unfold(k > size, |done| {
+    if *done {
+      return None;
+    }
+    let result = Some(Collection::from_iter(combination.iter().map(|index| values[*index].clone())));
+    let mut current_slot = k - 1;
+    while combination[current_slot] >= size - 1 {
+      if current_slot > 0 {
+        current_slot -= 1;
+      } else {
+        *done = true;
+        return result;
+      }
+    }
+    let current_index = combination[current_slot] + 1;
+    #[allow(clippy::needless_range_loop)]
+    for slot in current_slot..k {
+      combination[slot] = current_index;
+    }
+    result
+  })
+    .collect()
 }
 
 pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result

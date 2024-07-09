@@ -14,8 +14,6 @@ use std::iter::{Product, Sum};
 /// - May create a new collection
 ///
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
-  // FIXME - implement these methods
-  // cartesian_product
 
   /// Original collection type
   type This<I>;
@@ -133,7 +131,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a collection containing all combinations of specified size from the elements
+  /// Creates a collection containing combinations of specified size from the elements
   /// of the original collection.
   ///
   /// The order or combined values is preserved for ordered collections.
@@ -150,35 +148,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized;
-
-  /// Creates a collection containing all combinations with repetition of specified size
-  /// from the elements of the original collection.
-  ///
-  /// The order or combined values is preserved for ordered collections.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.combinations_repetitive(1), vec![vec![1], vec![2], vec![3]]);
-  /// assert_eq!(
-  ///   a.combinations_repetitive(2),
-  ///   vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
-  /// );
-  /// assert_eq!(
-  ///   a.combinations_repetitive(3), vec![
-  ///     vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
-  ///     vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
-  ///   ]
-  /// );
-  /// ```
-  fn combinations_repetitive(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized;
@@ -1373,43 +1342,6 @@ where
   }
   let values = Vec::from_iter(iterator);
   compute_combinations(&values, k)
-}
-
-pub(crate) fn combinations_repetitive<'a, Item, Collection>(
-  iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection>
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
-{
-  if k == 0 {
-    return Vec::from_iter(iter::once(Collection::from_iter(iter::empty())));
-  }
-  let values = Vec::from_iter(iterator);
-  let size = values.len();
-  let mut combination = Vec::fill(0, k);
-  unfold(k > size, |done| {
-    if *done {
-      return None;
-    }
-    let result = Some(Collection::from_iter(combination.iter().map(|index| values[*index].clone())));
-    let mut current_slot = k - 1;
-    while combination[current_slot] >= size - 1 {
-      if current_slot > 0 {
-        current_slot -= 1;
-      } else {
-        *done = true;
-        return result;
-      }
-    }
-    let current_index = combination[current_slot] + 1;
-    #[allow(clippy::needless_range_loop)]
-    for slot in current_slot..k {
-      combination[slot] = current_index;
-    }
-    result
-  })
-  .collect()
 }
 
 pub(crate) fn compute_combinations<'a, Item, Collection>(values: &[&Item], k: usize) -> Vec<Collection>

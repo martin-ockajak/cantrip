@@ -52,9 +52,9 @@
 /// | *all_equal*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *all_unique*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *any*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *cartesian_product*       |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
+/// | *cartesian_product*       |    :heavy_check_mark:     |                    |                               |                    |
 /// | *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *combinations_repetitive* |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *combinations_repetitive* |    :heavy_check_mark:     |                    |                               | :heavy_check_mark: |
 /// | *chunked*                 |    :heavy_check_mark:     |                    |                               |                    |
 /// | *chunked_by*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *chunked_exact*           |    :heavy_check_mark:     |                    |                               |                    |

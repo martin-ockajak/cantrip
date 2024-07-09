@@ -115,15 +115,6 @@ impl<Item> Collectible<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn combinations_repetitive(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    combinations_repetitive(self.iter(), k)
-  }
-
-  #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -184,6 +175,24 @@ impl<Item> Sequence<Item> for Vec<Item> {
     Item: Eq + Hash,
   {
     all_unique(self.iter())
+  }
+
+  #[inline]
+  fn cartesian_product(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    cartesian_product(self.iter(), k)
+  }
+
+  #[inline]
+  fn multicombinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    multicombinations(self.iter(), k)
   }
 
   #[inline]
