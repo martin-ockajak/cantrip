@@ -165,11 +165,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn init(self) -> Self {
-    init(self.into_iter())
-  }
-
-  #[inline]
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }

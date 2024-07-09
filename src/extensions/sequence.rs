@@ -470,7 +470,15 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.init(), vec![1, 2]);
   /// ```
-  fn init(self) -> Self;
+  fn init<I>(self) -> Self
+  where
+    I: ExactSizeIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
+    let iterator = self.into_iter();
+    let size = iterator.len() - 1;
+    iterator.take(size).collect()
+  }
 
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
@@ -716,7 +724,8 @@ pub trait Sequence<Item> {
   /// assert_eq!(reversed, vec![3, 2, 1]);
   /// ```
   #[inline]
-  fn rev<I>(self) -> Self where
+  fn rev<I>(self) -> Self
+  where
     I: DoubleEndedIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
@@ -1091,16 +1100,6 @@ where
     result.extend(iter::once(chunk));
   }
   result
-}
-
-#[inline]
-pub(crate) fn init<Item, Iterable, Result>(iterator: Iterable) -> Result
-where
-  Iterable: Iterator<Item = Item> + ExactSizeIterator,
-  Result: FromIterator<Item>,
-{
-  let size = iterator.len() - 1;
-  iterator.take(size).collect()
 }
 
 #[inline]
