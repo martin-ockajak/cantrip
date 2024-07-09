@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 use crate::extensions::iterable::Iterable;
 use crate::extensions::util::unfold::unfold;
 use std::cmp::Reverse;
@@ -601,6 +599,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///   (1, 4),
   /// ]));
   /// ```
+  #[allow(unused_results)]
   fn group_reduce<K: Eq + Hash>(
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>

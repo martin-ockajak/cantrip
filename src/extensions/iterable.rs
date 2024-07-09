@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 
 pub trait Iterable {
@@ -13,6 +15,7 @@ pub trait Iterable {
   fn iterator<'c>(&'c self) -> Self::Iterator<'c>;
 }
 
+#[derive(Debug)]
 pub struct SliceIterator<'c, T> {
   pub iterator: core::slice::Iter<'c, T>,
 }
@@ -40,6 +43,7 @@ impl<Item> Iterable for Vec<Item> {
   }
 }
 
+#[derive(Debug)]
 pub struct LinkedListIterator<'c, T> {
   pub iterator: std::collections::linked_list::Iter<'c, T>,
 }
@@ -67,6 +71,7 @@ impl<Item> Iterable for LinkedList<Item> {
   }
 }
 
+#[derive(Debug)]
 pub struct VecDequeIterator<'c, T> {
   pub iterator: std::collections::vec_deque::Iter<'c, T>,
 }
@@ -94,6 +99,7 @@ impl<Item> Iterable for VecDeque<Item> {
   }
 }
 
+#[derive(Debug)]
 pub struct HashSetIterator<'c, T> {
   pub iterator: std::collections::hash_set::Iter<'c, T>,
 }
@@ -121,6 +127,7 @@ impl<Item> Iterable for HashSet<Item> {
   }
 }
 
+#[derive(Debug)]
 pub struct BTreeSetIterator<'c, T> {
   pub iterator: std::collections::btree_set::Iter<'c, T>,
 }
@@ -148,6 +155,7 @@ impl<Item> Iterable for BTreeSet<Item> {
   }
 }
 
+#[derive(Debug)]
 pub struct BinaryHeapIterator<'c, T> {
   pub iterator: std::collections::binary_heap::Iter<'c, T>,
 }
@@ -175,6 +183,7 @@ impl<Item> Iterable for BinaryHeap<Item> {
   }
 }
 
+#[derive(Debug)]
 pub struct HashMapIterator<'c, Key, Value> {
   pub iterator: std::collections::hash_map::Iter<'c, Key, Value>,
 }
@@ -204,6 +213,7 @@ impl<Key, Value> Iterable for HashMap<Key, Value> {
   }
 }
 
+#[derive(Debug)]
 pub struct BTreeMapIterator<'c, Key, Value> {
   pub iterator: std::collections::btree_map::Iter<'c, Key, Value>,
 }

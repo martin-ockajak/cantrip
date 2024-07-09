@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
@@ -178,9 +180,9 @@ pub trait Sequence<Item> {
   /// assert_eq!(chunked, vec![vec![1, 2], vec![-1, 1], vec![2]])
   /// ```
   fn chunked_exact(self, size: usize) -> Self::This<Self>
-    where
-      Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-      Self::This<Self>: Default + Extend<Self>,
+  where
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+    Self::This<Self>: Default + Extend<Self>,
   {
     chunked(self, size, true)
   }
@@ -233,7 +235,7 @@ pub trait Sequence<Item> {
   //   });
   //   result
   // }
-  
+
   // FIXME - implement
   // fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
   // where
@@ -612,7 +614,9 @@ pub trait Sequence<Item> {
           stored.pop_front().or_else(|| iterator.next())
         } else {
           if *position == source_index {
-            if let Some(x) = iterator.next() { stored.push_back(x) }
+            if let Some(x) = iterator.next() {
+              stored.push_back(x)
+            }
           }
           *position += 1;
           iterator.next()
@@ -993,6 +997,7 @@ pub trait Sequence<Item> {
     self.into_iter().take_while(predicate).collect()
   }
 
+  #[allow(unused_results)]
   fn unique(self) -> Self
   where
     Item: Eq + Hash + Clone,
@@ -1012,6 +1017,7 @@ pub trait Sequence<Item> {
       .collect()
   }
 
+  #[allow(unused_results)]
   fn unique_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1058,9 +1064,9 @@ pub trait Sequence<Item> {
 }
 
 pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
-  where
-    Collection: IntoIterator<Item = Item> + Default + Extend<Item>,
-    Result: Default + Extend<Collection>,
+where
+  Collection: IntoIterator<Item = Item> + Default + Extend<Item>,
+  Result: Default + Extend<Collection>,
 {
   assert_ne!(size, 0, "chunk size must be non-zero");
   let mut result = Result::default();
@@ -1102,6 +1108,7 @@ where
   iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
+#[allow(unused_results)]
 pub(crate) fn windowed<'a, Item, Collection, Result>(iterator: impl Iterator<Item = &'a Item>, size: usize) -> Result
 where
   Item: Clone + 'a,

@@ -1,3 +1,5 @@
+#![allow(missing_docs)]
+
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::fmt::Display;

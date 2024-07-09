@@ -1,3 +1,3 @@
-pub mod append;
-pub mod iterate;
-pub mod unfold;
+pub(crate) mod append;
+pub(crate) mod iterate;
+pub(crate) mod unfold;

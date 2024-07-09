@@ -4,7 +4,7 @@ use cantrip::{Iterable, Sequence};
 
 use crate::extensions::util::{Equal, from_slice};
 
-pub fn test_sequence<'a, C>()
+pub(crate) fn test_sequence<'a, C>()
 where
   C: Sequence<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {

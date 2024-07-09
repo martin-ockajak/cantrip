@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 use crate::extensions::util::unfold::unfold;
 
 /// Reversible collection operations.

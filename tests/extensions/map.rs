@@ -4,7 +4,7 @@ use cantrip::{Iterable, Map};
 
 use crate::extensions::util::{assert_map_equal, from_map_slice, Equal};
 
-pub fn test_map<'a, C>()
+pub(crate) fn test_map<'a, C>()
 where
   C: Map<i64, i64>
     + FromIterator<(i64, i64)>

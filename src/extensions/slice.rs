@@ -1,5 +1,3 @@
-#![deny(missing_docs)]
-
 use std::hash::Hash;
 
 /// Slice operations.

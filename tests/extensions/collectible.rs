@@ -4,7 +4,7 @@ use cantrip::{Collectible, Iterable};
 
 use crate::extensions::util::{assert_equal, Equal, from_slice};
 
-pub fn test_collectible<'a, C>(sequence: bool)
+pub(crate) fn test_collectible<'a, C>(sequence: bool)
 where
   C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {

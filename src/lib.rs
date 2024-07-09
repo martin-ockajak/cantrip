@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 /// Convenient extension methods for Rust standard library collections.
 ///
 /// Enables collection manipulation in a functional style without the usual Rust boilerplate.

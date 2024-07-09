@@ -4,7 +4,7 @@ use std::hash::Hash;
 
 use crate::assert_equal;
 
-pub trait Equal {
+pub(crate) trait Equal {
   fn equal(&self, other: &Self) -> bool;
 }
 

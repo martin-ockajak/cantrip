@@ -4,7 +4,7 @@ use cantrip::{Iterable, Reversible};
 
 use crate::extensions::util::{Equal, from_slice};
 
-pub fn test_reversible<'a, C>()
+pub(crate) fn test_reversible<'a, C>()
 where
   C: Reversible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {

@@ -4,7 +4,7 @@ use cantrip::{Iterable, Traversable};
 
 use crate::extensions::util::from_slice;
 
-pub fn test_traversable<'a, C>()
+pub(crate) fn test_traversable<'a, C>()
 where
   C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Debug + 'a,
 {
