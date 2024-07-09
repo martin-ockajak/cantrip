@@ -19,7 +19,6 @@ use crate::extensions::util::unfold::unfold;
 pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // FIXME - implement these methods
   // cartesian_product
-  // combinations
   // combinations_repetitive
   // group_fold
   // group_fold_with
@@ -159,42 +158,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(a.clone().combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   /// ```
-  fn combinations(self, k: usize) -> Self::This<Self>
+  fn combinations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: FromIterator<Item> + Sized,
-    Self::This<Self>: FromIterator<Self>,
-  {
-    if k == 0 {
-      return Self::This::from_iter(iter::once(Self::from_iter(iter::empty())));
-    }
-    let values = Vec::from_iter(self);
-    let size = values.len();
-    let mut combination_indices = Vec::from_iter(0..k);
-    unfold(k > size, |done| {
-      if *done {
-        return None;
-      }
-      let result = Some(Self::from_iter(combination_indices.iter().map(|index| values[*index].clone())));
-      let mut current_slot = k - 1;
-      while combination_indices[current_slot] >= size + current_slot - k {
-        if current_slot > 0 {
-          current_slot -= 1;
-        } else {
-          *done = true;
-          return result;
-        }
-      }
-      let mut current_index = combination_indices[current_slot];
-      #[allow(clippy::needless_range_loop)]
-      for slot in current_slot..k {
-        current_index += 1;
-        combination_indices[slot] = current_index;
-      }
-      result
-    })
-    .collect()
-  }
+    Self: Sized;
 
   /// Creates a collection containing an element
   /// specified number of times.
@@ -974,13 +941,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut replaced = Some(replacement);
-    self.into_iter().map(|item| {
-      if &item == value {
-        replaced.take().unwrap_or(item)
-      } else {
-        item
-      }
-    }).collect()
+    self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
   }
 
   /// Creates a collection from the original collection by replacing the
@@ -1203,6 +1164,42 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   {
     iter::once(value).collect()
   }
+}
+
+pub(crate) fn combinations<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>, k: usize) -> Vec<Collection>
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item> + Sized,
+{
+  if k == 0 {
+    return Vec::from_iter(iter::once(Collection::from_iter(iter::empty())));
+  }
+  let values = Vec::from_iter(iterator.cloned());
+  let size = values.len();
+  let mut combination_indices = Vec::from_iter(0..k);
+  unfold(k > size, |done| {
+    if *done {
+      return None;
+    }
+    let result = Some(Collection::from_iter(combination_indices.iter().map(|index| values[*index].clone())));
+    let mut current_slot = k - 1;
+    while combination_indices[current_slot] >= size + current_slot - k {
+      if current_slot > 0 {
+        current_slot -= 1;
+      } else {
+        *done = true;
+        return result;
+      }
+    }
+    let mut current_index = combination_indices[current_slot];
+    #[allow(clippy::needless_range_loop)]
+    for slot in current_slot..k {
+      current_index += 1;
+      combination_indices[slot] = current_index;
+    }
+    result
+  })
+  .collect()
 }
 
 pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right: Default + Extend<B>>(

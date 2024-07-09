@@ -87,6 +87,14 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
   #[inline]
+  fn combinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+  {
+    combinations(self.iter(), k)
+  }
+
+  #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

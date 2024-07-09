@@ -86,6 +86,14 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
 
   #[inline]
+  fn combinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+  {
+    combinations(self.iter(), k)
+  }
+
+  #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

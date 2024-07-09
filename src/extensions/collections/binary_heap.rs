@@ -82,8 +82,16 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   }
 }
 
-impl<Item> Collectible<Item> for BinaryHeap<Item> {
+impl<Item: Ord> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
+
+  #[inline]
+  fn combinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+  {
+    combinations(self.iter(), k)
+  }
 
   #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>

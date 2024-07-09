@@ -117,6 +117,14 @@ impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
+  fn combinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+  {
+    combinations(self.iter(), k)
+  }
+
+  #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

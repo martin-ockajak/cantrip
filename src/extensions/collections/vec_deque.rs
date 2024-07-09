@@ -104,6 +104,14 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
+  fn combinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+  {
+    combinations(self.iter(), k)
+  }
+
+  #[inline]
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
