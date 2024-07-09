@@ -7,7 +7,6 @@ use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use std::thread::panicking;
 
 /// Consuming collection operations.
 ///
