@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -161,126 +161,6 @@ pub trait Traversable<Item> {
   /// ```
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  /// Folds every element into an accumulator by applying an operation,
-  /// returning the final result.
-  ///
-  /// `fold()` takes two arguments: an initial value, and a closure with two
-  /// arguments: an 'accumulator', and an element. The closure returns the value that
-  /// the accumulator should have for the next iteration.
-  ///
-  /// The initial value is the value the accumulator will have on the first
-  /// call.
-  ///
-  /// After applying this closure to every element of the collection, `fold()`
-  /// returns the accumulator.
-  ///
-  /// This operation is sometimes called 'reduce' or 'inject'.
-  ///
-  /// Folding is useful whenever you have a collection of something, and want
-  /// to produce a single value from it.
-  ///
-  /// Note: [`reduce()`] can be used to use the first element as the initial
-  /// value, if the accumulator type and item type is the same.
-  ///
-  /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
-  /// operators like `+`, the order the elements are combined in is not important, but for non-associative
-  /// operators like `-` the order will affect the final result.
-  /// For a *right-associative* version of `fold()`, see [`rfold()`].
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = [1, 2, 3];
-  ///
-  /// // the sum of all the elements of the array
-  /// let sum = a.fold(0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(sum, 6);
-  /// ```
-  ///
-  /// Let's walk through each step of the iteration here:
-  ///
-  /// | element | acc | x | result |
-  /// |---------|-----|---|--------|
-  /// |         | 0   |   |        |
-  /// | 1       | 0   | 1 | 1      |
-  /// | 2       | 1   | 2 | 3      |
-  /// | 3       | 3   | 3 | 6      |
-  ///
-  /// And so, our final result, `6`.
-  ///
-  /// This example demonstrates the left-associative nature of `fold()`:
-  /// it builds a string, starting with an initial value
-  /// and continuing with each element from the front until the back:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let numbers = [1, 2, 3, 4, 5];
-  ///
-  /// let zero = "0".to_string();
-  ///
-  /// let result = numbers.fold(zero, |acc, &x| {
-  ///     format!("({acc} + {x})")
-  /// });
-  ///
-  /// assert_eq!(result, "(((((0 + 1) + 2) + 3) + 4) + 5)");
-  /// ```
-  /// It's common for people who haven't used collections a lot to
-  /// use a `for` loop with a list of things to build up a result. Those
-  /// can be turned into `fold()`s:
-  ///
-  /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let numbers = [1, 2, 3, 4, 5];
-  ///
-  /// let mut result = 0;
-  ///
-  /// // for loop:
-  /// for i in &numbers {
-  ///     result = result + i;
-  /// }
-  ///
-  /// // fold:
-  /// let result2 = numbers.fold(0, |acc, &x| acc + x);
-  ///
-  /// // they're the same
-  /// assert_eq!(result, result2);
-  /// ```
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
-
-  /// Creates `HashMap` of keys mapped and folded to values according to
-  /// specified discriminator and folding operation functions.
-  ///
-  /// The discriminator function takes a reference to an element and returns a group key.
-  /// The folding operation takes an accumulator and a closure and returns a new element.
-  /// The closure returns the value that the accumulator should have for the next iteration.
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// let group_folded = a.group_fold(|x| x % 2, &0, |acc, &x| acc + x);
-  /// assert_eq!(group_folded, HashMap::from([
-  ///   (0, 2),
-  ///   (1, 4),
-  /// ]));
-  /// ```
-  fn group_fold<K: Eq + Hash, B>(
-    &self, to_key: impl FnMut(&Item) -> K, initial_value: &B, function: impl FnMut(B, &Item) -> B,
-  ) -> HashMap<K, B>
-  where
-    B: Clone;
-
   /// Combine all collection elements into one `String`, separated by `sep`.
   ///
   /// Use the `Display` implementation of each element.
@@ -433,10 +313,10 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// assert_eq!(
-  ///     vec![2.4, f32::NAN, 1.3]
-  ///         .reduce(f32::min)
-  ///         .unwrap(),
-  ///     1.3
+  ///   vec![2.4, f32::NAN, 1.3]
+  ///     .reduce(f32::min)
+  ///     .unwrap(),
+  ///   1.3
   /// );
   /// ```
   ///
@@ -568,34 +448,6 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
 ) -> usize {
   iterator.filter(|&x| predicate(x)).count()
-}
-
-#[inline]
-pub(crate) fn fold<'a, Item: 'a, B>(
-  iterator: impl Iterator<Item = &'a Item>, init: B, function: impl FnMut(B, &Item) -> B,
-) -> B {
-  iterator.fold(init, function)
-}
-
-#[allow(unused_results)]
-pub(crate) fn group_fold<'a, Item, K: Eq + Hash, B>(
-  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: &B,
-  mut function: impl FnMut(B, &Item) -> B,
-) -> HashMap<K, B>
-where
-  Item: 'a,
-  B: Clone,
-{
-  let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
-  for item in iterator {
-    let key = to_key(item);
-    let new_value = match result.remove(&key) {
-      Some(value) => function(value, item),
-      None => function(initial_value.clone(), item),
-    };
-    result.insert(key, new_value);
-  }
-  result
 }
 
 // #[inline]

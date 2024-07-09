@@ -77,7 +77,7 @@ pub trait Reversible<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of a
-  /// let sum = a.rfold(0, |acc, &x| acc + x);
+  /// let sum = a.rfold(0, |acc, x| acc + x);
   ///
   /// assert_eq!(sum, 6);
   /// ```
@@ -93,13 +93,21 @@ pub trait Reversible<Item> {
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.rfold(zero, |acc, &x| {
-  ///     format!("({x} + {acc})")
+  /// let result = numbers.rfold(zero, |acc, x| {
+  ///   format!("({x} + {acc})")
   /// });
   ///
   /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
   /// ```
-  fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+  #[inline]
+  fn rfold<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
+  where
+    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
+  {
+    let iterator = self.into_iter();
+    iterator.rfold(initial_value, function)
+  }
 
   /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value, starting from the back.
@@ -148,9 +156,7 @@ pub trait Reversible<Item> {
   {
     let mut iterator = self.into_iter().rev();
     unfold(0_usize, |position| {
-      let result = iterator.next().or_else(|| {
-        if *position < size { Some(to_element(*position)) } else { None }
-      });
+      let result = iterator.next().or_else(|| if *position < size { Some(to_element(*position)) } else { None });
       *position += 1;
       result
     })

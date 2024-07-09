@@ -81,11 +81,11 @@
 /// | *flat_map*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *flat_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *flat*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-/// | *fold*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *fold*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *frequencies*             |    :heavy_check_mark:     |                    |                               |                    |
 /// | *frequencies_by*          |    :heavy_check_mark:     |                    |                               |                    |
 /// | *group_by*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-/// | *group_fold*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *group_fold*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *group_reduce*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *includes*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *index_of*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
@@ -136,7 +136,7 @@
 /// | *replace_range*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rev*                     |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *rfold*                   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rposition*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rskip*                   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rskip_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |

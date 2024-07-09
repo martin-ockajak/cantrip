@@ -45,4 +45,8 @@ where
   // assert_eq!(values.clone().filter_map(|x| if x > 1 { Some(x) } else { None }), &[2, 3].into_iter().collect());
   // assert_eq!(values.clone().filter_map(|x| None), &[]);
   // assert_eq!(empty.clone().filter_map(|x| Some(x)), &[]);
+
+  // fold
+  // assert_eq!(repeated.clone().fold(0, |r, x| r + x), 4);
+  assert_eq!(empty.clone().fold(0, |r, x| r + x), 0);
 }

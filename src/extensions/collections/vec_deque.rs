@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, VecDeque};
+use std::collections::VecDeque;
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -37,21 +37,6 @@ impl<Item> Traversable<Item> for VecDeque<Item> {
   #[inline]
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
-  }
-
-  #[inline]
-  fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
-    fold(self.iter(), init, function)
-  }
-
-  #[inline]
-  fn group_fold<K: Eq + Hash, B>(
-    &self, to_key: impl FnMut(&Item) -> K, initial_value: &B, function: impl FnMut(B, &Item) -> B,
-  ) -> HashMap<K, B>
-  where
-    B: Clone,
-  {
-    group_fold(self.iter(), to_key, initial_value, function)
   }
 
   #[inline]
@@ -97,11 +82,6 @@ impl<Item> Reversible<Item> for VecDeque<Item> {
   #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
-  }
-
-  #[inline]
-  fn rfold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
-    self.iter().rfold(init, function)
   }
 
   #[inline]

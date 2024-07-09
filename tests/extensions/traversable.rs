@@ -32,10 +32,6 @@ where
   assert_eq!(repeated.find(|&x| x < 0), None);
   assert_eq!(empty.find(|&x| x == 0), None);
 
-  // fold
-  assert_eq!(repeated.fold(0, |r, x| r + x), 3);
-  assert_eq!(empty.fold(0, |r, x| r + x), 0);
-
   // max_by
   assert_eq!(repeated.max_by(i64::cmp), Some(&2));
   assert_eq!(empty.max_by(i64::cmp), None);

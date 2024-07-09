@@ -551,6 +551,108 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flat_map(function).collect()
   }
 
+  /// Folds every element into an accumulator by applying an operation,
+  /// returning the final result.
+  ///
+  /// `fold()` takes two arguments: an initial value, and a closure with two
+  /// arguments: an 'accumulator', and an element. The closure returns the value that
+  /// the accumulator should have for the next iteration.
+  ///
+  /// The initial value is the value the accumulator will have on the first
+  /// call.
+  ///
+  /// After applying this closure to every element of the collection, `fold()`
+  /// returns the accumulator.
+  ///
+  /// This operation is sometimes called 'reduce' or 'inject'.
+  ///
+  /// Folding is useful whenever you have a collection of something, and want
+  /// to produce a single value from it.
+  ///
+  /// Note: [`reduce()`] can be used to use the first element as the initial
+  /// value, if the accumulator type and item type is the same.
+  ///
+  /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
+  /// operators like `+`, the order the elements are combined in is not important, but for non-associative
+  /// operators like `-` the order will affect the final result.
+  /// For a *right-associative* version of `fold()`, see [`rfold()`].
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// // the sum of all the elements of the array
+  /// let sum = a.fold(0, |acc, x| acc + x);
+  ///
+  /// assert_eq!(sum, 6);
+  /// ```
+  ///
+  /// Let's walk through each step of the iteration here:
+  ///
+  /// | element | acc | x | result |
+  /// |---------|-----|---|--------|
+  /// |         | 0   |   |        |
+  /// | 1       | 0   | 1 | 1      |
+  /// | 2       | 1   | 2 | 3      |
+  /// | 3       | 3   | 3 | 6      |
+  ///
+  /// And so, our final result, `6`.
+  ///
+  /// This example demonstrates the left-associative nature of `fold()`:
+  /// it builds a string, starting with an initial value
+  /// and continuing with each element from the front until the back:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let numbers = vec![1, 2, 3, 4, 5];
+  ///
+  /// let zero = "0".to_string();
+  ///
+  /// let result = numbers.fold(zero, |acc, x| {
+  ///   format!("({acc} + {x})")
+  /// });
+  ///
+  /// assert_eq!(result, "(((((0 + 1) + 2) + 3) + 4) + 5)");
+  /// ```
+  /// It's common for people who haven't used collections a lot to
+  /// use a `for` loop with a list of things to build up a result. Those
+  /// can be turned into `fold()`s:
+  ///
+  /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let numbers = vec![1, 2, 3, 4, 5];
+  ///
+  /// let mut result = 0;
+  ///
+  /// // for loop:
+  /// for i in &numbers {
+  ///   result = result + i;
+  /// }
+  ///
+  /// // fold:
+  /// let result2 = numbers.fold(0, |acc, x| acc + x);
+  ///
+  /// // they're the same
+  /// assert_eq!(result, result2);
+  /// ```
+  #[inline]
+  fn fold<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
+  where
+    Self: Sized,
+  {
+    let iterator = self.into_iter();
+    iterator.fold(initial_value, function)
+  }
+
   /// Creates `HashMap` of keys mapped to collections of elements according to
   /// specified discriminator function.
   ///
@@ -576,6 +678,46 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let mut result: HashMap<K, Self> = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       result.entry(to_key(&item)).or_default().extend(iter::once(item));
+    }
+    result
+  }
+
+  /// Creates `HashMap` of keys mapped and folded to values according to
+  /// specified discriminator and folding operation functions.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  /// The folding operation takes an accumulator and a closure and returns a new element.
+  /// The closure returns the value that the accumulator should have for the next iteration.
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let group_folded = a.group_fold(|x| x % 2, &0, |acc, x| acc + x);
+  /// assert_eq!(group_folded, HashMap::from([
+  ///   (0, 2),
+  ///   (1, 4),
+  /// ]));
+  /// ```
+  #[allow(unused_results)]
+  fn group_fold<K: Eq + Hash, B>(
+    self, mut to_key: impl FnMut(&Item) -> K, initial_value: &B, mut function: impl FnMut(B, Item) -> B,
+  ) -> HashMap<K, B>
+  where
+    B: Clone,
+    Self: Sized,
+  {
+    let iterator = self.into_iter();
+    let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      let key = to_key(&item);
+      let new_value = match result.remove(&key) {
+        Some(value) => function(value, item),
+        None => function(initial_value.clone(), item),
+      };
+      result.insert(key, new_value);
     }
     result
   }
@@ -636,7 +778,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// // Print 2, 3.
   /// for x in a.clone().intersect(&b) {
-  ///     println!("{x}");
+  ///   println!("{x}");
   /// }
   ///
   /// let intersection: Vec<_> = a.intersect(&b);
@@ -1044,15 +1186,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3, 4];
   ///
   /// let mut scan = a.scan(1, |state, &x| {
-  ///     // each iteration, we'll multiply the state by the element ...
-  ///     *state = *state * x;
+  ///   // each iteration, we'll multiply the state by the element ...
+  ///   *state = *state * x;
   ///
-  ///     // ... and terminate if the state exceeds 6
-  ///     if *state > 6 {
-  ///         return None;
-  ///     }
-  ///     // ... else yield the negation of the state
-  ///     Some(-*state)
+  ///   // ... and terminate if the state exceeds 6
+  ///   if *state > 6 {
+  ///     return None;
+  ///   }
+  ///   // ... else yield the negation of the state
+  ///   Some(-*state)
   /// });
   ///
   /// assert_eq!(scan, vec![-1, -2, -6]);
@@ -1089,15 +1231,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3, 4];
   ///
   /// let mut scan = a.scan_to(1, |state, x| {
-  ///     // each iteration, we'll multiply the state by the element ...
-  ///     *state = *state * x;
+  ///   // each iteration, we'll multiply the state by the element ...
+  ///   *state = *state * x;
   ///
-  ///     // ... and terminate if the state exceeds 6
-  ///     if *state > 6 {
-  ///         return None;
-  ///     }
-  ///     // ... else yield the negation of the state
-  ///     Some(-*state)
+  ///   // ... and terminate if the state exceeds 6
+  ///   if *state > 6 {
+  ///     return None;
+  ///   }
+  ///   // ... else yield the negation of the state
+  ///   Some(-*state)
   /// });
   ///
   /// assert_eq!(scan, vec![-1, -2, -6]);
