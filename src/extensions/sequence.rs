@@ -368,7 +368,6 @@ pub trait Sequence<Item> {
     for item in iterator {
       *result.entry(item).or_default() += 1;
     }
-    result.shrink_to_fit();
     result
   }
 
@@ -381,7 +380,6 @@ pub trait Sequence<Item> {
     for item in iterator {
       *result.entry(to_key(item)).or_default() += 1;
     }
-    result.shrink_to_fit();
     result
   }
 

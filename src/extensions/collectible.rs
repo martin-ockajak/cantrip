@@ -19,9 +19,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   // FIXME - implement these methods
   // cartesian_product
   // combinations_repetitive
-  // group_fold
-  // group_fold_with
-  // group_reduce
 
   /// Original collection type
   type This<I>;
@@ -575,14 +572,51 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   fn group_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    Self: IntoIterator<Item = Item> + Sized + Default + Extend<Item>,
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
   {
     let iterator = self.into_iter();
     let mut result: HashMap<K, Self> = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       result.entry(to_key(&item)).or_default().extend(iter::once(item));
     }
-    result.shrink_to_fit();
+    result
+  }
+
+  /// Creates `HashMap` of keys mapped and reduced to values according to
+  /// specified discriminator and reducing operation functions.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  /// The reducing operation takes an accumulator and a closure and returns a new element.
+  /// The closure returns the value that the accumulator should have for the next iteration.
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let group_reduced = a.group_reduce(|x| x % 2, |acc, x| acc + x);
+  /// assert_eq!(group_reduced, HashMap::from([
+  ///   (0, 2),
+  ///   (1, 4),
+  /// ]));
+  /// ```
+  fn group_reduce<K: Eq + Hash>(
+    self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
+  ) -> HashMap<K, Item>
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+  {
+    let iterator = self.into_iter();
+    let mut result: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      let key = to_key(&item);
+      let new_value = match result.remove(&key) {
+        Some(value) => function(value, item),
+        None => item,
+      };
+      result.insert(key, new_value);
+    }
     result
   }
 

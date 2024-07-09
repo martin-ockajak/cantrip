@@ -1,7 +1,7 @@
 #![deny(missing_docs)]
 
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -257,6 +257,31 @@ pub trait Traversable<Item> {
   /// assert_eq!(result, result2);
   /// ```
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+
+  /// Creates `HashMap` of keys mapped and folded to values according to
+  /// specified discriminator and folding operation functions.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  /// The folding operation takes an accumulator and a closure and returns a new element.
+  /// The closure returns the value that the accumulator should have for the next iteration.
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let group_folded = a.group_fold(|x| x % 2, &0, |acc, &x| acc + x);
+  /// assert_eq!(group_folded, HashMap::from([
+  ///   (0, 2),
+  ///   (1, 4),
+  /// ]));
+  /// ```
+  fn group_fold<K: Eq + Hash, B>(
+    &self, to_key: impl FnMut(&Item) -> K, initial_value: &B, function: impl FnMut(B, &Item) -> B,
+  ) -> HashMap<K, B>
+  where
+    B: Clone;
 
   /// Combine all collection elements into one `String`, separated by `sep`.
   ///
@@ -553,7 +578,27 @@ pub(crate) fn fold<'a, Item: 'a, B>(
 ) -> B {
   iterator.fold(init, function)
 }
-//
+
+pub(crate) fn group_fold<'a, Item, K: Eq + Hash, B>(
+  mut iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: &B,
+  mut function: impl FnMut(B, &Item) -> B,
+) -> HashMap<K, B>
+where
+  Item: 'a,
+  B: Clone,
+{
+  let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    let key = to_key(&item);
+    let new_value = match result.remove(&key) {
+      Some(value) => function(value, &item),
+      None => function(initial_value.clone(), &item),
+    };
+    result.insert(key, new_value);
+  }
+  result
+}
+
 // #[inline]
 // pub(crate) fn includes<'a, Item>(
 //   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,

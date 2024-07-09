@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -42,6 +42,16 @@ impl<Item> Traversable<Item> for HashSet<Item> {
   #[inline]
   fn fold<B>(&self, init: B, function: impl FnMut(B, &Item) -> B) -> B {
     fold(self.iter(), init, function)
+  }
+
+  #[inline]
+  fn group_fold<K: Eq + Hash, B>(
+    &self, to_key: impl FnMut(&Item) -> K, initial_value: &B, function: impl FnMut(B, &Item) -> B,
+  ) -> HashMap<K, B>
+  where
+    B: Clone,
+  {
+    group_fold(self.iter(), to_key, initial_value, function)
   }
 
   #[inline]
@@ -132,7 +142,7 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   fn powerset(self) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized
+    Self: Sized,
   {
     powerset(self.iter())
   }
