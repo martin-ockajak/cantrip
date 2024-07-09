@@ -24,9 +24,6 @@ pub trait Map<Key, Value> {
   // FIXME - add documentation
   // FIXME - implement these methods
   // all_unique
-  // any
-  // combinations
-  // combinations_repetitive
   // includes
   // powerset
   // subset

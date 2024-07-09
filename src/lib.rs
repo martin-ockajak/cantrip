@@ -53,7 +53,7 @@
 /// | *all_unique*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *any*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *cartesian_product*       |    :heavy_check_mark:     |                    |                               |                    |
-/// | *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *chunked*                 |    :heavy_check_mark:     |                    |                               |                    |
 /// | *chunked_by*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *chunked_exact*           |    :heavy_check_mark:     |                    |                               |                    |
@@ -115,7 +115,7 @@
 /// | *minmax_by_key*           |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *minmax_item*             |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *move_item*               |    :heavy_check_mark:     |                    |                               |                    |
-/// | *multicombinations*       |    :heavy_check_mark:     |                    |                               | :heavy_check_mark: |
+/// | *multicombinations*       |    :heavy_check_mark:     |                    |                               |                    |
 /// | *pad*                     |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *pad_with*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *partition*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
