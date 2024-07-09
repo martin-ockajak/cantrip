@@ -32,7 +32,6 @@ pub trait Sequence<Item> {
   // variations
   // variations_repetitive
   // windowed_circular
-  // zip_fill
 
   /// Creates a collection by inserting an element into specified index
   /// in the original collection.
@@ -1129,10 +1128,10 @@ pub trait Sequence<Item> {
     Self::This<Self>: FromIterator<Self>;
 
   #[inline]
-  fn zip<I: IntoIterator>(self, elements: I) -> Self::This<(Item, I::Item)>
+  fn zip<T>(self, elements: impl IntoIterator<Item = T>) -> Self::This<(Item, T)>
   where
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<(Item, I::Item)>: FromIterator<(Item, I::Item)>,
+    Self::This<(Item, T)>: FromIterator<(Item, T)>,
   {
     self.into_iter().zip(elements).collect()
   }
