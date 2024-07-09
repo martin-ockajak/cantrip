@@ -26,7 +26,6 @@ pub trait Map<Key, Value> {
   // all_unique
   // includes
   // subset
-  // replace_all
 
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
@@ -313,6 +312,39 @@ pub trait Map<Key, Value> {
       .into_iter()
       .map(|(key, val)| if &key == value { replaced.take().unwrap_or((key, val)) } else { (key, val) })
       .collect()
+  }
+
+  /// Creates a map from the original map by replacing the given occurrences of elements
+  /// found in another collection with elements of a replacement collection.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.replace_all(&vec![2, 3], vec![(4, "d"), (5, "e")]),HashMap::from([
+  ///   (1, "a"),
+  ///   (4, "d"),
+  ///   (5, "e"),
+  /// ]));
+  /// ```
+  fn replace_all<'a>(
+    self, elements: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
+  ) -> Self
+  where
+    Key: Eq + Hash + 'a,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    let iterator = elements.iterator();
+    let removed: HashSet<&Key> = HashSet::from_iter(iterator);
+    self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
   }
 
   fn scan<S, L, W>(

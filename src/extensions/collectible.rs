@@ -1125,9 +1125,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3, 3];
-  /// let b = vec![2, 3];
   ///
-  /// assert_eq!(a.replace_all(&b, vec![4, 5]), vec![1, 4, 5, 3]);
+  /// assert_eq!(a.replace_all(&vec![2, 3], vec![4, 5]), vec![1, 4, 5, 3]);
   /// ```
   fn replace_all<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
