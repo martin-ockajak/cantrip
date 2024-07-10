@@ -75,6 +75,14 @@ impl<Item> Traversable<Item> for [Item] {
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)> {
     minmax_by_key(self.iter(), to_key)
   }
+
+  #[inline]
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    subset(self.iter(), elements)
+  }
 }
 
 impl<Item> Reversible<Item> for [Item] {

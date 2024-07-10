@@ -3,6 +3,7 @@ use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
+use crate::Iterable;
 
 /// Non-consuming collection operations.
 ///
@@ -15,7 +16,6 @@ pub trait Traversable<Item> {
   // FIXME - implement these methods
   // includes
   // same_items
-  // subset
 
   /// Tests if every element of the collection matches a predicate.
   ///
@@ -395,23 +395,23 @@ pub trait Traversable<Item> {
     self.minmax_by(Ord::cmp)
   }
 
-  // /// Tests if all the elements of a collection can be found in another collection.
-  // ///
-  // /// Returns `true` if this collection is empty.
-  // ///
-  // /// # Example
-  // ///
-  // /// ```
-  // /// use cantrip::*;
-  // ///
-  // /// let a = vec![1, 2, 2];
-  // ///
-  // /// assert!(a.subset(&vec![1, 2, 3]));
-  // /// assert!(!a.subset(&vec![1, 2]));
-  // /// ```
-  // fn subset<'a>(&self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  // where
-  //   Item: Eq + Hash + 'a;
+  /// Tests if all the elements of a collection can be found in another collection.
+  ///
+  /// Returns `true` if this collection is empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2];
+  ///
+  /// assert!(a.subset(&vec![1, 2, 3]));
+  /// assert!(!a.subset(&vec![1]));
+  /// ```
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
 }
 
 #[inline]
@@ -476,25 +476,22 @@ pub(crate) fn count_by<'a, Item: 'a>(
 //   });
 //   remaining <= 0
 // }
-//
-// pub(crate) fn subset<'a, Item>(
-//   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-// ) -> bool
-// where
-//   Item: Eq + Hash + 'a,
-// {
-//   let elements_iterator = elements.iterator();
-//   let mut occurred: HashSet<&Item> = HashSet::with_capacity(elements_iterator.size_hint().0);
-//   for item in elements_iterator {
-//     occurred.insert(item);
-//   }
-//   for item in iterator {
-//     if !occurred.contains(item) {
-//       return false;
-//     }
-//   }
-//   true
-// }
+
+pub(crate) fn subset<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let occurred: HashSet<&Item> = HashSet::from_iter(elements_iterator);
+  for item in iterator {
+    if !occurred.contains(item) {
+      return false;
+    }
+  }
+  true
+}
 
 pub(crate) fn join_items<'a, Item: Display + 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, separator: &str,

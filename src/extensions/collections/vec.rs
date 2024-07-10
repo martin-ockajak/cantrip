@@ -83,12 +83,13 @@ impl<Item> Traversable<Item> for Vec<Item> {
     minmax_by_key(self.iter(), to_key)
   }
 
-  // #[inline]
-  // fn subset<'a>(&self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  //   where
-  //     Item: Eq + Hash + 'a, {
-  //   subset(self.iter(), elements)
-  // }
+  #[inline]
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    subset(self.iter(), elements)
+  }
 }
 
 impl<Item> Reversible<Item> for Vec<Item> {
