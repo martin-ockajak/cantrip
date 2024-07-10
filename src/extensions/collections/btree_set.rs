@@ -39,14 +39,6 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
   }
 
   #[inline]
-  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    includes(self.iter(), iterable)
-  }
-
-  #[inline]
   fn join_items(&self, separator: &str) -> String
   where
     Item: Display,

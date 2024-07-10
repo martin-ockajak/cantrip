@@ -40,14 +40,6 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    includes(self.iter(), iterable)
-  }
-
-  #[inline]
   fn join_items(&self, separator: &str) -> String
   where
     Item: Display,
@@ -103,6 +95,14 @@ impl<Item> Traversable<Item> for [Item] {
 }
 
 impl<Item> Ordered<Item> for [Item] {
+  #[inline]
+  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    includes(self.iter(), iterable)
+  }
+
   #[inline]
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.iter().position(predicate)

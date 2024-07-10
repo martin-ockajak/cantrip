@@ -23,7 +23,6 @@ pub trait Map<Key, Value> {
   // FIXME - add documentation
   // FIXME - implement these methods
   // equivalent
-  // includes
 
   /// Creates a map by adding a entry to the original map.
   ///
