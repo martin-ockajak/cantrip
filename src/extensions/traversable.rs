@@ -149,7 +149,7 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![-3, 0, 1, 5, -10];
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.max_by(|x, y| x.cmp(y)), Some(&5));
@@ -198,8 +198,6 @@ pub trait Traversable<Item> {
   ///
   /// # Example
   ///
-  /// Basic usage:
-  ///
   /// ```
   /// use cantrip::*;
   ///
@@ -229,7 +227,7 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![-3, 0, 1, 5, -10];
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.min_by(|x, y| x.cmp(y)), Some(&-10));
@@ -309,7 +307,7 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![-3, 0, 1, 5, -10];
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.minmax_by(|x, y| x.cmp(y)), Some((&-10, &5)));

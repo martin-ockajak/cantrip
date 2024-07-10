@@ -1087,10 +1087,78 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 
+  /// Returns the entry that gives the maximum value with respect to the
+  /// specified comparison function.
+  ///
+  /// If several entrys are equally maximum, the last entry is
+  /// returned. If the map is empty, [`None`] is returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0, "a"),
+  ///   (3, "b"),
+  ///   (-3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.max_by(|x, y| x.0.cmp(y.0)), Some((&3, &"b")));
+  ///
+  /// assert_eq!(e.max_by(|x, y| x.0.cmp(y.0)), None);
+  /// ```
   fn max_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
+  /// Returns the entry that gives the maximum value from the
+  /// specified function.
+  ///
+  /// If several entrys are equally maximum, the last entry is
+  /// returned. If the map is empty, [`None`] is returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0_i32, "a"),
+  ///   (3, "b"),
+  ///   (-5, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.max_by_key(|(k, _)| k.abs()), Some((&-5, &"c")));
+  ///
+  /// assert_eq!(e.max_by_key(|(k, _)| k.abs()), None);
+  /// ```
   fn max_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
 
+  /// Returns the maximum entry of a map.
+  ///
+  /// If several entrys are equally maximum, the last entry is
+  /// returned. If the map is empty, [`None`] is returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0, 1),
+  ///   (1, 2),
+  ///   (2, 3),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.max_item(), Some((&2, &3)));
+  ///
+  /// assert_eq!(e.max_item(), None);
+  /// ```
   #[inline]
   fn max_item(&self) -> Option<(&Key, &Value)>
   where
@@ -1100,10 +1168,78 @@ pub trait Map<Key, Value> {
     self.max_by(|x, y| x.cmp(&y))
   }
 
+  /// Returns the entry that gives the minimum value with respect to the
+  /// specified comparison function.
+  ///
+  /// If several entrys are equally minimum, the last entry is
+  /// returned. If the map is empty, [`None`] is returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0, "a"),
+  ///   (3, "b"),
+  ///   (-5, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.min_by(|x, y| x.0.cmp(y.0)), Some((&-5, &"c")));
+  ///
+  /// assert_eq!(e.min_by(|x, y| x.0.cmp(y.0)), None);
+  /// ```
   fn min_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
 
+  /// Returns the entry that gives the minimum value from the
+  /// specified function.
+  ///
+  /// If several entrys are equally minimum, the last entry is
+  /// returned. If the map is empty, [`None`] is returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0_i32, "a"),
+  ///   (3, "b"),
+  ///   (-5, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.min_by_key(|(k, _)| k.abs()), Some((&0, &"a")));
+  ///
+  /// assert_eq!(e.min_by_key(|(k, _)| k.abs()), None);
+  /// ```
   fn min_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
 
+  /// Returns the minimum entry of a map.
+  ///
+  /// If several entrys are equally minimum, the last entry is
+  /// returned. If the map is empty, [`None`] is returned.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0, 1),
+  ///   (1, 2),
+  ///   (2, 3),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.min_item(), Some((&0, &1)));
+  ///
+  /// assert_eq!(e.min_item(), None);
+  /// ```
   #[inline]
   fn min_item(&self) -> Option<(&Key, &Value)>
   where
