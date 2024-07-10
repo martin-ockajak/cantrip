@@ -1,4 +1,3 @@
-use crate::extensions::util::unfold::unfold;
 use crate::Iterable;
 
 /// Reversible collection operations.
@@ -125,62 +124,6 @@ pub trait Reversible<Item> {
   {
     let iterator = self.into_iter();
     iterator.rfold(initial_value, function)
-  }
-
-  /// Creates a collection by padding the original collection to a minimum length of
-  /// `size` and filling missing elements with specified value, starting from the back.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// // FIXME - check semantics
-  /// let padded = a.rpad(5, 4);
-  ///
-  /// assert_eq!(padded, vec![3, 2, 1, 4, 4]);
-  /// ```
-  #[inline]
-  fn rpad<I>(self, size: usize, element: Item) -> Self
-  where
-    Item: Clone,
-    I: DoubleEndedIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
-  {
-    self.rpad_with(size, |_| element.clone())
-  }
-
-  /// Creates a collection by padding the original collection to a minimum length of
-  /// `size` and filling missing elements using a closure `to_element`, starting from the back.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// // FIXME - check semantics
-  /// let padded = a.rpad_with(5, |i| 2 * i);
-  ///
-  /// assert_eq!(padded, vec![3, 2, 1, 6, 8]);
-  /// ```
-  #[inline]
-  fn rpad_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
-  where
-    Item: Clone,
-    I: DoubleEndedIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter().rev();
-    unfold(0_usize, |position| {
-      let result = iterator.next().or_else(|| if *position < size { Some(to_element(*position)) } else { None });
-      *position += 1;
-      result
-    })
-    .collect()
   }
 
   /// Searches for an element in a collection from the right, returning its index.

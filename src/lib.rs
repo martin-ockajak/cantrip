@@ -119,8 +119,10 @@
 /// | *minmax_item*             |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *move_item*               |    :heavy_check_mark:     |                    |                               |                    |
 /// | *multicombinations*       |    :heavy_check_mark:     |                    |                               |                    |
-/// | *pad*                     |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *pad_with*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *pad_left*                |    :heavy_check_mark:     |                    |                               |                    |
+/// | *pad_left_with*           |    :heavy_check_mark:     |                    |                               |                    |
+/// | *pad_right*               |    :heavy_check_mark:     |                    |                               |                    |
+/// | *pad_right_with*          |    :heavy_check_mark:     |                    |                               |                    |
 /// | *partition*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *partition_map*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *partition_map_to*        |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |

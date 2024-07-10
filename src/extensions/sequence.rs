@@ -716,6 +716,65 @@ pub trait Sequence<Item> {
     Self: Sized;
 
   /// Creates a collection by padding the original collection to a minimum length of
+  /// `size` and filling missing elements with specified value, starting from the back.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let padded = a.pad_left(5, 4);
+  ///
+  /// assert_eq!(padded, vec![4, 4, 1, 2, 3]);
+  /// ```
+  #[inline]
+  fn pad_left<I>(self, size: usize, element: Item) -> Self
+  where
+    Item: Clone,
+    I: ExactSizeIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
+    self.pad_left_with(size, |_| element.clone())
+  }
+
+  /// Creates a collection by padding the original collection to a minimum length of
+  /// `size` and filling missing elements using a closure `to_element`, starting from the back.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let padded = a.pad_left_with(5, |i| 2 * i);
+  ///
+  /// assert_eq!(padded, vec![0, 2, 1, 2, 3]);
+  /// ```
+  #[inline]
+  fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
+  where
+    Item: Clone,
+    I: ExactSizeIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let original_start = size - iterator.len();
+    unfold(0_usize, |position| {
+      let result = if *position < original_start {
+        Some(to_element(*position))
+      } else {
+        iterator.next()
+      };
+      *position += 1;
+      result
+    })
+      .collect()
+  }
+
+  /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value.
   ///
   /// # Example
@@ -725,17 +784,17 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad(5, 4);
+  /// let padded = a.pad_right(5, 4);
   ///
   /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
-  fn pad(self, size: usize, element: Item) -> Self
+  fn pad_right(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.pad_with(size, |_| element.clone())
+    self.pad_right_with(size, |_| element.clone())
   }
 
   /// Creates a collection by padding the original collection to a minimum length of
@@ -748,11 +807,11 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad_with(5, |x| 2 * x);
+  /// let padded = a.pad_right_with(5, |x| 2 * x);
   ///
   /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
   /// ```
-  fn pad_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
+  fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -763,7 +822,7 @@ pub trait Sequence<Item> {
       *position += 1;
       result
     })
-    .collect()
+      .collect()
   }
 
   /// Creates a collection by moving an element at an index into specified index
