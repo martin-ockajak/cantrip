@@ -26,6 +26,38 @@ pub trait Map<Key, Value> {
   // equivalent
   // includes
 
+  /// Creates a map by adding a key/value pair to the original map.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// # let source = HashMap::from([
+  /// #  (1, "a"),
+  /// #  (2, "b"),
+  /// #  (3, "c"),
+  /// # ]);
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.add(4, "d"), HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  ///   (4, "d"),
+  /// ]));
+  /// # let a = source.clone();
+  /// assert_eq!(a.add(1, "d"), HashMap::from([
+  ///   (1, "d"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
   where
@@ -34,6 +66,41 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
 
+  /// Creates a map by appending all key/value pairs from another collection to
+  /// the original map.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// # let source = HashMap::from([
+  /// #  (1, "a"),
+  /// #  (2, "b"),
+  /// #  (3, "c"),
+  /// # ]);
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.add_all(vec![(4, "d"), (5, "e")]), HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  ///   (4, "d"),
+  ///   (5, "e"),
+  /// ]));
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_all(vec![(1, "d"), (5, "e")]), HashMap::from([
+  ///   (1, "d"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  ///   (5, "e"),
+  /// ]));
+  /// ```
   #[inline]
   fn add_all(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
   where
@@ -42,6 +109,37 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iterable).collect()
   }
 
+  /// Tests if every key/value pair in the map matches a predicate.
+  ///
+  /// `all()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each key/value pair in the map, and if they all return
+  /// `true`, then so does `all()`. If any of them return `false`, it
+  /// returns `false`.
+  ///
+  /// `all()` is short-circuiting; in other words, it will stop processing
+  /// as soon as it finds a `false`, given that no matter what else happens,
+  /// the result will also be `false`.
+  ///
+  /// An empty map returns `true`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert!(a.all(|(&k, &v)| k > 0 && v.len() > 0));
+  /// assert!(e.all(|(&k, _)| k > 0));
+  ///
+  /// assert!(!a.all(|(&k, _)| k > 2));
+  /// ```
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
   /// Tests if all values of the map are equal.
@@ -112,6 +210,38 @@ pub trait Map<Key, Value> {
   where
     Value: Eq + Hash;
 
+  /// Tests if any key/value pair in the map matches a predicate.
+  ///
+  /// `any()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each key/value pair in the map, and if any of them return
+  /// `true`, then so does `any()`. If they all return `false`, it
+  /// returns `false`.
+  ///
+  /// `any()` is short-circuiting; in other words, it will stop processing
+  /// as soon as it finds a `true`, given that no matter what else happens,
+  /// the result will also be `true`.
+  ///
+  /// An empty map returns `false`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert!(a.any(|(&k, &v)| k > 0 && v.len() > 0));
+  ///
+  /// assert!(!a.any(|(&k, _)| k > 5));
+  /// assert!(!e.any(|(&k, _)| k > 0));
+  /// ```
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;

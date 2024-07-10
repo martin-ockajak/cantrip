@@ -236,7 +236,7 @@ pub trait Sequence<Item> {
     chunked(self, size, false)
   }
 
-  // FIXME - fix failing test
+  // FIXME - fix failing test case
   /// Creates a collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///

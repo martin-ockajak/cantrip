@@ -32,8 +32,10 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert!(a.all(|&x| x > 0));
+  /// assert!(e.all(|&x| x > 0));
   ///
   /// assert!(!a.all(|&x| x > 2));
   /// ```
@@ -63,7 +65,7 @@ pub trait Traversable<Item> {
   /// assert!(a.any(|&x| x > 0));
   ///
   /// assert!(!a.any(|&x| x > 5));
-  /// assert!(!e.any(|&x| x > 5));
+  /// assert!(!e.any(|&x| x > 0));
   /// ```
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
