@@ -59,7 +59,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection from the original collection without
   /// the first occurrence of an element.
   ///
-  /// The order or retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -96,7 +96,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection from the original collection without
   /// the first occurrences of elements found in another collection.
   ///
-  /// The order or retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -139,10 +139,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection containing combinations of specified size from the elements
   /// of the original collection.
   ///
-  /// The order or combined values is preserved for ordered collections.
   /// Combinations for ordered collections are generated based on element positions, not values.
   ///
   /// To obtain combinations of unique elements for ordered collections, use `.unique().combinations()`.
+  ///
+  /// The order of combined values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -779,7 +780,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// of the original collection with another collection i.e., the values that are
   /// both in `self` and `other`.
   ///
-  /// The order or retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -1022,7 +1023,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a collection containing all subsets of the original collection.
   ///
-  /// The order or subset values is preserved for ordered collections.
+  /// Sub-collections for ordered collections are generated based on element positions, not values.
+  ///
+  /// To obtain combinations of unique elements for ordered collections, use `.unique().powerset()`.
+  ///
+  /// The order of combined values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -1128,7 +1133,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a collection from the original collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
-  /// The order or retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -1160,7 +1165,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// given occurrences of elements found in another collection with elements
   /// of a replacement collection.
   ///
-  /// The order or retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for ordered collections.
   ///
   /// # Example
   ///

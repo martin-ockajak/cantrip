@@ -468,7 +468,6 @@ pub trait Traversable<Item> {
   /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
   /// For collections with at least one element, this is the same as [`fold()`]
   /// with the first element of the collection as the initial accumulator value, folding
-  /// every subsequent element into it.
   ///
   /// This is a non-consuming variant of [`reduce_to`].
   ///
