@@ -124,7 +124,6 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *positions*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *positions_of*            |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *powersequence*           |    :heavy_check_mark:     |                    |                               |                    |
 | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product_keys*            |                           |                    |                               | :heavy_check_mark: |

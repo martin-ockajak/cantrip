@@ -24,7 +24,6 @@ pub trait Sequence<Item> {
   // coalesce
   // chunked_by
   // permutations
-  // powersequence
   // subsequence
   // supersequence
   // variations
