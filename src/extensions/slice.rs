@@ -80,46 +80,6 @@ pub trait Slice<Item> {
   where
     Item: PartialEq + 'a;
 
-  /// Searches for an element in a slice, returning its index.
-  ///
-  /// `position()` compares each element of the slice with the specified value,
-  /// and if one of them matches, then `position()` returns [`Some(index)`].
-  /// If none of the elements match, it returns [`None`].
-  ///
-  /// `position()` is short-circuiting; in other words, it will stop
-  /// processing as soon as it finds a matching element.
-  ///
-  /// # Overflow Behavior
-  ///
-  /// The method does no guarding against overflows, so if there are more
-  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
-  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
-  ///
-  /// # Panics
-  ///
-  /// This function might panic if the slice has more than `usize::MAX`
-  /// non-matching elements.
-  ///
-  /// [`Some(index)`]: Some
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.index_of(&2), Some(1));
-  /// assert_eq!(a.index_of(&5), None);
-  /// ```
-  #[inline]
-  fn index_of(&self, value: &Item) -> Option<usize>
-  where
-    Item: PartialEq,
-  {
-    self.position(|x| x == value)
-  }
-
   /// Creates a slice from the original slice without the last element.
   ///
   /// # Example
@@ -132,41 +92,6 @@ pub trait Slice<Item> {
   /// assert_eq!(a.init(), &[1, 2]);
   /// ```
   fn init(&self) -> &Self;
-
-  /// Searches for an element in a slice, returning its index.
-  ///
-  /// `position()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the slice, and if one of them
-  /// returns `true`, then `position()` returns [`Some(index)`]. If all of
-  /// them return `false`, it returns [`None`].
-  ///
-  /// `position()` is short-circuiting; in other words, it will stop
-  /// processing as soon as it finds a `true`.
-  ///
-  /// # Overflow Behavior
-  ///
-  /// The method does no guarding against overflows, so if there are more
-  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
-  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
-  ///
-  /// # Panics
-  ///
-  /// This function might panic if the slice has more than `usize::MAX`
-  /// non-matching elements.
-  ///
-  /// [`Some(index)`]: Some
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  ///
-  /// let a = &[1, 2, 3];
-  ///
-  /// assert_eq!(a.position(|&x| x == 2), Some(1));
-  /// assert_eq!(a.position(|&x| x == 5), None);
-  /// ```
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
   /// Creates a slice that skips the first `n` elements from the original slice.
   ///

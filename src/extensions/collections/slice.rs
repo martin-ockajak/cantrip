@@ -3,6 +3,7 @@ use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
+use crate::extensions::ordered::Ordered;
 
 impl<Item> Traversable<Item> for [Item] {
   #[inline]
@@ -101,6 +102,18 @@ impl<Item> Traversable<Item> for [Item] {
   }
 }
 
+impl<Item> Ordered<Item> for [Item] {
+  #[inline]
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
+  }
+
+  #[inline]
+  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
+    positions(self.iter(), predicate)
+  }
+}
+
 impl<Item> Reversible<Item> for [Item] {
   #[inline]
   fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
@@ -150,11 +163,6 @@ impl<Item> Slice<Item> for [Item] {
   #[inline]
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]
-  }
-
-  #[inline]
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
   }
 
   #[inline]

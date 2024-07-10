@@ -101,6 +101,18 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 }
 
+impl<Item> Ordered<Item> for Vec<Item> {
+  #[inline]
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
+  }
+
+  #[inline]
+  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
+    positions(self.iter(), predicate)
+  }
+}
+
 impl<Item> Reversible<Item> for Vec<Item> {
   #[inline]
   fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
@@ -233,16 +245,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
     Self: Sized,
   {
     multicombinations(self.iter(), k)
-  }
-
-  #[inline]
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
-  #[inline]
-  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize> {
-    positions(self.iter(), predicate)
   }
 
   #[inline]

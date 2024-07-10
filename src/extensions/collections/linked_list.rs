@@ -102,6 +102,18 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   }
 }
 
+impl<Item> Ordered<Item> for LinkedList<Item> {
+  #[inline]
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
+  }
+
+  #[inline]
+  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
+    positions(self.iter(), predicate)
+  }
+}
+
 impl<Item> Reversible<Item> for LinkedList<Item> {
   #[inline]
   fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
@@ -234,16 +246,6 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     Self: Sized
   {
     multicombinations(self.iter(), k)
-  }
-
-  #[inline]
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
-  #[inline]
-  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize> {
-    positions(self.iter(), predicate)
   }
 
   #[inline]

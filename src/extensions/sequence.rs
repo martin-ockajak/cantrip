@@ -12,7 +12,7 @@ use std::ops::RangeBounds;
 ///
 /// Methods have the following properties:
 ///
-/// - Requires the collection to represent an ordered sequence
+/// - Requires the collection to represent a sequence
 /// - May consume the collection and its elements
 /// - May create a new collection
 ///
@@ -23,7 +23,6 @@ pub trait Sequence<Item> {
   // FIXME - implement these methods
   // coalesce
   // chunked_by
-  // index_of_sequence
   // permutations
   // powersequence
   // slice
@@ -514,83 +513,6 @@ pub trait Sequence<Item> {
     result
   }
 
-  /// Searches for an element in a collection, returning its index.
-  ///
-  /// `position()` compares each element of the collection with the specified value,
-  /// and if one of them matches, then `position()` returns [`Some(index)`].
-  /// If none of the elements match, it returns [`None`].
-  ///
-  /// `position()` is short-circuiting; in other words, it will stop
-  /// processing as soon as it finds a matching element.
-  ///
-  /// # Overflow Behavior
-  ///
-  /// The method does no guarding against overflows, so if there are more
-  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
-  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
-  ///
-  /// # Panics
-  ///
-  /// This function might panic if the collection has more than `usize::MAX`
-  /// non-matching elements.
-  ///
-  /// [`Some(index)`]: Some
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.index_of(&2), Some(1));
-  ///
-  /// assert_eq!(a.index_of(&5), None);
-  /// ```
-  #[inline]
-  fn index_of(&self, value: &Item) -> Option<usize>
-  where
-    Item: PartialEq,
-  {
-    self.position(|x| x == value)
-  }
-
-  /// Searches for an element in a collection, returning all its indices.
-  ///
-  /// `position()` compares each element of the collection with the specified value,
-  /// and each time one of them matches, then `position()` adds the element index
-  /// to its result.
-  ///
-  /// # Overflow Behavior
-  ///
-  /// The method does no guarding against overflows, so if there are more
-  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
-  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
-  ///
-  /// # Panics
-  ///
-  /// This function might panic if the collection has more than `usize::MAX`
-  /// non-matching elements.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  ///
-  /// let a = vec![1, 2, 1];
-  ///
-  /// assert_eq!(a.indices_of(&1), vec![0, 2]);
-  ///
-  /// assert_eq!(a.indices_of(&5), vec![]);
-  /// ```
-  #[inline]
-  fn indices_of(&self, element: &Item) -> Self::This<usize>
-  where
-    Item: PartialEq,
-  {
-    self.positions(|x| x == element)
-  }
-
   // FIXME - fix failing test case
   /// Creates a new collection from the original collection without
   /// the last element.
@@ -763,15 +685,11 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
     unfold(0_usize, |position| {
-      let result = if *position < original_start {
-        Some(to_element(*position))
-      } else {
-        iterator.next()
-      };
+      let result = if *position < original_start { Some(to_element(*position)) } else { iterator.next() };
       *position += 1;
       result
     })
-      .collect()
+    .collect()
   }
 
   /// Creates a collection by padding the original collection to a minimum length of
@@ -822,7 +740,7 @@ pub trait Sequence<Item> {
       *position += 1;
       result
     })
-      .collect()
+    .collect()
   }
 
   /// Creates a collection by moving an element at an index into specified index
@@ -890,73 +808,6 @@ pub trait Sequence<Item> {
 
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
-
-  /// Searches for an element in a collection, returning its index.
-  ///
-  /// `position()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, and if one of them
-  /// returns `true`, then `position()` returns [`Some(index)`]. If all of
-  /// them return `false`, it returns [`None`].
-  ///
-  /// `position()` is short-circuiting; in other words, it will stop
-  /// processing as soon as it finds a `true`.
-  ///
-  /// # Overflow Behavior
-  ///
-  /// The method does no guarding against overflows, so if there are more
-  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
-  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
-  ///
-  /// # Panics
-  ///
-  /// This function might panic if the collection has more than `usize::MAX`
-  /// non-matching elements.
-  ///
-  /// [`Some(index)`]: Some
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.position(|&x| x == 2), Some(1));
-  ///
-  /// assert_eq!(a.position(|&x| x == 5), None);
-  /// ```
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
-
-  /// Searches for an element in a collection, returning all its indices.
-  ///
-  /// `positions()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, each time one of them
-  /// returns `true`, then `position()` adds the element index to its result.
-  ///
-  /// # Overflow Behavior
-  ///
-  /// The method does no guarding against overflows, so if there are more
-  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
-  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
-  ///
-  /// # Panics
-  ///
-  /// This function might panic if the collection has more than `usize::MAX`
-  /// non-matching elements.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use crate::cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.positions(|&x| x % 2 == 0), vec![1]);
-  /// assert_eq!(a.positions(|&x| x % 2 == 1), vec![0, 2]);
-  ///
-  /// assert_eq!(a.positions(|&x| x > 3), vec![]);
-  /// ```
-  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize>;
 
   /// Creates a collection by reversing the original collection's direction.
   ///
@@ -1427,17 +1278,6 @@ where
     result.extend(iter::once(chunk));
   }
   result
-}
-
-#[inline]
-pub(crate) fn positions<'a, Item, Result>(
-  iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
-) -> Result
-where
-  Item: 'a,
-  Result: FromIterator<usize>,
-{
-  iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
 #[allow(unused_results)]

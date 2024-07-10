@@ -92,9 +92,6 @@
 /// | *group_fold*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *group_reduce*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *includes*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *index_of*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *index_of_sequence*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *indices_of*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *interleave*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *interleave_shortest*     |    :heavy_check_mark:     |                    |                               |                    |
 /// | *intersect*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
@@ -128,7 +125,9 @@
 /// | *partition_map_to*        |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *permutations*            |    :heavy_check_mark:     |                    |                               |                    |
 /// | *position*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *positions*               |    :heavy_check_mark:     |                    |                               |                    |
+/// | *positions*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *positions_of*            |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *powersequence*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
