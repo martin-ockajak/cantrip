@@ -6,6 +6,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
+use std::ops::RangeBounds;
 
 /// Sequence operations.
 ///
@@ -721,7 +722,7 @@ pub trait Sequence<Item> {
         iterator.next()
       }
     })
-      .collect()
+    .collect()
   }
 
   // FIXME - fix failing test case
@@ -1161,6 +1162,38 @@ pub trait Sequence<Item> {
       result
     })
     .collect()
+  }
+
+  /// Creates a collection by only including elements in the specified range.
+  ///
+  /// if the specified index exceeds the collection size, no elements are inserted.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.slice(0..2), vec![1, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.slice(1..4), vec![2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.slice(0..5), vec![1, 2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(e.slice(0..1), vec![]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.slice(3..3), vec![]);
+  /// ```
+  #[inline]
+  fn slice(self, range: impl RangeBounds<usize>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.into_iter().enumerate().filter(|(index, _)| range.contains(index)).map(|(_, x)| x).collect()
   }
 
   #[inline]
