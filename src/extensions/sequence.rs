@@ -392,17 +392,6 @@ pub trait Sequence<Item> {
     Item: PartialEq + 'a;
 
   #[inline]
-  fn cycle(self, n: usize) -> Self
-  where
-    Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let values = self.into_iter().collect::<Vec<Item>>();
-    let size = values.len() * n;
-    values.into_iter().cycle().take(size).collect()
-  }
-
-  #[inline]
   fn delete_at(self, index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -598,6 +587,69 @@ pub trait Sequence<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
+  /// Creates a collection by moving an element at an index into specified index
+  /// in the original collection.
+  ///
+  /// if the source index exceeds the collection size, no elements are moved.
+  /// if the target index exceeds the collection size, the element is only removed.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// assert_eq!(a.move_item(1, 3), vec![1, 3, 4, 2, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(2, 4), vec![1, 2, 4, 5, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(0, 5), vec![2, 3, 4, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(3, 1), vec![1, 4, 2, 3, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(4, 0), vec![5, 1, 2, 3, 4]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(3, 3), vec![1, 2, 3, 4, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(5, 1), vec![1, 2, 3, 4, 5]);
+  /// ```
+  fn move_item(self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut stored = LinkedList::<Item>::new();
+    unfold(0_usize, |position| {
+      if *position >= source_index {
+        if *position >= target_index {
+          stored.pop_front().or_else(|| iterator.next())
+        } else {
+          if *position == source_index {
+            if let Some(x) = iterator.next() {
+              stored.push_back(x)
+            }
+          }
+          *position += 1;
+          iterator.next()
+        }
+      } else if *position >= target_index {
+        let mut store = true;
+        while store && *position < source_index {
+          iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
+          *position += 1;
+        }
+        iterator.next().or_else(|| stored.pop_front())
+      } else {
+        *position += 1;
+        iterator.next()
+      }
+    })
+      .collect()
+  }
+
   // FIXME - fix failing test case
   /// Creates a collection containing combinations with repetition of specified size
   /// from the elements of the original collection.
@@ -743,71 +795,32 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a collection by moving an element at an index into specified index
-  /// in the original collection.
-  ///
-  /// if the source index exceeds the collection size, no elements are moved.
-  /// if the target index exceeds the collection size, the element is only removed.
+  // FIXME - implement
+  // fn permutations(self) -> Self::This<Self>;
+
+  /// Creates a new collection by repeating a collection specified number of times.
   ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3, 4, 5];
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.move_item(1, 3), vec![1, 3, 4, 2, 5]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_item(2, 4), vec![1, 2, 4, 5, 3]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_item(0, 5), vec![2, 3, 4, 5]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_item(3, 1), vec![1, 4, 2, 3, 5]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_item(4, 0), vec![5, 1, 2, 3, 4]);
+  /// let cycled = a.repeat(3);
   ///
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_item(3, 3), vec![1, 2, 3, 4, 5]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_item(5, 1), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(cycled, vec![1, 2, 3, 1, 2, 3, 1, 2, 3]);
   /// ```
-  fn move_item(self, source_index: usize, target_index: usize) -> Self
+  #[inline]
+  fn repeat(self, n: usize) -> Self
   where
+    Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
-    let mut stored = LinkedList::<Item>::new();
-    unfold(0_usize, |position| {
-      if *position >= source_index {
-        if *position >= target_index {
-          stored.pop_front().or_else(|| iterator.next())
-        } else {
-          if *position == source_index {
-            if let Some(x) = iterator.next() {
-              stored.push_back(x)
-            }
-          }
-          *position += 1;
-          iterator.next()
-        }
-      } else if *position >= target_index {
-        let mut store = true;
-        while store && *position < source_index {
-          iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
-          *position += 1;
-        }
-        iterator.next().or_else(|| stored.pop_front())
-      } else {
-        *position += 1;
-        iterator.next()
-      }
-    })
-    .collect()
+    let values = self.into_iter().collect::<Vec<Item>>();
+    let size = values.len() * n;
+    values.into_iter().cycle().take(size).collect()
   }
-
-  // FIXME - implement
-  // fn permutations(self) -> Self::This<Self>;
 
   /// Creates a collection by reversing the original collection's direction.
   ///

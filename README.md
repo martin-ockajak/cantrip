@@ -59,7 +59,6 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *common_prefix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *common_suffix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *count_by*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-| *cycle*                   |    :heavy_check_mark:     |                    |                               |                    |
 | *delete*                  |    :heavy_check_mark:     |                    |                               | :heavy_check_mark: |
 | *delete_all*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *delete_at*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
@@ -132,6 +131,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *product_values*          |                           |                    |                               | :heavy_check_mark: |
 | *reduce*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *reduce_to*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+| *repeat*                  |    :heavy_check_mark:     |                    |                               |                    |
 | *replace*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *replace_all*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *replace_at*              |    :heavy_check_mark:     |                    |                               |                    |
