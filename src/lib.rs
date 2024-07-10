@@ -144,7 +144,6 @@
 /// | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rposition*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *rscan*                   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *scan*                    |    :heavy_check_mark:     |                    |                               |                    |
 /// | *scan_to*                 |    :heavy_check_mark:     |                    |                               |                    |
 /// | *skip*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |

@@ -926,16 +926,6 @@ pub trait Sequence<Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
-  #[inline]
-  fn rscan<S, B, I>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
-  where
-    I: DoubleEndedIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<B>,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().rev().scan(initial_state, function).collect()
-  }
-
   /// Creates a collection that skips the first `n` elements from the original collection.
   ///
   /// `skip(n)` skips elements until `n` elements are skipped or the end of the

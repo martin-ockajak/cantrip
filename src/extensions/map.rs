@@ -1,5 +1,3 @@
-#![allow(missing_docs)]
-
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
@@ -17,8 +15,6 @@ use crate::extensions::iterable::Iterable;
 ///
 pub trait Map<Key, Value> {
   type This<K, V>;
-
-  // FIXME - add documentation
 
   /// Creates a map by adding an entry to the original map.
   ///
