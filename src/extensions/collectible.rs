@@ -28,6 +28,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// assert_eq!(a.add(3), vec![1, 2, 3]);
   /// ```
+  #[inline]
   fn add(self, value: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1013,7 +1014,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(even, vec![5]);
   /// assert_eq!(odd, vec![1, 3]);
   /// ```
-  #[inline]
   fn partition_map_to<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1149,6 +1149,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// // assert_eq!(a.replace(&4, 5), vec![1, 2, 3, 3]);
   /// assert_eq!(e.replace(&3, 4), vec![]);
   /// ```
+  #[inline]
   fn replace(self, value: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
@@ -1297,6 +1298,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// assert_eq!(scan, vec![-1, -2, -6]);
   /// ```
+  #[inline]
   fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,

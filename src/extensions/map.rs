@@ -364,6 +364,7 @@ pub trait Map<Key, Value> {
   ///   (4, "d"),
   /// ]));
   /// ```
+  #[inline]
   fn replace(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
   where
     Key: PartialEq,
@@ -397,6 +398,7 @@ pub trait Map<Key, Value> {
   ///   (5, "e"),
   /// ]));
   /// ```
+  #[inline]
   fn replace_all<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
   ) -> Self
@@ -415,6 +417,7 @@ pub trait Map<Key, Value> {
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
+  #[inline]
   fn scan_to<S, L, W>(
     self, initial_state: S, function: impl FnMut(&mut S, (Key, Value)) -> Option<(L, W)>,
   ) -> Self::This<L, W>

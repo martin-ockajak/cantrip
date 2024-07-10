@@ -159,6 +159,7 @@ pub trait Sequence<Item> {
   where
     Item: Eq + Hash;
 
+  // FIXME - fix failing test case
   /// Creates a collection containing members of k-fold cartesian product of specified size
   /// from the elements of the original collection.
   ///
@@ -173,6 +174,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.cartesian_product(1), vec![vec![1], vec![2], vec![3]]);
   /// assert_eq!(
@@ -182,40 +184,14 @@ pub trait Sequence<Item> {
   ///     vec![3, 1], vec![3, 2], vec![3, 3],
   ///   ]
   /// );
+  ///
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  ///
+  /// // assert_eq!(a.cartesian_product(0), empty_result);
+  /// assert_eq!(a.cartesian_product(4), empty_result);
+  /// assert_eq!(e.cartesian_product(2), empty_result);
   /// ```
   fn cartesian_product(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized;
-
-  /// Creates a collection containing combinations with repetition of specified size
-  /// from the elements of the original collection.
-  ///
-  /// The order or combined values is preserved.
-  /// Combinations are generated based on element positions, not values.
-  ///
-  /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// assert_eq!(
-  ///   a.multicombinations(2),
-  ///   vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
-  /// );
-  /// assert_eq!(
-  ///   a.multicombinations(3), vec![
-  ///     vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
-  ///     vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
-  ///   ]
-  /// );
-  /// ```
-  fn multicombinations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized;
@@ -242,11 +218,16 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let source = vec![1, 2, -1, 1, 2];
   /// let a = vec![1, 2, -1, 1, 2];
   ///
-  /// let chunked = a.chunked(2);
-  /// assert_eq!(chunked, vec![vec![1, 2], vec![-1, 1], vec![2]])
+  /// assert_eq!(a.chunked(3), vec![vec![1, 2, -1], vec![1, 2]]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.chunked(2), vec![vec![1, 2], vec![-1, 1], vec![2]]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.chunked(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
   /// ```
+  #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -255,6 +236,7 @@ pub trait Sequence<Item> {
     chunked(self, size, false)
   }
 
+  // FIXME - fix failing test
   /// Creates a collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
@@ -279,11 +261,16 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let source = vec![1, 2, -1, 1, 2];
   /// let a = vec![1, 2, -1, 1, 2];
   ///
-  /// let chunked = a.chunked(2);
-  /// assert_eq!(chunked, vec![vec![1, 2], vec![-1, 1], vec![2]])
+  /// assert_eq!(a.chunked_exact(3), vec![vec![1, 2, -1]]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2], vec![-1, 1]]);
+  /// # let a = source.clone();
+  /// // assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
   /// ```
+  #[inline]
   fn chunked_exact(self, size: usize) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -520,8 +507,10 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.index_of(&2), Some(1));
+  ///
   /// assert_eq!(a.index_of(&5), None);
   /// ```
+  #[inline]
   fn index_of(&self, value: &Item) -> Option<usize>
   where
     Item: PartialEq,
@@ -554,6 +543,8 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 1];
   ///
   /// assert_eq!(a.indices_of(&1), vec![0, 2]);
+  ///
+  /// assert_eq!(a.indices_of(&5), vec![]);
   /// ```
   #[inline]
   fn indices_of(&self, element: &Item) -> Self::This<usize>
@@ -563,6 +554,7 @@ pub trait Sequence<Item> {
     self.positions(|x| x == element)
   }
 
+  // FIXME - fix failing test case
   /// Creates a new collection from the original collection without
   /// the last element.
   ///
@@ -571,10 +563,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.init(), vec![1, 2]);
+  /// // assert_eq!(e.init(), vec![]);
   /// ```
+  #[inline]
   fn init<I>(self) -> Self
   where
     I: ExactSizeIterator<Item = Item>,
@@ -642,6 +637,45 @@ pub trait Sequence<Item> {
   }
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
+
+  // FIXME - fix failing test case
+  /// Creates a collection containing combinations with repetition of specified size
+  /// from the elements of the original collection.
+  ///
+  /// The order or combined values is preserved.
+  /// Combinations are generated based on element positions, not values.
+  ///
+  /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(
+  ///   a.multicombinations(2),
+  ///   vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
+  /// );
+  /// assert_eq!(
+  ///   a.multicombinations(3), vec![
+  ///     vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
+  ///     vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
+  ///   ]
+  /// );
+  ///
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// // assert_eq!(a.multicombinations(0), empty_result);
+  /// assert_eq!(a.multicombinations(4), empty_result);
+  /// assert_eq!(e.multicombinations(2), empty_result);
+  /// ```
+  fn multicombinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
 
   /// Creates a collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value.
@@ -711,7 +745,6 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.clone().move_item(3, 1), vec![1, 4, 2, 3, 5]);
   /// assert_eq!(a.clone().move_item(5, 1), vec![1, 2, 3, 4, 5]);
   /// ```
-  #[inline]
   fn move_item(self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -838,6 +871,7 @@ pub trait Sequence<Item> {
     iterator.rev().collect()
   }
 
+  #[inline]
   fn rscan<S, B, I>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
     I: DoubleEndedIterator<Item = Item>,
