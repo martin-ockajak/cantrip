@@ -269,7 +269,6 @@ pub trait Reversible<Item> {
   /// let a = vec![-1, 0, 1];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // FIXME - check semantics
   /// assert_eq!(a.rskip_while(|&x| x > 0), vec![0, -1]);
   ///
   /// assert_eq!(e.rskip_while(|&x| x > 0), vec![]);
@@ -343,7 +342,6 @@ pub trait Reversible<Item> {
   /// let a = vec![-1, 0, 1];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // FIXME - check semantics
   /// assert_eq!(a.rtake_while(|&x| x >= 0), vec![1, 0]);
   ///
   /// assert_eq!(e.rtake_while(|&x| x >= 0), vec![]);
