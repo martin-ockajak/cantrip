@@ -1,11 +1,11 @@
 #![allow(missing_docs)]
 
+use crate::extensions::iterable::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::iterable::Iterable;
 
 /// Map operations.
 ///
@@ -1334,6 +1334,35 @@ pub trait Map<Key, Value> {
     self.minmax_by(|(x1, x2), (y1, y2)| (x1, x2).cmp(&(y1, y2)))
   }
 
+  /// Creates two new maps from the original map using by applying
+  /// specified predicate.
+  ///
+  /// The predicate passed to `partition()` can return `true`, or `false`.
+  /// `partition()` returns a pair, all the entrys for which it returned
+  /// `true`, and all the entrys for which it returned `false`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let (even, odd) = a.partition(|(&k, _)| k % 2 == 0);
+  ///
+  /// assert_eq!(even, HashMap::from([
+  ///   (2, "b"),
+  /// ]));
+  /// assert_eq!(odd, HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
@@ -1342,12 +1371,95 @@ pub trait Map<Key, Value> {
     self.into_iter().partition(|(k, v)| predicate((k, v)))
   }
 
+  /// Creates two new maps with arbitrary entry types from the original map
+  /// by applying specified function.
+  ///
+  /// The function passed to `partition_map()` can return `Ok`, or `Err`.
+  /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  ///
+  /// This is a non-consuming variant of [`partition_map_to`].
+  ///
+  /// [`partition_map_to`]: Map::partition_map_to
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let (even, odd) = a.partition_map(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
+  ///
+  /// assert_eq!(even, HashMap::from([
+  ///   (5, "b"),
+  /// ]));
+  /// assert_eq!(odd, HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   fn partition_map<L1, W1, L2, W2>(
     &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
   where
     Self::This<L1, W1>: Default + Extend<(L1, W1)>,
     Self::This<L2, W2>: Default + Extend<(L2, W2)>;
+
+  /// Creates two new maps with arbitrary entry types from the original map
+  /// by applying specified function.
+  ///
+  /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
+  /// `partition_map_to()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  ///
+  /// This is a consuming variant of [`partition_map`].
+  ///
+  /// [`partition_map`]: Map::partition_map
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let (even, odd) = a.partition_map_to(|(k, v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
+  ///
+  /// assert_eq!(even, HashMap::from([
+  ///   (5, "b"),
+  /// ]));
+  /// assert_eq!(odd, HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
+  fn partition_map_to<L1, W1, L2, W2>(
+    self, mut function: impl FnMut((Key, Value)) -> Result<(L1, W1), (L2, W2)>,
+  ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L1, W1>: Default + Extend<(L1, W1)>,
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>,
+  {
+    let mut result_left: Self::This<L1, W1> = Self::This::default();
+    let mut result_right: Self::This<L2, W2> = Self::This::default();
+    for item in self.into_iter() {
+      match function(item) {
+        Ok(value) => result_left.extend(iter::once(value)),
+        Err(value) => result_right.extend(iter::once(value)),
+      }
+    }
+    (result_left, result_right)
+  }
 
   #[inline]
   fn product_keys<S>(self) -> Key
