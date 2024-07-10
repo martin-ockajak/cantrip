@@ -1249,12 +1249,82 @@ pub trait Map<Key, Value> {
     self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
   }
 
+  /// Returns the minimum and maximum entry of a map with respect to the
+  /// specified comparison function.
+  ///
+  /// For the minimum, the first minimal entry is returned. For the maximum,
+  /// the last maximal entry is returned. If the map is empty, [`None`] is returned.
+  /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0, "a"),
+  ///   (3, "b"),
+  ///   (-5, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.minmax_by(|x, y| x.0.cmp(y.0)), Some(((&-5, &"c"), (&3, &"b"))));
+  ///
+  /// assert_eq!(e.minmax_by(|x, y| x.0.cmp(y.0)), None);
+  /// ```
   fn minmax_by(
     &self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering,
   ) -> Option<((&Key, &Value), (&Key, &Value))>;
 
+  /// Returns the minimum and maximum entry of a map from the
+  /// specified function.
+  ///
+  /// For the minimum, the first minimal entry is returned. For the maximum,
+  /// the last maximal entry is returned. If the map is empty, [`None`] is returned.
+  /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0_i32, "a"),
+  ///   (3, "b"),
+  ///   (-5, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.minmax_by_key(|(k, _)| k.abs()), Some(((&0, &"a"), (&-5, &"c"))));
+  /// assert_eq!(e.minmax_by_key(|(k, _)| k.abs()), None);
+  /// ```
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>;
 
+  /// Return the minimum and maximum entry of a map.
+  ///
+  /// For the minimum, the first minimal entry is returned. For the maximum,
+  /// the last maximal entry is returned. If the map is empty, [`None`] is returned.
+  /// This matches the behavior of the standard [`Iterator::min`] and [`Iterator::max`] methods.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (0, 1),
+  ///   (1, 2),
+  ///   (2, 3),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.minmax_item(), Some(((&0, &1), (&2, &3))));
+  ///
+  /// assert_eq!(e.minmax_item(), None);
+  /// ```
   #[inline]
   fn minmax_item(&self) -> Option<((&Key, &Value), (&Key, &Value))>
   where
