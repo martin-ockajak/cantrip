@@ -832,6 +832,100 @@ pub trait Sequence<Item> {
     iterator.rev().collect()
   }
 
+  /// A collection adapter which, like [`fold`], holds internal state, but
+  /// unlike [`fold`], produces a new collection.
+  ///
+  /// `scan()` takes two arguments: an initial value which seeds the internal
+  /// state, and a closure with two arguments, the first being a mutable
+  /// reference to the internal state and the second a collection element.
+  /// The closure can assign to the internal state to share state between
+  /// iterations.
+  ///
+  /// On iteration, the closure will be applied to each element of the
+  /// collection and the return value from the closure, an [`Option`], is
+  /// returned by the `next` method. The closure can return
+  /// `Some(value)` to yield `value`, or `None` to end the iteration.
+  ///
+  /// This is a non-consuming variant of [`scan_to`].
+  ///
+  /// [`fold`]: crate::Traversable::fold
+  /// [`scan_to`]: crate::extensions::collectible::Collectible::scan_to
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4];
+  ///
+  /// let mut scan = a.scan(1, |state, &x| {
+  ///   // each iteration, we'll multiply the state by the element ...
+  ///   *state = *state * x;
+  ///
+  ///   // ... and terminate if the state exceeds 6
+  ///   if *state > 6 {
+  ///     return None;
+  ///   }
+  ///   // ... else yield the negation of the state
+  ///   Some(-*state)
+  /// });
+  ///
+  /// assert_eq!(scan, vec![-1, -2, -6]);
+  /// ```
+  fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
+
+  /// A collection adapter which, like [`fold`], holds internal state, but
+  /// unlike [`fold`], produces a new collection.
+  ///
+  /// [`fold`]: crate::Traversable::fold
+  ///
+  /// `scan()` takes two arguments: an initial value which seeds the internal
+  /// state, and a closure with two arguments, the first being a mutable
+  /// reference to the internal state and the second a collection element.
+  /// The closure can assign to the internal state to share state between
+  /// iterations.
+  ///
+  /// On iteration, the closure will be applied to each element of the
+  /// collection and the return value from the closure, an [`Option`], is
+  /// returned by the `next` method. The closure can return
+  /// `Some(value)` to yield `value`, or `None` to end the iteration.
+  ///
+  /// This is a consuming variant of [`scan`].
+  ///
+  /// [`scan`]: crate::extensions::collectible::Collectible::scan
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4];
+  ///
+  /// let mut scan = a.scan_to(1, |state, x| {
+  ///   // each iteration, we'll multiply the state by the element ...
+  ///   *state = *state * x;
+  ///
+  ///   // ... and terminate if the state exceeds 6
+  ///   if *state > 6 {
+  ///     return None;
+  ///   }
+  ///   // ... else yield the negation of the state
+  ///   Some(-*state)
+  /// });
+  ///
+  /// assert_eq!(scan, vec![-1, -2, -6]);
+  /// ```
+  #[inline]
+  fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().scan(initial_state, function).collect()
+  }
+
   #[inline]
   fn rscan<S, B, I>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where

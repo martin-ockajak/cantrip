@@ -197,14 +197,6 @@ impl<Item> Collectible<Item> for Vec<Item> {
   {
     powerset(self.iter())
   }
-
-  #[inline]
-  fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().scan(initial_state, function).collect()
-  }
 }
 
 impl<Item> Sequence<Item> for Vec<Item> {
@@ -255,6 +247,14 @@ impl<Item> Sequence<Item> for Vec<Item> {
     Self: Sized,
   {
     multicombinations(self.iter(), k)
+  }
+
+  #[inline]
+  fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().scan(initial_state, function).collect()
   }
 
   #[inline]

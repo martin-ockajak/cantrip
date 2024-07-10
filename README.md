@@ -140,7 +140,9 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *rposition*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+| *rscan*                   |    :heavy_check_mark:     |                    |                               |                    |
 | *scan*                    |    :heavy_check_mark:     |                    |                               |                    |
+| *scan_to*                 |    :heavy_check_mark:     |                    |                               |                    |
 | *skip*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *skip_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *slice*                   |    :heavy_check_mark:     |                    |                               |                    |

@@ -127,16 +127,6 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn scan<S, L, W>(
-    self, initial_state: S, function: impl FnMut(&mut S, (&Key, &Value)) -> Option<(L, W)>,
-  ) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iter().scan(initial_state, function).collect()
-  }
-
-  #[inline]
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,

@@ -5,7 +5,6 @@ use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-
 use crate::extensions::iterable::Iterable;
 
 /// Map operations.
@@ -1779,23 +1778,6 @@ pub trait Map<Key, Value> {
     let iterator = elements.iterator();
     let removed: HashSet<&Key> = HashSet::from_iter(iterator);
     self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
-  }
-
-  fn scan<S, L, W>(
-    self, initial_state: S, function: impl FnMut(&mut S, (&Key, &Value)) -> Option<(L, W)>,
-  ) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>;
-
-  #[inline]
-  fn scan_to<S, L, W>(
-    self, initial_state: S, function: impl FnMut(&mut S, (Key, Value)) -> Option<(L, W)>,
-  ) -> Self::This<L, W>
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.into_iter().scan(initial_state, function).collect()
   }
 
   /// Tests if all the key of a map can be found in another collection.

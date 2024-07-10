@@ -198,14 +198,6 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   {
     powerset(self.iter())
   }
-
-  #[inline]
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().scan(init, function).collect()
-  }
 }
 
 impl<Item> Sequence<Item> for LinkedList<Item> {
@@ -256,6 +248,14 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     Self: Sized
   {
     multicombinations(self.iter(), k)
+  }
+
+  #[inline]
+  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.iter().scan(init, function).collect()
   }
 
   #[inline]

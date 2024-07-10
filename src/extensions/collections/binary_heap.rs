@@ -139,12 +139,4 @@ impl<Item: Ord> Collectible<Item> for BinaryHeap<Item> {
   {
     powerset(self.iter())
   }
-
-  #[inline]
-  fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().scan(init, function).collect()
-  }
 }
