@@ -1306,6 +1306,27 @@ pub trait Sequence<Item> {
       .collect()
   }
 
+  /// Creates a two collection by by splitting a collection of pairs.
+  ///
+  /// `unzip()` produces two collections: one from the left elements of the pairs,
+  /// and one from the right elements.
+  ///
+  /// This function is, in some sense, the opposite of [`zip`].
+  ///
+  /// [`zip`]: Sequence::zip
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![(1, 2), (3, 4), (5, 6)];
+  ///
+  /// let (left, right) = a.unzip();
+  ///
+  /// assert_eq!(left, vec![1, 3, 5]);
+  /// assert_eq!(right, vec![2, 4, 6]);
+  /// ```
   #[inline]
   fn unzip<A, B>(self) -> (Self::This<A>, Self::This<B>)
   where
@@ -1328,6 +1349,29 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>;
 
+  /// 'Zips up' a collection with another collection into a single collection of pairs.
+  ///
+  /// `zip()` returns a new collection containing pairs where the first element comes from
+  /// this collection, and the second element comes from the other collection.
+  ///
+  /// In other words, it zips two collections together, into a single one.
+  ///
+  /// The resulting collection length is the length of the shorter collection.
+  ///
+  /// To 'undo' the result of zipping up two collections, see [`unzip`].
+  ///
+  /// [`unzip`]: Sequence::unzip
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a1 = vec![1, 2, 3];
+  /// let a2 = vec![4, 5, 6];
+  ///
+  /// assert_eq!(a1.zip(a2), vec![(1, 4), (2, 5), (3, 6)]);
+  /// ```
   #[inline]
   fn zip<T>(self, elements: impl IntoIterator<Item = T>) -> Self::This<(Item, T)>
   where
