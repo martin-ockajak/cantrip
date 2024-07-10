@@ -495,7 +495,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// This is a non-consuming variant of [`flat_map_to`].
   ///
   /// [`map`]: Collectible::map
-  /// [`flat`]: Collectible::flatten
+  /// [`flat`]: Collectible::flat
   /// [`flat_map_to`]: Collectible::flat_map_to
   ///
   /// # Example
@@ -506,9 +506,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flattened = a.flat_map(|&x| vec![x, -x]);
+  /// let flat_mapped = a.flat_map(|&x| vec![x, -x]);
   ///
-  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
+  /// assert_eq!(flat_mapped, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
@@ -533,7 +533,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// This is a consuming variant of [`flat_map`].
   ///
   /// [`map`]: Collectible::map
-  /// [`flat`]: Collectible::flatten
+  /// [`flat`]: Collectible::flat
   /// [`flat_map`]: Collectible::flat_map
   ///
   /// # Example
@@ -544,9 +544,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flattened = a.flat_map_to(|x| vec![x, -x]);
+  /// let flat_mapped = a.flat_map_to(|x| vec![x, -x]);
   ///
-  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
+  /// assert_eq!(flat_mapped, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   #[inline]
   fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
@@ -781,8 +781,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// ```
   /// use crate::cantrip::*;
-  ///
   /// use std::collections::HashSet;
+  /// 
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///

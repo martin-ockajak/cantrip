@@ -2,8 +2,6 @@
 
 use std::cmp::Ordering;
 use std::collections::HashSet;
-use std::fmt::Display;
-use std::fmt::Write;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -581,10 +579,97 @@ pub trait Map<Key, Value> {
     self.into_iter().filter_map(function).collect()
   }
 
+  /// Searches for an entry of a map that satisfies a predicate.
+  ///
+  /// `find()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each entry of the map, and if any of them return
+  /// `true`, then `find()` returns [`Some(entry)`]. If they all return
+  /// `false`, it returns [`None`].
+  ///
+  /// `find()` is short-circuiting; in other words, it will stop processing
+  /// as soon as the closure returns `true`.
+  ///
+  /// If you need the index of the entry, see [`position()`].
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.find(|(&k, &v)| k == 2 && v == "b"), Some((&2, &"b")));
+  ///
+  /// assert_eq!(a.find(|(&k, _)| k == 5), None);
+  /// ```
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
+  /// Applies function to the entries of a map and returns
+  /// the first non-none result.
+  ///
+  /// `find_map` can be used to make chains of [`find`] and [`map`] more
+  /// concise.
+  ///
+  /// `find_map_to(f)` is equivalent to `find().map()`.
+  ///
+  /// This is a non-consuming variant of [`find_map_to`].
+  ///
+  /// [`find`]: Map::find
+  /// [`map`]: Map::map
+  /// [`find_map_to`]: Map::find_map_to
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "one"),
+  ///   (2, "2"),
+  ///   (3, "NaN"),
+  /// ]);
+  ///
+  /// let first_number = a.find_map(|(_, &v)| v.parse().ok());
+  ///
+  /// assert_eq!(first_number, Some(2));
+  /// ```
   fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
 
+  /// Applies function to the entries of a map and returns
+  /// the first non-none result.
+  ///
+  /// `find_map_to` can be used to make chains of [`find`] and [`map`] more concise.
+  ///
+  /// `find_map_to(f)` is equivalent to `find().map()`.
+  ///
+  /// This is a consuming variant of [`find_map`].
+  ///
+  /// [`find`]: Map::find
+  /// [`map`]: Map::map
+  /// [`find_map`]: Map::find_map
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "one"),
+  ///   (2, "2"),
+  ///   (3, "NaN"),
+  /// ]);
+  ///
+  /// let first_number = a.find_map_to(|(_, v)| v.parse().ok());
+  ///
+  /// assert_eq!(first_number, Some(2));
+  /// ```
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
   where
@@ -593,11 +678,101 @@ pub trait Map<Key, Value> {
     self.into_iter().find_map(function)
   }
 
+  /// Creates a map by applying the given closure `f` to each entry
+  /// of the original map and flattens the nested map.
+  ///
+  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// argument produces values. If it produces an iterable value instead, there's
+  /// an extra layer of indirection. `flat_map()` will remove this extra layer
+  /// on its own.
+  ///
+  /// You can think of `flat_map(f)` as the semantic equivalent
+  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  ///
+  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
+  /// one item for each entry, and `flat_map()`'s closure returns an
+  /// iterable value for each entry.
+  ///
+  /// This is a non-consuming variant of [`flat_map_to`].
+  ///
+  /// [`map`]: Map::map
+  /// [`flat`]: crate::extensions::collectible::Collectible::flat
+  /// [`flat_map_to`]: Map::flat_map_to
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// // Vec is iterable because it implements IntoIterator
+  /// let flat_mapped = a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]);
+  ///
+  /// assert_eq!(flat_mapped, HashMap::from([
+  ///   (-1, "a"),
+  ///   (-2, "b"),
+  ///   (-3, "c"),
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
     Self::This<L, W>: FromIterator<(L, W)>;
 
+  /// Creates a map by applying the given closure `f` to each entry
+  /// of the original map and flattens the nested map.
+  ///
+  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// argument produces values. If it produces an iterable value instead, there's
+  /// an extra layer of indirection. `flat_map()` will remove this extra layer
+  /// on its own.
+  ///
+  /// You can think of `flat_map(f)` as the semantic equivalent
+  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  ///
+  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
+  /// one item for each entry, and `flat_map()`'s closure returns an
+  /// iterable value for each entry.
+  ///
+  /// This is a consuming variant of [`flat_map`].
+  ///
+  /// [`map`]: Map::map
+  /// [`flat`]: crate::extensions::collectible::Collectible
+  /// [`flat_map`]: Map::flat_map
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// // Vec is iterable because it implements IntoIterator
+  /// let flat_mapped = a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]);
+  ///
+  /// assert_eq!(flat_mapped, HashMap::from([
+  ///   (-1, "a"),
+  ///   (-2, "b"),
+  ///   (-3, "c"),
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn flat_map_to<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
   where
@@ -608,22 +783,107 @@ pub trait Map<Key, Value> {
     self.into_iter().flat_map(function).collect()
   }
 
+  /// Folds every entry into an accumulator by applying an operation,
+  /// returning the final result.
+  ///
+  /// `fold()` takes two arguments: an initial value, and a closure with two
+  /// arguments: an 'accumulator', and an entry. The closure returns the value that
+  /// the accumulator should have for the next iteration.
+  ///
+  /// The initial value is the value the accumulator will have on the first
+  /// call.
+  ///
+  /// After applying this closure to every entry of the map, `fold()`
+  /// returns the accumulator.
+  ///
+  /// This operation is sometimes called 'reduce' or 'inject'.
+  ///
+  /// Folding is useful whenever you have a map of something, and want
+  /// to produce a single value from it.
+  ///
+  /// Note: [`reduce()`] can be used to use the first entry as the initial
+  /// value, if the accumulator type and item type is the same.
+  ///
+  /// Note: `fold()` combines entrys in a *left-associative* fashion. For associative
+  /// operators like `+`, the order the entrys are combined in is not important, but for non-associative
+  /// operators like `-` the order will affect the final result.
+  /// For a *right-associative* version of `fold()`, see [`rfold()`].
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// // the sum of all the elements of the array
+  /// let sum = a.fold(0, |acc, (&k, &v)| acc + k + v.len());
+  ///
+  /// assert_eq!(sum, 9);
+  /// ```
+  ///
+  /// Let's walk through each step of the iteration here:
+  ///
+  /// | element | acc | k | k | result |
+  /// |---------|-----|---|---|--------|
+  /// |         | 0   |   |   |        |
+  /// | 1       | 0   | 1 | a | 2      |
+  /// | 2       | 2   | 2 | b | 5      |
+  /// | 3       | 5   | 3 | c | 9      |
+  ///
+  /// And so, our final result, `9`.
   fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
 
+  /// Creates a map by retaining the values representing the intersection
+  /// of the original map with another map i.e., the values that are
+  /// both in `self` and `other`.
+  ///
+  /// The order or retained values is preserved for ordered maps.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashSet;
+  ///
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// let intersection = a.intersect(&vec![(4, "x"), (2, "b"), (3, "y"), (4, "x")]);
+  ///
+  /// assert_eq!(intersection, HashMap::from([
+  ///   (2, "b"),
+  /// ]));
+  /// assert_eq!(e.intersect(&vec![(1, "a")]), HashMap::new());
+  ///
+  /// // Print 2 "b".
+  /// for (k, v) in intersection {
+  ///   println!("{k} {v}");
+  /// }
+  /// ```
   #[inline]
-  fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
+  fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a (Key, Value)>) -> Self
   where
     Key: Eq + Hash + 'a,
+    Value: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let retained: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
-    self.into_iter().filter(|(k, _)| retained.contains(k)).collect()
+    let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(iterable.iterator().map(|(k, v)| (k, v)));
+    self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
-
-  fn join_items(&self, separator: &str) -> String
-  where
-    Key: Display,
-    Value: Display;
 
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
@@ -938,24 +1198,6 @@ pub(crate) fn flat_map_pairs<'a, K: 'a, V: 'a, L, W, R: IntoIterator<Item = (L, 
   iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> R,
 ) -> Result {
   iterator.flat_map(|x| function(&x)).collect()
-}
-
-pub(crate) fn join_items_pairs<'a, K: Display + 'a, V: Display + 'a>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, separator: &str,
-) -> String {
-  match iterator.next() {
-    Some((key, value)) => {
-      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
-      write!(&mut result, "{},{}", key, value).unwrap();
-      for (key, value) in iterator {
-        result.push_str(separator);
-        write!(&mut result, "{},{}", key, value).unwrap();
-      }
-      result.shrink_to_fit();
-      result
-    }
-    None => String::new(),
-  }
 }
 
 #[inline]

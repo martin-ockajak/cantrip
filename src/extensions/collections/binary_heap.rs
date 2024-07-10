@@ -1,6 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::BinaryHeap;
-use std::fmt::Display;
 use std::hash::Hash;
 use crate::extensions::*;
 
@@ -28,14 +27,6 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   #[inline]
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
-  }
-
-  #[inline]
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display,
-  {
-    join_items(self.iter(), separator)
   }
 
   #[inline]

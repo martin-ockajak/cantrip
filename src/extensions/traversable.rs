@@ -1,7 +1,5 @@
 use std::cmp::Ordering;
 use std::collections::HashSet;
-use std::fmt::Display;
-use std::fmt::Write;
 use std::hash::Hash;
 
 use crate::Iterable;
@@ -139,25 +137,6 @@ pub trait Traversable<Item> {
   /// assert_eq!(first_number, Some(2));
   /// ```
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
-
-  /// Combine all collection elements into one `String`, separated by `sep`.
-  ///
-  /// Use the `Display` implementation of each element.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = [1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.join_items(", "), "1, 2, 3");
-  /// assert_eq!(e.join_items(", "), "");
-  /// ```
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display;
 
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
@@ -494,24 +473,6 @@ where
     }
   }
   true
-}
-
-pub(crate) fn join_items<'a, Item: Display + 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
-) -> String {
-  match iterator.next() {
-    Some(item) => {
-      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
-      write!(&mut result, "{}", item).unwrap();
-      for item in iterator {
-        result.push_str(separator);
-        write!(&mut result, "{}", item).unwrap();
-      }
-      result.shrink_to_fit();
-      result
-    }
-    None => String::new(),
-  }
 }
 
 pub(crate) fn minmax_by<'a, Item: 'a>(

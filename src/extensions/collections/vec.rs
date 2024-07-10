@@ -31,14 +31,6 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display,
-  {
-    join_items(self.iter(), separator)
-  }
-
-  #[inline]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
@@ -100,6 +92,14 @@ impl<Item> Ordered<Item> for Vec<Item> {
     Item: Eq + Hash + 'a,
   {
     includes(self.iter(), iterable)
+  }
+
+  #[inline]
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
+    join_items(self.iter(), separator)
   }
 
   #[inline]

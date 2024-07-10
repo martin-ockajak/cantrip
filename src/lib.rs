@@ -98,7 +98,7 @@
 /// | *intersperse*             |    :heavy_check_mark:     |                    |                               |                    |
 /// | *intersperse_with*        |    :heavy_check_mark:     |                    |                               |                    |
 /// | *init*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *join_items*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *join_items*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *largest*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *map*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *map_to*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |

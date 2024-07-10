@@ -94,7 +94,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *intersperse*             |    :heavy_check_mark:     |                    |                               |                    |
 | *intersperse_with*        |    :heavy_check_mark:     |                    |                               |                    |
 | *init*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *join_items*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+| *join_items*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *largest*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *map*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *map_to*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |

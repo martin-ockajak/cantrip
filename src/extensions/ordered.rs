@@ -1,5 +1,8 @@
 use std::collections::HashMap;
+use std::fmt::Display;
+use std::fmt::Write;
 use std::hash::Hash;
+
 use crate::Iterable;
 
 /// Ordered collection operations.
@@ -54,6 +57,25 @@ pub trait Ordered<Item> {
   fn includes<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
+
+  /// Combine all collection elements into one `String`, separated by `sep`.
+  ///
+  /// Use the `Display` implementation of each element.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = [1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.join_items(", "), "1, 2, 3");
+  /// assert_eq!(e.join_items(", "), "");
+  /// ```
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display;
 
   /// Searches for an element in a collection, returning its index.
   ///
@@ -251,6 +273,24 @@ where
     }
   };
   remaining == 0
+}
+
+pub(crate) fn join_items<'a, Item: Display + 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
+) -> String {
+  match iterator.next() {
+    Some(item) => {
+      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
+      write!(&mut result, "{}", item).unwrap();
+      for item in iterator {
+        result.push_str(separator);
+        write!(&mut result, "{}", item).unwrap();
+      }
+      result.shrink_to_fit();
+      result
+    }
+    None => String::new(),
+  }
 }
 
 #[inline]
