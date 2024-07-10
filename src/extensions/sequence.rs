@@ -1,7 +1,6 @@
 #![allow(missing_docs)]
 
 use crate::extensions::util::unfold::unfold;
-use crate::Collectible;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
@@ -450,6 +449,26 @@ pub trait Sequence<Item> {
     Self::This<(usize, Item)>: FromIterator<(usize, Item)>,
   {
     self.into_iter().enumerate().collect()
+  }
+
+  /// Creates a collection containing an element
+  /// specified number of times.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// assert_eq!(Vec::fill(1, 2), vec![1, 1]);
+  /// assert_eq!(Vec::fill(1, 0), vec![]);
+  /// ```
+  #[inline]
+  fn fill(value: Item, size: usize) -> Self
+  where
+    Item: Clone,
+    Self: FromIterator<Item>,
+  {
+    iter::repeat(value).take(size).collect()
   }
 
   fn frequencies(self) -> HashMap<Item, usize>

@@ -266,6 +266,29 @@ pub trait Map<Key, Value> {
   /// ```
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
 
+  /// Creates a map from the original map without
+  /// the entry specified by a key.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.delete(&2), HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// assert_eq!(e.delete(&2), HashMap::new());
+  /// ```
   #[inline]
   fn delete(self, key: &Key) -> Self
   where
@@ -275,6 +298,29 @@ pub trait Map<Key, Value> {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
+  /// Creates a map from the original map without
+  /// the entries specified by keys found in another collection.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.delete_all(&vec![1, 3]), HashMap::from([
+  ///   (2, "b"),
+  /// ]));
+  ///
+  /// assert_eq!(e.delete_all(&vec![1]), HashMap::new());
+  /// ```
   #[inline]
   fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
@@ -285,16 +331,21 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
-  #[inline]
-  fn fill(key: Key, value: Value, size: usize) -> Self
-  where
-    Key: Clone,
-    Value: Clone,
-    Self: FromIterator<(Key, Value)>,
-  {
-    iter::repeat((key, value)).take(size).collect()
-  }
-
+  /// Creates a map containing a result of a function
+  /// specified number of times.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// assert_eq!(HashMap::fill_with(|| (1, "a"), 1), HashMap::from([
+  ///   (1, "a"),
+  /// ]));
+  /// 
+  /// assert_eq!(HashMap::fill_with(|| (1, "a"), 0), HashMap::new());
+  /// ```
   #[inline]
   fn fill_with(mut value: impl FnMut() -> (Key, Value), size: usize) -> Self
   where

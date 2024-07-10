@@ -70,6 +70,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
+  ///
   /// assert_eq!(e.delete(&2), vec![]);
   /// ```
   #[inline]
@@ -106,6 +107,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.delete_all(&vec![1, 3]), vec![2, 3]);
+  ///
   /// assert_eq!(e.delete_all(&vec![1]), vec![]);
   /// ```
   fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
@@ -164,26 +166,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Item: Clone,
     Self: Sized;
-
-  /// Creates a collection containing an element
-  /// specified number of times.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// assert_eq!(Vec::fill(1, 2), vec![1, 1]);
-  /// assert_eq!(Vec::fill(1, 0), vec![]);
-  /// ```
-  #[inline]
-  fn fill(value: Item, size: usize) -> Self
-  where
-    Item: Clone,
-    Self: FromIterator<Item>,
-  {
-    iter::repeat(value).take(size).collect()
-  }
 
   /// Creates a collection containing a result of a function
   /// specified number of times.
