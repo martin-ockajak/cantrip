@@ -1545,7 +1545,55 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(_, v)| v).product()
   }
 
-  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
+  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// operation.
+  ///
+  /// If the collection is empty, returns [`None`]; otherwise, returns the
+  /// result of the reduction.
+  ///
+  /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
+  /// For collections with at least one element, this is the same as [`fold()`]
+  /// with the first element of the collection as the initial accumulator value, folding
+  /// every subsequent element into it.
+  ///
+  /// [`fold()`]: Map::fold
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// # let source = HashMap::from([
+  /// #   (1, 2),
+  /// #   (2, 3),
+  /// #   (3, 4),
+  /// # ]);
+  /// let a = HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]);
+  ///
+  /// let reduced = a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap();
+  ///
+  /// assert_eq!(reduced, (6, 9));
+  ///
+  /// // Which is equivalent to doing it with `fold`:
+  /// # let a = source.clone();
+  /// let folded = a.fold((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
+  ///
+  /// assert_eq!(reduced, folded);
+  /// ```
+  fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
+    let mut iterator = self.into_iter();
+    iterator.next().and_then(|value1| {
+      iterator.next().map(|value2| iterator.fold(function(value1, value2), |(k, v), x| function((k, v), x)))
+    })
+  }
 
   /// Creates a map from the original map by replacing the specified key
   /// and its value with a different entry.
@@ -1889,13 +1937,4 @@ where
     }
   }
   (result_left, result_right)
-}
-
-#[inline]
-pub(crate) fn reduce_pairs<'a, K: 'a, V: 'a>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V),
-) -> Option<(K, V)> {
-  iterator.next().and_then(|value1| {
-    iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x)))
-  })
 }

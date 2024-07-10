@@ -782,7 +782,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   /// use std::collections::HashSet;
-  /// 
+  ///
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
@@ -1095,12 +1095,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let reduced = vec![1, 2, 3].reduce(|acc, e| acc + e).unwrap();
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let reduced = a.reduce(|acc, e| acc + e).unwrap();
   ///
   /// assert_eq!(reduced, 6);
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// let folded = vec![1, 2, 3].fold(0, |acc, e| acc + e);
+  /// # let a = source.clone();
+  /// let folded = a.fold(0, |acc, e| acc + e);
   ///
   /// assert_eq!(reduced, folded);
   /// ```

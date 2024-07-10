@@ -122,11 +122,6 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
-    reduce_pairs(self.iter(), function)
-  }
-
-  #[inline]
   fn scan<S, L, W>(
     self, initial_state: S, function: impl FnMut(&mut S, (&Key, &Value)) -> Option<(L, W)>,
   ) -> Self::This<L, W>
