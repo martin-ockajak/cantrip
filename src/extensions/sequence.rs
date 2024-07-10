@@ -276,7 +276,7 @@ pub trait Sequence<Item> {
     chunked(self, size, true)
   }
 
-  // FIXME - implement
+  // // FIXME - fix failing test case
   // /// Creates a collection by splitting the original collection into non-overlapping
   // /// subsequences according to specified separator predicate.
   // ///
@@ -292,8 +292,7 @@ pub trait Sequence<Item> {
   // /// let a = vec![1, 2, -1, 1, 2];
   // ///
   // /// let chunked = a.chunked_by(|&x| x >= 0);
-  // /// // FIXME - correct errors
-  // /// assert_eq!(chunked, vec![vec![1, 2], vec![-1], vec![1, 2]])
+  // /// // assert_eq!(chunked, vec![vec![1, 2], vec![-1], vec![1, 2]])
   // /// ```
   // fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
   // where
@@ -305,7 +304,7 @@ pub trait Sequence<Item> {
   //   let mut index: usize = 0;
   //   let mut iterator = self.into_iter();
   //   iterator.next().map(|first| {
-  //     let mut prev = first;
+  //     let prev = first;
   //     for item in iterator {
   //       if index > 0 && predicate(&prev, &item) {
   //         chunk.extend(iter::once(prev));
@@ -1306,7 +1305,7 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a two collection by by splitting a collection of pairs.
+  /// Creates a two collection by splitting a collection of pairs.
   ///
   /// `unzip()` produces two collections: one from the left elements of the pairs,
   /// and one from the right elements.
