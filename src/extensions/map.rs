@@ -22,7 +22,7 @@ pub trait Map<Key, Value> {
 
   // FIXME - add documentation
 
-  /// Creates a map by adding a entry to the original map.
+  /// Creates a map by adding an entry to the original map.
   ///
   /// # Example
   ///

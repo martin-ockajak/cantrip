@@ -14,7 +14,7 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 ///
 /// See also: [`FromIterator`].
 ///
-/// [`IntoIterator`]: std::iter::IntoIterator
+/// [`IntoIterator`]: IntoIterator
 ///
 /// # Examples
 ///
