@@ -138,9 +138,9 @@ pub trait Reversible<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // FIXME - check semantics
-  /// let padded = a.pad(5, 4);
+  /// let padded = a.rpad(5, 4);
   ///
-  /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
+  /// assert_eq!(padded, vec![3, 2, 1, 4, 4]);
   /// ```
   #[inline]
   fn rpad<I>(self, size: usize, element: Item) -> Self
