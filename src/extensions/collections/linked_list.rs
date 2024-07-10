@@ -206,4 +206,14 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   {
     windowed(self.iter(), size)
   }
+
+  #[inline]
+  fn windowed_circular(&self, size: usize) -> Self::This<Self>
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Self::This<Self>: FromIterator<Self>,
+  {
+    windowed_circular(self.iter(), size)
+  }
 }

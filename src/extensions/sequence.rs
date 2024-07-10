@@ -1,12 +1,12 @@
 #![allow(missing_docs)]
 
+use crate::extensions::util::unfold::unfold;
+use crate::Collectible;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
-use crate::Collectible;
-use crate::extensions::util::unfold::unfold;
 
 /// Sequence operations.
 ///
@@ -31,7 +31,6 @@ pub trait Sequence<Item> {
   // subsequence
   // variations
   // variations_repetitive
-  // windowed_circular
 
   /// Creates a collection by inserting an element into specified index
   /// in the original collection.
@@ -1127,6 +1126,12 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>;
 
+  fn windowed_circular(&self, size: usize) -> Self::This<Self>
+  where
+    Item: Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Self::This<Self>: FromIterator<Self>;
+
   #[inline]
   fn zip<T>(self, elements: impl IntoIterator<Item = T>) -> Self::This<(Item, T)>
   where
@@ -1168,7 +1173,7 @@ where
     }
     result
   })
-    .collect()
+  .collect()
 }
 
 pub(crate) fn multicombinations<'a, Item, Collection>(
@@ -1205,7 +1210,7 @@ where
     }
     result
   })
-    .collect()
+  .collect()
 }
 
 pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
@@ -1244,7 +1249,9 @@ where
 }
 
 #[allow(unused_results)]
-pub(crate) fn windowed<'a, Item, Collection, Result>(iterator: impl Iterator<Item = &'a Item>, size: usize) -> Result
+pub(crate) fn windowed<'a, Item, Collection, Result>(
+  mut iterator: impl Iterator<Item = &'a Item>, size: usize,
+) -> Result
 where
   Item: Clone + 'a,
   Collection: FromIterator<Item>,
@@ -1252,17 +1259,52 @@ where
 {
   assert_ne!(size, 0, "window size must be non-zero");
   let mut window: LinkedList<Item> = LinkedList::new();
-  iterator
-    .enumerate()
-    .flat_map(|(index, item)| {
-      window.push_back(item.clone());
-      if index >= size - 1 {
-        let result = Collection::from_iter(window.clone());
-        window.pop_front();
-        Some(result)
-      } else {
-        None
+  unfold((), |_| {
+    while window.len() < size {
+      match iterator.next() {
+        Some(item) => window.push_back(item.clone()),
+        None => return None,
       }
-    })
-    .collect()
+    }
+    let result = Some(Collection::from_iter(window.clone()));
+    window.pop_front();
+    result
+  })
+  .collect()
+}
+
+#[allow(unused_results)]
+pub(crate) fn windowed_circular<'a, Item, Collection, Result>(
+  mut iterator: impl Iterator<Item = &'a Item>, size: usize,
+) -> Result
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item>,
+  Result: FromIterator<Collection>,
+{
+  assert_ne!(size, 0, "window size must be non-zero");
+  let mut window: LinkedList<Item> = LinkedList::new();
+  let mut init: LinkedList<Item> = LinkedList::new();
+  unfold((), |_| {
+    while window.len() < size {
+      match iterator.next() {
+        Some(item) => {
+          window.push_back(item.clone());
+          if init.len() < size - 1 {
+            init.push_back(item.clone());
+          }
+        }
+        None => match init.pop_front() {
+          Some(item) => {
+            window.push_back(item);
+          }
+          None => return None
+        },
+      }
+    }
+    let result = Some(Collection::from_iter(window.clone()));
+    window.pop_front();
+    result
+  })
+  .collect()
 }
