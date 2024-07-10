@@ -1153,7 +1153,7 @@ pub trait Map<Key, Value> {
   ///   (1, 2),
   ///   (2, 3),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e: HashMap<i32, i32> = HashMap::new();
   ///
   /// assert_eq!(a.max_item(), Some((&2, &3)));
   ///
@@ -1185,7 +1185,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-5, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e: HashMap<i32, i32> = HashMap::new();
   ///
   /// assert_eq!(a.min_by(|x, y| x.0.cmp(y.0)), Some((&-5, &"c")));
   ///
@@ -1234,7 +1234,7 @@ pub trait Map<Key, Value> {
   ///   (1, 2),
   ///   (2, 3),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e: HashMap<i32, i32> = HashMap::new();
   ///
   /// assert_eq!(a.min_item(), Some((&0, &1)));
   ///
@@ -1319,7 +1319,7 @@ pub trait Map<Key, Value> {
   ///   (1, 2),
   ///   (2, 3),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e: HashMap<i32, i32> = HashMap::new();
   ///
   /// assert_eq!(a.minmax_item(), Some(((&0, &1), (&2, &3))));
   ///
@@ -1461,8 +1461,41 @@ pub trait Map<Key, Value> {
     (result_left, result_right)
   }
 
+  /// Iterates over the entire map, multiplying all the keys
+  ///
+  /// An empty map returns the one value of the type.
+  ///
+  /// `product()` can be used to multiply any type implementing [`Product`],
+  ///
+  /// [`Product`]: Product
+  ///
+  /// # Panics
+  ///
+  /// When calling `product()` and a primitive integer type is being returned,
+  /// method will panic if the computation overflows and debug assertions are
+  /// enabled.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]);
+  /// let e: HashMap<i32, i32> = HashMap::new();
+  ///
+  /// let product = a.product_keys();
+  ///
+  /// assert_eq!(product, 6);
+  /// assert_eq!(e.product_keys(), 1);
+  /// ```
   #[inline]
-  fn product_keys<S>(self) -> Key
+  fn product_keys(self) -> Key
   where
     Key: Product,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1470,8 +1503,41 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, _)| k).product()
   }
 
+  /// Iterates over the entire map, multiplying all the values
+  ///
+  /// An empty map returns the one value of the type.
+  ///
+  /// `product()` can be used to multiply any type implementing [`Product`],
+  ///
+  /// [`Product`]: Product
+  ///
+  /// # Panics
+  ///
+  /// When calling `product()` and a primitive integer type is being returned,
+  /// method will panic if the computation overflows and debug assertions are
+  /// enabled.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]);
+  /// let e: HashMap<i32, i32> = HashMap::new();
+  ///
+  /// let product = a.product_values();
+  ///
+  /// assert_eq!(product, 24);
+  /// assert_eq!(e.product_values(), 1);
+  /// ```
   #[inline]
-  fn product_values<S>(self) -> Value
+  fn product_values(self) -> Value
   where
     Value: Product,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1530,7 +1596,7 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// assert_eq!(a.replace_all(&vec![2, 3], vec![(4, "d"), (5, "e")]),HashMap::from([
+  /// assert_eq!(a.replace_all(&vec![2, 3], vec![(4, "d"), (5, "e")]), HashMap::from([
   ///   (1, "a"),
   ///   (4, "d"),
   ///   (5, "e"),
@@ -1620,6 +1686,40 @@ pub trait Map<Key, Value> {
   where
     Key: Eq + Hash + 'a;
 
+  /// Sums the keys of a map.
+  ///
+  /// Takes each key, adds them together, and returns the result.
+  ///
+  /// An empty map returns the zero value of the type.
+  ///
+  /// `sum()` can be used to multiply any type implementing [`Sum`],
+  ///
+  /// [`Sum`]: Sum
+  ///
+  /// # Panics
+  ///
+  /// When calling `sum()` and a primitive integer type is being returned, this
+  /// method will panic if the computation overflows and debug assertions are
+  /// enabled.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]);
+  /// let e: HashMap<i32, i32> = HashMap::new();
+  ///
+  /// let sum = a.sum_keys();
+  ///
+  /// assert_eq!(sum, 6);
+  /// assert_eq!(e.sum_keys(), 0);
+  /// ```
   #[inline]
   fn sum_keys(self) -> Key
   where
@@ -1629,6 +1729,40 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, _)| k).sum()
   }
 
+  /// Sums the values of a map.
+  ///
+  /// Takes each value, adds them together, and returns the result.
+  ///
+  /// An empty map returns the zero value of the type.
+  ///
+  /// `sum()` can be used to multiply any type implementing [`Sum`],
+  ///
+  /// [`Sum`]: Sum
+  ///
+  /// # Panics
+  ///
+  /// When calling `sum()` and a primitive integer type is being returned, this
+  /// method will panic if the computation overflows and debug assertions are
+  /// enabled.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]);
+  /// let e: HashMap<i32, i32> = HashMap::new();
+  ///
+  /// let sum = a.sum_values();
+  ///
+  /// assert_eq!(sum, 9);
+  /// assert_eq!(e.sum_values(), 0);
+  /// ```
   #[inline]
   fn sum_values(self) -> Value
   where
@@ -1638,6 +1772,19 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
+  /// Creates a map containing a single element.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let unit = HashMap::unit(1, "a");
+  ///
+  /// assert_eq!(unit, HashMap::from([
+  ///   (1, "a"),
+  /// ]));
   #[inline]
   fn unit(key: Key, value: Value) -> Self
   where
