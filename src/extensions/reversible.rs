@@ -54,6 +54,7 @@ pub trait Reversible<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.rfind(|&x| x == 2), Some(&2));
+  /// 
   /// assert_eq!(a.rfind(|&x| x == 5), None);
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
