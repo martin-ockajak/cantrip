@@ -448,11 +448,11 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.delete_all_at(vec![3, 4]), vec![1, 2, 3]);
   /// ```
   #[inline]
-  fn delete_all_at(self, positions: impl IntoIterator<Item = usize>) -> Self
+  fn delete_all_at(self, indices: impl IntoIterator<Item = usize>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let positions: HashSet<usize> = HashSet::from_iter(positions);
+    let positions: HashSet<usize> = HashSet::from_iter(indices);
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
@@ -497,6 +497,33 @@ pub trait Sequence<Item> {
       .collect()
   }
 
+  /// Creates a collection which contains original collection elements
+  /// and their indices.
+  ///
+  /// The new collection contains pairs of `(i, val)`, where `i` is the
+  /// current index of iteration and `val` is the original collection element.
+  ///
+  /// `enumerate()` keeps its count as an [`usize`]. If you want to count by a
+  /// different sized integer, the [`zip`] function provides similar
+  /// functionality.
+  ///
+  /// # Overflow Behavior
+  ///
+  /// The method does no guarding against overflows, so enumerating more than
+  /// [`usize::MAX`] elements either produces the wrong result or panics. If
+  /// debug assertions are enabled, a panic is guaranteed.
+  ///
+  /// [`zip`]: Sequence::zip
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.enumerate(), vec![(0, 1), (1, 2), (2, 3)]);
+  /// ```
   #[inline]
   fn enumerate(self) -> Self::This<(usize, Item)>
   where
@@ -856,9 +883,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let cycled = a.repeat(3);
-  ///
-  /// assert_eq!(cycled, vec![1, 2, 3, 1, 2, 3, 1, 2, 3]);
+  /// assert_eq!(a.repeat(3), vec![1, 2, 3, 1, 2, 3, 1, 2, 3]);
   /// ```
   #[inline]
   fn repeat(self, n: usize) -> Self
@@ -880,9 +905,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let reversed = a.rev();
-  ///
-  /// assert_eq!(reversed, vec![3, 2, 1]);
+  /// assert_eq!(a.rev(), vec![3, 2, 1]);
   /// ```
   #[inline]
   fn rev<I>(self) -> Self
