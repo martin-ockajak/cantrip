@@ -63,6 +63,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *duplicates*              |    :heavy_check_mark:     |                    |                               |                    |
 | *duplicates_by*           |    :heavy_check_mark:     |                    |                               |                    |
 | *enumerate*               |    :heavy_check_mark:     |                    |                               |                    |
+| *equivalent*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *fill*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *fill_with*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *filter*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
@@ -138,7 +139,6 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *rskip_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *rtake*                   |    :heavy_check_mark:     |                    |                               |                    |
 | *rtake_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *same_items*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *scan*                    |    :heavy_check_mark:     |                    |                               |                    |
 | *skip*                    |    :heavy_check_mark:     |                    |                               |                    |
 | *skip_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
