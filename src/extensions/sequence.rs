@@ -567,6 +567,7 @@ pub trait Sequence<Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.init(), vec![1, 2]);
+  ///
   /// // assert_eq!(e.init(), vec![]);
   /// ```
   #[inline]
@@ -688,6 +689,7 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let padded = a.pad(5, 4);
+  ///
   /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
@@ -709,7 +711,8 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad_with(5, |i| 2 * i);
+  /// let padded = a.pad_with(5, |x| 2 * x);
+  ///
   /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
   /// ```
   fn pad_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
@@ -737,20 +740,28 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2, 3, 4, 5];
+  /// # let source = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
-  /// assert_eq!(a.clone().move_item(1, 3), vec![1, 3, 4, 2, 5]);
-  /// assert_eq!(a.clone().move_item(1, 5), vec![1, 3, 4, 5]);
-  /// assert_eq!(a.clone().move_item(3, 3), vec![1, 2, 3, 4, 5]);
-  /// assert_eq!(a.clone().move_item(3, 1), vec![1, 4, 2, 3, 5]);
-  /// assert_eq!(a.clone().move_item(5, 1), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.move_item(1, 3), vec![1, 3, 4, 2, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(2, 4), vec![1, 2, 4, 5, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(0, 5), vec![2, 3, 4, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(3, 1), vec![1, 4, 2, 3, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(4, 0), vec![5, 1, 2, 3, 4]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(3, 3), vec![1, 2, 3, 4, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_item(5, 1), vec![1, 2, 3, 4, 5]);
   /// ```
   fn move_item(self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    assert_ne!(source_index, 0, "source index must be non-zero");
-    assert_ne!(source_index, 0, "source index must be non-zero");
     let mut iterator = self.into_iter();
     let mut stored = LinkedList::<Item>::new();
     unfold(0_usize, |position| {
@@ -815,6 +826,7 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.position(|&x| x == 2), Some(1));
+  ///
   /// assert_eq!(a.position(|&x| x == 5), None);
   /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
@@ -845,6 +857,8 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.positions(|&x| x % 2 == 0), vec![1]);
   /// assert_eq!(a.positions(|&x| x % 2 == 1), vec![0, 2]);
+  ///
+  /// assert_eq!(a.positions(|&x| x > 3), vec![]);
   /// ```
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Self::This<usize>;
 
@@ -894,8 +908,11 @@ pub trait Sequence<Item> {
   /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.skip(2), vec![3]);
+  ///
+  /// assert_eq!(e.skip(1), vec![]);
   /// ```
   #[inline]
   fn skip(self, n: usize) -> Self
@@ -916,28 +933,17 @@ pub trait Sequence<Item> {
   /// After `false` is returned, `skip_while()`'s job is over, and the
   /// rest of the elements are yielded.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-1i32, 0, 1];
-  ///
-  /// assert_eq!(a.skip_while(|x| x.is_negative()), vec![0, 1]);
-  /// ```
-  ///
-  /// Because the closure passed to `skip_while()` takes a reference, and some
-  /// collections contain references, this leads to a possibly confusing
-  /// situation, where the type of the closure argument is a double reference:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
   /// let a = vec![-1, 0, 1];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.skip_while(|x| *x < 0), vec![0, 1]);
+  /// assert_eq!(a.skip_while(|&x| x < 0), vec![0, 1]);
+  ///
+  /// assert_eq!(e.skip_while(|&x| x < 0), vec![]);
   /// ```
   #[inline]
   fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
@@ -1058,9 +1064,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.tail(), vec![2, 3]);
+  ///
+  /// assert_eq!(e.tail(), vec![]);
   /// ```
   #[inline]
   fn tail(self) -> Self
@@ -1087,8 +1096,11 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.take(2), vec![1, 2]);
+  ///
+  /// assert_eq!(e.take(1), vec![]);
   /// ```
   ///
   /// If less than `n` elements are available,
@@ -1118,30 +1130,17 @@ pub trait Sequence<Item> {
   /// After `false` is returned, `take_while()`'s job is over, and the
   /// rest of the elements are ignored.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-1i32, 0, 1];
-  ///
-  /// assert_eq!(a.take_while(|x| x.is_negative()), vec![-1]);
-  /// ```
-  ///
-  /// Because the closure passed to `take_while()` takes a reference, and some
-  /// collections contain references, this leads to a possibly confusing
-  /// situation, where the type of the closure is a double reference:
-  ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
   /// let a = vec![-1, 0, 1];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.take_while(|x| *x < 0), vec![-1]);
+  /// assert_eq!(a.take_while(|&x| x < 0), vec![-1]);
+  ///
+  /// assert_eq!(e.take_while(|&x| x < 0), vec![]);
   /// ```
   #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
