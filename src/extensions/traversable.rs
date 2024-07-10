@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -14,7 +14,6 @@ use crate::Iterable;
 ///
 pub trait Traversable<Item> {
   // FIXME - implement these methods
-  // includes
   // same_items
 
   /// Tests if every element of the collection matches a predicate.
@@ -190,13 +189,14 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// // assert!(a.includes(&vec![1, 2, 2]));
-  /// // assert!(!a.includes(&vec![1, 2, 2, 2]));
-  /// // assert!(!a.includes(&vec![2, 4]));
+  /// assert!(a.includes(&vec![1, 3]));
+  /// assert!(a.includes(&vec![1, 2, 2]));
+  /// assert!(!a.includes(&vec![1, 1, 2]));
+  /// assert!(!a.includes(&vec![3, 4]));
   /// ```
-  // fn includes<'a>(&self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  // where
-  //   Item: Eq + Hash + 'a;
+  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
 
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
@@ -450,32 +450,29 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
-// #[inline]
-// pub(crate) fn includes<'a, Item>(
-//   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-// ) -> bool
-// where
-//   Item: Eq + Hash + 'a,
-// {
-//   let elements_iterator = elements.iterator();
-//   let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-//   for item in elements_iterator {
-//     *excluded.entry(item).or_default() += 1;
-//   }
-//   let mut remaining = excluded.len();
-//   iterator.for_each(|x| {
-//     excluded.get_mut(x).map(|count| {
-//       if *count > 0 {
-//         *count -= 1;
-//       } else {
-//         remaining -= 1;
-//         ()
-//       }
-//     });
-//     ()
-//   });
-//   remaining <= 0
-// }
+pub(crate) fn includes<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+  let mut remaining = 0_usize;
+  for item in elements_iterator {
+    *excluded.entry(item).or_default() += 1;
+    remaining += 1;
+  }
+  iterator.for_each(|item| {
+    if let Some(count) = excluded.get_mut(item) {
+      if *count > 0 {
+        *count -= 1;
+        remaining = remaining.saturating_sub(1);
+      }
+    }
+  });
+  remaining == 0
+}
 
 pub(crate) fn subset<'a, Item>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,

@@ -38,12 +38,13 @@ impl<Item> Traversable<Item> for Vec<Item> {
     self.iter().find_map(function)
   }
 
-  // #[inline]
-  // fn includes<'a>(&self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  //   where
-  //     Item: Eq + Hash + 'a {
-  //   includes(self.iter(), iterable)
-  // }
+  #[inline]
+  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    includes(self.iter(), iterable)
+  }
 
   #[inline]
   fn join_items(&self, separator: &str) -> String
