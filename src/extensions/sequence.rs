@@ -24,8 +24,6 @@ pub trait Sequence<Item> {
   // coalesce
   // chunked_by
   // permutations
-  // subsequence
-  // supersequence
   // variations
   // variations_repetitive
 
@@ -75,16 +73,16 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.add_all_at(0, vec![3, 4]), [3, 4, 1, 2]);
+  /// assert_eq!(a.add_all_at(0, vec![3, 4]), vec![3, 4, 1, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(1, vec![3, 4]), [1, 3, 4, 2]);
+  /// assert_eq!(a.add_all_at(1, vec![3, 4]), vec![1, 3, 4, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(2, vec![3, 4]), [1, 2, 3, 4]);
+  /// assert_eq!(a.add_all_at(2, vec![3, 4]), vec![1, 2, 3, 4]);
   /// # let a = source.clone();
-  /// assert_eq!(e.add_all_at(0, vec![1, 2]), [1, 2]);
+  /// assert_eq!(e.add_all_at(0, vec![1, 2]), vec![1, 2]);
   ///
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(3, vec![3, 4]), [1, 2]);
+  /// assert_eq!(a.add_all_at(3, vec![3, 4]), vec![1, 2]);
   /// ```
   fn add_all_at(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
   where
@@ -675,22 +673,22 @@ pub trait Sequence<Item> {
   /// # let source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3, 4, 5];
   ///
-  /// assert_eq!(a.move_item(1, 3), vec![1, 3, 4, 2, 5]);
+  /// assert_eq!(a.move_at(1, 3), vec![1, 3, 4, 2, 5]);
   /// # let a = source.clone();
-  /// assert_eq!(a.move_item(2, 4), vec![1, 2, 4, 5, 3]);
+  /// assert_eq!(a.move_at(2, 4), vec![1, 2, 4, 5, 3]);
   /// # let a = source.clone();
-  /// assert_eq!(a.move_item(0, 5), vec![2, 3, 4, 5]);
+  /// assert_eq!(a.move_at(0, 5), vec![2, 3, 4, 5]);
   /// # let a = source.clone();
-  /// assert_eq!(a.move_item(3, 1), vec![1, 4, 2, 3, 5]);
+  /// assert_eq!(a.move_at(3, 1), vec![1, 4, 2, 3, 5]);
   /// # let a = source.clone();
-  /// assert_eq!(a.move_item(4, 0), vec![5, 1, 2, 3, 4]);
+  /// assert_eq!(a.move_at(4, 0), vec![5, 1, 2, 3, 4]);
   ///
   /// # let a = source.clone();
-  /// assert_eq!(a.move_item(3, 3), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.move_at(3, 3), vec![1, 2, 3, 4, 5]);
   /// # let a = source.clone();
-  /// assert_eq!(a.move_item(5, 1), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.move_at(5, 1), vec![1, 2, 3, 4, 5]);
   /// ```
-  fn move_item(self, source_index: usize, target_index: usize) -> Self
+  fn move_at(self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
@@ -892,6 +890,81 @@ pub trait Sequence<Item> {
     let values = self.into_iter().collect::<Vec<Item>>();
     let size = values.len() * n;
     values.into_iter().cycle().take(size).collect()
+  }
+
+  /// Creates a collection by replacing an element at specified index
+  /// in the original collection.
+  ///
+  /// if the specified index exceeds the collection size, no elements are replaced.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.replace_at(1, 4), vec![1, 4, 3]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.replace_at(3, 5), vec![1, 2, 3]);
+  /// assert_eq!(e.replace_at(0, 1), vec![]);
+  /// ```
+  #[inline]
+  fn replace_at(self, index: usize, element: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.replace_all_at(index..(index + 1), iter::once(element))
+  }
+
+  /// Creates a collection by replacing all elements at specified indices in a collection
+  /// by elements from another collection.
+  ///
+  /// if the specified index exceeds the collection size, no elements are replaced.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.replace_all_at(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.replace_all_at(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.replace_all_at(vec![0, 2], vec![4]), vec![4, 2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.replace_all_at(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.replace_all_at(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
+  /// assert_eq!(e.replace_all_at(vec![0], vec![1]), vec![]);
+  /// ```
+  fn replace_all_at(self, indices: impl IntoIterator<Item = usize>, elements: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let positions: HashSet<usize> = HashSet::from_iter(indices);
+    let mut elements_iterator = elements.into_iter();
+    unfold(0_usize, |position| {
+      iterator.next().map(|item| {
+        let result = if positions.contains(position) {
+          elements_iterator.next().unwrap_or(item)
+        } else {
+          item
+        };
+        *position += 1;
+        result
+      })
+    })
+    .collect()
   }
 
   /// Creates a collection by reversing the original collection's direction.
@@ -1137,30 +1210,6 @@ pub trait Sequence<Item> {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by_key(to_key);
     result.into_iter().collect()
-  }
-
-  #[inline]
-  fn replace_at(self, index: usize, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.replace_all_at(index..(index + 1), iter::once(element))
-  }
-
-  fn replace_all_at(self, indices: impl IntoIterator<Item = usize>, replacement: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let positions: HashSet<usize> = HashSet::from_iter(indices);
-    let mut values = replacement.into_iter();
-    unfold(0_usize, |position| {
-      let item = iterator.next();
-      let result = if positions.contains(position) { values.next() } else { item };
-      *position += 1;
-      result
-    })
-    .collect()
   }
 
   /// Creates a collection by only including elements in the specified range.
@@ -1447,6 +1496,30 @@ where
   .collect()
 }
 
+pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
+where
+  Collection: IntoIterator<Item = Item> + Default + Extend<Item>,
+  Result: Default + Extend<Collection>,
+{
+  assert_ne!(size, 0, "chunk size must be non-zero");
+  let mut result = Result::default();
+  let mut chunk = Collection::default();
+  let mut index: usize = 0;
+  for item in collection.into_iter() {
+    if index > 0 && index == size {
+      result.extend(iter::once(chunk));
+      chunk = Collection::default();
+      index = 0;
+    }
+    chunk.extend(iter::once(item));
+    index += 1;
+  }
+  if index > 0 && !exact {
+    result.extend(iter::once(chunk));
+  }
+  result
+}
+
 pub(crate) fn common_prefix_length<'a, Item>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> usize
@@ -1498,30 +1571,6 @@ where
     result
   })
   .collect()
-}
-
-pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
-where
-  Collection: IntoIterator<Item = Item> + Default + Extend<Item>,
-  Result: Default + Extend<Collection>,
-{
-  assert_ne!(size, 0, "chunk size must be non-zero");
-  let mut result = Result::default();
-  let mut chunk = Collection::default();
-  let mut index: usize = 0;
-  for item in collection.into_iter() {
-    if index > 0 && index == size {
-      result.extend(iter::once(chunk));
-      chunk = Collection::default();
-      index = 0;
-    }
-    chunk.extend(iter::once(item));
-    index += 1;
-  }
-  if index > 0 && !exact {
-    result.extend(iter::once(chunk));
-  }
-  result
 }
 
 #[allow(unused_results)]

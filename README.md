@@ -110,7 +110,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *minmax_by*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *minmax_by_key*           |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *minmax_item*             |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-| *move_item*               |    :heavy_check_mark:     |                    |                               |                    |
+| *move_at*                 |    :heavy_check_mark:     |                    |                               |                    |
 | *multicombinations*       |    :heavy_check_mark:     |                    |                               |                    |
 | *pad_left*                |    :heavy_check_mark:     |                    |                               |                    |
 | *pad_left_with*           |    :heavy_check_mark:     |                    |                               |                    |
@@ -122,8 +122,9 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *permutations*            |    :heavy_check_mark:     |                    |                               |                    |
 | *position*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *positions*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *positions_of*            |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+| *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+| *position_sequence*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product_keys*            |                           |                    |                               | :heavy_check_mark: |
@@ -155,9 +156,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *splice*                  |    :heavy_check_mark:     |                    |                               |                    |
 | *step_by*                 |    :heavy_check_mark:     |                    |                               |                    |
 | *subset*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-| *subsequence*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *superset*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-| *supersequence*           |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *sum*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *sum_keys*                |                           |                    |                               | :heavy_check_mark: |
 | *sum_values*              |                           |                    |                               | :heavy_check_mark: |

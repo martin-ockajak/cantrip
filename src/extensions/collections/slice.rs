@@ -122,6 +122,14 @@ impl<Item> Ordered<Item> for [Item] {
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
     positions(self.iter(), predicate)
   }
+
+  #[inline]
+  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  where
+    Item: PartialEq + 'a,
+  {
+    position_sequence(self.iter(), elements)
+  }
 }
 
 impl<Item> Reversible<Item> for [Item] {

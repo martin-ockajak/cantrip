@@ -121,6 +121,14 @@ impl<Item> Ordered<Item> for Vec<Item> {
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
     positions(self.iter(), predicate)
   }
+
+  #[inline]
+  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  where
+    Item: PartialEq + 'a,
+  {
+    position_sequence(self.iter(), elements)
+  }
 }
 
 impl<Item> Reversible<Item> for Vec<Item> {
@@ -128,7 +136,7 @@ impl<Item> Reversible<Item> for Vec<Item> {
   fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
-    Item: PartialEq + 'a
+    Item: PartialEq + 'a,
   {
     common_suffix_length(self.iter().rev(), elements)
   }

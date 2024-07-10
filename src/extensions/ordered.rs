@@ -220,6 +220,48 @@ pub trait Ordered<Item> {
   {
     self.positions(|x| x == element)
   }
+
+  /// Searches for a sub-sequence in a collection, returning its index.
+  ///
+  /// After finding a starting element of specified sequence in a collection,
+  /// `position_seq()` compares each element of the collection with the specified value,
+  /// and if all of them matche, then `position_seq()` returns [`Some(start_index)`].
+  /// If any of the elements do not match, it returns [`None`].
+  ///
+  /// `position_seq()` is short-circuiting; in other words, it will stop
+  /// processing as soon as it finds a matching sequence.
+  ///
+  /// Returns `Some(0)` if specified sequence is empty.
+  ///
+  /// # Overflow Behavior
+  ///
+  /// The method does no guarding against overflows, so if there are more
+  /// than [`usize::MAX`] non-matching elements, it either produces the wrong
+  /// result or panics. If debug assertions are enabled, a panic is guaranteed.
+  ///
+  /// # Panics
+  ///
+  /// This function might panic if the collection has more than `usize::MAX`
+  /// non-matching elements.
+  ///
+  /// [`Some(start_index)`]: Some
+  /// [`Some(0)`]: Some
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// assert_eq!(a.position_sequence(&vec![2, 3, 4]), Some(1));
+  /// assert_eq!(a.position_sequence(&vec![]), Some(0));
+  ///
+  /// assert_eq!(a.position_sequence(&vec![1, 3]), None);
+  /// ```
+  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  where
+    Item: PartialEq + 'a;
 }
 
 pub(crate) fn equivalent<'a, Item>(
@@ -301,4 +343,27 @@ where
   Item: 'a,
 {
   iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
+}
+
+pub(crate) fn position_sequence<'a, Item>(
+  mut iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> Option<usize>
+where
+  Item: PartialEq + 'a,
+{
+  let mut elements_iterator = elements.iterator();
+  if let Some(first_element) = elements_iterator.next() {
+    if let Some(start_index) = iterator.position(|item| item == first_element) {
+      for (item, element) in iterator.zip(elements_iterator) {
+        if item != element {
+          return None;
+        }
+      }
+      Some(start_index)
+    } else {
+      None
+    }
+  } else {
+    Some(0)
+  }
 }
