@@ -201,9 +201,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![0i32, 1, 2];
+  /// let a = vec![0, 1, 2];
   ///
-  /// let filtered = a.filter(|x| x.is_positive());
+  /// let filtered = a.filter(|&x| x > 0);
   ///
   /// assert_eq!(filtered, vec![1, 2]);
   /// ```
@@ -292,7 +292,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
-  /// let filter_mapped = a.map(|&s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
+  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map(|s| s.clone().unwrap());
+  ///
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
@@ -304,9 +305,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
   ///
-  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
-  /// concise. The example below shows how a `map().filter().map()` can be
-  /// shortened to a single call to `filter_map`.
+  /// `filter_map_to` can be used to make chains of [`filter`] and [`map`] more
+  /// concise. The example below shows how a `map_to().filter().map()` can be
+  /// shortened to a single call to `filter_map_to`.
   ///
   /// This is a consuming variant of [`filter_map`].
   ///
@@ -328,14 +329,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
   ///
-  /// Here's the same example, but with [`filter`] and [`map`]:
+  /// Here's the same example, but with [`filter`] and [`map_to`]:
   ///
   /// ```
   /// use crate::cantrip::*;
   ///
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
-  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
+  /// let filter_mapped = a.map_to(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
   ///
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```

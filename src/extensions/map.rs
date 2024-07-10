@@ -7,7 +7,6 @@ use std::fmt::Write;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-
 use crate::extensions::iterable::Iterable;
 
 /// Map operations.
@@ -26,7 +25,7 @@ pub trait Map<Key, Value> {
   // equivalent
   // includes
 
-  /// Creates a map by adding a key/value pair to the original map.
+  /// Creates a map by adding a entry to the original map.
   ///
   /// # Example
   ///
@@ -66,7 +65,7 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
 
-  /// Creates a map by appending all key/value pairs from another collection to
+  /// Creates a map by appending all entries from another collection to
   /// the original map.
   ///
   /// # Example
@@ -109,10 +108,10 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iterable).collect()
   }
 
-  /// Tests if every key/value pair in the map matches a predicate.
+  /// Tests if every entry of the map matches a predicate.
   ///
   /// `all()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each key/value pair in the map, and if they all return
+  /// this closure to each entry of the map, and if they all return
   /// `true`, then so does `all()`. If any of them return `false`, it
   /// returns `false`.
   ///
@@ -210,10 +209,10 @@ pub trait Map<Key, Value> {
   where
     Value: Eq + Hash;
 
-  /// Tests if any key/value pair in the map matches a predicate.
+  /// Tests if any entry of the map matches a predicate.
   ///
   /// `any()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each key/value pair in the map, and if any of them return
+  /// this closure to each entry of the map, and if any of them return
   /// `true`, then so does `any()`. If they all return `false`, it
   /// returns `false`.
   ///
@@ -243,10 +242,10 @@ pub trait Map<Key, Value> {
   /// ```
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
-  /// Counts key/value pairs of a map that satisfy a predicate.
+  /// Counts entries of a map that satisfy a predicate.
   ///
   /// `count_by()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each key/value pair in the map, and counts those which
+  /// this closure to each entry of the map, and counts those which
   /// return `true`, disregarding those which return `false`.
   ///
   /// # Example
@@ -343,7 +342,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(HashMap::fill_with(|| (1, "a"), 1), HashMap::from([
   ///   (1, "a"),
   /// ]));
-  /// 
+  ///
   /// assert_eq!(HashMap::fill_with(|| (1, "a"), 0), HashMap::new());
   /// ```
   #[inline]
@@ -356,6 +355,32 @@ pub trait Map<Key, Value> {
     iter::repeat(value()).take(size).collect()
   }
 
+  /// Creates a map by filtering the original map using a
+  /// closure to determine if an entry should be retained.
+  ///
+  /// Given an entry the closure must return `true` or `false`. The returned
+  /// map will contain only the entries for which the closure returns
+  /// true.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let filtered = a.filter(|(&k, &v)| k != 2 && v != "b");
+  ///
+  /// assert_eq!(filtered, HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn filter(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
@@ -364,6 +389,32 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
+  /// Creates a map by filtering the original map using a
+  /// closure to determine if a key should be retained.
+  ///
+  /// Given an entry the closure must return `true` or `false`. The returned
+  /// map will contain only the entries for which the closure returns
+  /// true.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let filtered = a.filter_keys(|&k| k != 2);
+  ///
+  /// assert_eq!(filtered, HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn filter_keys(self, mut predicate: impl FnMut(&Key) -> bool) -> Self
   where
@@ -372,6 +423,32 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
+  /// Creates a map by filtering the original map using a
+  /// closure to determine if a value should be retained.
+  ///
+  /// Given an entry the closure must return `true` or `false`. The returned
+  /// map will contain only the entries for which the closure returns
+  /// true.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let filtered = a.filter_values(|&v| v != "b");
+  ///
+  /// assert_eq!(filtered, HashMap::from([
+  ///   (1, "a"),
+  ///   (3, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn filter_values(self, mut predicate: impl FnMut(&Value) -> bool) -> Self
   where
@@ -380,10 +457,124 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
+  /// Creates a map by filtering and mapping the original map.
+  ///
+  /// The returned map contains only the `entries` for which the supplied
+  /// closure returns `Some(entry)`.
+  ///
+  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
+  /// concise. The example below shows how a `map().filter().map_to()` can be
+  /// shortened to a single call to `filter_map`.
+  ///
+  /// This is a non-consuming variant of [`filter_map_to`].
+  ///
+  /// [`filter`]: Map::filter
+  /// [`map`]: Map::map
+  /// [`filter_map_to`]: Map::filter_map_to
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "1"),
+  ///   (2, "two"),
+  ///   (3, "NaN"),
+  /// ]);
+  ///
+  /// let filter_mapped = a.filter_map(|(&k, &v)| v.parse::<i32>().ok().map(|v| (k, v)));
+  ///
+  /// assert_eq!(filter_mapped, HashMap::from([
+  ///   (1, 1),
+  /// ]));
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter`] and [`map`]:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "1"),
+  ///   (2, "two"),
+  ///   (3, "NaN"),
+  /// ]);
+  ///
+  /// let filter_mapped = a
+  ///   .map(|(&k, &v)| (k, v.parse::<i32>()))
+  ///   .filter(|(_, s)| s.is_ok())
+  ///   .map(|(&k, v)| (k, v.clone().unwrap()));
+  ///
+  /// assert_eq!(filter_mapped, HashMap::from([
+  ///   (1, 1),
+  /// ]));
+  /// ```
   fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
+  /// Creates a collection by filters and maps the original collection.
+  ///
+  /// The returned collection contains only the `entries` for which the supplied
+  /// closure returns `Some(value)`.
+  ///
+  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
+  /// concise. The example below shows how a `map_to().filter_to().map()` can be
+  /// shortened to a single call to `filter_map_to`.
+  ///
+  /// This is a consuming variant of [`filter_map`].
+  ///
+  /// [`filter`]: Map::filter
+  /// [`map`]: Map::map
+  /// [`filter_map`]: Map::filter_map
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "1"),
+  ///   (2, "two"),
+  ///   (3, "NaN"),
+  /// ]);
+  ///
+  /// let filter_mapped = a.filter_map_to(|(k, v)| v.parse::<i32>().ok().map(|v| (k, v)));
+  ///
+  /// assert_eq!(filter_mapped, HashMap::from([
+  ///   (1, 1),
+  /// ]));
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter`] and [`map_to`]:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "1"),
+  ///   (2, "two"),
+  ///   (3, "NaN"),
+  /// ]);
+  ///
+  /// let filter_mapped = a
+  ///   .map_to(|(k, v)| (k, v.parse::<i32>()))
+  ///   .filter(|(_, s)| s.is_ok())
+  ///   .map(|(&k, v)| (k, v.clone().unwrap()));
+  ///
+  /// assert_eq!(filter_mapped, HashMap::from([
+  ///   (1, 1),
+  /// ]));
+  /// ```
   #[inline]
   fn filter_map_to<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
@@ -545,7 +736,7 @@ pub trait Map<Key, Value> {
   fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
   /// Creates a map from the original map by replacing the specified key
-  /// and its value with a different key/value pair.
+  /// and its value with a different entry.
   ///
   /// # Example
   ///
