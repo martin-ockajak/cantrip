@@ -561,14 +561,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Folds every element into an accumulator by applying an operation,
   /// returning the final result.
   ///
-  /// `fold()` takes two arguments: an initial value, and a closure with two
+  /// `fold_to()` takes two arguments: an initial value, and a closure with two
   /// arguments: an 'accumulator', and an element. The closure returns the value that
   /// the accumulator should have for the next iteration.
   ///
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of the collection, `fold()`
+  /// After applying this closure to every element of the collection, `fold_to()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -576,13 +576,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
+  /// This is a consuming variant of [`fold`].
+  ///
   /// Note: [`reduce()`] can be used to use the first element as the initial
   /// value, if the accumulator type and item type is the same.
   ///
-  /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
+  /// Note: `fold_to()` combines elements in a *left-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *right-associative* version of `fold()`, see [`rfold()`].
+  /// For a *right-associative* version of `fold_to()`, see [`rfold_to()`].
+  ///
+  /// [`fold`]: crate::Traversable::fold
   ///
   /// # Examples
   ///
@@ -594,7 +598,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold(0, |acc, x| acc + x);
+  /// let sum = a.fold_to(0, |acc, x| acc + x);
   ///
   /// assert_eq!(sum, 6);
   /// ```
@@ -610,7 +614,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// And so, our final result, `6`.
   ///
-  /// This example demonstrates the left-associative nature of `fold()`:
+  /// This example demonstrates the left-associative nature of `fold_to()`:
   /// it builds a string, starting with an initial value
   /// and continuing with each element from the front until the back:
   ///
@@ -621,7 +625,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.fold(zero, |acc, x| {
+  /// let result = numbers.fold_to(zero, |acc, x| {
   ///   format!("({acc} + {x})")
   /// });
   ///
@@ -629,7 +633,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// It's common for people who haven't used collections a lot to
   /// use a `for` loop with a list of things to build up a result. Those
-  /// can be turned into `fold()`s:
+  /// can be turned into `fold_to()`s:
   ///
   /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
   ///
@@ -646,13 +650,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// }
   ///
   /// // fold:
-  /// let result2 = numbers.fold(0, |acc, x| acc + x);
+  /// let result2 = numbers.fold_to(0, |acc, x| acc + x);
   ///
   /// // they're the same
   /// assert_eq!(result, result2);
   /// ```
   #[inline]
-  fn fold<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
+  fn fold_to<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
     Self: Sized,
   {
@@ -1084,11 +1088,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// result of the reduction.
   ///
   /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
-  /// For collections with at least one element, this is the same as [`fold()`]
+  /// For collections with at least one element, this is the same as [`fold_to()`]
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// [`fold()`]: crate::Traversable::fold
+  /// This is a consuming variant of [`reduce`].
+  ///
+  /// [`fold_to()`]: Collectible::fold_to
+  /// [`reduce()`]: crate::Traversable::reduce
   ///
   /// # Example
   ///
@@ -1098,18 +1105,18 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// let reduced = a.reduce(|acc, e| acc + e).unwrap();
+  /// let reduced = a.reduce_to(|acc, e| acc + e).unwrap();
   ///
   /// assert_eq!(reduced, 6);
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = source.clone();
-  /// let folded = a.fold(0, |acc, e| acc + e);
+  /// let folded = a.fold_to(0, |acc, e| acc + e);
   ///
   /// assert_eq!(reduced, folded);
   /// ```
   #[inline]
-  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
+  fn reduce_to(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   where
     Self: Sized,
   {

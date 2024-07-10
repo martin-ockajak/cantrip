@@ -21,7 +21,7 @@ use cantrip::*;
 
 let data = vec![1, 2, 3];
 
-data.fold(0, |r, x| r + x);       // 6
+data.fold_to(0, |r, x| r + x);       // 6
 
 data.filter(|&x| x > 1);          // vec![2, 3]
 
@@ -81,7 +81,8 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *flat_map*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *flat_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *flat*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-| *fold*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+| *fold*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+| *fold_to*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *frequencies*             |    :heavy_check_mark:     |                    |                               |                    |
 | *frequencies_by*          |    :heavy_check_mark:     |                    |                               |                    |
 | *group_by*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
@@ -129,7 +130,8 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product_keys*            |                           |                    |                               | :heavy_check_mark: |
 | *product_values*          |                           |                    |                               | :heavy_check_mark: |
-| *reduce*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+| *reduce*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+| *reduce_to*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *replace*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *replace_all*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *replace_at*              |    :heavy_check_mark:     |                    |                               |                    |

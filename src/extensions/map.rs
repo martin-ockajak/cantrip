@@ -1,11 +1,12 @@
 #![allow(missing_docs)]
 
-use crate::extensions::iterable::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+
+use crate::extensions::iterable::Iterable;
 
 /// Map operations.
 ///
@@ -696,7 +697,7 @@ pub trait Map<Key, Value> {
   /// This is a non-consuming variant of [`flat_map_to`].
   ///
   /// [`map`]: Map::map
-  /// [`flat`]: crate::extensions::collectible::Collectible::flat
+  /// [`flat`]: crate::Collectible::flat
   /// [`flat_map_to`]: Map::flat_map_to
   ///
   /// # Example
@@ -746,7 +747,7 @@ pub trait Map<Key, Value> {
   /// This is a consuming variant of [`flat_map`].
   ///
   /// [`map`]: Map::map
-  /// [`flat`]: crate::extensions::collectible::Collectible
+  /// [`flat`]: crate::Collectible::flat
   /// [`flat_map`]: Map::flat_map
   ///
   /// # Example
@@ -801,13 +802,16 @@ pub trait Map<Key, Value> {
   /// Folding is useful whenever you have a map of something, and want
   /// to produce a single value from it.
   ///
+  /// This is a non-consuming variant of [`fold_to`].
+  ///
   /// Note: [`reduce()`] can be used to use the first entry as the initial
   /// value, if the accumulator type and item type is the same.
   ///
-  /// Note: `fold()` combines entrys in a *left-associative* fashion. For associative
-  /// operators like `+`, the order the entrys are combined in is not important, but for non-associative
+  /// Note: `fold()` combines entries in a *left-associative* fashion. For associative
+  /// operators like `+`, the order the entries are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *right-associative* version of `fold()`, see [`rfold()`].
+  ///
+  /// [`fold_to`]: Map::fold_to
   ///
   /// # Examples
   ///
@@ -824,7 +828,7 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold(0, |acc, (k, v)| acc + k + v.len());
+  /// let sum = a.fold(0, |acc, (&k, &v)| acc + k + v.len());
   ///
   /// assert_eq!(sum, 9);
   /// ```
@@ -839,11 +843,72 @@ pub trait Map<Key, Value> {
   /// | 3       | 5   | 3 | c | 9      |
   ///
   /// And so, our final result, `9`.
-  fn fold<B>(self, init: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
+  fn fold<B>(self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
+
+  /// Folds every entry into an accumulator by applying an operation,
+  /// returning the final result.
+  ///
+  /// `fold_to()` takes two arguments: an initial value, and a closure with two
+  /// arguments: an 'accumulator', and an entry. The closure returns the value that
+  /// the accumulator should have for the next iteration.
+  ///
+  /// The initial value is the value the accumulator will have on the first
+  /// call.
+  ///
+  /// After applying this closure to every entry of the map, `fold_to()`
+  /// returns the accumulator.
+  ///
+  /// This operation is sometimes called 'reduce' or 'inject'.
+  ///
+  /// Folding is useful whenever you have a map of something, and want
+  /// to produce a single value from it.
+  ///
+  /// This is a consuming variant of [`fold`].
+  ///
+  /// Note: [`reduce_to()`] can be used to use the first entry as the initial
+  /// value, if the accumulator type and item type is the same.
+  ///
+  /// Note: `fold_to()` combines entries in a *left-associative* fashion. For associative
+  /// operators like `+`, the order the entries are combined in is not important, but for non-associative
+  /// operators like `-` the order will affect the final result.
+  ///
+  /// [`fold`]: Map::fold
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// // the sum of all the elements of the array
+  /// let sum = a.fold_to(0, |acc, (k, v)| acc + k + v.len());
+  ///
+  /// assert_eq!(sum, 9);
+  /// ```
+  ///
+  /// Let's walk through each step of the iteration here:
+  ///
+  /// | element | acc | k | k | result |
+  /// |---------|-----|---|---|--------|
+  /// |         | 0   |   |   |        |
+  /// | 1       | 0   | 1 | a | 2      |
+  /// | 2       | 2   | 2 | b | 5      |
+  /// | 3       | 5   | 3 | c | 9      |
+  ///
+  /// And so, our final result, `9`.
+  fn fold_to<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
   {
-    self.into_iter().fold(init, function)
+    self.into_iter().fold(initial_value, function)
   }
 
   /// Creates a map by retaining the values representing the intersection
@@ -896,7 +961,7 @@ pub trait Map<Key, Value> {
   /// `(Key, Value)` and returns a value of type `(L, W)`.
   /// The resulting other are collected into a new map of the same type.
   ///
-  /// This is a non-consuming variant of [`map_to`].
+  /// This is a consuming variant of [`map_to`].
   ///
   /// [`map_to`]: Map::map_to
   ///
@@ -1095,7 +1160,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the maximum value with respect to the
   /// specified comparison function.
   ///
-  /// If several entrys are equally maximum, the last entry is
+  /// If several entries are equally maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1120,7 +1185,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the maximum value from the
   /// specified function.
   ///
-  /// If several entrys are equally maximum, the last entry is
+  /// If several entries are equally maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1144,7 +1209,7 @@ pub trait Map<Key, Value> {
 
   /// Returns the maximum entry of a map.
   ///
-  /// If several entrys are equally maximum, the last entry is
+  /// If several entries are equally maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1176,7 +1241,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the minimum value with respect to the
   /// specified comparison function.
   ///
-  /// If several entrys are equally minimum, the last entry is
+  /// If several entries are equally minimum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1201,7 +1266,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the minimum value from the
   /// specified function.
   ///
-  /// If several entrys are equally minimum, the last entry is
+  /// If several entries are equally minimum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1225,7 +1290,7 @@ pub trait Map<Key, Value> {
 
   /// Returns the minimum entry of a map.
   ///
-  /// If several entrys are equally minimum, the last entry is
+  /// If several entries are equally minimum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1343,8 +1408,8 @@ pub trait Map<Key, Value> {
   /// specified predicate.
   ///
   /// The predicate passed to `partition()` can return `true`, or `false`.
-  /// `partition()` returns a pair, all the entrys for which it returned
-  /// `true`, and all the entrys for which it returned `false`.
+  /// `partition()` returns a pair, all the entries for which it returned
+  /// `true`, and all the entries for which it returned `false`.
   ///
   /// # Example
   ///
@@ -1561,7 +1626,10 @@ pub trait Map<Key, Value> {
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
+  /// This is a non-consuming variant of [`reduce_to`].
+  ///
   /// [`fold()`]: Map::fold
+  /// [`reduce_to()`]: Map::reduce_to
   ///
   /// # Example
   ///
@@ -1580,17 +1648,62 @@ pub trait Map<Key, Value> {
   ///   (3, 4),
   /// ]);
   ///
-  /// let reduced = a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap();
+  /// let reduced = a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap();
   ///
   /// assert_eq!(reduced, (6, 9));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = source.clone();
-  /// let folded = a.fold((0, 0), |(a, b), (k, v)| (a + k, b + v));
+  /// let folded = a.fold((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
   ///
   /// assert_eq!(reduced, folded);
   /// ```
-  fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
+  fn reduce(self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
+
+  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// operation.
+  ///
+  /// If the collection is empty, returns [`None`]; otherwise, returns the
+  /// result of the reduction.
+  ///
+  /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
+  /// For collections with at least one element, this is the same as [`fold_to()`]
+  /// with the first element of the collection as the initial accumulator value, folding
+  /// every subsequent element into it.
+  ///
+  /// This is a consuming variant of [`reduce`].
+  ///
+  /// [`fold_to()`]: Map::fold_to
+  /// [`reduce()`]: Map::reduce
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// # let source = HashMap::from([
+  /// #   (1, 2),
+  /// #   (2, 3),
+  /// #   (3, 4),
+  /// # ]);
+  /// let a = HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]);
+  ///
+  /// let reduced = a.reduce_to(|(a, b), (k, v)| (a + k, b + v)).unwrap();
+  ///
+  /// assert_eq!(reduced, (6, 9));
+  ///
+  /// // Which is equivalent to doing it with `fold`:
+  /// # let a = source.clone();
+  /// let folded = a.fold_to((0, 0), |(a, b), (k, v)| (a + k, b + v));
+  ///
+  /// assert_eq!(reduced, folded);
+  /// ```
+  fn reduce_to(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
   {
@@ -1883,6 +1996,13 @@ pub(crate) fn find_map_pairs<'a, K: 'a, V: 'a, B>(
 }
 
 #[inline]
+pub(crate) fn fold_pairs<'a, K: 'a, V: 'a, B>(
+  iterator: impl Iterator<Item = (&'a K, &'a V)>, init: B, function: impl FnMut(B, (&K, &V)) -> B,
+) -> B {
+  iterator.fold(init, function)
+}
+
+#[inline]
 pub(crate) fn flat_map_pairs<'a, K: 'a, V: 'a, L, W, R: IntoIterator<Item = (L, W)>, Result: FromIterator<(L, W)>>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> R,
 ) -> Result {
@@ -1942,4 +2062,13 @@ where
     }
   }
   (result_left, result_right)
+}
+
+#[inline]
+pub(crate) fn reduce_pairs<'a, K: 'a, V: 'a>(
+  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V),
+) -> Option<(K, V)> {
+  iterator.next().and_then(|value1| {
+    iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x)))
+  })
 }

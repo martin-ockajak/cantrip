@@ -48,5 +48,5 @@ where
 
   // fold
   // assert_eq!(repeated.clone().fold(0, |r, x| r + x), 4);
-  assert_eq!(empty.clone().fold(0, |r, x| r + x), 0);
+  assert_eq!(empty.clone().fold_to(0, |r, x| r + x), 0);
 }

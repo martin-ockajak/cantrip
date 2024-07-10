@@ -30,6 +30,11 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
   }
 
   #[inline]
+  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+    fold(self.iter(), initial_value, function)
+  }
+
+  #[inline]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
@@ -57,6 +62,11 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
   #[inline]
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)> {
     minmax_by_key(self.iter(), to_key)
+  }
+
+  #[inline]
+  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
+    reduce(self.iter(), function)
   }
 
   #[inline]
