@@ -44,15 +44,15 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.add_at(0, 3), [3, 1, 2]);
+  /// assert_eq!(a.add_at(0, 3), vec![3, 1, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_at(1, 3), [1, 3, 2]);
+  /// assert_eq!(a.add_at(1, 3), vec![1, 3, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_at(2, 3), [1, 2, 3]);
-  /// assert_eq!(e.add_at(0, 1), [1]);
+  /// assert_eq!(a.add_at(2, 3), vec![1, 2, 3]);
+  /// assert_eq!(e.add_at(0, 1), vec![1]);
   ///
   /// # let a = source.clone();
-  /// assert_eq!(a.add_at(3, 3), [1, 2]);
+  /// assert_eq!(a.add_at(3, 3), vec![1, 2]);
   /// ```
   #[inline]
   fn add_at(self, index: usize, element: Item) -> Self
@@ -391,6 +391,30 @@ pub trait Sequence<Item> {
   where
     Item: PartialEq + 'a;
 
+  /// Creates a collection by omitting an element at specified index
+  /// in the original collection.
+  ///
+  /// if the specified index exceeds the collection size, no elements are deleted.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.delete_at(0), vec![2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.delete_at(1), vec![1, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.delete_at(2), vec![1, 2]);
+  /// assert_eq!(e.delete_at(0), vec![]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.delete_at(3), vec![1, 2, 3]);
+  /// ```
   #[inline]
   fn delete_at(self, index: usize) -> Self
   where
@@ -399,12 +423,37 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
   }
 
+  /// Creates a collection by omitting all elements at specified indices
+  /// in the original collection.
+  ///
+  /// if the specified index exceeds the collection size, no elements are inserted.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.delete_all_at(vec![0, 2]), vec![2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.delete_all_at(vec![1, 3]), vec![1, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.delete_all_at(vec![0, 1, 2, 3]), vec![]);
+  ///
+  /// assert_eq!(e.delete_all_at(vec![1, 2]), vec![]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.delete_all_at(vec![3, 4]), vec![1, 2, 3]);
+  /// ```
   #[inline]
-  fn delete_range(self, range: impl RangeBounds<usize>) -> Self
+  fn delete_all_at(self, positions: impl IntoIterator<Item = usize>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.into_iter().enumerate().filter_map(|(i, x)| if range.contains(&i) { None } else { Some(x) }).collect()
+    let positions: HashSet<usize> = HashSet::from_iter(positions);
+    self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
   // FIXME - consider creating a non-consuming version or removing clone bound

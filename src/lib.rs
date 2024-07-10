@@ -63,10 +63,10 @@
 /// | *common_prefix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *common_suffix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *count_by*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *delete*                  |    :heavy_check_mark:     |                    |                               | :heavy_check_mark: |
-/// | *delete_all*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-/// | *delete_at*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *delete_range*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
+/// | *delete*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *delete_all*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *delete_all_at*           |    :heavy_check_mark:     |                    |                               |                    |
+/// | *delete_at*               |    :heavy_check_mark:     |                    |                               |                    |
 /// | *duplicates*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *duplicates_by*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *enumerate*               |    :heavy_check_mark:     |                    |                               |                    |
