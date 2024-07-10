@@ -377,9 +377,13 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
   ///
   /// assert!(a.subset(&vec![2, 1, 3, 4]));
+  /// assert!(e.subset(&vec![2, 1, 3, 4]));
+  ///
   /// assert!(!a.subset(&vec![2, 1]));
+  /// assert!(!a.subset(&vec![]));
   /// ```
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
@@ -400,9 +404,13 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert!(a.superset(&vec![2, 1]));
+  /// assert!(a.superset(&vec![]));
   ///
   /// assert!(!a.superset(&vec![2, 1, 3, 4]));
-  /// assert!(a.superset(&vec![2, 1]));
+  /// assert!(!e.superset(&vec![2, 1]));
   /// ```
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
