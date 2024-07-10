@@ -1,8 +1,9 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
+
 use crate::Iterable;
 
 /// Non-consuming collection operations.
@@ -86,27 +87,6 @@ pub trait Traversable<Item> {
   /// assert_eq!(a.count_by(|&x| x == 5), 0);
   /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
-
-  /// Tests if a collection contains all elements of another collection exactly
-  /// as many times as their appear in the other collection and vice versa.
-  ///
-  /// Returns `true` if the other collection is empty.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3, 3];
-  ///
-  /// assert!(a.equivalent(&vec![3, 2, 1, 3]));
-  ///
-  /// assert!(!a.equivalent(&vec![1, 2, 2]));
-  /// assert!(!a.equivalent(&vec![1, 1, 2, 3, 3]));
-  /// ```
-  fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a;
 
   /// Searches for an element of a collection that satisfies a predicate.
   ///
@@ -482,35 +462,6 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
 ) -> usize {
   iterator.filter(|&x| predicate(x)).count()
-}
-
-pub(crate) fn equivalent<'a, Item>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-where
-  Item: Eq + Hash + 'a,
-{
-  let elements_iterator = elements.iterator();
-  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-  let mut remaining = 0_usize;
-  for item in elements_iterator {
-    *excluded.entry(item).or_default() += 1;
-    remaining += 1;
-  }
-  for item in iterator {
-    match excluded.get_mut(item) {
-      Some(count) => {
-        if *count > 0 {
-          *count -= 1;
-          remaining = remaining.saturating_sub(1);
-        } else {
-          return false
-        }
-      },
-      None => return false
-    }
-  };
-  remaining == 0
 }
 
 pub(crate) fn subset<'a, Item>(

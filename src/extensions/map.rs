@@ -21,8 +21,6 @@ pub trait Map<Key, Value> {
   type This<K, V>;
 
   // FIXME - add documentation
-  // FIXME - implement these methods
-  // equivalent
 
   /// Creates a map by adding a entry to the original map.
   ///

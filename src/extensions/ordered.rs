@@ -9,6 +9,27 @@ use crate::Iterable;
 /// - Requires the collection to represent an ordered collection
 ///
 pub trait Ordered<Item> {
+  /// Tests if a collection contains all elements of another collection exactly
+  /// as many times as their appear in the other collection and vice versa.
+  ///
+  /// Returns `true` if the other collection is empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 3];
+  ///
+  /// assert!(a.equivalent(&vec![3, 2, 1, 3]));
+  ///
+  /// assert!(!a.equivalent(&vec![1, 2, 2]));
+  /// assert!(!a.equivalent(&vec![1, 1, 2, 3, 3]));
+  /// ```
+  fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
+
   /// Tests if a collection contains all elements of another collection
   /// at least as many times as their appear in the other collection.
   ///
@@ -33,7 +54,7 @@ pub trait Ordered<Item> {
   fn includes<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
-  
+
   /// Searches for an element in a collection, returning its index.
   ///
   /// `position()` takes a closure that returns `true` or `false`. It applies
@@ -177,6 +198,35 @@ pub trait Ordered<Item> {
   {
     self.positions(|x| x == element)
   }
+}
+
+pub(crate) fn equivalent<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+  let mut remaining = 0_usize;
+  for item in elements_iterator {
+    *excluded.entry(item).or_default() += 1;
+    remaining += 1;
+  }
+  for item in iterator {
+    match excluded.get_mut(item) {
+      Some(count) => {
+        if *count > 0 {
+          *count -= 1;
+          remaining = remaining.saturating_sub(1);
+        } else {
+          return false
+        }
+      },
+      None => return false
+    }
+  };
+  remaining == 0
 }
 
 pub(crate) fn includes<'a, Item>(
