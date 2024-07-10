@@ -25,7 +25,6 @@ pub trait Sequence<Item> {
   // chunked_by
   // permutations
   // powersequence
-  // slice
   // subsequence
   // variations
   // variations_repetitive
