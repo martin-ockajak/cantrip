@@ -67,6 +67,7 @@
 /// | *duplicates*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *duplicates_by*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *enumerate*               |    :heavy_check_mark:     |                    |                               |                    |
+/// | *equivalent*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *fill*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *fill_with*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *filter*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
@@ -142,7 +143,6 @@
 /// | *rskip_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rtake*                   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rtake_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *same_items*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *scan*                    |    :heavy_check_mark:     |                    |                               |                    |
 /// | *skip*                    |    :heavy_check_mark:     |                    |                               |                    |
 /// | *skip_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |

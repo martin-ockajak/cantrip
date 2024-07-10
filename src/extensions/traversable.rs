@@ -13,9 +13,6 @@ use crate::Iterable;
 /// - Does not create a new collection
 ///
 pub trait Traversable<Item> {
-  // FIXME - implement these methods
-  // same_items
-
   /// Tests if every element of the collection matches a predicate.
   ///
   /// `all()` takes a closure that returns `true` or `false`. It applies
@@ -108,6 +105,26 @@ pub trait Traversable<Item> {
   /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
 
+  /// Tests if a collection contains all elements of another collection exactly
+  /// as many times as their appear in the other collection and vice versa.
+  ///
+  /// Returns `true` if the other collection is empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3];
+  ///
+  /// assert!(a.equivalent(&vec![3, 2, 1, 2]));
+  /// assert!(!a.equivalent(&vec![1, 2, 2]));
+  /// assert!(!a.equivalent(&vec![1, 1, 2, 2, 3]));
+  /// ```
+  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
+
   /// Searches for an element of a collection that satisfies a predicate.
   ///
   /// `find()` takes a closure that returns `true` or `false`. It applies
@@ -160,25 +177,8 @@ pub trait Traversable<Item> {
   /// ```
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
-  /// Combine all collection elements into one `String`, separated by `sep`.
-  ///
-  /// Use the `Display` implementation of each element.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = [1, 2, 3];
-  ///
-  /// assert_eq!(a.join_items(", "), "1, 2, 3");
-  /// ```
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display;
-
-  /// Tests if a collection contains all elements of another collection as
-  /// many times as their appear in the other collection.
+  /// Tests if a collection contains all elements of another collection
+  /// at least as many times as their appear in the other collection.
   ///
   /// Returns `true` if the other collection is empty.
   ///
@@ -197,6 +197,23 @@ pub trait Traversable<Item> {
   fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
+
+  /// Combine all collection elements into one `String`, separated by `sep`.
+  ///
+  /// Use the `Display` implementation of each element.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = [1, 2, 3];
+  ///
+  /// assert_eq!(a.join_items(", "), "1, 2, 3");
+  /// ```
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display;
 
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
@@ -450,6 +467,35 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
+pub(crate) fn equivalent<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+  let mut remaining = 0_usize;
+  for item in elements_iterator {
+    *excluded.entry(item).or_default() += 1;
+    remaining += 1;
+  }
+  for item in iterator {
+    match excluded.get_mut(item) {
+      Some(count) => {
+        if *count > 0 {
+          *count -= 1;
+          remaining = remaining.saturating_sub(1);
+        } else {
+          return false
+        }
+      },
+      None => return false
+    }
+  };
+  remaining == 0
+}
+
 pub(crate) fn includes<'a, Item>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool
@@ -463,14 +509,14 @@ where
     *excluded.entry(item).or_default() += 1;
     remaining += 1;
   }
-  iterator.for_each(|item| {
+  for item in iterator {
     if let Some(count) = excluded.get_mut(item) {
       if *count > 0 {
         *count -= 1;
         remaining = remaining.saturating_sub(1);
       }
     }
-  });
+  };
   remaining == 0
 }
 
