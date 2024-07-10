@@ -99,6 +99,14 @@ impl<Item> Traversable<Item> for [Item] {
   {
     subset(self.iter(), elements)
   }
+
+  #[inline]
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    superset(self.iter(), elements)
+  }
 }
 
 impl<Item> Reversible<Item> for [Item] {

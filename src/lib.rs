@@ -158,7 +158,9 @@
 /// | *splice*                  |    :heavy_check_mark:     |                    |                               |                    |
 /// | *step_by*                 |    :heavy_check_mark:     |                    |                               |                    |
 /// | *subset*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *subsequence*             |    :heavy_check_mark:     |                    |                               | :heavy_check_mark: |
+/// | *subsequence*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *superset*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *supersequence*           |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *sum*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *sum_keys*                |                           |                    |                               | :heavy_check_mark: |
 /// | *sum_values*              |                           |                    |                               | :heavy_check_mark: |

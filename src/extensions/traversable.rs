@@ -421,12 +421,30 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 2];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert!(a.subset(&vec![1, 2, 3]));
-  /// assert!(!a.subset(&vec![1]));
+  /// assert!(a.subset(&vec![2, 1, 3, 4]));
+  /// assert!(!a.subset(&vec![2, 1]));
   /// ```
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
+
+  /// Tests if all the elements of another collection can be found in this collection.
+  ///
+  /// Returns `true` if the other collection is empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3];
+  ///
+  /// assert!(!a.superset(&vec![2, 1, 3, 4]));
+  /// assert!(a.superset(&vec![2, 1]));
+  /// ```
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
 }
@@ -529,6 +547,22 @@ where
   let elements_iterator = elements.iterator();
   let occurred: HashSet<&Item> = HashSet::from_iter(elements_iterator);
   for item in iterator {
+    if !occurred.contains(item) {
+      return false;
+    }
+  }
+  true
+}
+
+pub(crate) fn superset<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool
+where
+  Item: Eq + Hash + 'a,
+{
+  let elements_iterator = elements.iterator();
+  let occurred: HashSet<&Item> = HashSet::from_iter(iterator);
+  for item in elements_iterator {
     if !occurred.contains(item) {
       return false;
     }
