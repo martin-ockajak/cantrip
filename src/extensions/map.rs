@@ -25,8 +25,6 @@ pub trait Map<Key, Value> {
   // FIXME - implement these methods
   // equivalent
   // includes
-  // subset
-  // superset
 
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
@@ -363,6 +361,52 @@ pub trait Map<Key, Value> {
   {
     self.into_iter().scan(initial_state, function).collect()
   }
+
+  /// Tests if all the key of a map can be found in another collection.
+  ///
+  /// Returns `true` if this map is empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert!(a.subset(&vec![2, 1, 3, 4]));
+  /// assert!(!a.subset(&vec![2, 1]));
+  /// ```
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a;
+
+  /// Tests if all the elements of another collection can be found among the keys of this map.
+  ///
+  /// Returns `true` if the other collection is empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert!(!a.superset(&vec![2, 1, 3, 4]));
+  /// assert!(a.superset(&vec![2, 1]));
+  /// ```
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a;
 
   #[inline]
   fn sum_keys(self) -> Key

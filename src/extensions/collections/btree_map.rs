@@ -1,8 +1,8 @@
+use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::fmt::Display;
-
-use crate::extensions::*;
+use std::hash::Hash;
 
 impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   type This<X, V> = BTreeMap<X, V>;
@@ -136,5 +136,21 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
     Self::This<L, W>: FromIterator<(L, W)>,
   {
     self.iter().scan(initial_state, function).collect()
+  }
+
+  #[inline]
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a,
+  {
+    subset(self.keys(), elements)
+  }
+
+  #[inline]
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a,
+  {
+    superset(self.keys(), elements)
   }
 }

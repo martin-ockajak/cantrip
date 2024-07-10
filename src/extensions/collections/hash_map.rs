@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Display;
-
+use std::hash::Hash;
 use crate::extensions::*;
 
 impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
@@ -136,5 +136,21 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
     Self::This<L, W>: FromIterator<(L, W)>,
   {
     self.iter().scan(initial_state, function).collect()
+  }
+
+  #[inline]
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a,
+  {
+    subset(self.keys(), elements)
+  }
+
+  #[inline]
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a,
+  {
+    superset(self.keys(), elements)
   }
 }
