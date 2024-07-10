@@ -477,7 +477,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flatten().collect()
   }
 
-  /// Creates a collection by applying the given closure `f` to each element
+  /// Creates a collection by applying the given closure `function` to each element
   /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -515,7 +515,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a collection by applying the given closure `f` to each element
+  /// Creates a collection by applying the given closure `function` to each element
   /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -806,10 +806,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  /// Creates a collection by applying the given closure `f` to each element in
+  /// Creates a collection by applying the given closure `function` to each element in
   /// the original collection.
   ///
-  /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
+  /// The closure `function` takes a reference to an element of type
+  /// `Item` and returns a value of type `R`.
   /// The resulting other are collected into a new collection of the same type.
   ///
   /// This is a non-consuming variant of [`map_to`].
@@ -819,11 +820,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// # Arguments
   ///
   /// * `self` - the collection to apply the mapping to.
-  /// * `f` - the closure to apply to each element.
+  /// * `function` - the closure to apply to each element.
   ///
   /// # Returns
   ///
-  /// A new collection of the same type, containing the mapped other.
+  /// A new collection of the same type, containing the mapped elements.
   ///
   /// # Safety
   ///
@@ -845,10 +846,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a collection by applying the given closure `f` to each element in
+  /// Creates a collection by applying the given closure `function` to each element in
   /// the original collection.
   ///
-  /// The closure `f` takes a reference to an element of type `A` and returns a value of type `R`.
+  /// The closure `function` takes a reference to an element of type
+  /// `Item` and returns a value of type `R`.
   /// The resulting other are collected into a new collection of the same type.
   ///
   /// This is a consuming variant of [`map`].
@@ -858,11 +860,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// # Arguments
   ///
   /// * `self` - the collection to apply the mapping to.
-  /// * `f` - the closure to apply to each element.
+  /// * `function` - the closure to apply to each element.
   ///
   /// # Returns
   ///
-  /// A new collection of the same type, containing the mapped other.
+  /// A new collection of the same type, containing the mapped elements.
   ///
   /// # Safety
   ///

@@ -678,7 +678,7 @@ pub trait Map<Key, Value> {
     self.into_iter().find_map(function)
   }
 
-  /// Creates a map by applying the given closure `f` to each entry
+  /// Creates a map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -728,7 +728,7 @@ pub trait Map<Key, Value> {
     R: IntoIterator<Item = (L, W)>,
     Self::This<L, W>: FromIterator<(L, W)>;
 
-  /// Creates a map by applying the given closure `f` to each entry
+  /// Creates a map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -852,7 +852,6 @@ pub trait Map<Key, Value> {
   /// ```
   /// use crate::cantrip::*;
   /// use std::collections::HashSet;
-  ///
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -885,10 +884,100 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
 
+  /// Creates a map by applying the given closure `function` to each entry in
+  /// the original map.
+  ///
+  /// The closure `function` takes a reference to an entry of type
+  /// `(Key, Value)` and returns a value of type `(L, W)`.
+  /// The resulting other are collected into a new map of the same type.
+  ///
+  /// This is a non-consuming variant of [`map_to`].
+  ///
+  /// [`map_to`]: Map::map_to
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the map to apply the mapping to.
+  /// * `function` - the closure to apply to each entry.
+  ///
+  /// # Returns
+  ///
+  /// A new map of the same type, containing the mapped entries.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let mapped = a.map(|(&k, &v)| (k, k + v.len()));
+  ///
+  /// assert_eq!(mapped, HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]));
+  /// ```
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
+  /// Creates a map by applying the given closure `function` to each entry in
+  /// the original map.
+  ///
+  /// The closure `function` takes a reference to an entry of type
+  /// `(Key, Value)` and returns a value of type `(L, W)`.
+  /// The resulting other are collected into a new map of the same type.
+  ///
+  /// This is a consuming variant of [`map`].
+  ///
+  /// [`map`]: Map::map
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the map to apply the mapping to.
+  /// * `function` - the closure to apply to each entry.
+  ///
+  /// # Returns
+  ///
+  /// A new map of the same type, containing the mapped entries.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let mapped = a.map_to(|(k, v)| (k, k + v.len()));
+  ///
+  /// assert_eq!(mapped, HashMap::from([
+  ///   (1, 2),
+  ///   (2, 3),
+  ///   (3, 4),
+  /// ]));
+  /// ```
   #[inline]
   fn map_to<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
@@ -898,6 +987,47 @@ pub trait Map<Key, Value> {
     self.into_iter().map(function).collect()
   }
 
+  /// Creates a map by applying the given closure `function` to each key in
+  /// the original map.
+  ///
+  /// The closure `function` takes a reference to an entry of type
+  /// `Key` and returns a value of type `L`.
+  /// The resulting other are collected into a new map of the same type.
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the map to apply the mapping to.
+  /// * `function` - the closure to apply to each key.
+  ///
+  /// # Returns
+  ///
+  /// A new map of the same type, containing the mapped keys.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let mapped = a.map_keys(|&k| k + 1);
+  ///
+  /// assert_eq!(mapped, HashMap::from([
+  ///   (2, "a"),
+  ///   (3, "b"),
+  ///   (4, "c"),
+  /// ]));
+  /// ```
   #[inline]
   fn map_keys<L: Eq + Hash>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
   where
@@ -907,6 +1037,47 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
+  /// Creates a map by applying the given closure `function` to each value in
+  /// the original map.
+  ///
+  /// The closure `function` takes a reference to an entry of type
+  /// `Value` and returns a value of type `W`.
+  /// The resulting other are collected into a new map of the same type.
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the map to apply the mapping to.
+  /// * `function` - the closure to apply to each value.
+  ///
+  /// # Returns
+  ///
+  /// A new map of the same type, containing the mapped keys.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// let mapped = a.map_values(|v| v.len());
+  ///
+  /// assert_eq!(mapped, HashMap::from([
+  ///   (1, 1),
+  ///   (2, 1),
+  ///   (3, 1),
+  /// ]));
+  /// ```
   #[inline]
   fn map_values<W: Eq + Hash>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
   where
