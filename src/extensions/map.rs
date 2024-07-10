@@ -227,7 +227,6 @@ pub trait Map<Key, Value> {
   ///
   /// ```
   /// use cantrip::*;
-  ///
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -244,6 +243,27 @@ pub trait Map<Key, Value> {
   /// ```
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
+  /// Counts key/value pairs of a map that satisfy a predicate.
+  ///
+  /// `count_by()` takes a closure that returns `true` or `false`. It applies
+  /// this closure to each key/value pair in the map, and counts those which
+  /// return `true`, disregarding those which return `false`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.count_by(|(&k, &v)| k == 2 && v == "b"), 1);
+  /// assert_eq!(a.count_by(|(&k, _)| k == 5), 0);
+  /// ```
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
 
   #[inline]
