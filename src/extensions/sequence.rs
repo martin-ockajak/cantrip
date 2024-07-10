@@ -6,7 +6,6 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
-use std::ops::RangeBounds;
 
 /// Sequence operations.
 ///
@@ -1146,18 +1145,19 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.replace_range(index..(index + 1), iter::once(element))
+    self.replace_all_at(index..(index + 1), iter::once(element))
   }
 
-  fn replace_range(self, range: impl RangeBounds<usize>, replacement: impl IntoIterator<Item = Item>) -> Self
+  fn replace_all_at(self, indices: impl IntoIterator<Item = usize>, replacement: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
+    let positions: HashSet<usize> = HashSet::from_iter(indices);
     let mut values = replacement.into_iter();
     unfold(0_usize, |position| {
       let item = iterator.next();
-      let result = if range.contains(position) { values.next() } else { item };
+      let result = if positions.contains(position) { values.next() } else { item };
       *position += 1;
       result
     })

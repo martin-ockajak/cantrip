@@ -134,8 +134,8 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *repeat*                  |    :heavy_check_mark:     |                    |                               |                    |
 | *replace*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *replace_all*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+| *replace_all_at*          |    :heavy_check_mark:     |                    |                               |                    |
 | *replace_at*              |    :heavy_check_mark:     |                    |                               |                    |
-| *replace_range*           |    :heavy_check_mark:     |                    |                               |                    |
 | *rev*                     |    :heavy_check_mark:     |                    |                               |                    |
 | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |

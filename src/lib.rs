@@ -138,8 +138,8 @@
 /// | *repeat*                  |    :heavy_check_mark:     |                    |                               |                    |
 /// | *replace*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *replace_all*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *replace_all_at*          |    :heavy_check_mark:     |                    |                               |                    |
 /// | *replace_at*              |    :heavy_check_mark:     |                    |                               |                    |
-/// | *replace_range*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rev*                     |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
