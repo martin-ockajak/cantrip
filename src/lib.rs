@@ -141,14 +141,10 @@
 /// | *replace_range*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rev*                     |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *rfold*                   |    :heavy_check_mark:     |                    |                               |                    |
+/// | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rposition*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *rskip*                   |    :heavy_check_mark:     |                    |                               |                    |
-/// | *rskip_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *rtake*                   |    :heavy_check_mark:     |                    |                               |                    |
-/// | *rtake_while*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *scan*                    |    :heavy_check_mark:     |                    |                               |                    |
-/// | *skip*                    |    :heavy_check_mark:     |                    |                               |                    |
+/// | *skip*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *skip_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *slice*                   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *smallest*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
@@ -169,7 +165,7 @@
 /// | *sum_keys*                |                           |                    |                               | :heavy_check_mark: |
 /// | *sum_values*              |                           |                    |                               | :heavy_check_mark: |
 /// | *tail*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *take*                    |    :heavy_check_mark:     |                    |                               |                    |
+/// | *take*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *take_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *unique*                  |    :heavy_check_mark:     |                    |                               |                    |
 /// | *unique_by*               |    :heavy_check_mark:     |                    |                               |                    |

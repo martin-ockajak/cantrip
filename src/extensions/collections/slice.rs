@@ -158,6 +158,11 @@ impl<Item> Slice<Item> for [Item] {
   }
 
   #[inline]
+  fn skip(&self, n: usize) -> &Self {
+    &self[min(n, self.len())..self.len()]
+  }
+
+  #[inline]
   fn skip_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[min(index, self.len())..self.len()],
@@ -168,6 +173,11 @@ impl<Item> Slice<Item> for [Item] {
   #[inline]
   fn tail(&self) -> &Self {
     &self[min(1, self.len())..self.len()]
+  }
+
+  #[inline]
+  fn take(&self, n: usize) -> &Self {
+    &self[0..min(n, self.len())]
   }
 
   #[inline]
