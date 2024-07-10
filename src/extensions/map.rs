@@ -824,7 +824,7 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold(0, |acc, (&k, &v)| acc + k + v.len());
+  /// let sum = a.fold(0, |acc, (k, v)| acc + k + v.len());
   ///
   /// assert_eq!(sum, 9);
   /// ```
@@ -839,7 +839,12 @@ pub trait Map<Key, Value> {
   /// | 3       | 5   | 3 | c | 9      |
   ///
   /// And so, our final result, `9`.
-  fn fold<B>(&self, init: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
+  fn fold<B>(self, init: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
+    self.into_iter().fold(init, function)
+  }
 
   /// Creates a map by retaining the values representing the intersection
   /// of the original map with another map i.e., the values that are
@@ -1581,7 +1586,7 @@ pub trait Map<Key, Value> {
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = source.clone();
-  /// let folded = a.fold((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
+  /// let folded = a.fold((0, 0), |(a, b), (k, v)| (a + k, b + v));
   ///
   /// assert_eq!(reduced, folded);
   /// ```
