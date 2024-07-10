@@ -1,4 +1,5 @@
 use std::hash::Hash;
+use crate::Iterable;
 
 /// Slice operations.
 ///
@@ -60,6 +61,24 @@ pub trait Slice<Item> {
   fn all_unique(&self) -> bool
   where
     Item: Eq + Hash;
+
+  /// Computes the length of the longest common prefix shared by a slice and another collection.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = &[1, 2, 3];
+  ///
+  /// assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
+  /// assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
+  ///
+  /// assert_eq!(a.common_prefix_length(&vec![]), 0);
+  /// ```
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  where
+    Item: PartialEq + 'a;
 
   /// Searches for an element in a slice, returning its index.
   ///

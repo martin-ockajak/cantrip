@@ -104,7 +104,7 @@ pub trait Traversable<Item> {
   /// assert!(!a.equivalent(&vec![1, 2, 2]));
   /// assert!(!a.equivalent(&vec![1, 1, 2, 3, 3]));
   /// ```
-  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
 
@@ -181,7 +181,7 @@ pub trait Traversable<Item> {
   /// assert!(!a.includes(&vec![3, 4]));
   /// assert!(!e.includes(&vec![1]));
   /// ```
-  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn includes<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
 

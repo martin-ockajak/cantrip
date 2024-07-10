@@ -95,6 +95,14 @@ impl<'c, T> Iterator for SliceIterator<'c, T> {
   }
 }
 
+#[allow(single_use_lifetimes)]
+impl<'c, T> DoubleEndedIterator for SliceIterator<'c, T> {
+
+  fn next_back(&mut self) -> Option<Self::Item> {
+    self.iterator.next_back()
+  }
+}
+
 impl<Item> Iterable for Vec<Item> {
   type Item<'c> = &'c Item
   where
@@ -123,6 +131,14 @@ impl<'c, T> Iterator for LinkedListIterator<'c, T> {
   }
 }
 
+#[allow(single_use_lifetimes)]
+impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
+
+  fn next_back(&mut self) -> Option<Self::Item> {
+    self.iterator.next_back()
+  }
+}
+
 impl<Item> Iterable for LinkedList<Item> {
   type Item<'c> = &'c Item
   where
@@ -148,6 +164,14 @@ impl<'c, T> Iterator for VecDequeIterator<'c, T> {
 
   fn next(&mut self) -> Option<Self::Item> {
     self.iterator.next()
+  }
+}
+
+#[allow(single_use_lifetimes)]
+impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
+
+  fn next_back(&mut self) -> Option<Self::Item> {
+    self.iterator.next_back()
   }
 }
 

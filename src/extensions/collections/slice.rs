@@ -103,6 +103,15 @@ impl<Item> Traversable<Item> for [Item] {
 
 impl<Item> Reversible<Item> for [Item] {
   #[inline]
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  where
+    I: DoubleEndedIterator<Item = &'a Item>,
+    Item: PartialEq + 'a
+  {
+    common_suffix_length(self.iter().rev(), elements)
+  }
+
+  #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
   }
@@ -128,6 +137,14 @@ impl<Item> Slice<Item> for [Item] {
     Item: Eq + Hash,
   {
     all_unique(self.iter())
+  }
+
+  #[inline]
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  where
+    Item: PartialEq + 'a,
+  {
+    common_prefix_length(self.iter(), elements)
   }
 
   #[inline]

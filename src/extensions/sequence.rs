@@ -1,6 +1,7 @@
 #![allow(missing_docs)]
 
 use crate::extensions::util::unfold::unfold;
+use crate::Iterable;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
@@ -23,7 +24,6 @@ pub trait Sequence<Item> {
   // coalesce
   // chunked_by
   // index_of_sequence
-  // longest common prefix
   // permutations
   // powersequence
   // slice
@@ -373,6 +373,24 @@ pub trait Sequence<Item> {
   //   //   })
   //     .collect()
   // }
+
+  /// Computes the length of the longest common prefix shared by a collection and another collection.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
+  /// assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
+  ///
+  /// assert_eq!(a.common_prefix_length(&vec![]), 0);
+  /// ```
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  where
+    Item: PartialEq + 'a;
 
   #[inline]
   fn cycle(self, n: usize) -> Self
@@ -1275,6 +1293,22 @@ where
   .collect()
 }
 
+pub(crate) fn common_prefix_length<'a, Item>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> usize
+where
+  Item: PartialEq + 'a,
+{
+  let mut result = 0_usize;
+  for (item, element) in iterator.zip(elements.iterator()) {
+    if item != element {
+      return result;
+    }
+    result += 1;
+  }
+  result
+}
+
 pub(crate) fn multicombinations<'a, Item, Collection>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection>
@@ -1397,7 +1431,7 @@ where
           Some(item) => {
             window.push_back(item);
           }
-          None => return None
+          None => return None,
         },
       }
     }

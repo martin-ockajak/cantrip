@@ -1,4 +1,5 @@
 use crate::extensions::util::unfold::unfold;
+use crate::Iterable;
 
 /// Reversible collection operations.
 ///
@@ -9,8 +10,24 @@ use crate::extensions::util::unfold::unfold;
 /// - Does not create a new collection
 ///
 pub trait Reversible<Item> {
-  // FIXME - implement these methods
-  // longest common suffix
+  /// Computes the length of the longest common suffix shared by a collection and another collection.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.common_suffix_length(&vec![0, 1, 2, 3]), 3);
+  /// assert_eq!(a.common_suffix_length(&vec![2, 3]), 2);
+  ///
+  /// assert_eq!(a.common_suffix_length(&vec![]), 0);
+  /// ```
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  where
+    I: DoubleEndedIterator<Item = &'a Item>,
+    Item: PartialEq + 'a;
 
   /// Searches for an element of a collection that satisfies a predicate, starting from the back.
   ///
@@ -348,4 +365,21 @@ pub trait Reversible<Item> {
   {
     self.into_iter().rev().take_while(predicate).collect()
   }
+}
+
+pub(crate) fn common_suffix_length<'a, Item, I>(
+  reversed_iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>,
+) -> usize
+where
+  I: DoubleEndedIterator<Item = &'a Item>,
+  Item: PartialEq + 'a,
+{
+  let mut result = 0_usize;
+  for (item, element) in reversed_iterator.zip(elements.iterator().rev()) {
+    if item != element {
+      return result;
+    }
+    result += 1;
+  }
+  result
 }

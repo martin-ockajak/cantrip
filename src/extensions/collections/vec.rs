@@ -103,6 +103,15 @@ impl<Item> Traversable<Item> for Vec<Item> {
 
 impl<Item> Reversible<Item> for Vec<Item> {
   #[inline]
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  where
+    I: DoubleEndedIterator<Item = &'a Item>,
+    Item: PartialEq + 'a
+  {
+    common_suffix_length(self.iter().rev(), elements)
+  }
+
+  #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
   }
@@ -202,6 +211,14 @@ impl<Item> Sequence<Item> for Vec<Item> {
     Self: Sized,
   {
     cartesian_product(self.iter(), k)
+  }
+
+  #[inline]
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  where
+    Item: PartialEq + 'a,
+  {
+    common_prefix_length(self.iter(), elements)
   }
 
   #[inline]
