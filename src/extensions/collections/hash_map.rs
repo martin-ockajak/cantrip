@@ -13,12 +13,19 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn all_equal(&self) -> bool
+  fn all_values_equal(&self) -> bool
   where
-    Key: PartialEq,
     Value: PartialEq,
   {
-    all_equal_pairs(self.iter())
+    all_equal(self.values())
+  }
+
+  #[inline]
+  fn all_values_unique(&self) -> bool
+  where
+    Value: Eq + Hash
+  {
+    all_unique(self.values())
   }
 
   #[inline]

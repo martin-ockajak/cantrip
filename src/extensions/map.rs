@@ -44,10 +44,73 @@ pub trait Map<Key, Value> {
 
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
-  fn all_equal(&self) -> bool
+  /// Tests if all values of the map are equal.
+  ///
+  /// `all_equal()` returns `true` if all values of the map are equal
+  /// and `false` if a pair of unequal values exist.
+  ///
+  /// An empty map returns `true`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "a"),
+  ///   (3, "a"),
+  /// ]);
+  /// let b = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert!(a.all_values_equal());
+  /// assert!(e.all_values_equal());
+  ///
+  /// assert!(!b.all_values_equal());
+  /// ```
+  fn all_values_equal(&self) -> bool
   where
-    Key: PartialEq,
     Value: PartialEq;
+
+  /// Tests if all values of the map are unique.
+  ///
+  /// `all_equal()` returns `true` if all values of the map are unique
+  /// and `false` if a pair of equal values exist.
+  ///
+  /// An empty map returns `true`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let b = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "a"),
+  ///   (3, "a"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert!(a.all_values_unique());
+  /// assert!(e.all_values_unique());
+  ///
+  /// assert!(!b.all_values_unique());
+  /// ```
+  fn all_values_unique(&self) -> bool
+  where
+    Value: Eq + Hash;
 
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
@@ -448,16 +511,6 @@ pub(crate) fn all_pairs<'a, K: 'a, V: 'a>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, predicate: impl FnMut((&K, &V)) -> bool,
 ) -> bool {
   iterator.all(predicate)
-}
-
-#[inline]
-pub(crate) fn all_equal_pairs<'a, K: PartialEq + 'a, V: PartialEq + 'a>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>,
-) -> bool {
-  match iterator.next() {
-    Some(head) => iterator.all(|x| x == head),
-    None => false,
-  }
 }
 
 #[inline]

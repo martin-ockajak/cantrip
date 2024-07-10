@@ -42,9 +42,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2];
+  /// # let source = vec![1, 2];
+  /// let a = vec![1, 2];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.clone().add_at(1, 3), [1, 3, 2]);
+  /// assert_eq!(a.add_at(0, 3), [3, 1, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_at(1, 3), [1, 3, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_at(2, 3), [1, 2, 3]);
+  /// assert_eq!(e.add_at(0, 1), [1]);
+  ///
+  /// # let a = source.clone();
   /// assert_eq!(a.add_at(3, 3), [1, 2]);
   /// ```
   #[inline]
@@ -65,9 +74,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2];
+  /// # let source = vec![1, 2];
+  /// let a = vec![1, 2];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.clone().add_all_at(1, vec![3, 4]), [1, 3, 4, 2]);
+  /// assert_eq!(a.add_all_at(0, vec![3, 4]), [3, 4, 1, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_all_at(1, vec![3, 4]), [1, 3, 4, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_all_at(2, vec![3, 4]), [1, 2, 3, 4]);
+  /// # let a = source.clone();
+  /// assert_eq!(e.add_all_at(0, vec![1, 2]), [1, 2]);
+  ///
+  /// # let a = source.clone();
   /// assert_eq!(a.add_all_at(3, vec![3, 4]), [1, 2]);
   /// ```
   fn add_all_at(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
@@ -90,6 +109,31 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+  /// Tests if all elements of the collection are equal.
+  ///
+  /// `all_equal()` returns `true` if all elements of the collection are equal
+  /// and `false` if a pair of unequal elements exist.
+  ///
+  /// An empty collection returns `true`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 1, 1];
+  /// let b = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert!(a.all_equal());
+  /// assert!(e.all_equal());
+  ///
+  /// assert!(!b.all_equal());
+  /// ```
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq;
+
   /// Tests if all elements of the collection are unique.
   ///
   /// `all_equal()` returns `true` if all elements of the collection are unique
@@ -102,11 +146,14 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 1, 1];
-  /// let b = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let b = vec![1, 1, 1];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert!(!a.all_unique());
-  /// assert!(b.all_unique());
+  /// assert!(a.all_unique());
+  /// assert!(e.all_unique());
+  ///
+  /// assert!(!b.all_unique());
   /// ```
   fn all_unique(&self) -> bool
   where

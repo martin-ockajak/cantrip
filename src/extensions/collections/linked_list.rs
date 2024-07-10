@@ -12,14 +12,6 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq,
-  {
-    all_equal(self.iter())
-  }
-
-  #[inline]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
@@ -187,6 +179,14 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
 
 impl<Item> Sequence<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
+
+  #[inline]
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq,
+  {
+    all_equal(self.iter())
+  }
 
   #[inline]
   fn all_unique(&self) -> bool

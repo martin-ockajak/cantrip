@@ -24,9 +24,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2];
+  /// let a = vec![1, 2];
   ///
-  /// assert_eq!(a.add(3), [1, 2, 3]);
+  /// assert_eq!(a.add(3), vec![1, 2, 3]);
   /// ```
   fn add(self, value: Item) -> Self
   where
@@ -43,9 +43,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2];
+  /// let a = vec![1, 2];
   ///
-  /// assert_eq!(a.add_all(vec![3, 4]), [1, 2, 3, 4]);
+  /// assert_eq!(a.add_all(vec![3, 4]), vec![1, 2, 3, 4]);
   /// ```
   #[inline]
   fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
@@ -65,9 +65,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = vec![1, 2, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
+  /// assert_eq!(e.delete(&2), vec![]);
   /// ```
   #[inline]
   fn delete(self, value: &Item) -> Self
@@ -100,9 +102,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3, 3];
-  /// let b = vec![1, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_all(&b), vec![2, 3]);
+  /// assert_eq!(a.delete_all(&vec![1, 3]), vec![2, 3]);
+  /// assert_eq!(e.delete_all(&vec![1]), vec![]);
   /// ```
   fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
@@ -144,10 +147,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
+  /// assert_eq!(a.combinations(0), vec![vec![]]);
   /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
   /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
+  ///
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  ///
+  /// assert_eq!(a.combinations(4), empty_result);
+  /// assert_eq!(e.combinations(2), empty_result);
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
   where
@@ -163,6 +173,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// assert_eq!(Vec::fill(1, 2), vec![1, 1]);
+  /// assert_eq!(Vec::fill(1, 0), vec![]);
   /// ```
   #[inline]
   fn fill(value: Item, size: usize) -> Self
@@ -182,6 +193,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// assert_eq!(Vec::fill_with(|| 1, 2), vec![1, 1]);
+  /// assert_eq!(Vec::fill_with(|| 1, 0), vec![]);
   /// ```
   #[inline]
   fn fill_with(mut value: impl FnMut() -> Item, size: usize) -> Self
@@ -235,7 +247,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![&0, &1, &2];
   ///
-  /// let mut filtered = a.filter(|&x| *x > 1); // both & and *
+  /// let filtered = a.filter(|&x| *x > 1); // both & and *
   ///
   /// assert_eq!(filtered, vec![&2]);
   /// ```
@@ -341,6 +353,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec!["1", "two", "NaN", "four", "5"];
   ///
   /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
+  ///
   /// assert_eq!(filter_mapped, vec![1, 5]);
   /// ```
   #[inline]
@@ -397,7 +410,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use crate::cantrip::*;
   ///
   /// let a = vec![vec![1, 2, 3, 4], vec![5, 6]];
+  ///
   /// let flattened = a.flat();
+  ///
   /// assert_eq!(flattened, vec![1, 2, 3, 4, 5, 6]);
   /// ```
   ///
@@ -410,6 +425,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// // Vec is iterable because it supports IntoIterator
   /// let flattened = a.map(|&x| vec![x, -x]).flat();
+  ///
   /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   ///
@@ -423,6 +439,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// // Vec is iterable because it supports IntoIterator
   /// let flattened = a.flat_map(|&x| vec![x, -x]);
+  ///
   /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   ///
@@ -432,11 +449,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use crate::cantrip::*;
   ///
   /// let options = vec![Some(123), Some(321), None, Some(231)];
+  /// let results = vec![Ok(123), Ok(321), Err(456), Ok(231)];
+  ///
   /// let flattened_options: Vec<_> = options.flat();
+  ///
   /// assert_eq!(flattened_options, vec![123, 321, 231]);
   ///
-  /// let results = vec![Ok(123), Ok(321), Err(456), Ok(231)];
   /// let flattened_results: Vec<_> = results.flat();
+  ///
   /// assert_eq!(flattened_results, vec![123, 321, 231]);
   /// ```
   ///
@@ -448,9 +468,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let d3 = vec![vec![vec![1, 2], vec![3, 4]], vec![vec![5, 6], vec![7, 8]]];
   ///
   /// let d2 = d3.clone().flat();
+  ///
   /// assert_eq!(d2, vec![vec![1, 2], vec![3, 4], vec![5, 6], vec![7, 8]]);
   ///
   /// let d1 = d3.flat().flat();
+  ///
   /// assert_eq!(d1, vec![1, 2, 3, 4, 5, 6, 7, 8]);
   /// ```
   ///
@@ -501,6 +523,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// let flattened = a.flat_map(|&x| vec![x, -x]);
+  ///
   /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
@@ -538,6 +561,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// let flattened = a.flat_map_to(|x| vec![x, -x]);
+  ///
   /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
   /// ```
   #[inline]
@@ -664,6 +688,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let grouped = a.group_by(|x| x % 2);
+  ///
   /// assert_eq!(grouped, HashMap::from([
   ///   (0, vec![2]),
   ///   (1, vec![1, 3])
@@ -695,6 +720,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let group_folded = a.group_fold(|x| x % 2, &0, |acc, x| acc + x);
+  ///
   /// assert_eq!(group_folded, HashMap::from([
   ///   (0, 2),
   ///   (1, 4),
@@ -735,6 +761,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let group_reduced = a.group_reduce(|x| x % 2, |acc, x| acc + x);
+  ///
   /// assert_eq!(group_reduced, HashMap::from([
   ///   (0, 2),
   ///   (1, 4),
@@ -773,15 +800,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// use std::collections::HashSet;
   /// let a = vec![1, 2, 3];
-  /// let b = vec![4, 2, 3, 4];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// let intersection = a.intersect(&vec![4, 2, 3, 4]);
+  ///
+  /// assert_eq!(intersection, vec![2, 3]);
+  /// assert_eq!(e.intersect(&vec![1]), vec![]);
   ///
   /// // Print 2, 3.
-  /// for x in a.clone().intersect(&b) {
+  /// for x in intersection {
   ///   println!("{x}");
   /// }
-  ///
-  /// let intersection: Vec<_> = a.intersect(&b);
-  /// assert_eq!(intersection, [2, 3]);
   /// ```
   #[inline]
   fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
@@ -825,6 +854,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let mapped = a.map(|&x| x + 1);
+  ///
   /// assert_eq!(mapped, vec![2, 3, 4]);
   /// ```
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
@@ -863,6 +893,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let mapped = a.map_to(|x| x + 1);
+  ///
   /// assert_eq!(mapped, vec![2, 3, 4]);
   /// ```
   #[inline]
@@ -882,12 +913,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![6, 9, 1, 0, 4, 8, 7, 2, 3, 5];
+  /// let a = vec![5, 1, 3, 2, 4];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// let largest = a.largest(5);
+  /// let largest = a.largest(3);
   ///
   /// // FIXME - correct the error
-  /// // assert_eq!(largest, vec![9, 8, 7, 6, 5]);
+  /// // assert_eq!(largest, vec![5, 4, 3]);
+  /// assert_eq!(e.largest(3), vec![]);
   /// ```
   fn largest(self, n: usize) -> Self
   where
@@ -1008,6 +1041,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.powerset(), vec![
   ///   vec![],
@@ -1015,6 +1049,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///   vec![1, 2], vec![1, 3], vec![2, 3],
   ///   vec![1, 2, 3]]
   /// );
+  /// assert_eq!(e.powerset(), vec![vec![]]);
   /// ```
   fn powerset(&self) -> Vec<Self>
   where
@@ -1041,9 +1076,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![2, 3, 4];
+  /// let e: Vec<i32> = Vec::new();
+  ///
   /// let product = a.product();
   ///
   /// assert_eq!(product, 24);
+  /// assert_eq!(e.product(), 1);
   /// ```
   #[inline]
   fn product(self) -> Item
@@ -1072,11 +1110,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let reduced: i32 = (1..10).reduce(|acc, e| acc + e).unwrap();
-  /// assert_eq!(reduced, 45);
+  /// let reduced = vec![1, 2, 3].reduce(|acc, e| acc + e).unwrap();
+  ///
+  /// assert_eq!(reduced, 6);
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// let folded: i32 = (1..10).fold(0, |acc, e| acc + e);
+  /// let folded = vec![1, 2, 3].fold(0, |acc, e| acc + e);
+  ///
   /// assert_eq!(reduced, folded);
   /// ```
   #[inline]
@@ -1088,6 +1128,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
+  // FIXME = fix the failing test case
   /// Creates a collection from the original collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
@@ -1098,10 +1139,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3, 3];
-  /// let b = vec![2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.replace(&3, 4), vec![1, 2, 4, 3]);
+  ///
+  /// # let a = source.clone();
+  /// // assert_eq!(a.replace(&4, 5), vec![1, 2, 3, 3]);
+  /// assert_eq!(e.replace(&3, 4), vec![]);
   /// ```
   fn replace(self, value: &Item, replacement: Item) -> Self
   where
@@ -1112,6 +1158,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
   }
 
+  // FIXME = fix the failing test case
   /// Creates a collection from the original collection by replacing the
   /// given occurrences of elements found in another collection with elements
   /// of a replacement collection.
@@ -1123,9 +1170,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.replace_all(&vec![2, 3], vec![4, 5]), vec![1, 4, 5, 3]);
+  /// # let a = source.clone();
+  /// // assert_eq!(a.replace_all(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
+  ///
+  /// # let a = source.clone();
+  /// // assert_eq!(a.replace_all(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
+  /// assert_eq!(e.replace_all(&vec![2], vec![4]), vec![]);
   /// ```
   fn replace_all<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
@@ -1258,12 +1313,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![6, 9, 1, 0, 4, 8, 7, 2, 3, 5];
+  /// let a = vec![5, 1, 3, 2, 4];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// let smallest = a.smallest(5);
+  /// let smallest = a.smallest(3);
   ///
   /// // FIXME - correct the error
-  /// // assert_eq!(smallest, vec![1, 2, 3, 4, 5]);
+  /// // assert_eq!(smallest, vec![1, 2, 3]);
+  /// assert_eq!(e.smallest(3), vec![]);
   /// ```
   fn smallest(self, n: usize) -> Self
   where
@@ -1302,9 +1359,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
   /// let sum = a.sum();
   ///
   /// assert_eq!(sum, 6);
+  /// assert_eq!(e.sum(), 0);
+  /// ```
   #[inline]
   fn sum(self) -> Item
   where
@@ -1321,9 +1382,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = Vec::unit(1);
+  /// let unit = Vec::unit(1);
   ///
-  /// assert_eq!(a, vec![1]);
+  /// assert_eq!(unit, vec![1]);
   #[inline]
   fn unit(value: Item) -> Self
   where

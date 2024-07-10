@@ -15,6 +15,29 @@ pub trait Slice<Item> {
   // subset
   // superset
 
+  /// Tests if all elements of the slice are equal.
+  ///
+  /// `all_equal()` returns `true` if all elements of the slice are equal
+  /// and `false` if a pair of unequal elements exist.
+  ///
+  /// An empty slice returns `true`.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = &[1, 1, 1];
+  /// let b = &[1, 2, 3];
+  ///
+  /// assert!(a.all_equal());
+  ///
+  /// assert!(!b.all_equal());
+  /// ```
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq;
+
   /// Tests if all elements of the slice are unique.
   ///
   /// `all_equal()` returns `true` if all elements of the slice are unique
@@ -27,11 +50,12 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[1, 1, 1];
-  /// let b = &[1, 2, 3];
+  /// let a = &[1, 2, 3];
+  /// let b = &[1, 1, 1];
   ///
-  /// assert!(!a.all_unique());
-  /// assert!(b.all_unique());
+  /// assert!(a.all_unique());
+  ///
+  /// assert!(!b.all_unique());
   /// ```
   fn all_unique(&self) -> bool
   where

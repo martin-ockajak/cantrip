@@ -11,14 +11,6 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq,
-  {
-    all_equal(self.iter())
-  }
-
-  #[inline]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     any(self.iter(), predicate)
   }
@@ -122,6 +114,14 @@ impl<Item> Reversible<Item> for [Item] {
 }
 
 impl<Item> Slice<Item> for [Item] {
+  #[inline]
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq,
+  {
+    all_equal(self.iter())
+  }
+
   #[inline]
   fn all_unique(&self) -> bool
   where
