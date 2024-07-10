@@ -1133,11 +1133,8 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.take(2), vec![1, 2]);
-  ///
-  /// assert_eq!(e.take(1), vec![]);
   /// ```
   ///
   /// If less than `n` elements are available,
@@ -1147,8 +1144,11 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.take(5), vec![1, 2]);
+  ///
+  /// assert_eq!(e.take(1), vec![]);
   /// ```
   #[inline]
   fn take(self, n: usize) -> Self
@@ -1175,9 +1175,9 @@ pub trait Sequence<Item> {
   /// let a = vec![-1, 0, 1];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.take_while(|&x| x < 0), vec![-1]);
+  /// assert_eq!(a.take_while(|&x| x <= 0), vec![-1, 0]);
   ///
-  /// assert_eq!(e.take_while(|&x| x < 0), vec![]);
+  /// assert_eq!(e.take_while(|&x| x <= 0), vec![]);
   /// ```
   #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self

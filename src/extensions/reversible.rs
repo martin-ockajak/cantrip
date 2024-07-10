@@ -54,7 +54,7 @@ pub trait Reversible<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.rfind(|&x| x == 2), Some(&2));
-  /// 
+  ///
   /// assert_eq!(a.rfind(|&x| x == 5), None);
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
@@ -139,6 +139,7 @@ pub trait Reversible<Item> {
   ///
   /// // FIXME - check semantics
   /// let padded = a.pad(5, 4);
+  ///
   /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
@@ -163,6 +164,7 @@ pub trait Reversible<Item> {
   ///
   /// // FIXME - check semantics
   /// let padded = a.rpad_with(5, |i| 2 * i);
+  ///
   /// assert_eq!(padded, vec![3, 2, 1, 6, 8]);
   /// ```
   #[inline]
@@ -214,6 +216,8 @@ pub trait Reversible<Item> {
   /// let a = vec![-1, 2, 3, 4];
   ///
   /// assert_eq!(a.rposition(|&x| x >= 2), Some(3));
+  ///
+  /// assert_eq!(a.rposition(|&x| x == 5), None);
   /// ```
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
@@ -231,8 +235,11 @@ pub trait Reversible<Item> {
   /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.rskip(2), vec![1]);
+  ///
+  /// assert_eq!(e.rskip(2), vec![]);
   /// ```
   #[inline]
   fn rskip<I>(self, n: usize) -> Self
@@ -254,28 +261,18 @@ pub trait Reversible<Item> {
   /// After `false` is returned, `rskip_while()`'s job is over, and the
   /// rest of the elements are yielded.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-1i32, 0, 1];
-  ///
-  /// assert_eq!(a.skip_while(|x| x.is_negative()), &[0, 1]);
-  /// ```
-  ///
-  /// Because the closure passed to `skip_while()` takes a reference, and some
-  /// collections contain references, this leads to a possibly confusing
-  /// situation, where the type of the closure argument is a double reference:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
   /// let a = vec![-1, 0, 1];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.skip_while(|x| *x < 0), vec![0, 1]);
+  /// // FIXME - check semantics
+  /// assert_eq!(a.rskip_while(|&x| x > 0), vec![0, -1]);
+  ///
+  /// assert_eq!(e.rskip_while(|&x| x > 0), vec![]);
   /// ```
   #[inline]
   fn rskip_while<I>(self, predicate: impl FnMut(&Item) -> bool) -> Self
@@ -314,8 +311,11 @@ pub trait Reversible<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2];
+  /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.rtake(5), vec![2, 1]);
+  ///
+  /// assert_eq!(e.rtake(1), vec![]);
   /// ```
   #[inline]
   fn rtake<I>(self, n: usize) -> Self
@@ -335,28 +335,18 @@ pub trait Reversible<Item> {
   /// After `false` is returned, `take_while()`'s job is over, and the
   /// rest of the elements are ignored.
   ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![-1i32, 0, 1];
-  ///
-  /// assert_eq!(a.rtake_while(|x| x.is_positive()), vec![1]);
-  /// ```
-  ///
-  /// Because the closure passed to `take_while()` takes a reference, and some
-  /// collections contain references, this leads to a possibly confusing
-  /// situation, where the type of the closure is a double reference:
+  /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
   /// let a = vec![-1, 0, 1];
+  /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.take_while(|x| *x < 0), vec![-1]);
+  /// // FIXME - check semantics
+  /// assert_eq!(a.rtake_while(|&x| x >= 0), vec![1, 0]);
+  ///
+  /// assert_eq!(e.rtake_while(|&x| x >= 0), vec![]);
   /// ```
   #[inline]
   fn rtake_while<I>(self, predicate: impl FnMut(&Item) -> bool) -> Self
