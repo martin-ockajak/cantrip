@@ -589,6 +589,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// For a *right-associative* version of `fold_to()`, see [`rfold_to()`].
   ///
   /// [`fold`]: crate::Traversable::fold
+  /// [`rfold_to`]: crate::Sequence::rfold_to
   ///
   /// # Examples
   ///

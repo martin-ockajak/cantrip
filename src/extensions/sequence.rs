@@ -1,7 +1,6 @@
 #![allow(missing_docs)]
 
 use crate::extensions::util::unfold::unfold;
-use crate::Iterable;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
@@ -103,56 +102,6 @@ pub trait Sequence<Item> {
     })
     .collect()
   }
-
-  /// Tests if all elements of this collection are equal.
-  ///
-  /// `all_equal()` returns `true` if all elements of this collection are equal
-  /// and `false` if a pair of unequal elements exist.
-  ///
-  /// An empty collection returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 1, 1];
-  /// let b = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert!(a.all_equal());
-  /// assert!(e.all_equal());
-  ///
-  /// assert!(!b.all_equal());
-  /// ```
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq;
-
-  /// Tests if all elements of this collection are unique.
-  ///
-  /// `all_equal()` returns `true` if all elements of this collection are unique
-  /// and `false` if a pair of equal elements exist.
-  ///
-  /// An empty collection returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  /// let b = vec![1, 1, 1];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert!(a.all_unique());
-  /// assert!(e.all_unique());
-  ///
-  /// assert!(!b.all_unique());
-  /// ```
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash;
 
   // FIXME - fix failing test case
   /// Creates a new collection containing members of k-fold cartesian product of specified size
@@ -366,24 +315,6 @@ pub trait Sequence<Item> {
   //   //   })
   //     .collect()
   // }
-
-  /// Computes the length of the longest common prefix shared by this collection and another collection.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
-  /// assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
-  ///
-  /// assert_eq!(a.common_prefix_length(&vec![]), 0);
-  /// ```
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where
-    Item: PartialEq + 'a;
 
   /// Creates a new collection by omitting an element at specified index
   /// in the original collection.
@@ -868,28 +799,6 @@ pub trait Sequence<Item> {
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
 
-  /// Creates a new collection by repeating this collection specified number of times.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.repeat(3), vec![1, 2, 3, 1, 2, 3, 1, 2, 3]);
-  /// ```
-  #[inline]
-  fn repeat(self, n: usize) -> Self
-  where
-    Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let values = self.into_iter().collect::<Vec<Item>>();
-    let size = values.len() * n;
-    values.into_iter().cycle().take(size).collect()
-  }
-
   /// Creates a new collection by replacing an element at specified index
   /// in the original collection.
   ///
@@ -982,6 +891,78 @@ pub trait Sequence<Item> {
   {
     let iterator = self.into_iter();
     iterator.rev().collect()
+  }
+
+  /// A collection method that reduces this collection's elements to a single,
+  /// final value, starting from the back.
+  ///
+  /// This is the reverse version of [`Iterator::fold()`]: it takes elements
+  /// starting from the back of this collection.
+  ///
+  /// `rfold()` takes two arguments: an initial value, and a closure with two
+  /// arguments: an 'accumulator', and an element. The closure returns the value that
+  /// the accumulator should have for the next iteration.
+  ///
+  /// The initial value is the value the accumulator will have on the first
+  /// call.
+  ///
+  /// After applying this closure to every element of this collection, `rfold()`
+  /// returns the accumulator.
+  ///
+  /// This operation is sometimes called 'reduce' or 'inject'.
+  ///
+  /// Folding is useful whenever you have a collection of something, and want
+  /// to produce a single value from it.
+  ///
+  /// This is a non-consuming variant of [`rfold`].
+  ///
+  /// Note: `rfold()` combines elements in a *right-associative* fashion. For associative
+  /// operators like `+`, the order the elements are combined in is not important, but for non-associative
+  /// operators like `-` the order will affect the final result.
+  /// For a *left-associative* version of `rfold()`, see [`Iterator::fold()`].
+  ///
+  /// [`rfold`]: crate::Ordered::rfold
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// // the sum of all the elements of a
+  /// let sum = a.rfold_to(0, |acc, x| acc + x);
+  ///
+  /// assert_eq!(sum, 6);
+  /// ```
+  ///
+  /// This example demonstrates the right-associative nature of `rfold()`:
+  /// it builds a string, starting with an initial value
+  /// and continuing with each element from the back until the front:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let numbers = vec![1, 2, 3, 4, 5];
+  ///
+  /// let zero = "0".to_string();
+  ///
+  /// let result = numbers.rfold_to(zero, |acc, x| {
+  ///   format!("({x} + {acc})")
+  /// });
+  ///
+  /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
+  /// ```
+  #[inline]
+  fn rfold_to<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
+  where
+    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
+  {
+    let iterator = self.into_iter();
+    iterator.rfold(initial_value, function)
   }
 
   /// A collection adapter which, like [`fold`], holds internal state, but
@@ -1524,6 +1505,41 @@ pub trait Sequence<Item> {
     self.into_iter().step_by(step).collect()
   }
 
+  /// Creates a new collection by omitting duplicate elements.
+  ///
+  /// Duplicates are detected using hash and equality.
+  ///
+  /// The algorithm is stable, returning the non-duplicate items in the order
+  /// in which they occur in this collection. In a set of duplicate
+  /// items, the first item encountered is the item retained.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3, 1];
+  ///
+  /// assert_eq!(a.unique(), vec![1, 2, 3]);
+  /// ```
+  #[allow(unused_results)]
+  fn unique(self) -> Self
+  where
+    Item: Eq + Hash + Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let iterator = self.into_iter();
+    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+    iterator
+      .flat_map(|item| {
+        if !occurred.contains(&item) {
+          occurred.insert(item.clone());
+          Some(item)
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
   /// Creates a new collection from the original collection without
   /// the first element.
   ///
@@ -1616,41 +1632,6 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().take_while(predicate).collect()
-  }
-
-  /// Creates a new collection by omitting duplicate elements.
-  ///
-  /// Duplicates are detected using hash and equality.
-  ///
-  /// The algorithm is stable, returning the non-duplicate items in the order
-  /// in which they occur in this collection. In a set of duplicate
-  /// items, the first item encountered is the item retained.
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 2, 3, 1];
-  ///
-  /// assert_eq!(a.unique(), vec![1, 2, 3]);
-  /// ```
-  #[allow(unused_results)]
-  fn unique(self) -> Self
-  where
-    Item: Eq + Hash + Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let iterator = self.into_iter();
-    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
-    iterator
-      .flat_map(|item| {
-        if !occurred.contains(&item) {
-          occurred.insert(item.clone());
-          Some(item)
-        } else {
-          None
-        }
-      })
-      .collect()
   }
 
   /// Creates a new collection by omitting duplicate elements.
@@ -1869,22 +1850,6 @@ where
   }
   if index > 0 && !exact {
     result.extend(iter::once(chunk));
-  }
-  result
-}
-
-pub(crate) fn common_prefix_length<'a, Item>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> usize
-where
-  Item: PartialEq + 'a,
-{
-  let mut result = 0_usize;
-  for (item, element) in iterator.zip(elements.iterator()) {
-    if item != element {
-      return result;
-    }
-    result += 1;
   }
   result
 }

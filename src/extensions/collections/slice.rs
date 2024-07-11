@@ -32,7 +32,7 @@ impl<Item> Traversable<Item> for [Item] {
 
   #[inline]
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
-    fold(self.iter(), initial_value, function)
+    self.iter().fold(initial_value, function)
   }
 
   #[inline]
@@ -89,6 +89,38 @@ impl<Item> Traversable<Item> for [Item] {
 
 impl<Item> Ordered<Item> for [Item] {
   #[inline]
+  fn all_equal(&self) -> bool
+  where
+    Item: PartialEq,
+  {
+    all_equal(self.iter())
+  }
+
+  #[inline]
+  fn all_unique(&self) -> bool
+  where
+    Item: Eq + Hash,
+  {
+    all_unique(self.iter())
+  }
+
+  #[inline]
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  where
+    Item: PartialEq + 'a,
+  {
+    common_prefix_length(self.iter(), elements)
+  }
+  #[inline]
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  where
+    I: DoubleEndedIterator<Item = &'a Item>,
+    Item: PartialEq + 'a
+  {
+    common_suffix_length(self.iter().rev(), elements)
+  }
+
+  #[inline]
   fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
@@ -129,21 +161,15 @@ impl<Item> Ordered<Item> for [Item] {
   {
     position_sequence(self.iter(), elements)
   }
-}
-
-impl<Item> Reversible<Item> for [Item] {
-  #[inline]
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
-  where
-    I: DoubleEndedIterator<Item = &'a Item>,
-    Item: PartialEq + 'a
-  {
-    common_suffix_length(self.iter().rev(), elements)
-  }
 
   #[inline]
   fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().rev().find(|&x| predicate(x))
+  }
+
+  #[inline]
+  fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+    self.iter().rfold(initial_value, function)
   }
 
   #[inline]
@@ -153,30 +179,6 @@ impl<Item> Reversible<Item> for [Item] {
 }
 
 impl<Item> Slice<Item> for [Item] {
-  #[inline]
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq,
-  {
-    all_equal(self.iter())
-  }
-
-  #[inline]
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash,
-  {
-    all_unique(self.iter())
-  }
-
-  #[inline]
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where
-    Item: PartialEq + 'a,
-  {
-    common_prefix_length(self.iter(), elements)
-  }
-
   #[inline]
   fn init(&self) -> &Self {
     &self[0..max(self.len() - 1, 0)]

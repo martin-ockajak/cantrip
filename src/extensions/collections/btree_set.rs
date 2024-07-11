@@ -31,7 +31,7 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
 
   #[inline]
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
-    fold(self.iter(), initial_value, function)
+    self.iter().fold(initial_value, function)
   }
 
   #[inline]

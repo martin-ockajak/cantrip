@@ -1,6 +1,3 @@
-use std::hash::Hash;
-use crate::Iterable;
-
 /// Slice operations.
 ///
 /// Methods have the following properties:
@@ -10,76 +7,6 @@ use crate::Iterable;
 /// - Does not create a new collection
 ///
 pub trait Slice<Item> {
-  // FIXME - implement these methods
-  // index_of_sequence
-  // subsequence
-  // subset
-  // superset
-
-  /// Tests if all elements of this slice are equal.
-  ///
-  /// `all_equal()` returns `true` if all elements of this slice are equal
-  /// and `false` if a pair of unequal elements exist.
-  ///
-  /// An empty slice returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = &[1, 1, 1];
-  /// let b = &[1, 2, 3];
-  ///
-  /// assert!(a.all_equal());
-  ///
-  /// assert!(!b.all_equal());
-  /// ```
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq;
-
-  /// Tests if all elements of this slice are unique.
-  ///
-  /// `all_equal()` returns `true` if all elements of this slice are unique
-  /// and `false` if a pair of equal elements exist.
-  ///
-  /// An empty slice returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = &[1, 2, 3];
-  /// let b = &[1, 1, 1];
-  ///
-  /// assert!(a.all_unique());
-  ///
-  /// assert!(!b.all_unique());
-  /// ```
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash;
-
-  /// Computes the length of the longest common prefix shared by this slice and another collection.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = &[1, 2, 3];
-  ///
-  /// assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
-  /// assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
-  ///
-  /// assert_eq!(a.common_prefix_length(&vec![]), 0);
-  /// ```
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where
-    Item: PartialEq + 'a;
-
   /// Creates a new slice from this slice without the last element.
   ///
   /// # Example

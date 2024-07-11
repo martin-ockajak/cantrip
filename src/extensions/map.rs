@@ -1938,62 +1938,6 @@ pub trait Map<Key, Value> {
   }
 }
 
-#[inline]
-pub(crate) fn all_pairs<'a, K: 'a, V: 'a>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, predicate: impl FnMut((&K, &V)) -> bool,
-) -> bool {
-  iterator.all(predicate)
-}
-
-#[inline]
-pub(crate) fn any_pairs<'a, K: 'a, V: 'a>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, predicate: impl FnMut((&K, &V)) -> bool,
-) -> bool {
-  iterator.any(predicate)
-}
-
-#[inline]
-pub(crate) fn count_by_pairs<'a, K: 'a, V: 'a>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut predicate: impl FnMut((&K, &V)) -> bool,
-) -> usize {
-  iterator.filter(|&x| predicate(x)).count()
-}
-
-#[inline]
-pub(crate) fn filter_map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> Option<(L, W)>,
-) -> Result {
-  iterator.filter_map(|x| function(&x)).collect()
-}
-
-#[inline]
-pub(crate) fn find_map_pairs<'a, K: 'a, V: 'a, B>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> Option<B>,
-) -> Option<B> {
-  iterator.find_map(|x| function(&x))
-}
-
-#[inline]
-pub(crate) fn fold_pairs<'a, K: 'a, V: 'a, B>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, init: B, function: impl FnMut(B, (&K, &V)) -> B,
-) -> B {
-  iterator.fold(init, function)
-}
-
-#[inline]
-pub(crate) fn flat_map_pairs<'a, K: 'a, V: 'a, L, W, R: IntoIterator<Item = (L, W)>, Result: FromIterator<(L, W)>>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> R,
-) -> Result {
-  iterator.flat_map(|x| function(&x)).collect()
-}
-
-#[inline]
-pub(crate) fn map_pairs<'a, K: 'a, V: 'a, L, W, Result: FromIterator<(L, W)>>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut(&(&K, &V)) -> (L, W),
-) -> Result {
-  iterator.map(|x| function(&x)).collect()
-}
-
 pub(crate) fn minmax_by_pairs<'a, K: 'a, V: 'a>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering,
 ) -> Option<((&'a K, &'a V), (&'a K, &'a V))> {

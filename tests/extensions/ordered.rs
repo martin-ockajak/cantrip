@@ -10,8 +10,12 @@ where
 {
   // FIXME - implement test for all trait methods
   let repeated = from_slice::<C>(&[1, 2, 2, 3]);
-  // let empty = from::<C>(&[]);
+  let empty = from_slice::<C>(&[]);
 
   // position
   assert_eq!(repeated.position(|&x| x == 2), Some(1));
+
+  // rposition
+  assert_eq!(repeated.rposition(|&x| x == 2), Some(2));
+  assert_eq!(empty.rposition(|&x| x == 0), None);
 }

@@ -575,13 +575,6 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
-#[inline]
-pub(crate) fn fold<'a, Item: 'a, B>(
-  iterator: impl Iterator<Item = &'a Item>, init: B, function: impl FnMut(B, &Item) -> B,
-) -> B {
-  iterator.fold(init, function)
-}
-
 pub(crate) fn minmax_by<'a, Item: 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering,
 ) -> Option<(&'a Item, &'a Item)> {

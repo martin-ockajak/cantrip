@@ -33,7 +33,7 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
 
   #[inline]
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
-    fold(self.iter(), initial_value, function)
+    self.iter().fold(initial_value, function)
   }
 
   #[inline]
@@ -85,71 +85,6 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
     Item: Eq + Hash + 'a,
   {
     superset(self.iter(), elements)
-  }
-}
-
-impl<Item> Ordered<Item> for LinkedList<Item> {
-  #[inline]
-  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    equivalent(self.iter(), iterable)
-  }
-
-  #[inline]
-  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    includes(self.iter(), iterable)
-  }
-
-  #[inline]
-  fn join_items(&self, separator: &str) -> String
-  where
-    Item: Display,
-  {
-    join_items(self.iter(), separator)
-  }
-
-  #[inline]
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
-  #[inline]
-  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
-    positions(self.iter(), predicate)
-  }
-
-  #[inline]
-  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
-  where
-    Item: PartialEq + 'a,
-  {
-    position_sequence(self.iter(), elements)
-  }
-}
-
-impl<Item> Reversible<Item> for LinkedList<Item> {
-  #[inline]
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
-  where
-    I: DoubleEndedIterator<Item = &'a Item>,
-    Item: PartialEq + 'a
-  {
-    common_suffix_length(self.iter().rev(), elements)
-  }
-
-  #[inline]
-  fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
-    self.iter().rev().find(|&x| predicate(x))
-  }
-
-  #[inline]
-  fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().rposition(predicate)
   }
 }
 
@@ -208,9 +143,7 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> Sequence<Item> for LinkedList<Item> {
-  type This<I> = LinkedList<I>;
-
+impl<Item> Ordered<Item> for LinkedList<Item> {
   #[inline]
   fn all_equal(&self) -> bool
   where
@@ -228,20 +161,90 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  where
+    Item: PartialEq + 'a,
+  {
+    common_prefix_length(self.iter(), elements)
+  }
+
+  #[inline]
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  where
+    I: DoubleEndedIterator<Item = &'a Item>,
+    Item: PartialEq + 'a,
+  {
+    common_suffix_length(self.iter().rev(), elements)
+  }
+
+  #[inline]
+  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    equivalent(self.iter(), iterable)
+  }
+
+  #[inline]
+  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a,
+  {
+    includes(self.iter(), iterable)
+  }
+
+  #[inline]
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
+    join_items(self.iter(), separator)
+  }
+
+  #[inline]
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().position(predicate)
+  }
+
+  #[inline]
+  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
+    positions(self.iter(), predicate)
+  }
+
+  #[inline]
+  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  where
+    Item: PartialEq + 'a,
+  {
+    position_sequence(self.iter(), elements)
+  }
+
+  #[inline]
+  fn rfind(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
+    self.iter().rev().find(|&x| predicate(x))
+  }
+
+  #[inline]
+  fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+    self.iter().rfold(initial_value, function)
+  }
+
+  #[inline]
+  fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.iter().rposition(predicate)
+  }
+}
+
+impl<Item> Sequence<Item> for LinkedList<Item> {
+  type This<I> = LinkedList<I>;
+
+  #[inline]
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized,
   {
     cartesian_product(self.iter(), k)
-  }
-
-  #[inline]
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where
-    Item: PartialEq + 'a,
-  {
-    common_prefix_length(self.iter(), elements)
   }
 
   #[inline]
@@ -253,7 +256,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   fn multicombinations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized
+    Self: Sized,
   {
     multicombinations(self.iter(), k)
   }
@@ -286,3 +289,5 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     windowed_circular(self.iter(), size)
   }
 }
+
+impl<Item> List<Item> for LinkedList<Item> {}
