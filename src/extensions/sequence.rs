@@ -52,11 +52,11 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.add_at(3, 3), vec![1, 2]);
   /// ```
   #[inline]
-  fn add_at(self, index: usize, element: Item) -> Self
+  fn add_at(self, index: usize, addition: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.add_all_at(index, iter::once(element))
+    self.add_all_at(index, iter::once(addition))
   }
 
   /// Creates a collection by inserting all elements of another collection
@@ -84,12 +84,12 @@ pub trait Sequence<Item> {
   /// # let a = source.clone();
   /// assert_eq!(a.add_all_at(3, vec![3, 4]), vec![1, 2]);
   /// ```
-  fn add_all_at(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
+  fn add_all_at(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    let mut added = elements.into_iter();
+    let mut added = additions.into_iter();
     unfold(0_usize, |position| {
       if *position >= index {
         added.next().or_else(|| {
@@ -628,22 +628,22 @@ pub trait Sequence<Item> {
   }
 
   #[inline]
-  fn intersperse(self, interval: usize, element: Item) -> Self
+  fn intersperse(self, interval: usize, value: Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.intersperse_with(interval, || element.clone())
+    self.intersperse_with(interval, || value.clone())
   }
 
-  fn intersperse_with(self, interval: usize, mut to_element: impl FnMut() -> Item) -> Self
+  fn intersperse_with(self, interval: usize, mut to_value: impl FnMut() -> Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
-    let mut value = iter::repeat(to_element());
+    let mut value = iter::repeat(to_value());
     unfold((0_usize, false), |(position, inserted)| {
       if !*inserted && *position % interval == 0 {
         *inserted = true;
@@ -776,13 +776,13 @@ pub trait Sequence<Item> {
   /// assert_eq!(padded, vec![4, 4, 1, 2, 3]);
   /// ```
   #[inline]
-  fn pad_left<I>(self, size: usize, element: Item) -> Self
+  fn pad_left<I>(self, size: usize, value: Item) -> Self
   where
     Item: Clone,
     I: ExactSizeIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
-    self.pad_left_with(size, |_| element.clone())
+    self.pad_left_with(size, |_| value.clone())
   }
 
   /// Creates a collection by padding the original collection to a minimum length of
@@ -800,7 +800,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(padded, vec![0, 2, 1, 2, 3]);
   /// ```
   #[inline]
-  fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
+  fn pad_left_with<I>(self, size: usize, mut to_value: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
     I: ExactSizeIterator<Item = Item>,
@@ -809,7 +809,7 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
     unfold(0_usize, |position| {
-      let result = if *position < original_start { Some(to_element(*position)) } else { iterator.next() };
+      let result = if *position < original_start { Some(to_value(*position)) } else { iterator.next() };
       *position += 1;
       result
     })
@@ -831,12 +831,12 @@ pub trait Sequence<Item> {
   /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
-  fn pad_right(self, size: usize, element: Item) -> Self
+  fn pad_right(self, size: usize, value: Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.pad_right_with(size, |_| element.clone())
+    self.pad_right_with(size, |_| value.clone())
   }
 
   /// Creates a collection by padding the original collection to a minimum length of
@@ -853,14 +853,14 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
   /// ```
-  fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
+  fn pad_right_with(self, size: usize, mut to_value: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     unfold(0_usize, |position| {
-      let result = iterator.next().or_else(|| if *position < size { Some(to_element(*position)) } else { None });
+      let result = iterator.next().or_else(|| if *position < size { Some(to_value(*position)) } else { None });
       *position += 1;
       result
     })
@@ -913,11 +913,11 @@ pub trait Sequence<Item> {
   /// assert_eq!(e.replace_at(0, 1), vec![]);
   /// ```
   #[inline]
-  fn replace_at(self, index: usize, element: Item) -> Self
+  fn replace_at(self, index: usize, replacement: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.replace_all_at(index..(index + 1), iter::once(element))
+    self.replace_all_at(index..(index + 1), iter::once(replacement))
   }
 
   /// Creates a collection by replacing all elements at specified indices in a collection
@@ -946,17 +946,17 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.replace_all_at(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
   /// assert_eq!(e.replace_all_at(vec![0], vec![1]), vec![]);
   /// ```
-  fn replace_all_at(self, indices: impl IntoIterator<Item = usize>, elements: impl IntoIterator<Item = Item>) -> Self
+  fn replace_all_at(self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let positions: HashSet<usize> = HashSet::from_iter(indices);
-    let mut elements_iterator = elements.into_iter();
+    let mut replacement_iterator = replacements.into_iter();
     unfold(0_usize, |position| {
       iterator.next().map(|item| {
         let result = if positions.contains(position) {
-          elements_iterator.next().unwrap_or(item)
+          replacement_iterator.next().unwrap_or(item)
         } else {
           item
         };

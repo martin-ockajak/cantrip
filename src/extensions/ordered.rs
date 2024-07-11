@@ -214,11 +214,11 @@ pub trait Ordered<Item> {
   /// assert_eq!(a.positions_of(&5), vec![]);
   /// ```
   #[inline]
-  fn positions_of(&self, element: &Item) -> Vec<usize>
+  fn positions_of(&self, value: &Item) -> Vec<usize>
   where
     Item: PartialEq,
   {
-    self.positions(|x| x == element)
+    self.positions(|x| x == value)
   }
 
   /// Searches for a sub-sequence in a collection, returning its index.
@@ -259,7 +259,7 @@ pub trait Ordered<Item> {
   ///
   /// assert_eq!(a.position_sequence(&vec![1, 3]), None);
   /// ```
-  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  fn position_sequence<'a>(&'a self, sequence: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
   where
     Item: PartialEq + 'a;
 }

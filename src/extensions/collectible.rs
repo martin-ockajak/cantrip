@@ -1185,7 +1185,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(e.replace_all(&vec![2], vec![4]), vec![]);
   /// ```
   fn replace_all<'a>(
-    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
+    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where
     Item: Eq + Hash + 'a,
@@ -1196,7 +1196,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     for item in iterator {
       *removed.entry(item).or_default() += 1;
     }
-    let mut replacement_items = replacement.into_iter();
+    let mut replacement_items = replacements.into_iter();
     self
       .into_iter()
       .flat_map(|item| match removed.get_mut(&item) {
