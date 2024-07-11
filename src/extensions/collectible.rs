@@ -1304,6 +1304,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 }
 
+#[inline]
 pub(crate) fn combinations<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>, k: usize) -> Vec<Collection>
 where
   Item: Clone + 'a,
@@ -1322,24 +1323,19 @@ where
   Collection: FromIterator<Item> + Sized,
 {
   let size = values.len();
-  let mut combination = Vec::from_iter(0..k);
-  unfold(k > size, |done| {
-    if *done {
+  let mut combination = Vec::from_iter(iter::once(-1).chain(0..(k as i64)));
+  unfold(size.saturating_sub(k), |current_slot| {
+    if *current_slot == 0 {
       return None;
     }
-    let result = Some(collect_by_index(values, &combination));
-    let mut current_slot = k - 1;
-    while combination[current_slot] >= size + current_slot - k {
-      if current_slot > 0 {
-        current_slot -= 1;
-      } else {
-        *done = true;
-        return result;
-      }
+    *current_slot = k;
+    let result = Some(collect_by_index(values, &combination[1..]));
+    while combination[*current_slot] >= (size + *current_slot - k) as i64 - 1 {
+      *current_slot -= 1;
     }
-    let mut current_index = combination[current_slot];
+    let mut current_index = combination[*current_slot];
     #[allow(clippy::needless_range_loop)]
-    for slot in current_slot..k {
+    for slot in *current_slot..=k {
       current_index += 1;
       combination[slot] = current_index;
     }

@@ -1805,24 +1805,19 @@ where
 {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::fill(0, k);
-  unfold(k > size, |done| {
-    if *done {
+  let mut combination = Vec::from_iter(iter::once(-1).chain(0..(k as i64)));
+  unfold(size.saturating_sub(k), |current_slot| {
+    if *current_slot == 0 {
       return None;
     }
-    let result = Some(collect_by_index(&values, &combination));
-    let mut current_slot = k - 1;
-    while combination[current_slot] >= size - 1 {
-      if current_slot > 0 {
-        current_slot -= 1;
-      } else {
-        *done = true;
-        return result;
-      }
+    *current_slot = k;
+    let result = Some(collect_by_index(&values, &combination[1..]));
+    while combination[*current_slot] >= (size - 1) as i64 {
+      *current_slot -= 1;
     }
-    combination[current_slot] += 1;
+    combination[*current_slot] += 1;
     #[allow(clippy::needless_range_loop)]
-    for slot in (current_slot + 1)..k {
+    for slot in (*current_slot + 1)..k {
       combination[slot] = 0;
     }
     result
@@ -1866,24 +1861,19 @@ where
   }
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::fill(0, k);
-  unfold(k > size, |done| {
-    if *done {
+  let mut combination = Vec::from_iter(iter::once(-1).chain(0..(k as i64)));
+  unfold(size.saturating_sub(k), |current_slot| {
+    if *current_slot == 0 {
       return None;
     }
-    let result = Some(collect_by_index(&values, &combination));
-    let mut current_slot = k - 1;
-    while combination[current_slot] >= size - 1 {
-      if current_slot > 0 {
-        current_slot -= 1;
-      } else {
-        *done = true;
-        return result;
-      }
+    *current_slot = k;
+    let result = Some(collect_by_index(&values, &combination[1..]));
+    while combination[*current_slot] >= (size - 1) as i64 {
+      *current_slot -= 1;
     }
-    let current_index = combination[current_slot] + 1;
+    let current_index = combination[*current_slot] + 1;
     #[allow(clippy::needless_range_loop)]
-    for slot in current_slot..k {
+    for slot in *current_slot..k {
       combination[slot] = current_index;
     }
     result
@@ -1953,10 +1943,10 @@ where
 }
 
 #[inline]
-pub(crate) fn collect_by_index<Item, Result>(values: &[&Item], indices: &[usize]) -> Result
+pub(crate) fn collect_by_index<Item, Result>(values: &[&Item], indices: &[i64]) -> Result
 where
   Item: Clone,
   Result: FromIterator<Item>,
 {
-  Result::from_iter(indices.iter().map(|index| values[*index].clone()))
+  Result::from_iter(indices.iter().map(|index| values[*index as usize].clone()))
 }
