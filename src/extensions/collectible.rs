@@ -155,15 +155,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // assert_eq!(a.combinations(0), vec![vec![]]);
-  /// // assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// // assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
+  /// assert_eq!(a.combinations(0), vec![vec![]]);
+  /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   /// // assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
   ///
-  /// // assert_eq!(a.combinations(4), empty_result);
-  /// // assert_eq!(e.combinations(2), empty_result);
+  /// assert_eq!(a.combinations(4), empty_result);
+  /// assert_eq!(e.combinations(2), empty_result);
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
   where
@@ -1326,7 +1326,7 @@ where
 {
   let size = values.len();
   let mut combination = Vec::from_iter(iter::once(-1).chain(0..(k as i64)));
-  unfold(size.saturating_sub(k), |current_slot| {
+  unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
     }
