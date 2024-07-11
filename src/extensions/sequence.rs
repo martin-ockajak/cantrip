@@ -1143,26 +1143,27 @@ pub trait Sequence<Item> {
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
-  /// sorting and it doesn't allocate auxiliary memory.
-  /// See [`sort_unstable`](slice::sort_unstable).
+  /// sorting, and it doesn't allocate auxiliary memory.
+  /// See [`sorted_unstable`](Sequence::sorted_unstable).
   ///
   /// # Current implementation
   ///
   /// The current algorithm is an adaptive, iterative merge sort inspired by
   /// [timsort](https://en.wikipedia.org/wiki/Timsort).
-  /// It is designed to be very fast in cases where the slice is nearly sorted, or consists of
+  /// It is designed to be very fast in cases where the collection is nearly sorted, or consists of
   /// two or more sorted sequences concatenated one after another.
   ///
-  /// Also, it allocates temporary storage half the size of `self`, but for short slices a
+  /// Also, it allocates temporary storage half the size of `self`, but for short collections a
   /// non-allocating insertion sort is used instead.
   ///
   /// # Examples
   ///
   /// ```
-  /// let mut v = [-5, 4, 1, -3, 2];
+  /// use cantrip::*;
   ///
-  /// v.sort();
-  /// assert!(v == [-5, -3, 1, 2, 4]);
+  /// let v = vec![-5, 4, 1, -3, 2];
+  ///
+  /// assert_eq!(v.sorted(), vec![-5, -3, 1, 2, 4]);
   /// ```
   #[inline]
   fn sorted(self) -> Self
@@ -1175,6 +1176,55 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
+  /// Creates a new collection by sorting this collection with comparator function.
+  ///
+  /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
+  ///
+  /// The comparator function must define a total ordering for the elements in the collection. If
+  /// the ordering is not total, the order of the elements is unspecified. An order is a
+  /// total order if it is (for all `a`, `b` and `c`):
+  ///
+  /// * total and antisymmetric: exactly one of `a < b`, `a == b` or `a > b` is true, and
+  /// * transitive, `a < b` and `b < c` implies `a < c`. The same must hold for both `==` and `>`.
+  ///
+  /// For example, while [`f64`] doesn't implement [`Ord`] because `NaN != NaN`, we can use
+  /// `partial_cmp` as our sort function when we know the collection doesn't contain a `NaN`.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let floats = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
+  /// 
+  /// let sorted = floats.sorted_by(|a, b| a.partial_cmp(b).unwrap());
+  ///
+  /// assert_eq!(sorted, vec![1.0, 2.0, 3.0, 4.0, 5.0]);
+  /// ```
+  ///
+  /// When applicable, unstable sorting is preferred because it is generally faster than stable
+  /// sorting, and it doesn't allocate auxiliary memory.
+  /// See [`sorted_unstable_by`](Sequence::sorted_unstable_by).
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is an adaptive, iterative merge sort inspired by
+  /// [timsort](https://en.wikipedia.org/wiki/Timsort).
+  /// It is designed to be very fast in cases where the collection is nearly sorted, or consists of
+  /// two or more sorted sequences concatenated one after another.
+  ///
+  /// Also, it allocates temporary storage half the size of `self`, but for short collections a
+  /// non-allocating insertion sort is used instead.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let v = vec![5, 4, 1, 3, 2];
+  /// 
+  /// let sorted = v.sorted_by(|a, b| a.cmp(b));
+  ///
+  /// assert_eq!(sorted, vec![1, 2, 3, 4, 5]);
+  /// ```
   #[inline]
   fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   where
@@ -1185,6 +1235,44 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
+  /// Creates a new collection by sorting this collection with a key extraction function.
+  ///
+  /// During sorting, the key function is called at most once per element, by using
+  /// temporary storage to remember the results of key evaluation.
+  /// The order of calls to the key function is unspecified and may change in future versions
+  /// of the standard library.
+  ///
+  /// This sort is stable (i.e., does not reorder equal elements) and *O*(*m* \* *n* + *n* \* log(*n*))
+  /// worst-case, where the key function is *O*(*m*).
+  ///
+  /// For simple key functions (e.g., functions that are property accesses or
+  /// basic operations), [`sorted_by_key`](Sequence::sorted_by_key) is likely to be
+  /// faster.
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
+  /// which combines the fast average case of randomized quicksort with the fast worst case of
+  /// heapsort, while achieving linear time on collections with certain patterns. It uses some
+  /// randomization to avoid degenerate cases, but with a fixed seed to always provide
+  /// deterministic behavior.
+  ///
+  /// In the worst case, the algorithm allocates temporary storage in a `Vec<(K, usize)>` the
+  /// length of the collection.
+  ///
+  /// [pdqsort]: https://github.com/orlp/pdqsort
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let v = vec![-5_i32, 4, 32, -3, 2];
+  /// 
+  /// let sorted = v.sorted_by_cached_key(|k| k.to_string());
+  ///
+  /// assert_eq!(sorted, vec![-3, -5, 2, 32, 4]);
+  /// ```
   #[inline]
   fn sorted_by_cached_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
@@ -1195,6 +1283,40 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
+  /// Creates a new collection by sorting this collection with a key extraction function.
+  ///
+  /// This sort is stable (i.e., does not reorder equal elements) and *O*(*m* \* *n* \* log(*n*))
+  /// worst-case, where the key function is *O*(*m*).
+  ///
+  /// For expensive key functions (e.g. functions that are not simple property accesses or
+  /// basic operations), [`sorted_by_cached_key`](Sequence::sorted_by_cached_key) is likely to be
+  /// significantly faster, as it does not recompute element keys.
+  ///
+  /// When applicable, unstable sorting is preferred because it is generally faster than stable
+  /// sorting, and it doesn't allocate auxiliary memory.
+  /// See [`sorted_unstable_by_key`](Sequence::sorted_unstable_by_key).
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is an adaptive, iterative merge sort inspired by
+  /// [timsort](https://en.wikipedia.org/wiki/Timsort).
+  /// It is designed to be very fast in cases where the collection is nearly sorted, or consists of
+  /// two or more sorted sequences concatenated one after another.
+  ///
+  /// Also, it allocates temporary storage half the size of `self`, but for short collections a
+  /// non-allocating insertion sort is used instead.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let v = vec![-5_i32, 4, 1, -3, 2];
+  /// 
+  /// let sorted = v.sorted_by_key(|k| k.abs());
+  ///
+  /// assert_eq!(sorted, vec![1, 2, -3, 4, -5]);
+  /// ```
   #[inline]
   fn sorted_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
@@ -1205,6 +1327,33 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
+  /// Creates a new collection by sorting this collection, but might not preserve the order of equal elements.
+  ///
+  /// This sort is unstable (i.e., may reorder equal elements), in-place
+  /// (i.e., does not allocate), and *O*(*n* \* log(*n*)) worst-case.
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
+  /// which combines the fast average case of randomized quicksort with the fast worst case of
+  /// heapsort, while achieving linear time on collections with certain patterns. It uses some
+  /// randomization to avoid degenerate cases, but with a fixed seed to always provide
+  /// deterministic behavior.
+  ///
+  /// It is typically faster than stable sorting, except in a few special cases, e.g., when the
+  /// collection consists of several concatenated sorted sequences.
+  ///
+  /// [pdqsort]: https://github.com/orlp/pdqsort
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let v = vec![-5, 4, 1, -3, 2];
+  ///
+  /// assert_eq!(v.sorted_unstable(), vec![-5, -3, 1, 2, 4]);
+  /// ```
   #[inline]
   fn sorted_unstable(self) -> Self
   where
@@ -1216,6 +1365,56 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
+  /// Creates a new collection by sorting this collection with a comparator function,
+  /// but might not preserve the order of equal elements.
+  ///
+  /// This sort is unstable (i.e., may reorder equal elements), in-place
+  /// (i.e., does not allocate), and *O*(*n* \* log(*n*)) worst-case.
+  ///
+  /// The comparator function must define a total ordering for the elements in the collection. If
+  /// the ordering is not total, the order of the elements is unspecified. An order is a
+  /// total order if it is (for all `a`, `b` and `c`):
+  ///
+  /// * total and antisymmetric: exactly one of `a < b`, `a == b` or `a > b` is true, and
+  /// * transitive, `a < b` and `b < c` implies `a < c`. The same must hold for both `==` and `>`.
+  ///
+  /// For example, while [`f64`] doesn't implement [`Ord`] because `NaN != NaN`, we can use
+  /// `partial_cmp` as our sort function when we know the collection doesn't contain a `NaN`.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let floats = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
+  /// 
+  /// let sorted = floats.sorted_unstable_by(|a, b| a.partial_cmp(b).unwrap()); 
+  ///
+  /// assert_eq!(sorted, vec![1.0, 2.0, 3.0, 4.0, 5.0]);
+  /// ```
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
+  /// which combines the fast average case of randomized quicksort with the fast worst case of
+  /// heapsort, while achieving linear time on collections with certain patterns. It uses some
+  /// randomization to avoid degenerate cases, but with a fixed seed to always provide
+  /// deterministic behavior.
+  ///
+  /// It is typically faster than stable sorting, except in a few special cases, e.g., when the
+  /// collection consists of several concatenated sorted sequences.
+  ///
+  /// [pdqsort]: https://github.com/orlp/pdqsort
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let v = vec![5, 4, 1, 3, 2];
+  /// 
+  /// let sorted = v.sorted_unstable_by(|a, b| a.cmp(b));
+  ///
+  /// assert_eq!(sorted, vec![1, 2, 3, 4, 5]);
+  /// ```
   #[inline]
   fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   where
@@ -1226,6 +1425,38 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
+  /// Creates a new collection by sorting this collection with a key extraction function,
+  /// but might not preserve the order of equal elements.
+  ///
+  /// This sort is unstable (i.e., may reorder equal elements), in-place
+  /// (i.e., does not allocate), and *O*(*m* \* *n* \* log(*n*)) worst-case, where the key function is
+  /// *O*(*m*).
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
+  /// which combines the fast average case of randomized quicksort with the fast worst case of
+  /// heapsort, while achieving linear time on slices with certain patterns. It uses some
+  /// randomization to avoid degenerate cases, but with a fixed seed to always provide
+  /// deterministic behavior.
+  ///
+  /// Due to its key calling strategy, [`sorted_unstable_by_key`](Sequence::sorted_unstable_by_key)
+  /// is likely to be slower than [`sorted_by_cached_key`](Sequence::.sorted_by_cached_key) in
+  /// cases where the key function is expensive.
+  ///
+  /// [pdqsort]: https://github.com/orlp/pdqsort
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let v = vec![-5_i32, 4, 1, -3, 2];
+  /// 
+  /// let sorted = v.sorted_unstable_by_key(|k| k.abs());
+  ///
+  /// assert_eq!(sorted, vec![1, 2, -3, 4, -5]);
+  /// ```
   #[inline]
   fn sorted_unstable_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
