@@ -2,7 +2,7 @@
 
 use crate::extensions::util::unfold::unfold;
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet, LinkedList};
+use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::ops::RangeBounds;
@@ -377,7 +377,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let positions: HashSet<usize> = HashSet::from_iter(indices);
+    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
@@ -860,7 +860,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    let positions: HashSet<usize> = HashSet::from_iter(indices);
+    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
     let mut replacement_iterator = replacements.into_iter();
     unfold(0_usize, |position| {
       iterator.next().map(|item| {
@@ -1527,7 +1527,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+    let mut occurred: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
         if !occurred.contains(&item) {
@@ -1657,7 +1657,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+    let mut occurred: HashSet<K> = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .filter(|item| {
         let key = to_key(item);
