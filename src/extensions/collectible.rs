@@ -710,7 +710,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_folded = a.group_fold(|x| x % 2, &0, |acc, x| acc + x);
+  /// let group_folded = a.group_fold(|x| x % 2, 0, |acc, x| acc + x);
   ///
   /// assert_eq!(group_folded, HashMap::from([
   ///   (0, 2),
@@ -719,7 +719,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   #[allow(unused_results)]
   fn group_fold<K: Eq + Hash, B>(
-    self, mut to_key: impl FnMut(&Item) -> K, initial_value: &B, mut function: impl FnMut(B, Item) -> B,
+    self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
   ) -> HashMap<K, B>
   where
     B: Clone,
