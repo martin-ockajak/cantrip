@@ -3,7 +3,6 @@ use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
-use crate::extensions::ordered::Ordered;
 
 impl<Item> Traversable<Item> for [Item] {
   #[inline]

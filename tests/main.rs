@@ -15,6 +15,12 @@ fn collectibles() {
 fn slices() {
   // FIXME - fix slice tests
   // test_slice_traits::<&[i64]>();
+  let v: Vec<i32> = Vec::new();
+  let d: VecDeque<i32> = VecDeque::new();
+  let l: LinkedList<i32> = LinkedList::new();
+  let s: HashSet<i32> = HashSet::new();
+  let m: HashMap<i32, i32> = HashMap::new();
+  let _ = (v.len(), l.len(), d.len(), s.len(), m.len());
 }
 
 #[test]
