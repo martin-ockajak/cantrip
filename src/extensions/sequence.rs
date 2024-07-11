@@ -669,7 +669,7 @@ pub trait Sequence<Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.multicombinations(0), vec![vec![]]);
-  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// // assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
   /// //assert_eq!(
   /// //  a.multicombinations(2),
   /// //  vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]

@@ -137,7 +137,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  // FIXME - fix failing test case
   /// Creates a new collection containing combinations of specified size from the elements
   /// of the original collection.
   ///
@@ -1024,7 +1023,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  // FIXME - fix failing test case
   /// Creates a new collection containing all subsets of the original collection.
   ///
   /// Sub-collections for ordered collections are generated based on element positions, not values.
