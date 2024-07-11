@@ -81,6 +81,7 @@
 /// | *find_map*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *find_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *find*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *first*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *flat_map*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *flat_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *flat*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
@@ -100,6 +101,7 @@
 /// | *init*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *join_items*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *largest*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
+/// | *last*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *map*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *map_to*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *map_keys*                |                           |                    |                               | :heavy_check_mark: |

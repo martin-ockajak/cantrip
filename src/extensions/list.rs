@@ -7,16 +7,45 @@
 /// - May create a new collection
 ///
 pub trait List<Item> {
+  /// Returns the first element of the slice, or `None` if it is empty.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::LinkedList;
+  ///
+  /// let a = LinkedList::from([1, 2, 3]);
+  ///
+  /// assert_eq!(a.first(), Some(&1));
+  /// ```
+  fn first(&self) -> Option<&Item>;
+
+  /// Returns the last element of the slice, or `None` if it is empty.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::LinkedList;
+  ///
+  /// let a = LinkedList::from([1, 2, 3]);
+  ///
+  /// assert_eq!(a.last(), Some(&3));
+  /// ```
+  fn last(&self) -> Option<&Item>;
+
   /// Creates a new collection by repeating this collection specified number of times.
   ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
+  /// use std::collections::LinkedList;
   ///
-  /// let a = vec![1, 2, 3];
+  /// let a = LinkedList::from([1, 2, 3]);
   ///
-  /// assert_eq!(a.repeat(3), vec![1, 2, 3, 1, 2, 3, 1, 2, 3]);
+  /// assert_eq!(a.repeat(3), LinkedList::from([1, 2, 3, 1, 2, 3, 1, 2, 3]));
   /// ```
   #[inline]
   fn repeat(self, n: usize) -> Self

@@ -290,4 +290,12 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> List<Item> for VecDeque<Item> {}
+impl<Item> List<Item> for VecDeque<Item> {
+  fn first(&self) -> Option<&Item> {
+    self.front()
+  }
+
+  fn last(&self) -> Option<&Item> {
+    self.back()
+  }
+}
