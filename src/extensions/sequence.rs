@@ -669,7 +669,7 @@ pub trait Sequence<Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.multicombinations(0), vec![vec![]]);
-  /// //assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
   /// //assert_eq!(
   /// //  a.multicombinations(2),
   /// //  vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
@@ -1804,7 +1804,7 @@ where
 {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(-2).chain(0..(k as i64)));
+  let mut combination = Vec::from_iter(iter::once(-2).chain(iter::repeat(0).take(k - 1)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
@@ -1860,7 +1860,7 @@ where
   }
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(-2).chain(0..(k as i64)));
+  let mut combination = Vec::from_iter(iter::once(-2).chain(iter::repeat(0).take(k - 1)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
