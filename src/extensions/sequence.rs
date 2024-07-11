@@ -1897,7 +1897,7 @@ where
   Collection: FromIterator<Item> + Sized,
 {
   if k == 0 {
-    return Vec::from_iter(iter::once(Collection::from_iter(iter::empty())));
+    return vec!(Collection::from_iter(iter::empty()));
   }
   let values = Vec::from_iter(iterator);
   let size = values.len();

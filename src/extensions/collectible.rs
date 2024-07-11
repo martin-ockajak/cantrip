@@ -5,6 +5,7 @@ use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+use crate::extensions::collect_by_index;
 
 /// Consuming collection operations.
 ///
@@ -1308,7 +1309,7 @@ where
   Collection: FromIterator<Item> + Sized,
 {
   if k == 0 {
-    return Vec::from_iter(iter::once(Collection::from_iter(iter::empty())));
+    return vec!(Collection::from_iter(iter::empty()));
   }
   let values = Vec::from_iter(iterator);
   compute_combinations(&values, k)
@@ -1325,7 +1326,7 @@ where
     if *done {
       return None;
     }
-    let result = Some(Collection::from_iter(combination.iter().map(|index| values[*index].clone())));
+    let result = Some(collect_by_index(values, &combination));
     let mut current_slot = k - 1;
     while combination[current_slot] >= size + current_slot - k {
       if current_slot > 0 {
