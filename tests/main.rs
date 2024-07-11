@@ -19,7 +19,8 @@ fn sequences() {
   let vec: Vec<i64> = Vec::new();
   let vec_deque: VecDeque<i64> = VecDeque::new();
   let linked_list: LinkedList<i64> = LinkedList::new();
-  let _ = (vec.len(), linked_list.len(), vec_deque.len());
+  let slice = &vec[..];
+  let _ = (slice.len(), vec.len(), linked_list.len(), vec_deque.len());
   test_sequence_traits(vec);
   test_list_traits(linked_list);
   test_list_traits(vec_deque);

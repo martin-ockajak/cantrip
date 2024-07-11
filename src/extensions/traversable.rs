@@ -303,12 +303,12 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<u32> = Vec::new();
   ///
-  /// assert_eq!(a.max_item(), Some(&3));
+  /// assert_eq!(a.max_of(), Some(&3));
   ///
-  /// assert_eq!(e.max_item(), None);
+  /// assert_eq!(e.max_of(), None);
   /// ```
   #[inline]
-  fn max_item(&self) -> Option<&Item>
+  fn max_of(&self) -> Option<&Item>
   where
     Item: Ord,
   {
@@ -382,12 +382,12 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.min_item(), Some(&1));
+  /// assert_eq!(a.min_of(), Some(&1));
   ///
-  /// assert_eq!(e.min_item(), None);
+  /// assert_eq!(e.min_of(), None);
   /// ```
   #[inline]
-  fn min_item(&self) -> Option<&Item>
+  fn min_of(&self) -> Option<&Item>
   where
     Item: Ord,
   {
@@ -448,11 +448,11 @@ pub trait Traversable<Item> {
   /// let a = vec![-3_i32, 0, 1, 5, -10];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.minmax_item(), Some((&-10, &5)));
-  /// assert_eq!(e.minmax_item(), None);
+  /// assert_eq!(a.minmax_of(), Some((&-10, &5)));
+  /// assert_eq!(e.minmax_of(), None);
   /// ```
   #[inline]
-  fn minmax_item(&self) -> Option<(&Item, &Item)>
+  fn minmax_of(&self) -> Option<(&Item, &Item)>
   where
     Item: Ord,
   {

@@ -36,19 +36,19 @@ where
   assert_eq!(repeated.max_by(i64::cmp), Some(&2));
   assert_eq!(empty.max_by(i64::cmp), None);
 
-  // max_item
-  assert_eq!(repeated.max_item(), Some(&2));
-  assert_eq!(empty.max_item(), None);
+  // max_of
+  assert_eq!(repeated.max_of(), Some(&2));
+  assert_eq!(empty.max_of(), None);
 
   // min_by
   assert_eq!(repeated.min_by(i64::cmp), Some(&0));
   assert_eq!(empty.min_by(i64::cmp), None);
 
-  // min_item
-  assert_eq!(repeated.min_item(), Some(&0));
-  assert_eq!(empty.min_item(), None);
+  // min_of
+  assert_eq!(repeated.min_of(), Some(&0));
+  assert_eq!(empty.min_of(), None);
 
-  //minmax_item
-  assert_eq!(repeated.minmax_item(), Some((&0, &2)));
-  assert_eq!(empty.minmax_item(), None);
+  //minmax_of
+  assert_eq!(repeated.minmax_of(), Some((&0, &2)));
+  assert_eq!(empty.minmax_of(), None);
 }
