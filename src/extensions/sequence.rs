@@ -944,7 +944,9 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.replace_all_at(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
   /// assert_eq!(e.replace_all_at(vec![0], vec![1]), vec![]);
   /// ```
-  fn replace_all_at(self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>) -> Self
+  fn replace_all_at(
+    self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
+  ) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
@@ -953,11 +955,7 @@ pub trait Sequence<Item> {
     let mut replacement_iterator = replacements.into_iter();
     unfold(0_usize, |position| {
       iterator.next().map(|item| {
-        let result = if positions.contains(position) {
-          replacement_iterator.next().unwrap_or(item)
-        } else {
-          item
-        };
+        let result = if positions.contains(position) { replacement_iterator.next().unwrap_or(item) } else { item };
         *position += 1;
         result
       })
@@ -1194,7 +1192,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let floats = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
-  /// 
+  ///
   /// let sorted = floats.sorted_by(|a, b| a.partial_cmp(b).unwrap());
   ///
   /// assert_eq!(sorted, vec![1.0, 2.0, 3.0, 4.0, 5.0]);
@@ -1220,7 +1218,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let v = vec![5, 4, 1, 3, 2];
-  /// 
+  ///
   /// let sorted = v.sorted_by(|a, b| a.cmp(b));
   ///
   /// assert_eq!(sorted, vec![1, 2, 3, 4, 5]);
@@ -1268,7 +1266,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let v = vec![-5_i32, 4, 32, -3, 2];
-  /// 
+  ///
   /// let sorted = v.sorted_by_cached_key(|k| k.to_string());
   ///
   /// assert_eq!(sorted, vec![-3, -5, 2, 32, 4]);
@@ -1312,7 +1310,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let v = vec![-5_i32, 4, 1, -3, 2];
-  /// 
+  ///
   /// let sorted = v.sorted_by_key(|k| k.abs());
   ///
   /// assert_eq!(sorted, vec![1, 2, -3, 4, -5]);
@@ -1385,8 +1383,8 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let floats = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
-  /// 
-  /// let sorted = floats.sorted_unstable_by(|a, b| a.partial_cmp(b).unwrap()); 
+  ///
+  /// let sorted = floats.sorted_unstable_by(|a, b| a.partial_cmp(b).unwrap());
   ///
   /// assert_eq!(sorted, vec![1.0, 2.0, 3.0, 4.0, 5.0]);
   /// ```
@@ -1410,7 +1408,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let v = vec![5, 4, 1, 3, 2];
-  /// 
+  ///
   /// let sorted = v.sorted_unstable_by(|a, b| a.cmp(b));
   ///
   /// assert_eq!(sorted, vec![1, 2, 3, 4, 5]);
@@ -1452,7 +1450,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let v = vec![-5_i32, 4, 1, -3, 2];
-  /// 
+  ///
   /// let sorted = v.sorted_unstable_by_key(|k| k.abs());
   ///
   /// assert_eq!(sorted, vec![1, 2, -3, 4, -5]);
@@ -1499,6 +1497,25 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter(|(index, _)| range.contains(index)).map(|(_, x)| x).collect()
   }
 
+  /// Creates a new collection from this collection stepping by
+  /// the given amount for each retained element.
+  ///
+  /// Note: The first element of the collection will always be returned,
+  /// regardless of the step given.
+  ///
+  /// # Panics
+  ///
+  /// The method will panic if the given step is `0`.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![0, 1, 2, 3, 4, 5];
+  ///
+  /// assert_eq!(a.step_by(2), vec![0, 2, 4]);
+  /// ```
   #[inline]
   fn step_by(self, step: usize) -> Self
   where
@@ -1601,6 +1618,21 @@ pub trait Sequence<Item> {
     self.into_iter().take_while(predicate).collect()
   }
 
+  /// Creates a new collection by omitting duplicate elements.
+  ///
+  /// Duplicates are detected using hash and equality.
+  ///
+  /// The algorithm is stable, returning the non-duplicate items in the order
+  /// in which they occur in this collection. In a set of duplicate
+  /// items, the first item encountered is the item retained.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3, 1];
+  ///
+  /// assert_eq!(a.unique(), vec![1, 2, 3]);
+  /// ```
   #[allow(unused_results)]
   fn unique(self) -> Self
   where
@@ -1621,9 +1653,26 @@ pub trait Sequence<Item> {
       .collect()
   }
 
+  /// Creates a new collection by omitting duplicate elements.
+  ///
+  /// Duplicates are detected by comparing the key they map to
+  /// with the result of the keying function `to_key` using hash and equality.
+  ///
+  /// The algorithm is stable, returning the non-duplicate items in the order
+  /// in which they occur in this collection. In a set of duplicate
+  /// items, the first item encountered is the item retained.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec!["a", "bb", "aa", "c", "ccc"];
+  ///
+  /// assert_eq!(a.unique_by(|x| x.len()), vec!["a", "bb", "ccc"]);
+  /// ```
   #[allow(unused_results)]
-  fn unique_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+  fn unique_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
+    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
@@ -1672,12 +1721,61 @@ pub trait Sequence<Item> {
     self.into_iter().unzip()
   }
 
+  /// Creates a new collection consisting of overlapping windows of `N` elements
+  /// of this collection, starting at the beginning of the collection.
+  ///
+  /// This is the generic equivalent of [`windows`].
+  ///
+  /// If `N` is greater than the size of the collection, it will return no windows.
+  ///
+  /// # Panics
+  ///
+  /// Panics if `N` is 0. This check will most probably get changed to a compile time
+  /// error before this method gets stabilized.
+  ///
+  /// [`windows`]: slice::windows
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.windowed(2), vec![vec![1, 2], vec![2, 3]]);
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// assert_eq!(e.windowed(1), empty_result);
+  /// ```
   fn windowed(&self, size: usize) -> Self::This<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>;
 
+  /// Creates a new collection consisting of overlapping windows of `N` elements
+  /// of this collection, starting at the beginning of the collection and wrapping
+  /// back to the first elements when the window would otherwise exceed this collection length.
+  ///
+  /// If `N` is greater than the size of the collection, it will return no windows.
+  ///
+  /// # Panics
+  ///
+  /// Panics if `N` is 0. This check will most probably get changed to a compile time
+  /// error before this method gets stabilized.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.windowed_circular(2), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// assert_eq!(e.windowed(1), empty_result);
+  /// ```
   fn windowed_circular(&self, size: usize) -> Self::This<Self>
   where
     Item: Clone,
