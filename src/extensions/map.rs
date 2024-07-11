@@ -16,7 +16,7 @@ use crate::extensions::iterable::Iterable;
 pub trait Map<Key, Value> {
   type This<K, V>;
 
-  /// Creates a map by adding an entry to the original map.
+  /// Creates a new map by adding an entry to the original map.
   ///
   /// # Example
   ///
@@ -56,7 +56,7 @@ pub trait Map<Key, Value> {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
 
-  /// Creates a map by appending all entries from another collection to
+  /// Creates a new map by appending all entries from another collection to
   /// the original map.
   ///
   /// # Example
@@ -233,7 +233,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
-  /// Counts entries of a map that satisfy a predicate.
+  /// Counts entries of this map that satisfy a predicate.
   ///
   /// `count_by()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each entry of the map, and counts those which
@@ -256,7 +256,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
 
-  /// Creates a map from the original map without
+  /// Creates a new map from the original map without
   /// the entry specified by a key.
   ///
   /// # Example
@@ -288,7 +288,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
-  /// Creates a map from the original map without
+  /// Creates a new map from the original map without
   /// the entries specified by keys found in another collection.
   ///
   /// # Example
@@ -321,7 +321,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
-  /// Creates a map containing a result of a function
+  /// Creates a new map containing a result of a function
   /// specified number of times.
   ///
   /// # Example
@@ -346,7 +346,7 @@ pub trait Map<Key, Value> {
     iter::repeat(value()).take(size).collect()
   }
 
-  /// Creates a map by filtering the original map using a
+  /// Creates a new map by filtering the original map using a
   /// closure to determine if an entry should be retained.
   ///
   /// Given an entry the closure must return `true` or `false`. The returned
@@ -380,7 +380,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
-  /// Creates a map by filtering the original map using a
+  /// Creates a new map by filtering the original map using a
   /// closure to determine if a key should be retained.
   ///
   /// Given an entry the closure must return `true` or `false`. The returned
@@ -414,7 +414,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
-  /// Creates a map by filtering the original map using a
+  /// Creates a new map by filtering the original map using a
   /// closure to determine if a value should be retained.
   ///
   /// Given an entry the closure must return `true` or `false`. The returned
@@ -448,7 +448,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
-  /// Creates a map by filtering and mapping the original map.
+  /// Creates a new map by filtering and mapping the original map.
   ///
   /// The returned map contains only the `entries` for which the supplied
   /// closure returns `Some(entry)`.
@@ -509,9 +509,9 @@ pub trait Map<Key, Value> {
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
-  /// Creates a collection by filters and maps the original collection.
+  /// Creates a new map by filtering and mapping the original map.
   ///
-  /// The returned collection contains only the `entries` for which the supplied
+  /// The returned map contains only the `entries` for which the supplied
   /// closure returns `Some(value)`.
   ///
   /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
@@ -575,7 +575,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter_map(function).collect()
   }
 
-  /// Searches for an entry of a map that satisfies a predicate.
+  /// Searches for an entry of this map that satisfies a predicate.
   ///
   /// `find()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each entry of the map, and if any of them return
@@ -605,7 +605,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
 
-  /// Applies function to the entries of a map and returns
+  /// Applies function to the entries of this map and returns
   /// the first non-none result.
   ///
   /// `find_map` can be used to make chains of [`find`] and [`map`] more
@@ -637,7 +637,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
 
-  /// Applies function to the entries of a map and returns
+  /// Applies function to the entries of this map and returns
   /// the first non-none result.
   ///
   /// `find_map_to` can be used to make chains of [`find`] and [`map`] more concise.
@@ -674,7 +674,7 @@ pub trait Map<Key, Value> {
     self.into_iter().find_map(function)
   }
 
-  /// Creates a map by applying the given closure `function` to each entry
+  /// Creates a new map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -724,7 +724,7 @@ pub trait Map<Key, Value> {
     R: IntoIterator<Item = (L, W)>,
     Self::This<L, W>: FromIterator<(L, W)>;
 
-  /// Creates a map by applying the given closure `function` to each entry
+  /// Creates a new map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -850,7 +850,7 @@ pub trait Map<Key, Value> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every entry of the map, `fold_to()`
+  /// After applying this closure to every entry of this map, `fold_to()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -906,7 +906,7 @@ pub trait Map<Key, Value> {
     self.into_iter().fold(initial_value, function)
   }
 
-  /// Creates a map by retaining the values representing the intersection
+  /// Creates a new map by retaining the values representing the intersection
   /// of the original map with another map i.e., the values that are
   /// both in `self` and `other`.
   ///
@@ -949,7 +949,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
 
-  /// Creates a map by applying the given closure `function` to each entry in
+  /// Creates a new map by applying the given closure `function` to each entry in
   /// the original map.
   ///
   /// The closure `function` takes a reference to an entry of type
@@ -998,7 +998,7 @@ pub trait Map<Key, Value> {
   where
     Self::This<L, W>: FromIterator<(L, W)>;
 
-  /// Creates a map by applying the given closure `function` to each entry in
+  /// Creates a new map by applying the given closure `function` to each entry in
   /// the original map.
   ///
   /// The closure `function` takes a reference to an entry of type
@@ -1052,7 +1052,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(function).collect()
   }
 
-  /// Creates a map by applying the given closure `function` to each key in
+  /// Creates a new map by applying the given closure `function` to each key in
   /// the original map.
   ///
   /// The closure `function` takes a reference to an entry of type
@@ -1102,7 +1102,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
-  /// Creates a map by applying the given closure `function` to each value in
+  /// Creates a new map by applying the given closure `function` to each value in
   /// the original map.
   ///
   /// The closure `function` takes a reference to an entry of type
@@ -1202,7 +1202,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn max_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
 
-  /// Returns the maximum entry of a map.
+  /// Returns the maximum entry of this map.
   ///
   /// If several entries are equally maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
@@ -1283,7 +1283,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn min_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
 
-  /// Returns the minimum entry of a map.
+  /// Returns the minimum entry of this map.
   ///
   /// If several entries are equally minimum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
@@ -1314,7 +1314,7 @@ pub trait Map<Key, Value> {
     self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
   }
 
-  /// Returns the minimum and maximum entry of a map with respect to the
+  /// Returns the minimum and maximum entry of this map with respect to the
   /// specified comparison function.
   ///
   /// For the minimum, the first minimal entry is returned. For the maximum,
@@ -1342,7 +1342,7 @@ pub trait Map<Key, Value> {
     &self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering,
   ) -> Option<((&Key, &Value), (&Key, &Value))>;
 
-  /// Returns the minimum and maximum entry of a map from the
+  /// Returns the minimum and maximum entry of this map from the
   /// specified function.
   ///
   /// For the minimum, the first minimal entry is returned. For the maximum,
@@ -1367,7 +1367,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>;
 
-  /// Return the minimum and maximum entry of a map.
+  /// Return the minimum and maximum entry of this map.
   ///
   /// For the minimum, the first minimal entry is returned. For the maximum,
   /// the last maximal entry is returned. If the map is empty, [`None`] is returned.
@@ -1708,7 +1708,7 @@ pub trait Map<Key, Value> {
     })
   }
 
-  /// Creates a map from the original map by replacing the specified key
+  /// Creates a new map from the original map by replacing the specified key
   /// and its value with a different entry.
   ///
   /// # Example
@@ -1742,7 +1742,7 @@ pub trait Map<Key, Value> {
       .collect()
   }
 
-  /// Creates a map from the original map by replacing the given occurrences of elements
+  /// Creates a new map from the original map by replacing the given occurrences of elements
   /// found in another collection with elements of a replacement collection.
   ///
   /// # Example
@@ -1776,7 +1776,7 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
   }
 
-  /// Tests if all the key of a map can be found in another collection.
+  /// Tests if all keys of this map can be found in another collection.
   ///
   /// Returns `true` if this map is empty.
   ///
@@ -1830,7 +1830,7 @@ pub trait Map<Key, Value> {
   where
     Key: Eq + Hash + 'a;
 
-  /// Sums the keys of a map.
+  /// Sums keys of this map.
   ///
   /// Takes each key, adds them together, and returns the result.
   ///
@@ -1873,7 +1873,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(k, _)| k).sum()
   }
 
-  /// Sums the values of a map.
+  /// Sums values of this map.
   ///
   /// Takes each value, adds them together, and returns the result.
   ///
@@ -1916,7 +1916,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
-  /// Creates a map containing a single element.
+  /// Creates a new map containing a single element.
   ///
   /// # Example
   ///

@@ -12,7 +12,7 @@ use crate::Iterable;
 /// - Requires the collection to represent an ordered collection
 ///
 pub trait Ordered<Item> {
-  /// Tests if a collection contains all elements of another collection exactly
+  /// Tests if this collection contains all elements of another collection exactly
   /// as many times as their appear in the other collection and vice versa.
   ///
   /// Returns `true` if the other collection is empty.
@@ -33,7 +33,7 @@ pub trait Ordered<Item> {
   where
     Item: Eq + Hash + 'a;
 
-  /// Tests if a collection contains all elements of another collection
+  /// Tests if this collection contains all elements of another collection
   /// at least as many times as their appear in the other collection.
   ///
   /// Returns `true` if the other collection is empty.
@@ -77,10 +77,10 @@ pub trait Ordered<Item> {
   where
     Item: Display;
 
-  /// Searches for an element in a collection, returning its index.
+  /// Searches for an element in this collection, returning its index.
   ///
   /// `position()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, and if one of them
+  /// this closure to each element of this collection, and if one of them
   /// returns `true`, then `position()` returns [`Some(index)`]. If all of
   /// them return `false`, it returns [`None`].
   ///
@@ -95,7 +95,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if the collection has more than `usize::MAX`
+  /// This function might panic if this collection has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(index)`]: Some
@@ -113,10 +113,10 @@ pub trait Ordered<Item> {
   /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
-  /// Searches for an element in a collection, returning all its indices.
+  /// Searches for an element in this collection, returning all its indices.
   ///
   /// `positions()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, each time one of them
+  /// this closure to each element of this collection, each time one of them
   /// returns `true`, then `positions()` adds the element index to its result.
   ///
   /// # Overflow Behavior
@@ -127,7 +127,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if the collection has more than `usize::MAX`
+  /// This function might panic if this collection has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// # Example
@@ -144,9 +144,9 @@ pub trait Ordered<Item> {
   /// ```
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize>;
 
-  /// Searches for an element in a collection, returning its index.
+  /// Searches for an element in this collection, returning its index.
   ///
-  /// `position_of()` compares each element of the collection with the specified value,
+  /// `position_of()` compares each element of this collection with the specified value,
   /// and if one of them matches, then `position_of()` returns [`Some(index)`].
   /// If none of the elements match, it returns [`None`].
   ///
@@ -161,7 +161,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if the collection has more than `usize::MAX`
+  /// This function might panic if this collection has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(index)`]: Some
@@ -185,9 +185,9 @@ pub trait Ordered<Item> {
     self.position(|x| x == value)
   }
 
-  /// Searches for an element in a collection, returning all its indices.
+  /// Searches for an element in this collection, returning all its indices.
   ///
-  /// `positions_of()` compares each element of the collection with the specified value,
+  /// `positions_of()` compares each element of this collection with the specified value,
   /// and each time one of them matches, then `indices_f()` adds the element index
   /// to its result.
   ///
@@ -199,7 +199,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if the collection has more than `usize::MAX`
+  /// This function might panic if this collection has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// # Example
@@ -221,10 +221,10 @@ pub trait Ordered<Item> {
     self.positions(|x| x == value)
   }
 
-  /// Searches for a sub-sequence in a collection, returning its index.
+  /// Searches for a sub-sequence in this collection, returning its index.
   ///
-  /// After finding a starting element of specified sequence in a collection,
-  /// `position_seq()` compares each element of the collection with the specified value,
+  /// After finding a starting element of specified sequence in this collection,
+  /// `position_seq()` compares each element of this collection with the specified value,
   /// and if all of them matche, then `position_seq()` returns [`Some(start_index)`].
   /// If any of the elements do not match, it returns [`None`].
   ///
@@ -241,7 +241,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if the collection has more than `usize::MAX`
+  /// This function might panic if this collection has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(start_index)`]: Some

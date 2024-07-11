@@ -9,7 +9,7 @@ use crate::Iterable;
 /// - Does not create a new collection
 ///
 pub trait Reversible<Item> {
-  /// Computes the length of the longest common suffix shared by a collection and another collection.
+  /// Computes the length of the longest common suffix shared by this collection and another collection.
   ///
   /// # Example
   ///
@@ -28,10 +28,10 @@ pub trait Reversible<Item> {
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a;
 
-  /// Searches for an element of a collection that satisfies a predicate, starting from the back.
+  /// Searches for an element of this collection that satisfies a predicate, starting from the back.
   ///
   /// `rfind()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, starting at the end, and if any
+  /// this closure to each element of this collection, starting at the end, and if any
   /// of them return `true`, then `rfind()` returns [`Some(element)`]. If they all return
   /// `false`, it returns [`None`].
   ///
@@ -58,11 +58,11 @@ pub trait Reversible<Item> {
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  /// A collection method that reduces the collection's elements to a single,
+  /// A collection method that reduces this collection's elements to a single,
   /// final value, starting from the back.
   ///
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
-  /// starting from the back of the collection.
+  /// starting from the back of this collection.
   ///
   /// `rfold()` takes two arguments: an initial value, and a closure with two
   /// arguments: an 'accumulator', and an element. The closure returns the value that
@@ -71,7 +71,7 @@ pub trait Reversible<Item> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of the collection, `rfold()`
+  /// After applying this closure to every element of this collection, `rfold()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -126,10 +126,10 @@ pub trait Reversible<Item> {
     iterator.rfold(initial_value, function)
   }
 
-  /// Searches for an element in a collection from the right, returning its index.
+  /// Searches for an element in this collection from the right, returning its index.
   ///
   /// `rposition()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, starting from the end,
+  /// this closure to each element of this collection, starting from the end,
   /// and if one of them returns `true`, then `rposition()` returns
   /// [`Some(index)`]. If all of them return `false`, it returns [`None`].
   ///

@@ -27,10 +27,10 @@ pub trait Sequence<Item> {
   // variations
   // variations_repetitive
 
-  /// Creates a collection by inserting an element into specified index
+  /// Creates a new collection by inserting an element into specified index
   /// in the original collection.
   ///
-  /// if the specified index exceeds the collection size, no elements are inserted.
+  /// if the specified index exceeds this collection size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -59,10 +59,10 @@ pub trait Sequence<Item> {
     self.add_all_at(index, iter::once(addition))
   }
 
-  /// Creates a collection by inserting all elements of another collection
+  /// Creates a new collection by inserting all elements of another collection
   /// into specified index in the original collection.
   ///
-  /// if the specified index exceeds the collection size, no elements are inserted.
+  /// if the specified index exceeds this collection size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -104,9 +104,9 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Tests if all elements of the collection are equal.
+  /// Tests if all elements of this collection are equal.
   ///
-  /// `all_equal()` returns `true` if all elements of the collection are equal
+  /// `all_equal()` returns `true` if all elements of this collection are equal
   /// and `false` if a pair of unequal elements exist.
   ///
   /// An empty collection returns `true`.
@@ -129,9 +129,9 @@ pub trait Sequence<Item> {
   where
     Item: PartialEq;
 
-  /// Tests if all elements of the collection are unique.
+  /// Tests if all elements of this collection are unique.
   ///
-  /// `all_equal()` returns `true` if all elements of the collection are unique
+  /// `all_equal()` returns `true` if all elements of this collection are unique
   /// and `false` if a pair of equal elements exist.
   ///
   /// An empty collection returns `true`.
@@ -155,7 +155,7 @@ pub trait Sequence<Item> {
     Item: Eq + Hash;
 
   // FIXME - fix failing test case
-  /// Creates a collection containing members of k-fold cartesian product of specified size
+  /// Creates a new collection containing members of k-fold cartesian product of specified size
   /// from the elements of the original collection.
   ///
   /// The order or combined values is preserved.
@@ -191,7 +191,7 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a collection by splitting the original collection elements
+  /// Creates a new collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
   /// The chunks are collections and do not overlap. If `size` does not divide
@@ -199,7 +199,7 @@ pub trait Sequence<Item> {
   ///
   /// See [`chunked_exact`] for a variant of this function that returns chunks of always exactly
   /// `chunk_size` elements, and [`rchunked`] for the same function but starting at the
-  /// end of the collection.
+  /// end of this collection.
   ///
   /// [`chunked_exact`]: Sequence::chunked_exact
   /// [`rchunked`]: crate::Reversible::rchunked
@@ -232,7 +232,7 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix failing test case
-  /// Creates a collection by splitting the original collection elements
+  /// Creates a new collection by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
   /// The chunks are collections and do not overlap. If `size` does not divide
@@ -241,11 +241,9 @@ pub trait Sequence<Item> {
   /// Due to each chunk having exactly `chunk_size` elements, the compiler can often optimize the
   /// resulting code better than in the case of [`chunks`].
   ///
-  /// See [`chunked`] for a variant of this function that also returns the remainder as a smaller
-  /// chunk, and [`rchunked_exact`] for the same function but starting at the end of the collection.
+  /// See [`chunked`] for a variant of this function that also returns the remainder as a smaller chunk.
   ///
   /// [`chunked`]: Sequence::chunked
-  /// [`rchunked_exact`]: crate::Reversible::rchunked_exact
   ///
   /// # Panics
   ///
@@ -275,7 +273,7 @@ pub trait Sequence<Item> {
   }
 
   // // FIXME - fix failing test case
-  // /// Creates a collection by splitting the original collection into non-overlapping
+  // /// Creates a new collection by splitting the original collection into non-overlapping
   // /// subsequences according to specified separator predicate.
   // ///
   // /// The predicate is called for every pair of consecutive elements,
@@ -369,7 +367,7 @@ pub trait Sequence<Item> {
   //     .collect()
   // }
 
-  /// Computes the length of the longest common prefix shared by a collection and another collection.
+  /// Computes the length of the longest common prefix shared by this collection and another collection.
   ///
   /// # Example
   ///
@@ -387,10 +385,10 @@ pub trait Sequence<Item> {
   where
     Item: PartialEq + 'a;
 
-  /// Creates a collection by omitting an element at specified index
+  /// Creates a new collection by omitting an element at specified index
   /// in the original collection.
   ///
-  /// if the specified index exceeds the collection size, no elements are deleted.
+  /// if the specified index exceeds this collection size, no elements are deleted.
   ///
   /// # Example
   ///
@@ -419,10 +417,10 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
   }
 
-  /// Creates a collection by omitting all elements at specified indices
+  /// Creates a new collection by omitting all elements at specified indices
   /// in the original collection.
   ///
-  /// if the specified index exceeds the collection size, no elements are inserted.
+  /// if the specified index exceeds this collection size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -493,7 +491,7 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a collection which contains original collection elements
+  /// Creates a new collection which contains original collection elements
   /// and their indices.
   ///
   /// The new collection contains pairs of `(i, val)`, where `i` is the
@@ -529,7 +527,7 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().collect()
   }
 
-  /// Creates a collection containing an element
+  /// Creates a new collection containing an element
   /// specified number of times.
   ///
   /// # Example
@@ -659,11 +657,11 @@ pub trait Sequence<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
-  /// Creates a collection by moving an element at an index into specified index
+  /// Creates a new collection by moving an element at an index into specified index
   /// in the original collection.
   ///
-  /// if the source index exceeds the collection size, no elements are moved.
-  /// if the target index exceeds the collection size, the element is only removed.
+  /// if the source index exceeds this collection size, no elements are moved.
+  /// if the target index exceeds this collection size, the element is only removed.
   ///
   /// # Example
   ///
@@ -723,7 +721,7 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix failing test case
-  /// Creates a collection containing combinations with repetition of specified size
+  /// Creates a new collection containing combinations with repetition of specified size
   /// from the elements of the original collection.
   ///
   /// The order or combined values is preserved.
@@ -761,7 +759,7 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a collection by padding the original collection to a minimum length of
+  /// Creates a new collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value, starting from the back.
   ///
   /// # Example
@@ -785,7 +783,7 @@ pub trait Sequence<Item> {
     self.pad_left_with(size, |_| value.clone())
   }
 
-  /// Creates a collection by padding the original collection to a minimum length of
+  /// Creates a new collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`, starting from the back.
   ///
   /// # Example
@@ -816,7 +814,7 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a collection by padding the original collection to a minimum length of
+  /// Creates a new collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value.
   ///
   /// # Example
@@ -839,7 +837,7 @@ pub trait Sequence<Item> {
     self.pad_right_with(size, |_| value.clone())
   }
 
-  /// Creates a collection by padding the original collection to a minimum length of
+  /// Creates a new collection by padding the original collection to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`.
   ///
   /// # Example
@@ -870,7 +868,7 @@ pub trait Sequence<Item> {
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
 
-  /// Creates a new collection by repeating a collection specified number of times.
+  /// Creates a new collection by repeating this collection specified number of times.
   ///
   /// # Example
   ///
@@ -892,10 +890,10 @@ pub trait Sequence<Item> {
     values.into_iter().cycle().take(size).collect()
   }
 
-  /// Creates a collection by replacing an element at specified index
+  /// Creates a new collection by replacing an element at specified index
   /// in the original collection.
   ///
-  /// if the specified index exceeds the collection size, no elements are replaced.
+  /// if the specified index exceeds this collection size, no elements are replaced.
   ///
   /// # Example
   ///
@@ -920,10 +918,10 @@ pub trait Sequence<Item> {
     self.replace_all_at(index..(index + 1), iter::once(replacement))
   }
 
-  /// Creates a collection by replacing all elements at specified indices in a collection
+  /// Creates a new collection by replacing all elements at specified indices in this collection
   /// by elements from another collection.
   ///
-  /// if the specified index exceeds the collection size, no elements are replaced.
+  /// if the specified index exceeds this collection size, no elements are replaced.
   ///
   /// # Example
   ///
@@ -967,7 +965,7 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a collection by reversing the original collection's direction.
+  /// Creates a new collection by reversing the original collection's direction.
   ///
   /// # Example
   ///
@@ -1082,7 +1080,7 @@ pub trait Sequence<Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
-  /// Creates a collection that skips the first `n` elements from the original collection.
+  /// Creates a new collection that skips the first `n` elements from the original collection.
   ///
   /// `skip(n)` skips elements until `n` elements are skipped or the end of the
   /// collection is reached (whichever happens first). After that, all the remaining
@@ -1109,12 +1107,12 @@ pub trait Sequence<Item> {
     self.into_iter().skip(n).collect()
   }
 
-  /// Creates a collection without initial elements based on a predicate.
+  /// Creates a new collection without initial elements based on a predicate.
   ///
   /// [`skip`]: Collectible::skip
   ///
   /// `skip_while()` takes a closure as an argument. It will call this
-  /// closure on each element of the collection, and ignore elements
+  /// closure on each element of this collection, and ignore elements
   /// until it returns `false`.
   ///
   /// After `false` is returned, `skip_while()`'s job is over, and the
@@ -1140,6 +1138,32 @@ pub trait Sequence<Item> {
     self.into_iter().skip_while(predicate).collect()
   }
 
+  /// Creates a new collection by sorting this collection.
+  ///
+  /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
+  ///
+  /// When applicable, unstable sorting is preferred because it is generally faster than stable
+  /// sorting and it doesn't allocate auxiliary memory.
+  /// See [`sort_unstable`](slice::sort_unstable).
+  ///
+  /// # Current implementation
+  ///
+  /// The current algorithm is an adaptive, iterative merge sort inspired by
+  /// [timsort](https://en.wikipedia.org/wiki/Timsort).
+  /// It is designed to be very fast in cases where the slice is nearly sorted, or consists of
+  /// two or more sorted sequences concatenated one after another.
+  ///
+  /// Also, it allocates temporary storage half the size of `self`, but for short slices a
+  /// non-allocating insertion sort is used instead.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// let mut v = [-5, 4, 1, -3, 2];
+  ///
+  /// v.sort();
+  /// assert!(v == [-5, -3, 1, 2, 4]);
+  /// ```
   #[inline]
   fn sorted(self) -> Self
   where
@@ -1212,9 +1236,9 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a collection by only including elements in the specified range.
+  /// Creates a new collection by only including elements in the specified range.
   ///
-  /// if the specified index exceeds the collection size, no elements are inserted.
+  /// if the specified index exceeds this collection size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -1275,11 +1299,11 @@ pub trait Sequence<Item> {
     self.into_iter().skip(1).collect()
   }
 
-  /// Creates a collection that yields the first `n` elements, or fewer
+  /// Creates a new collection that yields the first `n` elements, or fewer
   /// if the original collection has fewer than `n` elements.
   ///
   /// `take(n)` yields elements until `n` elements are yielded or the end of
-  /// the collection is reached (whichever happens first).
+  /// this collection is reached (whichever happens first).
   /// The returned collection is a prefix of length `n` if the original collection
   /// contains at least `n` elements, otherwise it contains all the
   /// (fewer than `n`) elements of the original collection.
@@ -1317,10 +1341,10 @@ pub trait Sequence<Item> {
     self.into_iter().take(n).collect()
   }
 
-  /// Creates a collection without trailing elements based on a predicate.
+  /// Creates a new collection without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
-  /// closure on each element of the collection, and yield elements
+  /// closure on each element of this collection, and yield elements
   /// while it returns `true`.
   ///
   /// After `false` is returned, `take_while()`'s job is over, and the
@@ -1386,7 +1410,7 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a two collection by splitting a collection of pairs.
+  /// Creates a two collection by splitting this collection of pairs.
   ///
   /// `unzip()` produces two collections: one from the left elements of the pairs,
   /// and one from the right elements.
@@ -1429,7 +1453,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>;
 
-  /// 'Zips up' a collection with another collection into a single collection of pairs.
+  /// 'Zips up' this collection with another collection into a single collection of pairs.
   ///
   /// `zip()` returns a new collection containing pairs where the first element comes from
   /// this collection, and the second element comes from the other collection.

@@ -17,7 +17,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Original collection type
   type This<I>;
 
-  /// Creates a collection by appending an element to the original collection.
+  /// Creates a new collection by appending an element to the original collection.
   ///
   /// # Example
   ///
@@ -36,7 +36,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iter::once(value)).collect()
   }
 
-  /// Creates a collection by appending all elements of another collection to
+  /// Creates a new collection by appending all elements of another collection to
   /// the original collection.
   ///
   /// # Example
@@ -56,7 +56,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iterable).collect()
   }
 
-  /// Creates a collection from the original collection without
+  /// Creates a new collection from the original collection without
   /// the first occurrence of an element.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -93,7 +93,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a collection from the original collection without
+  /// Creates a new collection from the original collection without
   /// the first occurrences of elements found in another collection.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -136,7 +136,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a collection containing combinations of specified size from the elements
+  /// Creates a new collection containing combinations of specified size from the elements
   /// of the original collection.
   ///
   /// Combinations for ordered collections are generated based on element positions, not values.
@@ -168,7 +168,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a collection containing a result of a function
+  /// Creates a new collection containing a result of a function
   /// specified number of times.
   ///
   /// # Example
@@ -188,7 +188,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iter::repeat(value()).take(size).collect()
   }
 
-  /// Creates a collection by filtering the original collection using a
+  /// Creates a new collection by filtering the original collection using a
   /// closure to determine if an element should be retained.
   ///
   /// Given an element the closure must return `true` or `false`. The returned
@@ -257,7 +257,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(predicate).collect()
   }
 
-  /// Creates a collection by filtering and mapping the original collection.
+  /// Creates a new collection by filtering and mapping the original collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -301,7 +301,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a collection by filters and maps the original collection.
+  /// Creates a new collection by filters and maps the original collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -350,7 +350,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter_map(function).collect()
   }
 
-  /// Applies function to the elements of a collection and returns
+  /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
   /// `find_map_to` can be used to make chains of [`find`] and [`map`] more concise.
@@ -382,7 +382,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().find_map(function)
   }
 
-  /// Creates a collection by flattens the original nested collection.
+  /// Creates a new collection by flattens the original nested collection.
   ///
   /// This is useful when you have a collection of iterables,
   /// and you want to remove one level of indirection.
@@ -478,7 +478,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().flatten().collect()
   }
 
-  /// Creates a collection by applying the given closure `function` to each element
+  /// Creates a new collection by applying the given closure `function` to each element
   /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -516,7 +516,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a collection by applying the given closure `function` to each element
+  /// Creates a new collection by applying the given closure `function` to each element
   /// of the original collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
@@ -569,7 +569,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of the collection, `fold_to()`
+  /// After applying this closure to every element of this collection, `fold_to()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -776,7 +776,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     result
   }
 
-  /// Creates a collection by retaining the values representing the intersection
+  /// Creates a new collection by retaining the values representing the intersection
   /// of the original collection with another collection i.e., the values that are
   /// both in `self` and `other`.
   ///
@@ -811,7 +811,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  /// Creates a collection by applying the given closure `function` to each element in
+  /// Creates a new collection by applying the given closure `function` to each element in
   /// the original collection.
   ///
   /// The closure `function` takes a reference to an element of type
@@ -851,7 +851,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a collection by applying the given closure `function` to each element in
+  /// Creates a new collection by applying the given closure `function` to each element in
   /// the original collection.
   ///
   /// The closure `function` takes a reference to an element of type
@@ -896,7 +896,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(function).collect()
   }
 
-  /// Creates a collection containing the n largest elements of
+  /// Creates a new collection containing the n largest elements of
   /// the original collection in descending order.
   ///
   /// # Example
@@ -1021,7 +1021,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  /// Creates a collection containing all subsets of the original collection.
+  /// Creates a new collection containing all subsets of the original collection.
   ///
   /// Sub-collections for ordered collections are generated based on element positions, not values.
   ///
@@ -1089,12 +1089,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Reduces the elements to a single one, by repeatedly applying a reducing
   /// operation.
   ///
-  /// If the collection is empty, returns [`None`]; otherwise, returns the
+  /// If this collection is empty, returns [`None`]; otherwise, returns the
   /// result of the reduction.
   ///
   /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
   /// For collections with at least one element, this is the same as [`fold_to()`]
-  /// with the first element of the collection as the initial accumulator value, folding
+  /// with the first element of this collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
   /// This is a consuming variant of [`reduce`].
@@ -1130,7 +1130,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   // FIXME = fix the failing test case
-  /// Creates a collection from the original collection by replacing the
+  /// Creates a new collection from the original collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -1161,7 +1161,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   // FIXME = fix the failing test case
-  /// Creates a collection from the original collection by replacing the
+  /// Creates a new collection from the original collection by replacing the
   /// given occurrences of elements found in another collection with elements
   /// of a replacement collection.
   ///
@@ -1213,7 +1213,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a collection containing the n smallest elements of
+  /// Creates a new collection containing the n smallest elements of
   /// the original collection in descending order.
   ///
   /// # Example
@@ -1245,7 +1245,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     heap.into_iter().collect()
   }
 
-  /// Sums the elements of a collection.
+  /// Sums the elements of this collection.
   ///
   /// Takes each element, adds them together, and returns the result.
   ///
@@ -1283,7 +1283,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().sum()
   }
 
-  /// Creates a collection containing a single element.
+  /// Creates a new collection containing a single element.
   ///
   /// # Example
   ///

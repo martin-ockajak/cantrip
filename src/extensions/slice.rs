@@ -16,9 +16,9 @@ pub trait Slice<Item> {
   // subset
   // superset
 
-  /// Tests if all elements of the slice are equal.
+  /// Tests if all elements of this slice are equal.
   ///
-  /// `all_equal()` returns `true` if all elements of the slice are equal
+  /// `all_equal()` returns `true` if all elements of this slice are equal
   /// and `false` if a pair of unequal elements exist.
   ///
   /// An empty slice returns `true`.
@@ -39,9 +39,9 @@ pub trait Slice<Item> {
   where
     Item: PartialEq;
 
-  /// Tests if all elements of the slice are unique.
+  /// Tests if all elements of this slice are unique.
   ///
-  /// `all_equal()` returns `true` if all elements of the slice are unique
+  /// `all_equal()` returns `true` if all elements of this slice are unique
   /// and `false` if a pair of equal elements exist.
   ///
   /// An empty slice returns `true`.
@@ -62,7 +62,7 @@ pub trait Slice<Item> {
   where
     Item: Eq + Hash;
 
-  /// Computes the length of the longest common prefix shared by a slice and another collection.
+  /// Computes the length of the longest common prefix shared by this slice and another collection.
   ///
   /// # Example
   ///
@@ -80,7 +80,7 @@ pub trait Slice<Item> {
   where
     Item: PartialEq + 'a;
 
-  /// Creates a slice from the original slice without the last element.
+  /// Creates a new slice from this slice without the last element.
   ///
   /// # Example
   ///
@@ -93,7 +93,7 @@ pub trait Slice<Item> {
   /// ```
   fn init(&self) -> &Self;
 
-  /// Creates a slice that skips the first `n` elements from the original slice.
+  /// Creates a new slice that skips the first `n` elements from the original slice.
   ///
   /// `skip(n)` skips elements until `n` elements are skipped or the end of the
   /// slice is reached (whichever happens first). After that, all the remaining
@@ -111,12 +111,12 @@ pub trait Slice<Item> {
   /// ```
   fn skip(&self, n: usize) -> &Self;
 
-  /// Creates a slice without initial elements based on a predicate.
+  /// Creates a new slice without initial elements based on a predicate.
   ///
   /// [`skip`]: Slice::skip
   ///
   /// `skip_while()` takes a closure as an argument. It will call this
-  /// closure on each element of the slice, and ignore elements
+  /// closure on each element of this slice, and ignore elements
   /// until it returns `false`.
   ///
   /// After `false` is returned, `skip_while()`'s job is over, and the
@@ -133,7 +133,7 @@ pub trait Slice<Item> {
   /// ```
   fn skip_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 
-  /// Creates a slice from the original slice without the first element.
+  /// Creates a new slice from the original slice without the first element.
   ///
   /// # Example
   ///
@@ -146,11 +146,11 @@ pub trait Slice<Item> {
   /// ```
   fn tail(&self) -> &Self;
 
-  /// Creates a slice that yields the first `n` elements, or fewer
+  /// Creates a new slice that yields the first `n` elements, or fewer
   /// if the original slice has fewer than `n` elements.
   ///
   /// `take(n)` yields elements until `n` elements are yielded or the end of
-  /// the slice is reached (whichever happens first).
+  /// this slice is reached (whichever happens first).
   /// The returned slice is a prefix of length `n` if the original slice
   /// contains at least `n` elements, otherwise it contains all the
   /// (fewer than `n`) elements of the original slice.
@@ -179,10 +179,10 @@ pub trait Slice<Item> {
   /// ```
   fn take(&self, n: usize) -> &Self;
 
-  /// Creates a slice without trailing elements based on a predicate.
+  /// Creates a new slice without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
-  /// closure on each element of the slice, and yield elements
+  /// closure on each element of this slice, and yield elements
   /// while it returns `true`.
   ///
   /// After `false` is returned, `take_while()`'s job is over, and the
