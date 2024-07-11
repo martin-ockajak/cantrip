@@ -141,7 +141,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// of the original collection.
   ///
   /// Combinations for ordered collections are generated based on element positions, not values.
-  ///
+  /// Therefore, if an ordered collection contains duplicate elements, the resulting combinations will too.
   /// To obtain combinations of unique elements for ordered collections, use `.unique().combinations()`.
   ///
   /// The order of combined values is preserved for ordered collections.
@@ -1023,10 +1023,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  /// Creates a new collection containing all subsets of the original collection.
+  /// Creates a new collection containing all sub-collections of the original collection.
   ///
   /// Sub-collections for ordered collections are generated based on element positions, not values.
-  ///
+  /// Therefore, if an ordered collection contains duplicate elements, the resulting sub-collections will too.
   /// To obtain combinations of unique elements for ordered collections, use `.unique().powerset()`.
   ///
   /// The order of combined values is preserved for ordered collections.
