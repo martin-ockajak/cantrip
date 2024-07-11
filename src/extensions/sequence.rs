@@ -1829,7 +1829,7 @@ where
     if *done {
       return None;
     }
-    let result = Some(Collection::from_iter(combination.iter().map(|index| values[*index].clone())));
+    let result = Some(collect_by_index(&values, &combination));
     let mut current_slot = k - 1;
     while combination[current_slot] >= size - 1 {
       if current_slot > 0 {
@@ -1906,7 +1906,7 @@ where
     if *done {
       return None;
     }
-    let result = Some(Collection::from_iter(combination.iter().map(|index| values[*index].clone())));
+    let result = Some(collect_by_index(&values, &combination));
     let mut current_slot = k - 1;
     while combination[current_slot] >= size - 1 {
       if current_slot > 0 {
@@ -1985,4 +1985,13 @@ where
     result
   })
   .collect()
+}
+
+#[inline]
+pub(crate) fn collect_by_index<Item, Result>(values: &[&Item], indices: &[usize]) -> Result
+where
+  Item: Clone,
+  Result: FromIterator<Item>,
+{
+  Result::from_iter(indices.iter().map(|index| values[*index].clone()))
 }
