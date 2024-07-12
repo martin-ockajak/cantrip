@@ -132,74 +132,6 @@ pub trait Map<Key, Value> {
   /// ```
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
-  /// Tests if all values of the map are equal.
-  ///
-  /// `all_equal()` returns `true` if all values of the map are equal
-  /// and `false` if a pair of unequal values exist.
-  ///
-  /// An empty map returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "a"),
-  ///   (3, "a"),
-  /// ]);
-  /// let b = HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (3, "c"),
-  /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
-  ///
-  /// assert!(a.all_values_equal());
-  /// assert!(e.all_values_equal());
-  ///
-  /// assert!(!b.all_values_equal());
-  /// ```
-  fn all_values_equal(&self) -> bool
-  where
-    Value: PartialEq;
-
-  /// Tests if all values of the map are unique.
-  ///
-  /// `all_equal()` returns `true` if all values of the map are unique
-  /// and `false` if a pair of equal values exist.
-  ///
-  /// An empty map returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (3, "c"),
-  /// ]);
-  /// let b = HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "a"),
-  ///   (3, "a"),
-  /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
-  ///
-  /// assert!(a.all_values_unique());
-  /// assert!(e.all_values_unique());
-  ///
-  /// assert!(!b.all_values_unique());
-  /// ```
-  fn all_values_unique(&self) -> bool
-  where
-    Value: Eq + Hash;
-
   /// Tests if any entry of the map matches a predicate.
   ///
   /// `any()` takes a closure that returns `true` or `false`. It applies
@@ -255,6 +187,37 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.count_by(|(&k, _)| k == 5), 0);
   /// ```
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
+
+  /// Counts number of unique elements in this map.
+  ///
+  /// Returns `0` for an empty map.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  /// let b = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "a"),
+  ///   (3, "a"),
+  /// ]);
+  /// let e: HashMap<i32, &str> = HashMap::new();
+  ///
+  /// assert_eq!(a.count_unique(), 3);
+  /// assert_eq!(b.count_unique(), 1);
+  ///
+  /// assert_eq!(e.count_unique(), 0);
+  /// ```
+  fn count_unique(&self) -> usize
+  where
+    Value: Eq + Hash;
 
   /// Creates a new map from the original map without
   /// the entry specified by a key.

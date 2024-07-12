@@ -45,20 +45,17 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *add_all_at*              |    :heavy_check_mark:     |                    |                               |                    |
 | *add_at*                  |    :heavy_check_mark:     |                    |                               |                    |
 | *all*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-| *all_equal*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       |                    |
-| *all_unique*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *all_values_equal*        |                           |                    |                               | :heavy_check_mark: |
-| *all_values_unique*       |                           |                    |                               | :heavy_check_mark: |
 | *any*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *cartesian_product*       |    :heavy_check_mark:     |                    |                               |                    |
-| *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *chunked*                 |    :heavy_check_mark:     |                    |                               |                    |
 | *chunked_by*              |    :heavy_check_mark:     |                    |                               |                    |
 | *chunked_exact*           |    :heavy_check_mark:     |                    |                               |                    |
+| *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *coalesce*                |    :heavy_check_mark:     |                    |                               |                    |
 | *common_prefix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *common_suffix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *count_by*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+| *count_unique*            |    :heavy_check_mark:     | :heavy_check_mark: |                               | :heavy_check_mark: |
 | *delete*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *delete_all*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *delete_all_at*           |    :heavy_check_mark:     |                    |                               |                    |

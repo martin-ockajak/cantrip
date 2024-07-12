@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::fmt::Display;
 use std::fmt::Write;
 use std::hash::Hash;
@@ -12,57 +12,7 @@ use crate::Iterable;
 /// - Requires the collection to represent an ordered collection
 ///
 pub trait Ordered<Item> {
-  /// Tests if all elements of this collection are equal.
-  ///
-  /// `all_equal()` returns `true` if all elements of this collection are equal
-  /// and `false` if a pair of unequal elements exist.
-  ///
-  /// An empty collection returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 1, 1];
-  /// let b = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert!(a.all_equal());
-  /// assert!(e.all_equal());
-  ///
-  /// assert!(!b.all_equal());
-  /// ```
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq;
-
-  /// Tests if all elements of this collection are unique.
-  ///
-  /// `all_equal()` returns `true` if all elements of this collection are unique
-  /// and `false` if a pair of equal elements exist.
-  ///
-  /// An empty collection returns `true`.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  /// let b = vec![1, 1, 1];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert!(a.all_unique());
-  /// assert!(e.all_unique());
-  ///
-  /// assert!(!b.all_unique());
-  /// ```
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash;
-
-  /// Computes the length of the longest common prefix shared by this collection and another collection.
+  /// Computes the length of the longest common prefix shared by this sequence and another collection.
   ///
   /// # Example
   ///
@@ -80,7 +30,7 @@ pub trait Ordered<Item> {
   where
     Item: PartialEq + 'a;
 
-  /// Computes the length of the longest common suffix shared by this collection and another collection.
+  /// Computes the length of the longest common suffix shared by this sequence and another collection.
   ///
   /// # Example
   ///
@@ -99,7 +49,29 @@ pub trait Ordered<Item> {
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a;
 
-  /// Tests if this collection contains all elements of another collection exactly
+  /// Counts number of unique elements in this sequence.
+  ///
+  /// Returns `0` for an empty sequence.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3];
+  /// let b = vec![1, 1];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.count_unique(), 3);
+  /// assert_eq!(b.count_unique(), 1);
+  ///
+  /// assert_eq!(e.count_unique(), 0);
+  /// ```
+  fn count_unique(&self) -> usize
+  where
+    Item: Eq + Hash;
+
+  /// Tests if this sequence contains all elements of another collection exactly
   /// as many times as their appear in the other collection and vice versa.
   ///
   /// Returns `true` if the other collection is empty.
@@ -120,7 +92,7 @@ pub trait Ordered<Item> {
   where
     Item: Eq + Hash + 'a;
 
-  /// Tests if this collection contains all elements of another collection
+  /// Tests if this sequence contains all elements of another collection
   /// at least as many times as their appear in the other collection.
   ///
   /// Returns `true` if the other collection is empty.
@@ -164,10 +136,10 @@ pub trait Ordered<Item> {
   where
     Item: Display;
 
-  /// Searches for an element in this collection, returning its index.
+  /// Searches for an element in this sequence, returning its index.
   ///
   /// `position()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of this collection, and if one of them
+  /// this closure to each element of this sequence, and if one of them
   /// returns `true`, then `position()` returns [`Some(index)`]. If all of
   /// them return `false`, it returns [`None`].
   ///
@@ -182,7 +154,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if this collection has more than `usize::MAX`
+  /// This function might panic if this sequence has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(index)`]: Some
@@ -200,10 +172,10 @@ pub trait Ordered<Item> {
   /// ```
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 
-  /// Searches for an element in this collection, returning all its indices.
+  /// Searches for an element in this sequence, returning all its indices.
   ///
   /// `positions()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of this collection, each time one of them
+  /// this closure to each element of this sequence, each time one of them
   /// returns `true`, then `positions()` adds the element index to its result.
   ///
   /// # Overflow Behavior
@@ -214,7 +186,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if this collection has more than `usize::MAX`
+  /// This function might panic if this sequence has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// # Example
@@ -231,9 +203,9 @@ pub trait Ordered<Item> {
   /// ```
   fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize>;
 
-  /// Searches for an element in this collection, returning its index.
+  /// Searches for an element in this sequence, returning its index.
   ///
-  /// `position_of()` compares each element of this collection with the specified value,
+  /// `position_of()` compares each element of this sequence with the specified value,
   /// and if one of them matches, then `position_of()` returns [`Some(index)`].
   /// If none of the elements match, it returns [`None`].
   ///
@@ -248,7 +220,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if this collection has more than `usize::MAX`
+  /// This function might panic if this sequence has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(index)`]: Some
@@ -272,9 +244,9 @@ pub trait Ordered<Item> {
     self.position(|x| x == value)
   }
 
-  /// Searches for an element in this collection, returning all its indices.
+  /// Searches for an element in this sequence, returning all its indices.
   ///
-  /// `positions_of()` compares each element of this collection with the specified value,
+  /// `positions_of()` compares each element of this sequence with the specified value,
   /// and each time one of them matches, then `indices_f()` adds the element index
   /// to its result.
   ///
@@ -286,7 +258,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if this collection has more than `usize::MAX`
+  /// This function might panic if this sequence has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// # Example
@@ -308,10 +280,10 @@ pub trait Ordered<Item> {
     self.positions(|x| x == value)
   }
 
-  /// Searches for a sub-sequence in this collection, returning its index.
+  /// Searches for a sub-sequence in this sequence, returning its index.
   ///
-  /// After finding a starting element of specified sequence in this collection,
-  /// `position_seq()` compares each element of this collection with the specified value,
+  /// After finding a starting element of specified sequence in this sequence,
+  /// `position_seq()` compares each element of this sequence with the specified value,
   /// and if all of them matche, then `position_seq()` returns [`Some(start_index)`].
   /// If any of the elements do not match, it returns [`None`].
   ///
@@ -328,7 +300,7 @@ pub trait Ordered<Item> {
   ///
   /// # Panics
   ///
-  /// This function might panic if this collection has more than `usize::MAX`
+  /// This function might panic if this sequence has more than `usize::MAX`
   /// non-matching elements.
   ///
   /// [`Some(start_index)`]: Some
@@ -350,10 +322,10 @@ pub trait Ordered<Item> {
   where
     Item: PartialEq + 'a;
 
-  /// Searches for an element of this collection that satisfies a predicate, starting from the back.
+  /// Searches for an element of this sequence that satisfies a predicate, starting from the back.
   ///
   /// `rfind()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of this collection, starting at the end, and if any
+  /// this closure to each element of this sequence, starting at the end, and if any
   /// of them return `true`, then `rfind()` returns [`Some(element)`]. If they all return
   /// `false`, it returns [`None`].
   ///
@@ -380,11 +352,11 @@ pub trait Ordered<Item> {
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  /// A collection method that reduces this collection's elements to a single,
+  /// A collection method that reduces this sequence's elements to a single,
   /// final value, starting from the back.
   ///
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
-  /// starting from the back of this collection.
+  /// starting from the back of this sequence.
   ///
   /// `rfold()` takes two arguments: an initial value, and a closure with two
   /// arguments: an 'accumulator', and an element. The closure returns the value that
@@ -393,7 +365,7 @@ pub trait Ordered<Item> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of this collection, `rfold()`
+  /// After applying this closure to every element of this sequence, `rfold()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -444,10 +416,10 @@ pub trait Ordered<Item> {
   /// ```
   fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
-  /// Searches for an element in this collection from the right, returning its index.
+  /// Searches for an element in this sequence from the right, returning its index.
   ///
   /// `rposition()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of this collection, starting from the end,
+  /// this closure to each element of this sequence, starting from the end,
   /// and if one of them returns `true`, then `rposition()` returns
   /// [`Some(index)`]. If all of them return `false`, it returns [`None`].
   ///
@@ -514,6 +486,12 @@ where
     result += 1;
   }
   result
+}
+
+#[inline]
+pub(crate) fn count_unique<'a, Item: Eq + Hash + 'a>(iterator: impl Iterator<Item = &'a Item>) -> usize {
+  let items: HashSet<&Item> = HashSet::from_iter(iterator);
+  items.len()
 }
 
 pub(crate) fn equivalent<'a, Item>(

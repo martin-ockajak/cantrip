@@ -144,22 +144,6 @@ impl<Item> Collectible<Item> for Vec<Item> {
 
 impl<Item> Ordered<Item> for Vec<Item> {
   #[inline]
-  fn all_equal(&self) -> bool
-  where
-    Item: PartialEq,
-  {
-    all_equal(self.iter())
-  }
-
-  #[inline]
-  fn all_unique(&self) -> bool
-  where
-    Item: Eq + Hash,
-  {
-    all_unique(self.iter())
-  }
-
-  #[inline]
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
   where
     Item: PartialEq + 'a,
@@ -174,6 +158,14 @@ impl<Item> Ordered<Item> for Vec<Item> {
     Item: PartialEq + 'a,
   {
     common_suffix_length(self.iter().rev(), elements)
+  }
+
+  #[inline]
+  fn count_unique(&self) -> usize
+  where
+    Item: Eq + Hash,
+  {
+    count_unique(self.iter())
   }
 
   #[inline]

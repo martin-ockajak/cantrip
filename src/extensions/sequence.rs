@@ -13,7 +13,7 @@ use std::ops::RangeBounds;
 ///
 /// - Requires the collection to represent a sequence
 /// - May consume the collection and its elements
-/// - May create a new collection
+/// - May create a new sequence
 ///
 pub trait Sequence<Item> {
   type This<I>;
@@ -24,10 +24,10 @@ pub trait Sequence<Item> {
   // chunked_by
   // variations
 
-  /// Creates a new collection by inserting an element into specified index
+  /// Creates a new sequence by inserting an element into specified index
   /// in the original collection.
   ///
-  /// if the specified index exceeds this collection size, no elements are inserted.
+  /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -56,10 +56,10 @@ pub trait Sequence<Item> {
     self.add_all_at(index, iter::once(addition))
   }
 
-  /// Creates a new collection by inserting all elements of another collection
+  /// Creates a new sequence by inserting all elements of another collection
   /// into specified index in the original collection.
   ///
-  /// if the specified index exceeds this collection size, no elements are inserted.
+  /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -101,11 +101,11 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new collection containing tuples of k-fold cartesian product of specified size
+  /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
   /// from the elements of the original collection.
   ///
   /// Members are generated based on element positions, not values.
-  /// Therefore, if this collection contains duplicate elements, the resulting tuples will too.
+  /// Therefore, if this sequence contains duplicate elements, the resulting tuples will too.
   /// To obtain cartesian product of unique elements, use `.unique().cartesian_product()`.
   ///
   /// The order or tuple values is preserved.
@@ -136,7 +136,7 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new collection by splitting the original collection elements
+  /// Creates a new sequence by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
   /// The chunks are collections and do not overlap. If `size` does not divide
@@ -144,7 +144,7 @@ pub trait Sequence<Item> {
   ///
   /// See [`chunked_exact`] for a variant of this function that returns chunks of always exactly
   /// `chunk_size` elements, and [`rchunked`] for the same function but starting at the
-  /// end of this collection.
+  /// end of this sequence.
   ///
   /// [`chunked_exact`]: Sequence::chunked_exact
   /// [`rchunked`]: crate::Reversible::rchunked
@@ -177,7 +177,7 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix failing test case
-  /// Creates a new collection by splitting the original collection elements
+  /// Creates a new sequence by splitting the original collection elements
   /// into non-overlapping subsequences of specified `size`.
   ///
   /// The chunks are collections and do not overlap. If `size` does not divide
@@ -218,7 +218,7 @@ pub trait Sequence<Item> {
   }
 
   // // FIXME - fix failing test case
-  // /// Creates a new collection by splitting the original collection into non-overlapping
+  // /// Creates a new sequence by splitting the original collection into non-overlapping
   // /// subsequences according to specified separator predicate.
   // ///
   // /// The predicate is called for every pair of consecutive elements,
@@ -312,10 +312,10 @@ pub trait Sequence<Item> {
   //     .collect()
   // }
 
-  /// Creates a new collection by omitting an element at specified index
+  /// Creates a new sequence by omitting an element at specified index
   /// in the original collection.
   ///
-  /// if the specified index exceeds this collection size, no elements are deleted.
+  /// if the specified index exceeds this sequence size, no elements are deleted.
   ///
   /// # Example
   ///
@@ -344,10 +344,10 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
   }
 
-  /// Creates a new collection by omitting all elements at specified indices
+  /// Creates a new sequence by omitting all elements at specified indices
   /// in the original collection.
   ///
-  /// if the specified index exceeds this collection size, no elements are inserted.
+  /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -418,10 +418,10 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a new collection which contains original collection elements
+  /// Creates a new sequence which contains original collection elements
   /// and their indices.
   ///
-  /// The new collection contains pairs of `(i, val)`, where `i` is the
+  /// The new sequence contains pairs of `(i, val)`, where `i` is the
   /// current index of iteration and `val` is the original collection element.
   ///
   /// `enumerate()` keeps its count as an [`usize`]. If you want to count by a
@@ -454,7 +454,7 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().collect()
   }
 
-  /// Creates a new collection containing an element
+  /// Creates a new sequence containing an element
   /// specified number of times.
   ///
   /// # Example
@@ -500,7 +500,7 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix failing test case
-  /// Creates a new collection from the original collection without
+  /// Creates a new sequence from the original collection without
   /// the last element.
   ///
   /// # Example
@@ -584,11 +584,11 @@ pub trait Sequence<Item> {
 
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
-  /// Creates a new collection by moving an element at an index into specified index
+  /// Creates a new sequence by moving an element at an index into specified index
   /// in the original collection.
   ///
-  /// if the source index exceeds this collection size, no elements are moved.
-  /// if the target index exceeds this collection size, the element is only removed.
+  /// if the source index exceeds this sequence size, no elements are moved.
+  /// if the target index exceeds this sequence size, the element is only removed.
   ///
   /// # Example
   ///
@@ -647,11 +647,11 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new collection containing combinations with repetition of specified size
+  /// Creates a new sequence containing combinations with repetition of specified size
   /// from the elements of the original collection.
   ///
   /// Combinations are generated based on element positions, not values.
-  /// Therefore, if this collection contains duplicate elements, the resulting combinations will too.
+  /// Therefore, if this sequence contains duplicate elements, the resulting combinations will too.
   /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
   ///
   /// The order or combination values is preserved.
@@ -682,7 +682,7 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new collection by padding the original collection to a minimum length of
+  /// Creates a new sequence by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value, starting from the back.
   ///
   /// # Example
@@ -706,7 +706,7 @@ pub trait Sequence<Item> {
     self.pad_left_with(size, |_| value.clone())
   }
 
-  /// Creates a new collection by padding the original collection to a minimum length of
+  /// Creates a new sequence by padding the original collection to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`, starting from the back.
   ///
   /// # Example
@@ -737,7 +737,7 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new collection by padding the original collection to a minimum length of
+  /// Creates a new sequence by padding the original collection to a minimum length of
   /// `size` and filling missing elements with specified value.
   ///
   /// # Example
@@ -760,7 +760,7 @@ pub trait Sequence<Item> {
     self.pad_right_with(size, |_| value.clone())
   }
 
-  /// Creates a new collection by padding the original collection to a minimum length of
+  /// Creates a new sequence by padding the original collection to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`.
   ///
   /// # Example
@@ -791,10 +791,10 @@ pub trait Sequence<Item> {
   // FIXME - implement
   // fn permutations(self) -> Self::This<Self>;
 
-  /// Creates a new collection by replacing an element at specified index
+  /// Creates a new sequence by replacing an element at specified index
   /// in the original collection.
   ///
-  /// if the specified index exceeds this collection size, no elements are replaced.
+  /// if the specified index exceeds this sequence size, no elements are replaced.
   ///
   /// # Example
   ///
@@ -819,10 +819,10 @@ pub trait Sequence<Item> {
     self.replace_all_at(index..(index + 1), iter::once(replacement))
   }
 
-  /// Creates a new collection by replacing all elements at specified indices in this collection
+  /// Creates a new sequence by replacing all elements at specified indices in this sequence
   /// by elements from another collection.
   ///
-  /// if the specified index exceeds this collection size, no elements are replaced.
+  /// if the specified index exceeds this sequence size, no elements are replaced.
   ///
   /// # Example
   ///
@@ -864,7 +864,7 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new collection by reversing the original collection's direction.
+  /// Creates a new sequence by reversing the original collection's direction.
   ///
   /// # Example
   ///
@@ -885,11 +885,11 @@ pub trait Sequence<Item> {
     iterator.rev().collect()
   }
 
-  /// A collection method that reduces this collection's elements to a single,
+  /// A collection method that reduces this sequence's elements to a single,
   /// final value, starting from the back.
   ///
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
-  /// starting from the back of this collection.
+  /// starting from the back of this sequence.
   ///
   /// `rfold()` takes two arguments: an initial value, and a closure with two
   /// arguments: an 'accumulator', and an element. The closure returns the value that
@@ -898,7 +898,7 @@ pub trait Sequence<Item> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of this collection, `rfold()`
+  /// After applying this closure to every element of this sequence, `rfold()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -958,7 +958,7 @@ pub trait Sequence<Item> {
   }
 
   /// A collection adapter which, like [`fold`], holds internal state, but
-  /// unlike [`fold`], produces a new collection.
+  /// unlike [`fold`], produces a new sequence.
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
@@ -1002,7 +1002,7 @@ pub trait Sequence<Item> {
     Self::This<B>: FromIterator<B>;
 
   /// A collection adapter which, like [`fold`], holds internal state, but
-  /// unlike [`fold`], produces a new collection.
+  /// unlike [`fold`], produces a new sequence.
   ///
   /// [`fold`]: crate::Traversable::fold
   ///
@@ -1051,7 +1051,7 @@ pub trait Sequence<Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
-  /// Creates a new collection that skips the first `n` elements from the original collection.
+  /// Creates a new sequence that skips the first `n` elements from the original collection.
   ///
   /// `skip(n)` skips elements until `n` elements are skipped or the end of the
   /// collection is reached (whichever happens first). After that, all the remaining
@@ -1078,12 +1078,12 @@ pub trait Sequence<Item> {
     self.into_iter().skip(n).collect()
   }
 
-  /// Creates a new collection without initial elements based on a predicate.
+  /// Creates a new sequence without initial elements based on a predicate.
   ///
   /// [`skip`]: Collectible::skip
   ///
   /// `skip_while()` takes a closure as an argument. It will call this
-  /// closure on each element of this collection, and ignore elements
+  /// closure on each element of this sequence, and ignore elements
   /// until it returns `false`.
   ///
   /// After `false` is returned, `skip_while()`'s job is over, and the
@@ -1109,7 +1109,7 @@ pub trait Sequence<Item> {
     self.into_iter().skip_while(predicate).collect()
   }
 
-  /// Creates a new collection by sorting this collection.
+  /// Creates a new sequence by sorting this sequence.
   ///
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
   ///
@@ -1147,7 +1147,7 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by sorting this collection with comparator function.
+  /// Creates a new sequence by sorting this sequence with comparator function.
   ///
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
   ///
@@ -1206,7 +1206,7 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by sorting this collection with a key extraction function.
+  /// Creates a new sequence by sorting this sequence with a key extraction function.
   ///
   /// During sorting, the key function is called at most once per element, by using
   /// temporary storage to remember the results of key evaluation.
@@ -1254,7 +1254,7 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by sorting this collection with a key extraction function.
+  /// Creates a new sequence by sorting this sequence with a key extraction function.
   ///
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*m* \* *n* \* log(*n*))
   /// worst-case, where the key function is *O*(*m*).
@@ -1298,7 +1298,7 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by sorting this collection, but might not preserve the order of equal elements.
+  /// Creates a new sequence by sorting this sequence, but might not preserve the order of equal elements.
   ///
   /// This sort is unstable (i.e., may reorder equal elements), in-place
   /// (i.e., does not allocate), and *O*(*n* \* log(*n*)) worst-case.
@@ -1336,7 +1336,7 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by sorting this collection with a comparator function,
+  /// Creates a new sequence by sorting this sequence with a comparator function,
   /// but might not preserve the order of equal elements.
   ///
   /// This sort is unstable (i.e., may reorder equal elements), in-place
@@ -1396,7 +1396,7 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by sorting this collection with a key extraction function,
+  /// Creates a new sequence by sorting this sequence with a key extraction function,
   /// but might not preserve the order of equal elements.
   ///
   /// This sort is unstable (i.e., may reorder equal elements), in-place
@@ -1438,9 +1438,9 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new collection by only including elements in the specified range.
+  /// Creates a new sequence by only including elements in the specified range.
   ///
-  /// if the specified index exceeds this collection size, no elements are inserted.
+  /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -1470,7 +1470,7 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter(|(index, _)| range.contains(index)).map(|(_, x)| x).collect()
   }
 
-  /// Creates a new collection from this collection stepping by
+  /// Creates a new sequence from this sequence stepping by
   /// the given amount for each retained element.
   ///
   /// Note: The first element of the collection will always be returned,
@@ -1497,7 +1497,7 @@ pub trait Sequence<Item> {
     self.into_iter().step_by(step).collect()
   }
 
-  /// Creates a new collection from the original collection without
+  /// Creates a new sequence from the original collection without
   /// the first element.
   ///
   /// # Example
@@ -1520,11 +1520,11 @@ pub trait Sequence<Item> {
     self.into_iter().skip(1).collect()
   }
 
-  /// Creates a new collection that yields the first `n` elements, or fewer
+  /// Creates a new sequence that yields the first `n` elements, or fewer
   /// if the original collection has fewer than `n` elements.
   ///
   /// `take(n)` yields elements until `n` elements are yielded or the end of
-  /// this collection is reached (whichever happens first).
+  /// this sequence is reached (whichever happens first).
   /// The returned collection is a prefix of length `n` if the original collection
   /// contains at least `n` elements, otherwise it contains all the
   /// (fewer than `n`) elements of the original collection.
@@ -1562,10 +1562,10 @@ pub trait Sequence<Item> {
     self.into_iter().take(n).collect()
   }
 
-  /// Creates a new collection without trailing elements based on a predicate.
+  /// Creates a new sequence without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
-  /// closure on each element of this collection, and yield elements
+  /// closure on each element of this sequence, and yield elements
   /// while it returns `true`.
   ///
   /// After `false` is returned, `take_while()`'s job is over, and the
@@ -1591,12 +1591,12 @@ pub trait Sequence<Item> {
     self.into_iter().take_while(predicate).collect()
   }
 
-  /// Creates a new collection by omitting duplicate elements.
+  /// Creates a new sequence by omitting duplicate elements.
   ///
   /// Duplicates are detected using hash and equality.
   ///
   /// The algorithm is stable, returning the non-duplicate items in the order
-  /// in which they occur in this collection. In a set of duplicate
+  /// in which they occur in this sequence. In a set of duplicate
   /// items, the first item encountered is the item retained.
   ///
   /// ```
@@ -1626,13 +1626,13 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a new collection by omitting duplicate elements.
+  /// Creates a new sequence by omitting duplicate elements.
   ///
   /// Duplicates are detected by comparing the key they map to
   /// with the result of the keying function `to_key` using hash and equality.
   ///
   /// The algorithm is stable, returning the non-duplicate items in the order
-  /// in which they occur in this collection. In a set of duplicate
+  /// in which they occur in this sequence. In a set of duplicate
   /// items, the first item encountered is the item retained.
   ///
   /// ```
@@ -1663,9 +1663,9 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a two collection by splitting this collection of pairs.
+  /// Creates two new sequences by splitting this sequence of pairs.
   ///
-  /// `unzip()` produces two collections: one from the left elements of the pairs,
+  /// `unzip()` produces two sequences: one from the left elements of the pairs,
   /// and one from the right elements.
   ///
   /// This function is, in some sense, the opposite of [`zip`].
@@ -1694,13 +1694,13 @@ pub trait Sequence<Item> {
     self.into_iter().unzip()
   }
 
-  /// Creates a new collection containing variations of specified size
+  /// Creates a new sequence containing variations of specified size
   /// from the elements of the original collection.
   ///
-  /// Specifying size is equal to the collection length produces all permutations of this collection.
+  /// Specifying size is equal to the collection length produces all permutations of this sequence.
   ///
   /// Variations are generated based on element positions, not values.
-  /// Therefore, if this collection contains duplicate elements, the resulting variations will too.
+  /// Therefore, if this sequence contains duplicate elements, the resulting variations will too.
   /// To obtain variations of unique elements, use `.unique().variations()`.
   ///
   /// The order or variation values is preserved.
@@ -1731,8 +1731,8 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new collection consisting of overlapping windows of `N` elements
-  /// of this collection, starting at the beginning of the collection.
+  /// Creates a new sequence consisting of overlapping windows of `N` elements
+  /// of this sequence, starting at the beginning of the collection.
   ///
   /// This is the generic equivalent of [`windows`].
   ///
@@ -1763,9 +1763,9 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>;
 
-  /// Creates a new collection consisting of overlapping windows of `N` elements
-  /// of this collection, starting at the beginning of the collection and wrapping
-  /// back to the first elements when the window would otherwise exceed this collection length.
+  /// Creates a new sequence consisting of overlapping windows of `N` elements
+  /// of this sequence, starting at the beginning of the collection and wrapping
+  /// back to the first elements when the window would otherwise exceed this sequence length.
   ///
   /// If `N` is greater than the size of the collection, it will return no windows.
   ///
@@ -1792,16 +1792,16 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>;
 
-  /// 'Zips up' this collection with another collection into a single collection of pairs.
+  /// 'Zips up' this sequence with another collection into a single sequence of pairs.
   ///
-  /// `zip()` returns a new collection containing pairs where the first element comes from
-  /// this collection, and the second element comes from the other collection.
+  /// `zip()` returns a new sequence containing pairs where the first element comes from
+  /// this sequence, and the second element comes from the other collection.
   ///
-  /// In other words, it zips two collections together, into a single one.
+  /// In other words, it zips two sequences together, into a single one.
   ///
-  /// The resulting collection length is the length of the shorter collection.
+  /// The resulting sequence length is the length of the shorter one.
   ///
-  /// To 'undo' the result of zipping up two collections, see [`unzip`].
+  /// To 'undo' the result of zipping up two sequences, see [`unzip`].
   ///
   /// [`unzip`]: Sequence::unzip
   ///

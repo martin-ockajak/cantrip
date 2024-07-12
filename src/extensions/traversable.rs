@@ -68,7 +68,7 @@ pub trait Traversable<Item> {
   /// ```
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
 
-  /// Counts elements of a collection that satisfy a predicate.
+  /// Counts elements of this collection that satisfy a predicate.
   ///
   /// `count_by()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of the collection, and counts those which
@@ -86,7 +86,7 @@ pub trait Traversable<Item> {
   /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
 
-  /// Searches for an element of a collection that satisfies a predicate.
+  /// Searches for an element of this collection that satisfies a predicate.
   ///
   /// `find()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of the collection, and if any of them return
@@ -111,7 +111,7 @@ pub trait Traversable<Item> {
   /// ```
   fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  /// Applies function to the elements of a collection and returns
+  /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
   /// `find_map` can be used to make chains of [`find`] and [`map`] more
@@ -277,7 +277,7 @@ pub trait Traversable<Item> {
   /// ```
   fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
-  /// Returns the maximum element of a collection.
+  /// Returns the maximum element of this collection.
   ///
   /// If several elements are equally maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
@@ -355,7 +355,7 @@ pub trait Traversable<Item> {
   /// ```
   fn min_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
-  /// Returns the minimum element of a collection.
+  /// Returns the minimum element of this collection.
   ///
   /// If several elements are equally minimum, the first element is returned.
   /// If the collection is empty, [`None`] is returned.
@@ -394,7 +394,7 @@ pub trait Traversable<Item> {
     self.min_by(Ord::cmp)
   }
 
-  /// Returns the minimum and maximum element of a collection with respect to the
+  /// Returns the minimum and maximum element of this collection with respect to the
   /// specified comparison function.
   ///
   /// For the minimum, the first minimal element is returned. For the maximum,
@@ -414,7 +414,7 @@ pub trait Traversable<Item> {
   /// ```
   fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
 
-  /// Returns the minimum and maximum element of a collection from the
+  /// Returns the minimum and maximum element of this collection from the
   /// specified function.
   ///
   /// For the minimum, the first minimal element is returned. For the maximum,
@@ -434,7 +434,7 @@ pub trait Traversable<Item> {
   /// ```
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>;
 
-  /// Return the minimum and maximum element of a collection.
+  /// Return the minimum and maximum element of this collection.
   ///
   /// For the minimum, the first minimal element is returned. For the maximum,
   /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
@@ -494,7 +494,7 @@ pub trait Traversable<Item> {
   /// ```
   fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 
-  /// Tests if all the elements of a collection can be found in another collection.
+  /// Tests if all the elements of this collection can be found in another collection.
   ///
   /// Returns `true` if this collection is empty.
   ///
@@ -544,21 +544,6 @@ pub(crate) fn all<'a, Item: 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, predicate: impl FnMut(&Item) -> bool,
 ) -> bool {
   iterator.all(predicate)
-}
-
-#[inline]
-pub(crate) fn all_equal<'a, Item: PartialEq + 'a>(mut iterator: impl Iterator<Item = &'a Item>) -> bool {
-  match iterator.next() {
-    Some(head) => iterator.all(|x| x == head),
-    None => true,
-  }
-}
-
-#[inline]
-pub(crate) fn all_unique<'a, Item: Eq + Hash + 'a>(mut iterator: impl Iterator<Item = &'a Item>) -> bool {
-  let (size, _) = iterator.size_hint();
-  let mut items = HashSet::with_capacity(size);
-  iterator.all(|x| items.insert(x))
 }
 
 #[inline]

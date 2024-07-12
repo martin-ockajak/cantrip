@@ -12,24 +12,16 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn all_values_equal(&self) -> bool
-  where
-    Value: PartialEq,
-  {
-    all_equal(self.values())
+  fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
+    self.iter().any(predicate)
   }
 
   #[inline]
-  fn all_values_unique(&self) -> bool
+  fn count_unique(&self) -> usize
   where
     Value: Eq + Hash
   {
-    all_unique(self.values())
-  }
-
-  #[inline]
-  fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
-    self.iter().any(predicate)
+    count_unique(self.values())
   }
 
   #[inline]
