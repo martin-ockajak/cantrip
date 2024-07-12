@@ -35,6 +35,11 @@ impl<Item> Traversable<Item> for BTreeSet<Item> {
   }
 
   #[inline]
+  fn for_each(&self, function: impl FnMut(&Item)) {
+    self.iter().for_each(function)
+  }
+
+  #[inline]
   fn group_fold<K, B>(
     &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>

@@ -80,6 +80,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *flat*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *fold*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *fold_to*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+| *for_each*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 | *frequencies*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *frequencies_by*          |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *group_by*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |

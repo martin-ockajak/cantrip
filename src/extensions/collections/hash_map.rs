@@ -62,6 +62,11 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
+  fn for_each(&self, function: impl FnMut((&Key, &Value))) {
+    self.iter().for_each(function)
+  }
+
+  #[inline]
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,

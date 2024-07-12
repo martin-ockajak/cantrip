@@ -132,4 +132,9 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   {
     superset(self.keys(), elements)
   }
+
+  #[inline]
+  fn for_each(&self, function: impl FnMut((&Key, &Value))) {
+    self.iter().for_each(function)
+  }
 }

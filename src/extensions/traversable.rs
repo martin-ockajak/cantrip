@@ -237,6 +237,41 @@ pub trait Traversable<Item> {
   /// ```
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
+  /// Calls a closure on each element of this collection.
+  ///
+  /// This is equivalent to using a [`for`] loop on the collection, although
+  /// `break` and `continue` are not possible from a closure. It's generally
+  /// more idiomatic to use a `for` loop, but `for_each` may be more legible
+  /// when processing items at the end of longer collection chains.
+  ///
+  /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::sync::mpsc::channel;
+  ///
+  /// let (tx, rx) = channel();
+  /// (0..3).for_each(move |x| tx.send(x).unwrap());
+  ///
+  /// let v: Vec<_> = rx.iter().collect();
+  /// assert_eq!(v, vec![0, 1, 2]);
+  /// ```
+  ///
+  /// For such a small example, a `for` loop may be cleaner, but `for_each`
+  /// might be preferable to keep a functional style with longer collections:
+  ///
+  /// ```
+  /// (0..5).flat_map(|x| x * 100 .. x * 110)
+  ///       .enumerate()
+  ///       .filter(|&(i, x)| (i + x) % 3 == 0)
+  ///       .for_each(|(i, x)| println!("{i}:{x}"));
+  /// ```
+  fn for_each(&self, function: impl FnMut(&Item));
+
   /// Creates `HashMap` of keys mapped and folded to values according to
   /// specified discriminator and folding operation functions.
   ///

@@ -10,8 +10,8 @@ use std::iter::{Product, Sum};
 /// Methods have the following properties:
 ///
 /// - Requires the collection to represent a map
-/// - May consume the collection and its elements
-/// - May create a new collection
+/// - May consume the map and its entries
+/// - May create a new map
 ///
 pub trait Map<Key, Value> {
   type This<K, V>;
@@ -868,6 +868,41 @@ pub trait Map<Key, Value> {
   {
     self.into_iter().fold(initial_value, function)
   }
+  
+  /// Calls a closure on each entry of this map.
+  ///
+  /// This is equivalent to using a [`for`] loop on the map, although
+  /// `break` and `continue` are not possible from a closure. It's generally
+  /// more idiomatic to use a `for` loop, but `for_each` may be more legible
+  /// when processing items at the end of longer map chains.
+  ///
+  /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-map-with-for
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::sync::mpsc::channel;
+  ///
+  /// let (tx, rx) = channel();
+  /// (0..3).for_each(move |x| tx.send(x).unwrap());
+  ///
+  /// let v: Vec<_> = rx.iter().collect();
+  /// assert_eq!(v, vec![0, 1, 2]);
+  /// ```
+  ///
+  /// For such a small example, a `for` loop may be cleaner, but `for_each`
+  /// might be preferable to keep a functional style with longer maps:
+  ///
+  /// ```
+  /// (0..5).flat_map(|x| x * 100 .. x * 110)
+  ///       .enumerate()
+  ///       .filter(|&(i, x)| (i + x) % 3 == 0)
+  ///       .for_each(|(i, x)| println!("{i}:{x}"));
+  /// ```
+  fn for_each(&self, function: impl FnMut((&Key, &Value)));
 
   /// Creates a new map by retaining the values representing the intersection
   /// of the original map with another map i.e., the values that are

@@ -12,7 +12,7 @@ use std::ops::RangeBounds;
 /// Methods have the following properties:
 ///
 /// - Requires the collection to represent a sequence
-/// - May consume the collection and its elements
+/// - May consume the sequence and its elements
 /// - May create a new sequence
 ///
 pub trait Sequence<Item> {

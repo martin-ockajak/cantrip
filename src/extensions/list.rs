@@ -3,8 +3,8 @@
 /// Methods have the following properties:
 ///
 /// - Requires the collection to represent a list
-/// - May consume the collection and its elements
-/// - May create a new collection
+/// - May consume the list and its elements
+/// - May create a new list
 ///
 pub trait List<Item> {
   /// Returns the first element of this sequence, or `None` if it is empty.
