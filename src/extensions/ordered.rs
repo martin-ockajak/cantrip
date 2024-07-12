@@ -81,39 +81,34 @@ pub trait Ordered<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 3];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert!(a.equivalent(&vec![3, 2, 1, 3]));
+  /// assert!(a.equivalent(&vec![3, 2, 1, 2]));
   ///
-  /// assert!(!a.equivalent(&vec![1, 2, 2]));
-  /// assert!(!a.equivalent(&vec![1, 1, 2, 3, 3]));
+  /// assert!(!a.equivalent(&vec![1, 3, 3]));
+  /// assert!(!a.equivalent(&vec![1, 1, 2, 2, 3]));
   /// ```
   fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
 
-  /// Tests if this sequence contains all elements of another collection
-  /// at least as many times as their appear in the other collection.
-  ///
-  /// Returns `true` if the other collection is empty.
+  /// Compute number of occurrences of each element in this sequence.
   ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
+  /// use std::collections::HashMap;
   ///
-  /// let a = vec![1, 2, 3, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert!(a.includes(&vec![1, 2]));
-  /// assert!(a.includes(&vec![1, 3, 3]));
-  /// assert!(a.includes(&vec![]));
-  ///
-  /// assert!(!a.includes(&vec![1, 1, 2]));
-  /// assert!(!a.includes(&vec![3, 4]));
-  /// assert!(!e.includes(&vec![1]));
+  /// assert_eq!(a.frequencies(), HashMap::from([
+  ///   (&1, 1),
+  ///   (&2, 2),
+  ///   (&3, 1),
+  /// ]));
   /// ```
-  fn includes<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
     Item: Eq + Hash + 'a;
 
@@ -517,30 +512,6 @@ where
         }
       },
       None => return false
-    }
-  };
-  remaining == 0
-}
-
-pub(crate) fn includes<'a, Item>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-where
-  Item: Eq + Hash + 'a,
-{
-  let elements_iterator = elements.iterator();
-  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-  let mut remaining = 0_usize;
-  for item in elements_iterator {
-    *excluded.entry(item).or_default() += 1;
-    remaining += 1;
-  }
-  for item in iterator {
-    if let Some(count) = excluded.get_mut(item) {
-      if *count > 0 {
-        *count -= 1;
-        remaining = remaining.saturating_sub(1);
-      }
     }
   };
   remaining == 0

@@ -1756,10 +1756,10 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e: HashMap<i32, &str> = HashMap::new();
   ///
-  /// assert!(a.subset(&vec![2, 1, 3, 4]));
-  /// assert!(e.subset(&vec![2, 1, 3, 4]));
+  /// assert!(a.subset(&vec![4, 3, 2, 2, 1]));
+  /// assert!(e.subset(&vec![1]));
   ///
-  /// assert!(!a.subset(&vec![2, 1]));
+  /// assert!(!a.subset(&vec![1, 2]));
   /// assert!(!a.subset(&vec![]));
   /// ```
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
@@ -1783,11 +1783,13 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e: HashMap<i32, &str> = HashMap::new();
   ///
-  /// assert!(a.superset(&vec![2, 1]));
+  /// assert!(a.superset(&vec![3, 1]));
   /// assert!(a.superset(&vec![]));
   ///
-  /// assert!(!a.superset(&vec![2, 1, 3, 4]));
-  /// assert!(!e.superset(&vec![2, 1]));
+  /// assert!(!a.superset(&vec![1, 2, 3, 4]));
+  /// assert!(!a.superset(&vec![1, 2, 2]));
+  /// assert!(!a.superset(&vec![3, 4]));
+  /// assert!(!e.superset(&vec![1]));
   /// ```
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where

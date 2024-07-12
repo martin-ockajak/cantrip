@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::hash::Hash;
 
 use crate::Iterable;
@@ -494,7 +494,8 @@ pub trait Traversable<Item> {
   /// ```
   fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 
-  /// Tests if all the elements of this collection can be found in another collection.
+  /// Tests if another collection contains all elements of this collection
+  /// at least as many times as their appear in this collection.
   ///
   /// Returns `true` if this collection is empty.
   ///
@@ -506,17 +507,19 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert!(a.subset(&vec![2, 1, 3, 4]));
-  /// assert!(e.subset(&vec![2, 1, 3, 4]));
+  /// assert!(a.subset(&vec![4, 3, 2, 2, 1]));
+  /// assert!(e.subset(&vec![1]));
+  /// assert!(e.subset(&vec![]));
   ///
-  /// assert!(!a.subset(&vec![2, 1]));
-  /// assert!(!a.subset(&vec![]));
+  /// assert!(!a.subset(&vec![1, 2, 3]));
+  /// assert!(!a.subset(&vec![3, 4]));
   /// ```
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
 
-  /// Tests if all the elements of another collection can be found in this collection.
+  /// Tests if this collection contains all elements of another collection
+  /// at least as many times as their appear in the other collection.
   ///
   /// Returns `true` if the other collection is empty.
   ///
@@ -528,11 +531,13 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert!(a.superset(&vec![2, 1]));
+  /// assert!(a.superset(&vec![3, 1]));
+  /// assert!(a.superset(&vec![2, 2, 1]));
   /// assert!(a.superset(&vec![]));
   ///
-  /// assert!(!a.superset(&vec![2, 1, 3, 4]));
-  /// assert!(!e.superset(&vec![2, 1]));
+  /// assert!(!a.superset(&vec![1, 1, 2]));
+  /// assert!(!a.superset(&vec![3, 4]));
+  /// assert!(!e.superset(&vec![1]));
   /// ```
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
@@ -558,6 +563,17 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
 ) -> usize {
   iterator.filter(|&x| predicate(x)).count()
+}
+
+pub(crate) fn frequencies<'a, Item>(iterator: impl Iterator<Item = &'a Item>) -> HashMap<&'a Item, usize>
+where
+  Item: Eq + Hash + 'a,
+{
+  let mut result = HashMap::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    *result.entry(item).or_default() += 1;
+  }
+  result
 }
 
 pub(crate) fn minmax_by<'a, Item: 'a>(
@@ -588,20 +604,37 @@ pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
   minmax_by(iterator, |x, y| to_key(x).cmp(&to_key(y)))
 }
 
+#[inline]
+pub(crate) fn reduce<'a, Item: 'a>(
+  mut iterator: impl Iterator<Item = &'a Item>, mut function: impl FnMut(&Item, &Item) -> Item,
+) -> Option<Item> {
+  iterator
+    .next()
+    .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
+}
+
 pub(crate) fn subset<'a, Item>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool
 where
   Item: Eq + Hash + 'a,
 {
-  let elements_iterator = elements.iterator();
-  let occurred: HashSet<&Item> = HashSet::from_iter(elements_iterator);
-  for item in iterator {
-    if !occurred.contains(item) {
-      return false;
+  let mut counts = frequencies(iterator);
+  if counts.is_empty() {
+    return true;
+  }
+  for item in elements.iterator() {
+    if let Some(count) = counts.get_mut(item) {
+      *count -= 1;
+      if *count == 0 {
+        let _ = counts.remove(item);
+        if counts.is_empty() {
+          return true;
+        }
+      }
     }
   }
-  true
+  false
 }
 
 pub(crate) fn superset<'a, Item>(
@@ -610,21 +643,20 @@ pub(crate) fn superset<'a, Item>(
 where
   Item: Eq + Hash + 'a,
 {
-  let elements_iterator = elements.iterator();
-  let occurred: HashSet<&Item> = HashSet::from_iter(iterator);
-  for item in elements_iterator {
-    if !occurred.contains(item) {
-      return false;
+  let mut counts = frequencies(elements.iterator());
+  if counts.is_empty() {
+    return true;
+  }
+  for item in iterator {
+    if let Some(count) = counts.get_mut(item) {
+      *count -= 1;
+      if *count == 0 {
+        let _ = counts.remove(item);
+        if counts.is_empty() {
+          return true;
+        }
+      }
     }
   }
-  true
-}
-
-#[inline]
-pub(crate) fn reduce<'a, Item: 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, mut function: impl FnMut(&Item, &Item) -> Item,
-) -> Option<Item> {
-  iterator.next().and_then(|value1| {
-    iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x)))
-  })
+  false
 }

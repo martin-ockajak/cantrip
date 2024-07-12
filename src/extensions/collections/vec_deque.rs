@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::VecDeque;
+use std::collections::{HashMap, VecDeque};
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -160,7 +160,7 @@ impl<Item> Ordered<Item> for VecDeque<Item> {
   {
     common_suffix_length(self.iter().rev(), elements)
   }
-  
+
   #[inline]
   fn count_unique(&self) -> usize
   where
@@ -178,11 +178,11 @@ impl<Item> Ordered<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
-    Item: Eq + Hash + 'a,
+    Item: Eq + Hash + 'a
   {
-    includes(self.iter(), iterable)
+    frequencies(self.iter())
   }
 
   #[inline]

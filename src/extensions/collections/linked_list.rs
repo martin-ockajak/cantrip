@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::LinkedList;
+use std::collections::{HashMap, LinkedList};
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -178,11 +178,11 @@ impl<Item> Ordered<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn includes<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
-    Item: Eq + Hash + 'a,
+    Item: Eq + Hash + 'a
   {
-    includes(self.iter(), iterable)
+    frequencies(self.iter())
   }
 
   #[inline]
