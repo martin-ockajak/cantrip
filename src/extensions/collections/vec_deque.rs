@@ -196,7 +196,7 @@ impl<Item> Ordered<Item> for VecDeque<Item> {
   #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
-    Item: Eq + Hash + 'a
+    Item: Eq + Hash + 'a,
   {
     frequencies(self.iter())
   }
@@ -313,11 +313,21 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
 }
 
 impl<Item> List<Item> for VecDeque<Item> {
+  #[inline]
   fn first(&self) -> Option<&Item> {
     self.front()
   }
 
+  #[inline]
   fn last(&self) -> Option<&Item> {
     self.back()
+  }
+
+  #[inline]
+  fn repeat(self, n: usize) -> Self
+  where
+    Item: Clone,
+  {
+    repeat(self.iter(), n)
   }
 }

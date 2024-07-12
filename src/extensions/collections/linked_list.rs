@@ -313,11 +313,21 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
 }
 
 impl<Item> List<Item> for LinkedList<Item> {
+  #[inline]
   fn first(&self) -> Option<&Item> {
     self.front()
   }
 
+  #[inline]
   fn last(&self) -> Option<&Item> {
     self.back()
+  }
+
+  #[inline]
+  fn repeat(self, n: usize) -> Self
+  where
+    Item: Clone,
+  {
+    repeat(self.iter(), n)
   }
 }

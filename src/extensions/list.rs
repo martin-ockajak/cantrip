@@ -1,10 +1,12 @@
+use crate::extensions::util::unfold::unfold;
+
 /// List operations.
 ///
 /// Methods have the following properties:
 ///
 /// - Requires the collection to represent a list
-/// - May consume the list and its elements
-/// - May create a new list
+/// - Does not consume the list or its elements
+/// - Does not create a new list
 ///
 pub trait List<Item> {
   /// Returns the first element of this sequence, or `None` if it is empty.
@@ -47,14 +49,23 @@ pub trait List<Item> {
   ///
   /// assert_eq!(a.repeat(3), LinkedList::from([1, 2, 3, 1, 2, 3, 1, 2, 3]));
   /// ```
-  #[inline]
   fn repeat(self, n: usize) -> Self
   where
-    Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let values = self.into_iter().collect::<Vec<Item>>();
-    let size = values.len() * n;
-    values.into_iter().cycle().take(size).collect()
-  }
+    Item: Clone;
+}
+
+pub(crate) fn repeat<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
+  iterator: impl Iterator<Item = &'a Item>, n: usize,
+) -> Collection {
+  let collection = iterator.collect::<Vec<&Item>>();
+  let mut values = collection.iter().cycle();
+  unfold(collection.len() * n, |remaining| {
+    if *remaining == 0 {
+      return None;
+    }
+    let result = values.next().map(|&x| x.clone());
+    *remaining -= 1;
+    result
+  })
+  .collect()
 }
