@@ -134,7 +134,6 @@ pub trait Sequence<Item> {
   ///
   /// // assert_eq!(a.cartesian_product(0), empty_result);
   /// // assert_eq!(a.cartesian_product(4), empty_result);
-  /// // assert_eq!(e.cartesian_product(2), empty_result);
   /// ```
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
@@ -1817,9 +1816,8 @@ where
       *current_slot -= 1;
     }
     combination[*current_slot] += 1;
-    #[allow(clippy::needless_range_loop)]
-    for slot in (*current_slot + 1)..k {
-      combination[slot] = 0;
+    for index in &mut combination[(*current_slot + 1)..k] {
+      *index = 0;
     }
     result
   })
@@ -1873,9 +1871,8 @@ where
       *current_slot -= 1;
     }
     let current_index = combination[*current_slot] + 1;
-    #[allow(clippy::needless_range_loop)]
-    for slot in *current_slot..k {
-      combination[slot] = current_index;
+    for index in &mut combination[*current_slot..k] {
+      *index = current_index;
     }
     result
   })

@@ -1334,10 +1334,9 @@ where
       *current_slot -= 1;
     }
     let mut current_index = combination[*current_slot];
-    #[allow(clippy::needless_range_loop)]
-    for slot in *current_slot..=k {
+    for index in &mut combination[*current_slot..=k] {
       current_index += 1;
-      combination[slot] = current_index;
+      *index = current_index;
     }
     result
   })
