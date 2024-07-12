@@ -174,7 +174,7 @@ impl<Item> Ordered<Item> for Vec<Item> {
   {
     common_suffix_length(self.iter().rev(), elements)
   }
-  
+
   #[inline]
   fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
@@ -299,6 +299,15 @@ impl<Item> Sequence<Item> for Vec<Item> {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by(compare);
     result
+  }
+
+  #[inline]
+  fn variations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    variations(self.iter(), k)
   }
 
   #[inline]

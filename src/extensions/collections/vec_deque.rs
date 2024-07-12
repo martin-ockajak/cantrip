@@ -261,6 +261,15 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
+  fn variations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    variations(self.iter(), k)
+  }
+
+  #[inline]
   fn windowed(&self, size: usize) -> Self::This<Self>
   where
     Item: Clone,

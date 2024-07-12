@@ -144,7 +144,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Therefore, if an ordered collection contains duplicate elements, the resulting combinations will too.
   /// To obtain combinations of unique elements for ordered collections, use `.unique().combinations()`.
   ///
-  /// The order of combined values is preserved for ordered collections.
+  /// The order of combination values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -1028,7 +1028,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Therefore, if an ordered collection contains duplicate elements, the resulting sub-collections will too.
   /// To obtain combinations of unique elements for ordered collections, use `.unique().powerset()`.
   ///
-  /// The order of combined values is preserved for ordered collections.
+  /// The order of sub-collection values is preserved for ordered collections.
   ///
   /// # Example
   ///
@@ -1329,10 +1329,10 @@ where
     while combination[*current_slot] >= (size + *current_slot - k) as i64 - 1 {
       *current_slot -= 1;
     }
-    let mut current_index = combination[*current_slot];
+    let mut new_index = combination[*current_slot];
     for index in &mut combination[*current_slot..=k] {
-      current_index += 1;
-      *index = current_index;
+      new_index += 1;
+      *index = new_index;
     }
     result
   })

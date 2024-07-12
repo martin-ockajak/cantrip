@@ -110,7 +110,7 @@ pub trait Sequence<Item> {
   /// Therefore, if this collection contains duplicate elements, the resulting tuples will too.
   /// To obtain cartesian product of unique elements, use `.unique().cartesian_product()`.
   ///
-  /// The order or combined values is preserved.
+  /// The order or tuple values is preserved.
   ///
   /// # Example
   ///
@@ -656,7 +656,7 @@ pub trait Sequence<Item> {
   /// Therefore, if this collection contains duplicate elements, the resulting combinations will too.
   /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
   ///
-  /// The order or combined values is preserved.
+  /// The order or combination values is preserved.
   ///
   /// # Example
   ///
@@ -668,16 +668,13 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.multicombinations(0), vec![vec![]]);
   /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// assert_eq!(
-  ///   a.multicombinations(2),
-  ///   vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
-  /// );
-  /// assert_eq!(
-  ///   a.multicombinations(3), vec![
-  ///     vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
-  ///     vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
-  ///   ]
-  /// );
+  /// assert_eq!(a.multicombinations(2), vec![
+  ///   vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]
+  /// ]);
+  /// assert_eq!(a.multicombinations(3), vec![
+  ///   vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
+  ///   vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
+  /// ]);
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
   /// assert_eq!(e.multicombinations(2), empty_result);
@@ -1502,41 +1499,6 @@ pub trait Sequence<Item> {
     self.into_iter().step_by(step).collect()
   }
 
-  /// Creates a new collection by omitting duplicate elements.
-  ///
-  /// Duplicates are detected using hash and equality.
-  ///
-  /// The algorithm is stable, returning the non-duplicate items in the order
-  /// in which they occur in this collection. In a set of duplicate
-  /// items, the first item encountered is the item retained.
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 2, 3, 1];
-  ///
-  /// assert_eq!(a.unique(), vec![1, 2, 3]);
-  /// ```
-  #[allow(unused_results)]
-  fn unique(self) -> Self
-  where
-    Item: Eq + Hash + Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let iterator = self.into_iter();
-    let mut occurred: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
-    iterator
-      .flat_map(|item| {
-        if !occurred.contains(&item) {
-          occurred.insert(item.clone());
-          Some(item)
-        } else {
-          None
-        }
-      })
-      .collect()
-  }
-
   /// Creates a new collection from the original collection without
   /// the first element.
   ///
@@ -1633,6 +1595,41 @@ pub trait Sequence<Item> {
 
   /// Creates a new collection by omitting duplicate elements.
   ///
+  /// Duplicates are detected using hash and equality.
+  ///
+  /// The algorithm is stable, returning the non-duplicate items in the order
+  /// in which they occur in this collection. In a set of duplicate
+  /// items, the first item encountered is the item retained.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 3, 1];
+  ///
+  /// assert_eq!(a.unique(), vec![1, 2, 3]);
+  /// ```
+  #[allow(unused_results)]
+  fn unique(self) -> Self
+  where
+    Item: Eq + Hash + Clone,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let iterator = self.into_iter();
+    let mut occurred: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
+    iterator
+      .flat_map(|item| {
+        if !occurred.contains(&item) {
+          occurred.insert(item.clone());
+          Some(item)
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
+
+  /// Creates a new collection by omitting duplicate elements.
+  ///
   /// Duplicates are detected by comparing the key they map to
   /// with the result of the keying function `to_key` using hash and equality.
   ///
@@ -1698,6 +1695,43 @@ pub trait Sequence<Item> {
   {
     self.into_iter().unzip()
   }
+
+  /// Creates a new collection containing variations of specified size
+  /// from the elements of the original collection.
+  ///
+  /// Specifying size is equal to the collection length produces all permutations of this collection.
+  ///
+  /// Variations are generated based on element positions, not values.
+  /// Therefore, if this collection contains duplicate elements, the resulting variations will too.
+  /// To obtain variations of unique elements, use `.unique().variations()`.
+  ///
+  /// The order or variation values is preserved.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// // assert_eq!(a.variations(0), vec![vec![]]);
+  /// // assert_eq!(a.variations(1), vec![vec![1], vec![2], vec![3]]);
+  /// // assert_eq!(a.variations(2), vec![
+  /// //   vec![1, 2], vec![1, 3], vec![2, 1], vec![2, 3], vec![3, 1], vec![3, 2]
+  /// // ]);
+  /// // Permutations
+  /// // assert_eq!(a.variations(3), vec![
+  /// //   vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1],
+  /// // ]);
+  ///
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// // assert_eq!(e.variations(2), empty_result);
+  /// ```
+  fn variations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
 
   /// Creates a new collection consisting of overlapping windows of `N` elements
   /// of this collection, starting at the beginning of the collection.
@@ -1802,18 +1836,18 @@ where
 {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
+  let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
     }
     *current_slot = k;
-    let result = Some(collect_by_index(&values, &combination[1..]));
-    while combination[*current_slot] >= (size - 1) as i64 {
+    let result = Some(collect_by_index(&values, &product[1..]));
+    while product[*current_slot] >= (size - 1) as i64 {
       *current_slot -= 1;
     }
-    combination[*current_slot] += 1;
-    for index in &mut combination[(*current_slot + 1)..=k] {
+    product[*current_slot] += 1;
+    for index in &mut product[(*current_slot + 1)..=k] {
       *index = 0;
     }
     result
@@ -1854,23 +1888,62 @@ where
 {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
+  let mut multicombination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
     }
     *current_slot = k;
-    let result = Some(collect_by_index(&values, &combination[1..]));
-    while combination[*current_slot] >= (size - 1) as i64 {
+    let result = Some(collect_by_index(&values, &multicombination[1..]));
+    while multicombination[*current_slot] >= (size - 1) as i64 {
       *current_slot -= 1;
     }
-    let current_index = combination[*current_slot] + 1;
-    for index in &mut combination[*current_slot..=k] {
-      *index = current_index;
+    let new_index = multicombination[*current_slot] + 1;
+    for index in &mut multicombination[*current_slot..=k] {
+      *index = new_index;
     }
     result
   })
   .collect()
+}
+
+pub(crate) fn variations<'a, Item, Collection>(
+  iterator: impl Iterator<Item = &'a Item>, k: usize,
+) -> Vec<Collection>
+where
+  Item: Clone + 'a,
+  Collection: FromIterator<Item> + Sized,
+{
+  let values = Vec::from_iter(iterator);
+  let size = values.len();
+  let mut variation = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
+  let mut used_indices = Vec::from_iter(iter::repeat(true).take(k).chain(iter::repeat(false).take(size.saturating_sub(k))));
+  unfold((size + 1).saturating_sub(k), |current_slot| {
+    if *current_slot == 0 {
+      return None;
+    }
+    *current_slot = k;
+    let result = Some(collect_by_index(&values, &variation[1..]));
+    while ((variation[*current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
+      used_indices[variation[*current_slot] as usize] = false;
+      *current_slot -= 1;
+      if *current_slot == 0 {
+        return None;
+      }
+    }
+    let initial_index = ((variation[*current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+    used_indices[variation[*current_slot] as usize] = false;
+    used_indices[initial_index as usize] = true;
+    variation[*current_slot] = initial_index;
+    for index in &mut variation[(*current_slot + 1)..=k] {
+      let new_index = (0..=(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+      used_indices[*index as usize] = false;
+      used_indices[new_index as usize] = true;
+      *index = new_index;
+    }
+    result
+  })
+    .collect()
 }
 
 #[allow(unused_results)]
