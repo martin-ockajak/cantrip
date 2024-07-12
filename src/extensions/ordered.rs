@@ -74,8 +74,6 @@ pub trait Ordered<Item> {
   /// Tests if this sequence contains all elements of another collection exactly
   /// as many times as their appear in the other collection and vice versa.
   ///
-  /// Returns `true` if the other collection is empty.
-  ///
   /// # Example
   ///
   /// ```
@@ -87,6 +85,7 @@ pub trait Ordered<Item> {
   ///
   /// assert!(!a.equivalent(&vec![1, 3, 3]));
   /// assert!(!a.equivalent(&vec![1, 1, 2, 2, 3]));
+  /// assert!(!a.equivalent(&vec![]));
   /// ```
   fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
