@@ -29,11 +29,11 @@ where
   }
 
   // delete_all
-  assert_equal(distinct.clone().delete_all(&vec![0, 1]), &[2]);
-  assert_equal(distinct.clone().delete_all(&vec![]), &[0, 1, 2]);
-  assert_equal(empty.clone().delete_all(&vec![0, 1]), &[]);
+  assert_equal(distinct.clone().delete_multiple(&vec![0, 1]), &[2]);
+  assert_equal(distinct.clone().delete_multiple(&vec![]), &[0, 1, 2]);
+  assert_equal(empty.clone().delete_multiple(&vec![0, 1]), &[]);
   if sequence {
-    assert_equal(repeated.clone().delete_all(&vec![0, 1, 3]), &[1, 2]);
+    assert_equal(repeated.clone().delete_multiple(&vec![0, 1, 3]), &[1, 2]);
   }
 
   // filter

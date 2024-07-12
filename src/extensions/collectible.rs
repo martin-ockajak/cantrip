@@ -18,7 +18,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Original collection type
   type This<I>;
 
-  /// Creates a new collection by appending an element to the original collection.
+  /// Creates a new collection by appending an element to this collection.
   ///
   /// # Example
   ///
@@ -38,7 +38,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection by appending all elements of another collection to
-  /// the original collection.
+  /// the this collection.
   ///
   /// # Example
   ///
@@ -47,17 +47,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2];
   ///
-  /// assert_eq!(a.add_all(vec![3, 4]), vec![1, 2, 3, 4]);
+  /// assert_eq!(a.add_multiple(vec![3, 4]), vec![1, 2, 3, 4]);
   /// ```
   #[inline]
-  fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  fn add_multiple(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     self.into_iter().chain(iterable).collect()
   }
 
-  /// Creates a new collection from the original collection without
+  /// Creates a new collection from this collection without
   /// the first occurrence of an element.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -94,7 +94,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
-  /// Creates a new collection from the original collection without
+  /// Creates a new collection from this collection without
   /// the first occurrences of elements found in another collection.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -107,11 +107,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_all(&vec![1, 3]), vec![2, 3]);
+  /// assert_eq!(a.delete_multiple(&vec![1, 3]), vec![2, 3]);
   ///
-  /// assert_eq!(e.delete_all(&vec![1]), vec![]);
+  /// assert_eq!(e.delete_multiple(&vec![1]), vec![]);
   /// ```
-  fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn delete_multiple<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
@@ -138,7 +138,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection containing combinations of specified size from the elements
-  /// of the original collection.
+  /// of this collection.
   ///
   /// Combinations for ordered collections are generated based on element positions, not values.
   /// Therefore, if an ordered collection contains duplicate elements, the resulting combinations will too.
@@ -188,7 +188,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iter::repeat(value()).take(size).collect()
   }
 
-  /// Creates a new collection by filtering the original collection using a
+  /// Creates a new collection by filtering this collection using a
   /// closure to determine if an element should be retained.
   ///
   /// Given an element the closure must return `true` or `false`. The returned
@@ -257,7 +257,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(predicate).collect()
   }
 
-  /// Creates a new collection by filtering and mapping the original collection.
+  /// Creates a new collection by filtering and mapping this collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -301,7 +301,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// Creates a new collection by filters and maps the original collection.
+  /// Creates a new collection by filters and maps this collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
@@ -382,7 +382,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().find_map(function)
   }
 
-  /// Creates a new collection by flattens the original nested collection.
+  /// Creates a new collection by flattening this nested collection.
   ///
   /// This is useful when you have a collection of iterables,
   /// and you want to remove one level of indirection.
@@ -479,7 +479,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection by applying the given closure `function` to each element
-  /// of the original collection and flattens the nested collection.
+  /// of this collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
@@ -517,7 +517,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self::This<B>: FromIterator<B>;
 
   /// Creates a new collection by applying the given closure `function` to each element
-  /// of the original collection and flattens the nested collection.
+  /// of this collection and flattens the nested collection.
   ///
   /// The [`flat_map`] adapter is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
@@ -778,7 +778,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection by retaining the values representing the intersection
-  /// of the original collection with another collection i.e., the values that are
+  /// of this collection with another collection i.e., the values that are
   /// both in `self` and `other`.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -812,8 +812,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().filter(|x| retained.contains(x)).collect()
   }
 
-  /// Creates a new collection by applying the given closure `function` to each element in
-  /// the original collection.
+  /// Creates a new collection by applying the given closure `function` to
+  /// each element in this collection.
   ///
   /// The closure `function` takes a reference to an element of type
   /// `Item` and returns a value of type `R`.
@@ -853,7 +853,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self::This<B>: FromIterator<B>;
 
   /// Creates a new collection by applying the given closure `function` to each element in
-  /// the original collection.
+  /// this collection.
   ///
   /// The closure `function` takes a reference to an element of type
   /// `Item` and returns a value of type `R`.
@@ -898,7 +898,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection containing the n largest elements of
-  /// the original collection in descending order.
+  /// this collection in descending order.
   ///
   /// # Example
   ///
@@ -929,7 +929,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     heap.into_iter().rev().map(|x| x.0).collect()
   }
 
-  /// Creates two new collections from the original collection using by applying
+  /// Creates two new collections from this collection by applying
   /// specified predicate.
   ///
   /// The predicate passed to `partition()` can return `true`, or `false`.
@@ -956,7 +956,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().partition(predicate)
   }
 
-  /// Creates two new collections with arbitrary element types from the original collection
+  /// Creates two new collections with arbitrary element types from this collection
   /// by applying specified function.
   ///
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
@@ -983,7 +983,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self::This<A>: Default + Extend<A>,
     Self::This<B>: Default + Extend<B>;
 
-  /// Creates two new collections with arbitrary element types from the original collection
+  /// Creates two new collections with arbitrary element types from this collection
   /// by applying specified function.
   ///
   /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
@@ -1022,7 +1022,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  /// Creates a new collection containing all sub-collections of the original collection.
+  /// Creates a new collection containing all sub-collections of this collection.
   ///
   /// Sub-collections for ordered collections are generated based on element positions, not values.
   /// Therefore, if an ordered collection contains duplicate elements, the resulting sub-collections will too.
@@ -1131,7 +1131,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   // FIXME = fix the failing test case
-  /// Creates a new collection from the original collection by replacing the
+  /// Creates a new collection from this collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -1162,7 +1162,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   // FIXME = fix the failing test case
-  /// Creates a new collection from the original collection by replacing the
+  /// Creates a new collection from this collection by replacing the
   /// given occurrences of elements found in another collection with elements
   /// of a replacement collection.
   ///
@@ -1215,7 +1215,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection containing the n smallest elements of
-  /// the original collection in descending order.
+  /// this collection in descending order.
   ///
   /// # Example
   ///

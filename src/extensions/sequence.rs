@@ -22,10 +22,54 @@ pub trait Sequence<Item> {
   // FIXME - implement these methods
   // coalesce
   // chunked_by
-  // variations
+
+  /// Creates a new sequence by inserting all elements of another collection
+  /// into specified index in this sequence.
+  ///
+  /// if the specified index exceeds this sequence size, no elements are inserted.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2];
+  /// let a = vec![1, 2];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.add_multiple_at(0, vec![3, 4]), vec![3, 4, 1, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_multiple_at(1, vec![3, 4]), vec![1, 3, 4, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_multiple_at(2, vec![3, 4]), vec![1, 2, 3, 4]);
+  /// # let a = source.clone();
+  /// assert_eq!(e.add_multiple_at(0, vec![1, 2]), vec![1, 2]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.add_multiple_at(3, vec![3, 4]), vec![1, 2]);
+  /// ```
+  fn add_multiple_at(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut added = additions.into_iter();
+    unfold(0_usize, |position| {
+      if *position >= index {
+        added.next().or_else(|| {
+          *position += 1;
+          iterator.next()
+        })
+      } else {
+        *position += 1;
+        iterator.next()
+      }
+    })
+    .collect()
+  }
 
   /// Creates a new sequence by inserting an element into specified index
-  /// in the original collection.
+  /// in this sequence.
   ///
   /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
@@ -53,56 +97,11 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.add_all_at(index, iter::once(addition))
-  }
-
-  /// Creates a new sequence by inserting all elements of another collection
-  /// into specified index in the original collection.
-  ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2];
-  /// let a = vec![1, 2];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.add_all_at(0, vec![3, 4]), vec![3, 4, 1, 2]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(1, vec![3, 4]), vec![1, 3, 4, 2]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(2, vec![3, 4]), vec![1, 2, 3, 4]);
-  /// # let a = source.clone();
-  /// assert_eq!(e.add_all_at(0, vec![1, 2]), vec![1, 2]);
-  ///
-  /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(3, vec![3, 4]), vec![1, 2]);
-  /// ```
-  fn add_all_at(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let mut added = additions.into_iter();
-    unfold(0_usize, |position| {
-      if *position >= index {
-        added.next().or_else(|| {
-          *position += 1;
-          iterator.next()
-        })
-      } else {
-        *position += 1;
-        iterator.next()
-      }
-    })
-    .collect()
+    self.add_multiple_at(index, iter::once(addition))
   }
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
-  /// from the elements of the original collection.
+  /// from the elements of this sequence.
   ///
   /// Members are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting tuples will too.
@@ -136,10 +135,10 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new sequence by splitting the original collection elements
+  /// Creates a new sequence by splitting this sequence elements
   /// into non-overlapping subsequences of specified `size`.
   ///
-  /// The chunks are collections and do not overlap. If `size` does not divide
+  /// The chunks are sequences and do not overlap. If `size` does not divide
   /// the length of the slice, then the last chunk will not have length `size`.
   ///
   /// See [`chunked_exact`] for a variant of this function that returns chunks of always exactly
@@ -177,10 +176,10 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix failing test case
-  /// Creates a new sequence by splitting the original collection elements
+  /// Creates a new sequence by splitting this sequence elements
   /// into non-overlapping subsequences of specified `size`.
   ///
-  /// The chunks are collections and do not overlap. If `size` does not divide
+  /// The chunks are sequences and do not overlap. If `size` does not divide
   /// the length of the slice, then the last up to `size-1` elements will be omitted.
   ///
   /// Due to each chunk having exactly `chunk_size` elements, the compiler can often optimize the
@@ -218,7 +217,7 @@ pub trait Sequence<Item> {
   }
 
   // // FIXME - fix failing test case
-  // /// Creates a new sequence by splitting the original collection into non-overlapping
+  // /// Creates a new sequence by splitting this sequence into non-overlapping
   // /// subsequences according to specified separator predicate.
   // ///
   // /// The predicate is called for every pair of consecutive elements,
@@ -313,7 +312,7 @@ pub trait Sequence<Item> {
   // }
 
   /// Creates a new sequence by omitting an element at specified index
-  /// in the original collection.
+  /// in this sequence.
   ///
   /// if the specified index exceeds this sequence size, no elements are deleted.
   ///
@@ -344,8 +343,8 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
   }
 
-  /// Creates a new sequence by omitting all elements at specified indices
-  /// in the original collection.
+  /// Creates a new sequence by omitting elements at specified indices
+  /// in this sequence.
   ///
   /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
@@ -358,18 +357,18 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_all_at(vec![0, 2]), vec![2]);
+  /// assert_eq!(a.delete_multiple_at(vec![0, 2]), vec![2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_all_at(vec![1, 3]), vec![1, 3]);
+  /// assert_eq!(a.delete_multiple_at(vec![1, 3]), vec![1, 3]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_all_at(vec![0, 1, 2, 3]), vec![]);
+  /// assert_eq!(a.delete_multiple_at(vec![0, 1, 2, 3]), vec![]);
   ///
-  /// assert_eq!(e.delete_all_at(vec![1, 2]), vec![]);
+  /// assert_eq!(e.delete_multiple_at(vec![1, 2]), vec![]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_all_at(vec![3, 4]), vec![1, 2, 3]);
+  /// assert_eq!(a.delete_multiple_at(vec![3, 4]), vec![1, 2, 3]);
   /// ```
   #[inline]
-  fn delete_all_at(self, indices: impl IntoIterator<Item = usize>) -> Self
+  fn delete_multiple_at(self, indices: impl IntoIterator<Item = usize>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
@@ -418,11 +417,11 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  /// Creates a new sequence which contains original collection elements
+  /// Creates a new sequence which contains elements of this sequence
   /// and their indices.
   ///
   /// The new sequence contains pairs of `(i, val)`, where `i` is the
-  /// current index of iteration and `val` is the original collection element.
+  /// current index of iteration and `val` is an element of this sequence.
   ///
   /// `enumerate()` keeps its count as an [`usize`]. If you want to count by a
   /// different sized integer, the [`zip`] function provides similar
@@ -500,7 +499,7 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix failing test case
-  /// Creates a new sequence from the original collection without
+  /// Creates a new sequence from this sequence without
   /// the last element.
   ///
   /// # Example
@@ -585,7 +584,7 @@ pub trait Sequence<Item> {
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
   /// Creates a new sequence by moving an element at an index into specified index
-  /// in the original collection.
+  /// in this sequence.
   ///
   /// if the source index exceeds this sequence size, no elements are moved.
   /// if the target index exceeds this sequence size, the element is only removed.
@@ -648,7 +647,7 @@ pub trait Sequence<Item> {
   }
 
   /// Creates a new sequence containing combinations with repetition of specified size
-  /// from the elements of the original collection.
+  /// from the elements of this sequence.
   ///
   /// Combinations are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting combinations will too.
@@ -682,8 +681,8 @@ pub trait Sequence<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new sequence by padding the original collection to a minimum length of
-  /// `size` and filling missing elements with specified value, starting from the back.
+  /// Creates a new sequence by padding this sequence to a minimum length of `size`
+  /// and filling missing elements with specified value, starting from the back.
   ///
   /// # Example
   ///
@@ -706,8 +705,8 @@ pub trait Sequence<Item> {
     self.pad_left_with(size, |_| value.clone())
   }
 
-  /// Creates a new sequence by padding the original collection to a minimum length of
-  /// `size` and filling missing elements using a closure `to_element`, starting from the back.
+  /// Creates a new sequence by padding this sequence to a minimum length of `size`
+  /// and filling missing elements using a closure `to_element`, starting from the back.
   ///
   /// # Example
   ///
@@ -737,7 +736,7 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new sequence by padding the original collection to a minimum length of
+  /// Creates a new sequence by padding this sequence to a minimum length of
   /// `size` and filling missing elements with specified value.
   ///
   /// # Example
@@ -760,7 +759,7 @@ pub trait Sequence<Item> {
     self.pad_right_with(size, |_| value.clone())
   }
 
-  /// Creates a new sequence by padding the original collection to a minimum length of
+  /// Creates a new sequence by padding this sequence to a minimum length of
   /// `size` and filling missing elements using a closure `to_element`.
   ///
   /// # Example
@@ -792,7 +791,7 @@ pub trait Sequence<Item> {
   // fn permutations(self) -> Self::This<Self>;
 
   /// Creates a new sequence by replacing an element at specified index
-  /// in the original collection.
+  /// in this sequence.
   ///
   /// if the specified index exceeds this sequence size, no elements are replaced.
   ///
@@ -864,7 +863,7 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new sequence by reversing the original collection's direction.
+  /// Creates a new sequence by reversing this sequence's direction.
   ///
   /// # Example
   ///
@@ -885,8 +884,7 @@ pub trait Sequence<Item> {
     iterator.rev().collect()
   }
 
-  /// A collection method that reduces this sequence's elements to a single,
-  /// final value, starting from the back.
+  /// Reduces this sequence's elements to a single, final value, starting from the back.
   ///
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
   /// starting from the back of this sequence.
@@ -957,17 +955,17 @@ pub trait Sequence<Item> {
     iterator.rfold(initial_value, function)
   }
 
-  /// A collection adapter which, like [`fold`], holds internal state, but
+  /// A sequence adapter which, like [`fold`], holds internal state, but
   /// unlike [`fold`], produces a new sequence.
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
-  /// reference to the internal state and the second a collection element.
+  /// reference to the internal state and the second element of this sequence.
   /// The closure can assign to the internal state to share state between
   /// iterations.
   ///
-  /// On iteration, the closure will be applied to each element of the
-  /// collection and the return value from the closure, an [`Option`], is
+  /// On iteration, the closure will be applied to each element of this
+  /// sequence and the return value from the closure, an [`Option`], is
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
@@ -1001,19 +999,19 @@ pub trait Sequence<Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// A collection adapter which, like [`fold`], holds internal state, but
+  /// A sequence adapter which, like [`fold`], holds internal state, but
   /// unlike [`fold`], produces a new sequence.
   ///
   /// [`fold`]: crate::Traversable::fold
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
-  /// reference to the internal state and the second a collection element.
+  /// reference to the internal state and the second element of this sequence.
   /// The closure can assign to the internal state to share state between
   /// iterations.
   ///
-  /// On iteration, the closure will be applied to each element of the
-  /// collection and the return value from the closure, an [`Option`], is
+  /// On iteration, the closure will be applied to each element of this
+  /// sequence and the return value from the closure, an [`Option`], is
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
@@ -1051,12 +1049,12 @@ pub trait Sequence<Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
-  /// Creates a new sequence that skips the first `n` elements from the original collection.
+  /// Creates a new sequence that skips the first `n` elements from this sequence.
   ///
-  /// `skip(n)` skips elements until `n` elements are skipped or the end of the
-  /// collection is reached (whichever happens first). After that, all the remaining
-  /// elements are yielded. In particular, if the original collection is too short,
-  /// then the returned collection is empty.
+  /// `skip(n)` skips elements until `n` elements are skipped or the end of this
+  /// sequence is reached (whichever happens first). After that, all the remaining
+  /// elements are yielded. In particular, if this sequence is too short,
+  /// then the returned sequence is empty.
   ///
   /// # Example
   ///
@@ -1121,10 +1119,10 @@ pub trait Sequence<Item> {
   ///
   /// The current algorithm is an adaptive, iterative merge sort inspired by
   /// [timsort](https://en.wikipedia.org/wiki/Timsort).
-  /// It is designed to be very fast in cases where the collection is nearly sorted, or consists of
+  /// It is designed to be very fast in cases where this sequence is nearly sorted, or consists of
   /// two or more sorted sequences concatenated one after another.
   ///
-  /// Also, it allocates temporary storage half the size of `self`, but for short collections a
+  /// Also, it allocates temporary storage half the size of `self`, but for short sequences a
   /// non-allocating insertion sort is used instead.
   ///
   /// # Examples
@@ -1151,7 +1149,7 @@ pub trait Sequence<Item> {
   ///
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
   ///
-  /// The comparator function must define a total ordering for the elements in the collection. If
+  /// The comparator function must define a total ordering for the elements in this sequence. If
   /// the ordering is not total, the order of the elements is unspecified. An order is a
   /// total order if it is (for all `a`, `b` and `c`):
   ///
@@ -1159,7 +1157,7 @@ pub trait Sequence<Item> {
   /// * transitive, `a < b` and `b < c` implies `a < c`. The same must hold for both `==` and `>`.
   ///
   /// For example, while [`f64`] doesn't implement [`Ord`] because `NaN != NaN`, we can use
-  /// `partial_cmp` as our sort function when we know the collection doesn't contain a `NaN`.
+  /// `partial_cmp` as our sort function when we know this sequence doesn't contain a `NaN`.
   ///
   /// ```
   /// use cantrip::*;
@@ -1179,10 +1177,10 @@ pub trait Sequence<Item> {
   ///
   /// The current algorithm is an adaptive, iterative merge sort inspired by
   /// [timsort](https://en.wikipedia.org/wiki/Timsort).
-  /// It is designed to be very fast in cases where the collection is nearly sorted, or consists of
+  /// It is designed to be very fast in cases where this sequence is nearly sorted, or consists of
   /// two or more sorted sequences concatenated one after another.
   ///
-  /// Also, it allocates temporary storage half the size of `self`, but for short collections a
+  /// Also, it allocates temporary storage half the size of `self`, but for short sequences a
   /// non-allocating insertion sort is used instead.
   ///
   /// # Example
@@ -1224,12 +1222,12 @@ pub trait Sequence<Item> {
   ///
   /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
   /// which combines the fast average case of randomized quicksort with the fast worst case of
-  /// heapsort, while achieving linear time on collections with certain patterns. It uses some
+  /// heapsort, while achieving linear time on sequences with certain patterns. It uses some
   /// randomization to avoid degenerate cases, but with a fixed seed to always provide
   /// deterministic behavior.
   ///
   /// In the worst case, the algorithm allocates temporary storage in a `Vec<(K, usize)>` the
-  /// length of the collection.
+  /// length of this sequence.
   ///
   /// [pdqsort]: https://github.com/orlp/pdqsort
   ///
@@ -1271,10 +1269,10 @@ pub trait Sequence<Item> {
   ///
   /// The current algorithm is an adaptive, iterative merge sort inspired by
   /// [timsort](https://en.wikipedia.org/wiki/Timsort).
-  /// It is designed to be very fast in cases where the collection is nearly sorted, or consists of
+  /// It is designed to be very fast in cases where this sequence is nearly sorted, or consists of
   /// two or more sorted sequences concatenated one after another.
   ///
-  /// Also, it allocates temporary storage half the size of `self`, but for short collections a
+  /// Also, it allocates temporary storage half the size of `self`, but for short sequences a
   /// non-allocating insertion sort is used instead.
   ///
   /// # Example
@@ -1307,12 +1305,12 @@ pub trait Sequence<Item> {
   ///
   /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
   /// which combines the fast average case of randomized quicksort with the fast worst case of
-  /// heapsort, while achieving linear time on collections with certain patterns. It uses some
+  /// heapsort, while achieving linear time on sequences with certain patterns. It uses some
   /// randomization to avoid degenerate cases, but with a fixed seed to always provide
   /// deterministic behavior.
   ///
-  /// It is typically faster than stable sorting, except in a few special cases, e.g., when the
-  /// collection consists of several concatenated sorted sequences.
+  /// It is typically faster than stable sorting, except in a few special cases, e.g., when this
+  /// sequence consists of several concatenated sorted sequences.
   ///
   /// [pdqsort]: https://github.com/orlp/pdqsort
   ///
@@ -1342,7 +1340,7 @@ pub trait Sequence<Item> {
   /// This sort is unstable (i.e., may reorder equal elements), in-place
   /// (i.e., does not allocate), and *O*(*n* \* log(*n*)) worst-case.
   ///
-  /// The comparator function must define a total ordering for the elements in the collection. If
+  /// The comparator function must define a total ordering for the elements in this sequence. If
   /// the ordering is not total, the order of the elements is unspecified. An order is a
   /// total order if it is (for all `a`, `b` and `c`):
   ///
@@ -1350,7 +1348,7 @@ pub trait Sequence<Item> {
   /// * transitive, `a < b` and `b < c` implies `a < c`. The same must hold for both `==` and `>`.
   ///
   /// For example, while [`f64`] doesn't implement [`Ord`] because `NaN != NaN`, we can use
-  /// `partial_cmp` as our sort function when we know the collection doesn't contain a `NaN`.
+  /// `partial_cmp` as our sort function when we know this sequence doesn't contain a `NaN`.
   ///
   /// ```
   /// use cantrip::*;
@@ -1366,12 +1364,12 @@ pub trait Sequence<Item> {
   ///
   /// The current algorithm is based on [pattern-defeating quicksort][pdqsort] by Orson Peters,
   /// which combines the fast average case of randomized quicksort with the fast worst case of
-  /// heapsort, while achieving linear time on collections with certain patterns. It uses some
+  /// heapsort, while achieving linear time on sequences with certain patterns. It uses some
   /// randomization to avoid degenerate cases, but with a fixed seed to always provide
   /// deterministic behavior.
   ///
-  /// It is typically faster than stable sorting, except in a few special cases, e.g., when the
-  /// collection consists of several concatenated sorted sequences.
+  /// It is typically faster than stable sorting, except in a few special cases, e.g., when this
+  /// sequence consists of several concatenated sorted sequences.
   ///
   /// [pdqsort]: https://github.com/orlp/pdqsort
   ///
@@ -1473,7 +1471,7 @@ pub trait Sequence<Item> {
   /// Creates a new sequence from this sequence stepping by
   /// the given amount for each retained element.
   ///
-  /// Note: The first element of the collection will always be returned,
+  /// Note: The first element of this sequence will always be returned,
   /// regardless of the step given.
   ///
   /// # Panics
@@ -1497,7 +1495,7 @@ pub trait Sequence<Item> {
     self.into_iter().step_by(step).collect()
   }
 
-  /// Creates a new sequence from the original collection without
+  /// Creates a new sequence from this sequence without
   /// the first element.
   ///
   /// # Example
@@ -1521,13 +1519,13 @@ pub trait Sequence<Item> {
   }
 
   /// Creates a new sequence that yields the first `n` elements, or fewer
-  /// if the original collection has fewer than `n` elements.
+  /// if this sequence has fewer than `n` elements.
   ///
   /// `take(n)` yields elements until `n` elements are yielded or the end of
   /// this sequence is reached (whichever happens first).
-  /// The returned collection is a prefix of length `n` if the original collection
+  /// The returned sequence is a prefix of length `n` if this sequence
   /// contains at least `n` elements, otherwise it contains all the
-  /// (fewer than `n`) elements of the original collection.
+  /// (fewer than `n`) elements of this sequence.
   ///
   /// # Examples
   ///
@@ -1542,7 +1540,7 @@ pub trait Sequence<Item> {
   /// ```
   ///
   /// If less than `n` elements are available,
-  /// `take` will limit itself to the size of the original collection:
+  /// `take` will limit itself to the size of this sequence:
   ///
   /// ```
   /// use cantrip::*;
@@ -1695,9 +1693,9 @@ pub trait Sequence<Item> {
   }
 
   /// Creates a new sequence containing variations of specified size
-  /// from the elements of the original collection.
+  /// from the elements of this sequence.
   ///
-  /// Specifying size is equal to the collection length produces all permutations of this sequence.
+  /// Specifying size is equal to this sequence length produces all permutations of this sequence.
   ///
   /// Variations are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting variations will too.
@@ -1732,11 +1730,11 @@ pub trait Sequence<Item> {
     Self: Sized;
 
   /// Creates a new sequence consisting of overlapping windows of `N` elements
-  /// of this sequence, starting at the beginning of the collection.
+  /// of this sequence, starting at the beginning of this sequence.
   ///
   /// This is the generic equivalent of [`windows`].
   ///
-  /// If `N` is greater than the size of the collection, it will return no windows.
+  /// If `N` is greater than the size of this sequence, it will return no windows.
   ///
   /// # Panics
   ///
@@ -1764,10 +1762,10 @@ pub trait Sequence<Item> {
     Self::This<Self>: FromIterator<Self>;
 
   /// Creates a new sequence consisting of overlapping windows of `N` elements
-  /// of this sequence, starting at the beginning of the collection and wrapping
+  /// of this sequence, starting at the beginning of this sequence and wrapping
   /// back to the first elements when the window would otherwise exceed this sequence length.
   ///
-  /// If `N` is greater than the size of the collection, it will return no windows.
+  /// If `N` is greater than the size of this sequence, it will return no windows.
   ///
   /// # Panics
   ///

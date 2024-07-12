@@ -117,7 +117,7 @@ pub trait Ordered<Item> {
   where
     Item: Eq + Hash + 'a;
 
-  /// Combine all collection elements into one `String`, separated by `sep`.
+  /// Combine all elements of this sequence into one `String`, separated by `sep`.
   ///
   /// Use the `Display` implementation of each element.
   ///
@@ -352,8 +352,7 @@ pub trait Ordered<Item> {
   /// ```
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
-  /// A collection method that reduces this sequence's elements to a single,
-  /// final value, starting from the back.
+  /// Reduces this sequence's elements to a single, final value, starting from the back.
   ///
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
   /// starting from the back of this sequence.

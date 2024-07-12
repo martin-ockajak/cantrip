@@ -45,9 +45,9 @@
 /// | Method                    | Vec, VecDeque, LinkedList |       Slice        | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap  |
 /// |---------------------------|:-------------------------:|:------------------:|:-----------------------------:|:------------------:|
 /// | *add*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *add_all*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *add_all_at*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *add_at*                  |    :heavy_check_mark:     |                    |                               |                    |
+/// | *add_multiple*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *add_multiple_at*         |    :heavy_check_mark:     |                    |                               |                    |
 /// | *all*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *any*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *cartesian_product*       |    :heavy_check_mark:     |                    |                               |                    |
@@ -61,9 +61,9 @@
 /// | *count_by*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *count_unique*            |    :heavy_check_mark:     | :heavy_check_mark: |                               | :heavy_check_mark: |
 /// | *delete*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *delete_all*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *delete_all_at*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *delete_at*               |    :heavy_check_mark:     |                    |                               |                    |
+/// | *delete_multiple*         |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *delete_multiple_at*      |    :heavy_check_mark:     |                    |                               |                    |
 /// | *duplicates*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *duplicates_by*           |    :heavy_check_mark:     |                    |                               |                    |
 /// | *enumerate*               |    :heavy_check_mark:     |                    |                               |                    |
