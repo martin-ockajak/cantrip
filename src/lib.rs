@@ -174,7 +174,6 @@
 /// | *unit*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *unzip*                   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *variations*              |    :heavy_check_mark:     |                    |                               |                    |
-/// | *variations_repetitive*   |    :heavy_check_mark:     |                    |                               |                    |
 /// | *windowed*                |    :heavy_check_mark:     |                    |                               |                    |
 /// | *windowed_circular*       |    :heavy_check_mark:     |                    |                               |                    |
 /// | *zip*                     |    :heavy_check_mark:     |                    |                               |                    |
