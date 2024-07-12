@@ -1716,7 +1716,7 @@ pub trait Sequence<Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.variations(0), vec![vec![]]);
-  /// // assert_eq!(a.variations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.variations(1), vec![vec![1], vec![2], vec![3]]);
   /// // assert_eq!(a.variations(2), vec![
   /// //   vec![1, 2], vec![1, 3], vec![2, 1], vec![2, 3], vec![3, 1], vec![3, 2]
   /// // ]);
@@ -1726,7 +1726,7 @@ pub trait Sequence<Item> {
   /// // ]);
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
-  /// // assert_eq!(e.variations(2), empty_result);
+  /// assert_eq!(e.variations(2), empty_result);
   /// ```
   fn variations(&self, k: usize) -> Vec<Self>
   where
