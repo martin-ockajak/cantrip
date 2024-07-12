@@ -16,7 +16,6 @@ use std::ops::RangeBounds;
 pub trait Sequence<Item> {
   type This<I>;
 
-  // FIXME - add documentation
   // FIXME - implement these methods
   // coalesce
   // chunked_by
