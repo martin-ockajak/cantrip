@@ -90,7 +90,8 @@
 /// | *group_by*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *group_fold*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       |                    |
 /// | *group_fold_to*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-/// | *group_reduce*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
+/// | *group_reduce*            |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       |                    |
+/// | *group_reduce_to*         |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *interleave*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *interleave_exact*        |    :heavy_check_mark:     |                    |                               |                    |
 /// | *intersect*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
