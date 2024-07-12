@@ -121,19 +121,18 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // assert_eq!(a.cartesian_product(1), vec![vec![1], vec![2], vec![3]]);
-  /// // assert_eq!(
-  /// //  a.cartesian_product(2), vec![
-  /// //    vec![1, 1], vec![1, 2], vec![1, 3],
-  /// //    vec![2, 1], vec![2, 2], vec![2, 3],
-  /// //    vec![3, 1], vec![3, 2], vec![3, 3],
-  /// //  ]
-  /// // );
+  /// assert_eq!(a.cartesian_product(0), vec![vec![]]);
+  /// assert_eq!(a.cartesian_product(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(
+  ///   a.cartesian_product(2), vec![
+  ///     vec![1, 1], vec![1, 2], vec![1, 3],
+  ///     vec![2, 1], vec![2, 2], vec![2, 3],
+  ///     vec![3, 1], vec![3, 2], vec![3, 3],
+  ///   ]
+  /// );
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
-  ///
-  /// // assert_eq!(a.cartesian_product(0), empty_result);
-  /// // assert_eq!(a.cartesian_product(4), empty_result);
+  /// assert_eq!(e.cartesian_product(2), empty_result);
   /// ```
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
@@ -1815,11 +1814,9 @@ where
     while combination[*current_slot] >= (size - 1) as i64 {
       *current_slot -= 1;
     }
-    if *current_slot > 0 {
-      combination[*current_slot] += 1;
-      for index in &mut combination[(*current_slot + 1)..=k] {
-        *index = 0;
-      }
+    combination[*current_slot] += 1;
+    for index in &mut combination[(*current_slot + 1)..=k] {
+      *index = 0;
     }
     result
   })

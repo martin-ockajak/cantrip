@@ -160,7 +160,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
-  ///
   /// assert_eq!(a.combinations(4), empty_result);
   /// assert_eq!(e.combinations(2), empty_result);
   /// ```
