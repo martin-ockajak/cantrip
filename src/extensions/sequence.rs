@@ -103,7 +103,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  // FIXME - fix failing test case
   /// Creates a new collection containing tuples of k-fold cartesian product of specified size
   /// from the elements of the original collection.
   ///
@@ -650,7 +649,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  // FIXME - fix failing test case
   /// Creates a new collection containing combinations with repetition of specified size
   /// from the elements of the original collection.
   ///
