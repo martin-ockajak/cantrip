@@ -202,11 +202,11 @@ impl<Item> Ordered<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn join_items(&self, separator: &str) -> String
+  fn joined(&self, separator: &str) -> String
   where
     Item: Display,
   {
-    join_items(self.iter(), separator)
+    joined(self.iter(), separator)
   }
 
   #[inline]

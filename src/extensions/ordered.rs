@@ -144,10 +144,10 @@ pub trait Ordered<Item> {
   /// let a = [1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.join_items(", "), "1, 2, 3");
-  /// assert_eq!(e.join_items(", "), "");
+  /// assert_eq!(a.joined(", "), "1, 2, 3");
+  /// assert_eq!(e.joined(", "), "");
   /// ```
-  fn join_items(&self, separator: &str) -> String
+  fn joined(&self, separator: &str) -> String
   where
     Item: Display;
 
@@ -541,7 +541,7 @@ pub(crate) fn frequencies_by<'a, Item: 'a, K: Eq + Hash>(
   result
 }
 
-pub(crate) fn join_items<'a, Item: Display + 'a>(
+pub(crate) fn joined<'a, Item: Display + 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
 ) -> String {
   match iterator.next() {
