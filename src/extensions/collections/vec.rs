@@ -1,4 +1,5 @@
 use std::cmp::Ordering;
+use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -189,6 +190,14 @@ impl<Item> Ordered<Item> for Vec<Item> {
     Item: Eq + Hash + 'a,
   {
     includes(self.iter(), iterable)
+  }
+
+  #[inline]
+  fn join_items(&self, separator: &str) -> String
+  where
+    Item: Display,
+  {
+    join_items(self.iter(), separator)
   }
 
   #[inline]
