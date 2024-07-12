@@ -304,6 +304,37 @@ pub trait Traversable<Item> {
     K: Eq + Hash,
     B: Clone;
 
+  /// Creates `HashMap` of keys mapped and reduced to values according to
+  /// specified discriminator and reducing operation functions.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  /// The reducing operation takes an accumulator and a closure and returns a new element.
+  /// The closure returns the value that the accumulator should have for the next iteration.
+  ///
+  /// This is a non-consuming variant of [`group_reduce`].
+  ///
+  /// [`group_reduce_to()`]: crate::Collectible::group_reduce_to
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let group_reduced = a.group_reduce(|x| x % 2, |acc, x| acc + x);
+  ///
+  /// assert_eq!(group_reduced, HashMap::from([
+  ///   (0, 2),
+  ///   (1, 4),
+  /// ]));
+  /// ```
+  fn group_reduce<K>(
+    &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
+  ) -> HashMap<K, Item>
+  where
+    K: Eq + Hash,
+    Item: Clone;
+
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
   ///
@@ -652,6 +683,22 @@ pub(crate) fn group_fold<'a, Item: 'a, K: Eq + Hash, B: Clone>(
     let new_value = match result.remove(&key) {
       Some(value) => function(value, item),
       None => function(initial_value.clone(), item),
+    };
+    let _unused = result.insert(key, new_value);
+  }
+  result
+}
+
+pub(crate) fn group_reduce<'a, Item: Clone + 'a, K: Eq + Hash>(
+  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
+  mut function: impl FnMut(&Item, &Item) -> Item,
+) -> HashMap<K, Item> {
+  let mut result: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    let key = to_key(item);
+    let new_value = match result.remove(&key) {
+      Some(value) => function(&value, item),
+      None => item.clone(),
     };
     let _unused = result.insert(key, new_value);
   }

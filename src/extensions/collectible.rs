@@ -749,21 +749,24 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The reducing operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
+  /// This is a consuming variant of [`group_reduce`].
+  ///
+  /// [`group_reduce()`]: crate::Traversable::group_reduce
+  ///
   /// ```
   /// use crate::cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_reduced = a.group_reduce(|x| x % 2, |acc, x| acc + x);
+  /// let group_reduced = a.group_reduce_to(|x| x % 2, |acc, x| acc + x);
   ///
   /// assert_eq!(group_reduced, HashMap::from([
   ///   (0, 2),
   ///   (1, 4),
   /// ]));
   /// ```
-  #[allow(unused_results)]
-  fn group_reduce<K: Eq + Hash>(
+  fn group_reduce_to<K: Eq + Hash>(
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>
   where
@@ -777,7 +780,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
         Some(value) => function(value, item),
         None => item,
       };
-      result.insert(key, new_value);
+      let _unused = result.insert(key, new_value);
     }
     result
   }

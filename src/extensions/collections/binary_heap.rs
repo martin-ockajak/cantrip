@@ -51,6 +51,15 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
+  fn group_reduce<K>(&self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item) -> HashMap<K, Item>
+  where
+    K: Eq + Hash,
+    Item: Clone,
+  {
+    group_reduce(self.iter(), to_key, function)
+  }
+
+  #[inline]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }
