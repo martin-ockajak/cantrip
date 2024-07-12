@@ -904,6 +904,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(function).collect()
   }
 
+  // FIXME -  fix the failing test case
   /// Creates a new collection containing the n largest elements of
   /// this collection in descending order.
   ///
@@ -917,7 +918,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let largest = a.largest(3);
   ///
-  /// // FIXME - correct the error
   /// // assert_eq!(largest, vec![5, 4, 3]);
   /// assert_eq!(e.largest(3), vec![]);
   /// ```
@@ -1137,7 +1137,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
-  // FIXME = fix the failing test case
+  // FIXME -  fix the failing test case
   /// Creates a new collection from this collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
@@ -1168,7 +1168,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
   }
 
-  // FIXME = fix the failing test case
+  // FIXME -  fix the failing test case
   /// Creates a new collection from this collection by replacing the
   /// first occurrences of elements found in another collection with elements
   /// of a replacement collection.
@@ -1221,6 +1221,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       .collect()
   }
 
+  // FIXME -  fix the failing test case
   /// Creates a new collection containing the n smallest elements of
   /// this collection in descending order.
   ///
@@ -1234,7 +1235,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let smallest = a.smallest(3);
   ///
-  /// // FIXME - correct the error
   /// // assert_eq!(smallest, vec![1, 2, 3]);
   /// assert_eq!(e.smallest(3), vec![]);
   /// ```
