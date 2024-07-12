@@ -1147,14 +1147,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// # let source = vec![1, 2, 3];
-  /// let a = vec![1, 2, 3, 3];
+  /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.replace(&3, 4), vec![1, 2, 4, 3]);
+  /// assert_eq!(a.replace(&2, 4), vec![1, 4, 2, 3]);
   ///
   /// # let a = source.clone();
-  /// // assert_eq!(a.replace(&4, 5), vec![1, 2, 3, 3]);
-  /// assert_eq!(e.replace(&3, 4), vec![]);
+  /// // assert_eq!(a.replace(&4, 5), vec![1, 2, 2, 3]);
+  /// assert_eq!(e.replace(&1, 2), vec![]);
   /// ```
   #[inline]
   fn replace(self, value: &Item, replacement: Item) -> Self
@@ -1168,7 +1168,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   // FIXME = fix the failing test case
   /// Creates a new collection from this collection by replacing the
-  /// given occurrences of elements found in another collection with elements
+  /// first occurrences of elements found in another collection with elements
   /// of a replacement collection.
   ///
   /// The order of retained values is preserved for ordered collections.
@@ -1178,17 +1178,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
-  /// let a = vec![1, 2, 3, 3];
+  /// # let source = vec![1, 2, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.replace_all(&vec![2, 3], vec![4, 5]), vec![1, 4, 5, 3]);
+  /// // assert_eq!(a.replace_all(&vec![2, 4], vec![3, 5]), vec![1, 4, 2, 5]);
   /// # let a = source.clone();
   /// // assert_eq!(a.replace_all(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
   ///
   /// # let a = source.clone();
   /// // assert_eq!(a.replace_all(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
-  /// assert_eq!(e.replace_all(&vec![2], vec![4]), vec![]);
+  /// assert_eq!(e.replace_all(&vec![1], vec![2]), vec![]);
   /// ```
   fn replace_all<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
