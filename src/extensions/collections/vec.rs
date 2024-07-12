@@ -180,9 +180,14 @@ impl<Item> Ordered<Item> for Vec<Item> {
   #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
-    Item: Eq + Hash + 'a
+    Item: Eq + Hash + 'a,
   {
     frequencies(self.iter())
+  }
+
+  #[inline]
+  fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize> {
+    frequencies_by(self.iter(), to_key)
   }
 
   #[inline]

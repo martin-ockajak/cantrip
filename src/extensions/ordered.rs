@@ -112,6 +112,26 @@ pub trait Ordered<Item> {
   where
     Item: Eq + Hash + 'a;
 
+  /// Compute number of occurrences of each group of elements in this sequence according to
+  /// specified discriminator function.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([
+  ///   (0, 1),
+  ///   (1, 2),
+  /// ]));
+  /// ```
+  fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize>;
+
   /// Combine all elements of this sequence into one `String`, separated by `sep`.
   ///
   /// Use the `Display` implementation of each element.
@@ -515,6 +535,20 @@ where
     }
   };
   remaining == 0
+}
+
+pub(crate) fn frequencies_by<'a, Item, K>(
+  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
+) -> HashMap<K, usize>
+where
+  Item: 'a,
+  K: Eq + Hash,
+{
+  let mut result = HashMap::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    *result.entry(to_key(item)).or_default() += 1;
+  }
+  result
 }
 
 pub(crate) fn join_items<'a, Item: Display + 'a>(

@@ -473,36 +473,6 @@ pub trait Sequence<Item> {
     iter::repeat(value).take(size).collect()
   }
 
-  /// Compute number of occurrences of each group of elements in this sequence according to
-  /// specified discriminator function.
-  ///
-  /// The discriminator function takes a reference to an element and returns a group key.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([
-  ///   (0, 1),
-  ///   (1, 2),
-  /// ]));
-  /// ```
-  fn frequencies_by<K: Eq + Hash>(self, mut to_key: impl FnMut(Item) -> K) -> HashMap<K, usize>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-  {
-    let iterator = self.into_iter();
-    let mut result = HashMap::with_capacity(iterator.size_hint().0);
-    for item in iterator {
-      *result.entry(to_key(item)).or_default() += 1;
-    }
-    result
-  }
-
   // FIXME - fix failing test case
   /// Creates a new sequence from this sequence without
   /// the last element.
