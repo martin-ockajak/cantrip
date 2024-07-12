@@ -1805,7 +1805,7 @@ where
 {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(-2).chain(iter::repeat(0).take(k - 1)));
+  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k - 1)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
@@ -1860,7 +1860,7 @@ where
   }
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(-2).chain(iter::repeat(0).take(k - 1)));
+  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k - 1)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;

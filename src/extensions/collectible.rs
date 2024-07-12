@@ -1323,7 +1323,7 @@ where
   Collection: FromIterator<Item> + Sized,
 {
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(-2).chain(0..(k as i64)));
+  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
