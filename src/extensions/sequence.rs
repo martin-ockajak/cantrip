@@ -670,17 +670,17 @@ pub trait Sequence<Item> {
   /// let e: Vec<i32> = Vec::new();
   ///
   /// assert_eq!(a.multicombinations(0), vec![vec![]]);
-  /// // assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// //assert_eq!(
-  /// //  a.multicombinations(2),
-  /// //  vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
-  /// //);
-  /// //assert_eq!(
-  /// //  a.multicombinations(3), vec![
-  /// //    vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
-  /// //    vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
-  /// //  ]
-  /// //);
+  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(
+  ///   a.multicombinations(2),
+  ///   vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]]
+  /// );
+  /// assert_eq!(
+  ///   a.multicombinations(3), vec![
+  ///     vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
+  ///     vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
+  ///   ]
+  /// );
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
   /// assert_eq!(e.multicombinations(2), empty_result);
@@ -1805,7 +1805,7 @@ where
 {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k - 1)));
+  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
@@ -1815,9 +1815,11 @@ where
     while combination[*current_slot] >= (size - 1) as i64 {
       *current_slot -= 1;
     }
-    combination[*current_slot] += 1;
-    for index in &mut combination[(*current_slot + 1)..k] {
-      *index = 0;
+    if *current_slot > 0 {
+      combination[*current_slot] += 1;
+      for index in &mut combination[(*current_slot + 1)..=k] {
+        *index = 0;
+      }
     }
     result
   })
@@ -1855,12 +1857,9 @@ where
   Item: Clone + 'a,
   Collection: FromIterator<Item> + Sized,
 {
-  if k == 0 {
-    return vec!(Collection::from_iter(iter::empty()));
-  }
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k - 1)));
+  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
@@ -1871,7 +1870,7 @@ where
       *current_slot -= 1;
     }
     let current_index = combination[*current_slot] + 1;
-    for index in &mut combination[*current_slot..k] {
+    for index in &mut combination[*current_slot..=k] {
       *index = current_index;
     }
     result
