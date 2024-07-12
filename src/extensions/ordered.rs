@@ -469,11 +469,9 @@ pub trait Ordered<Item> {
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 }
 
-pub(crate) fn common_prefix_length<'a, Item>(
+pub(crate) fn common_prefix_length<'a, Item: PartialEq + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> usize
-where
-  Item: PartialEq + 'a,
 {
   let mut result = 0_usize;
   for (item, element) in iterator.zip(elements.iterator()) {
@@ -485,12 +483,9 @@ where
   result
 }
 
-pub(crate) fn common_suffix_length<'a, Item, I>(
+pub(crate) fn common_suffix_length<'a, Item: PartialEq + 'a, I: DoubleEndedIterator<Item = &'a Item>>(
   reversed_iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>,
 ) -> usize
-where
-  I: DoubleEndedIterator<Item = &'a Item>,
-  Item: PartialEq + 'a,
 {
   let mut result = 0_usize;
   for (item, element) in reversed_iterator.zip(elements.iterator().rev()) {
@@ -508,11 +503,9 @@ pub(crate) fn count_unique<'a, Item: Eq + Hash + 'a>(iterator: impl Iterator<Ite
   items.len()
 }
 
-pub(crate) fn equivalent<'a, Item>(
+pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool
-where
-  Item: Eq + Hash + 'a,
 {
   let elements_iterator = elements.iterator();
   let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
@@ -537,12 +530,9 @@ where
   remaining == 0
 }
 
-pub(crate) fn frequencies_by<'a, Item, K>(
+pub(crate) fn frequencies_by<'a, Item: 'a, K: Eq + Hash>(
   iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
 ) -> HashMap<K, usize>
-where
-  Item: 'a,
-  K: Eq + Hash,
 {
   let mut result = HashMap::with_capacity(iterator.size_hint().0);
   for item in iterator {
@@ -570,20 +560,16 @@ pub(crate) fn join_items<'a, Item: Display + 'a>(
 }
 
 #[inline]
-pub(crate) fn positions<'a, Item>(
+pub(crate) fn positions<'a, Item: 'a>(
   iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
 ) -> Vec<usize>
-where
-  Item: 'a,
 {
   iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
-pub(crate) fn position_sequence<'a, Item>(
+pub(crate) fn position_sequence<'a, Item: PartialEq + 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> Option<usize>
-where
-  Item: PartialEq + 'a,
 {
   let mut elements_iterator = elements.iterator();
   if let Some(first_element) = elements_iterator.next() {

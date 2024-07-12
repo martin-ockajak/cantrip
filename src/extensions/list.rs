@@ -7,7 +7,7 @@
 /// - May create a new collection
 ///
 pub trait List<Item> {
-  /// Returns the first element of the slice, or `None` if it is empty.
+  /// Returns the first element of this sequence, or `None` if it is empty.
   ///
   /// # Examples
   ///
@@ -21,7 +21,7 @@ pub trait List<Item> {
   /// ```
   fn first(&self) -> Option<&Item>;
 
-  /// Returns the last element of the slice, or `None` if it is empty.
+  /// Returns the last element of this sequence, or `None` if it is empty.
   ///
   /// # Examples
   ///

@@ -37,6 +37,17 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 
   #[inline]
+  fn group_fold<K, B>(
+    &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
+  ) -> HashMap<K, B>
+  where
+    K: Eq + Hash,
+    B: Clone,
+  {
+    group_fold(self.iter(), to_key, initial_value, function)
+  }
+
+  #[inline]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.iter().max_by(|&x, &y| compare(x, y))
   }

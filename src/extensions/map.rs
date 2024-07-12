@@ -1,9 +1,9 @@
+use crate::extensions::iterable::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashSet;
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::iterable::Iterable;
 
 /// Map operations.
 ///
@@ -1931,12 +1931,10 @@ pub(crate) fn minmax_by_key_pairs<'a, K: 'a, V: 'a, E: Ord>(
   minmax_by_pairs(iterator, |x, y| to_key(x).cmp(&to_key(y)))
 }
 
-pub(crate) fn partition_map_pairs<'a, K, V, L1, W1, L2, W2, Left, Right>(
+pub(crate) fn partition_map_pairs<'a, K: 'a, V: 'a, L1, W1, L2, W2, Left, Right>(
   iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V)) -> Result<(L1, W1), (L2, W2)>,
 ) -> (Left, Right)
 where
-  K: 'a,
-  V: 'a,
   Left: Default + Extend<(L1, W1)>,
   Right: Default + Extend<(L2, W2)>,
 {

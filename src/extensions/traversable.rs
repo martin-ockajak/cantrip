@@ -237,6 +237,38 @@ pub trait Traversable<Item> {
   /// ```
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
+  /// Creates `HashMap` of keys mapped and folded to values according to
+  /// specified discriminator and folding operation functions.
+  ///
+  /// The discriminator function takes a reference to an element and returns a group key.
+  /// The folding operation takes an accumulator and a closure and returns a new element.
+  /// The closure returns the value that the accumulator should have for the next iteration.
+  ///
+  /// This is a consuming variant of [`group_fold_to`].
+  ///
+  /// [`group_fold_to`]: Collectible::group_fold_to
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let group_folded = a.group_fold(|x| x % 2, 0, |acc, &x| acc + x);
+  ///
+  /// assert_eq!(group_folded, HashMap::from([
+  ///   (0, 2),
+  ///   (1, 4),
+  /// ]));
+  /// ```
+  #[allow(unused_results)]
+  fn group_fold<K, B>(
+    &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
+  ) -> HashMap<K, B>
+  where
+    K: Eq + Hash,
+    B: Clone;
+
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
   ///
@@ -565,13 +597,28 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
-pub(crate) fn frequencies<'a, Item>(iterator: impl Iterator<Item = &'a Item>) -> HashMap<&'a Item, usize>
-where
-  Item: Eq + Hash + 'a,
-{
+pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
+  iterator: impl Iterator<Item = &'a Item>,
+) -> HashMap<&'a Item, usize> {
   let mut result = HashMap::with_capacity(iterator.size_hint().0);
   for item in iterator {
     *result.entry(item).or_default() += 1;
+  }
+  result
+}
+
+pub(crate) fn group_fold<'a, Item: 'a, K: Eq + Hash, B: Clone>(
+  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: B,
+  mut function: impl FnMut(B, &Item) -> B,
+) -> HashMap<K, B> {
+  let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    let key = to_key(item);
+    let new_value = match result.remove(&key) {
+      Some(value) => function(value, item),
+      None => function(initial_value.clone(), item),
+    };
+    let _unused = result.insert(key, new_value);
   }
   result
 }
@@ -613,12 +660,9 @@ pub(crate) fn reduce<'a, Item: 'a>(
     .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
 }
 
-pub(crate) fn subset<'a, Item>(
+pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-where
-  Item: Eq + Hash + 'a,
-{
+) -> bool {
   let mut counts = frequencies(iterator);
   if counts.is_empty() {
     return true;
@@ -637,12 +681,9 @@ where
   false
 }
 
-pub(crate) fn superset<'a, Item>(
+pub(crate) fn superset<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-where
-  Item: Eq + Hash + 'a,
-{
+) -> bool {
   let mut counts = frequencies(elements.iterator());
   if counts.is_empty() {
     return true;

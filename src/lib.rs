@@ -87,7 +87,8 @@
 /// | *frequencies*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *frequencies_by*          |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *group_by*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-/// | *group_fold*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *group_fold*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       |                    |
+/// | *group_fold_to*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *group_reduce*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *interleave*              |    :heavy_check_mark:     |                    |                               |                    |
 /// | *interleave_shortest*     |    :heavy_check_mark:     |                    |                               |                    |

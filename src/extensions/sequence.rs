@@ -1798,13 +1798,9 @@ pub trait Sequence<Item> {
   }
 }
 
-pub(crate) fn cartesian_product<'a, Item, Collection>(
+pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection>
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
-{
+) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
@@ -1859,13 +1855,9 @@ where
   result
 }
 
-pub(crate) fn multicombinations<'a, Item, Collection>(
+pub(crate) fn multicombinations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection>
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
-{
+) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut multicombination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
@@ -1887,11 +1879,9 @@ where
   .collect()
 }
 
-pub(crate) fn variations<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>, k: usize) -> Vec<Collection>
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
-{
+pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+  iterator: impl Iterator<Item = &'a Item>, k: usize,
+) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut variation = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
@@ -1923,15 +1913,9 @@ where
   .collect()
 }
 
-#[allow(unused_results)]
-pub(crate) fn windowed<'a, Item, Collection, Result>(
+pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Result: FromIterator<Collection>>(
   mut iterator: impl Iterator<Item = &'a Item>, size: usize,
-) -> Result
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item>,
-  Result: FromIterator<Collection>,
-{
+) -> Result {
   assert_ne!(size, 0, "window size must be non-zero");
   let mut window: LinkedList<Item> = LinkedList::new();
   unfold((), |_| {
@@ -1942,19 +1926,16 @@ where
       }
     }
     let result = Some(Collection::from_iter(window.clone()));
-    window.pop_front();
+    let _unused = window.pop_front();
     result
   })
   .collect()
 }
 
-#[allow(unused_results)]
-pub(crate) fn windowed_circular<'a, Item, Collection, Result>(
+pub(crate) fn windowed_circular<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Result>(
   mut iterator: impl Iterator<Item = &'a Item>, size: usize,
 ) -> Result
 where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item>,
   Result: FromIterator<Collection>,
 {
   assert_ne!(size, 0, "window size must be non-zero");
@@ -1978,7 +1959,7 @@ where
       }
     }
     let result = Some(Collection::from_iter(window.clone()));
-    window.pop_front();
+    let _unused = window.pop_front();
     result
   })
   .collect()

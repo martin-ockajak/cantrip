@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::BinaryHeap;
+use std::collections::{BinaryHeap, HashMap};
 use std::hash::Hash;
 use crate::extensions::*;
 
@@ -32,6 +32,17 @@ impl<Item> Traversable<Item> for BinaryHeap<Item> {
   #[inline]
   fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.iter().fold(initial_value, function)
+  }
+
+  #[inline]
+  fn group_fold<K, B>(
+    &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
+  ) -> HashMap<K, B>
+  where
+    K: Eq + Hash,
+    B: Clone,
+  {
+    group_fold(self.iter(), to_key, initial_value, function)
   }
 
   #[inline]

@@ -1,3 +1,4 @@
+use crate::extensions::collect_by_index;
 use crate::extensions::iterable::Iterable;
 use crate::extensions::util::unfold::unfold;
 use std::cmp::Reverse;
@@ -5,7 +6,6 @@ use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
-use crate::extensions::collect_by_index;
 
 /// Consuming collection operations.
 ///
@@ -703,13 +703,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// The folding operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
+  /// This is a consuming variant of [`group_fold`].
+  ///
+  /// [`group_fold`]: Traversable::group_fold
+  ///
   /// ```
   /// use crate::cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_folded = a.group_fold(|x| x % 2, 0, |acc, x| acc + x);
+  /// let group_folded = a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x);
   ///
   /// assert_eq!(group_folded, HashMap::from([
   ///   (0, 2),
@@ -717,10 +721,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ]));
   /// ```
   #[allow(unused_results)]
-  fn group_fold<K: Eq + Hash, B>(
+  fn group_fold_to<K, B>(
     self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
   ) -> HashMap<K, B>
   where
+    K: Eq + Hash,
     B: Clone,
     Self: Sized,
   {
@@ -1304,11 +1309,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 }
 
 #[inline]
-pub(crate) fn combinations<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>, k: usize) -> Vec<Collection>
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
-{
+pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+  iterator: impl Iterator<Item = &'a Item>, k: usize,
+) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   compute_combinations(&values, k)
 }
@@ -1353,11 +1356,9 @@ pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right
   (result_left, result_right)
 }
 
-pub(crate) fn powerset<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>) -> Vec<Collection>
-where
-  Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
-{
+pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+  iterator: impl Iterator<Item = &'a Item>,
+) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let sizes = 1..=values.len();
   iter::once(Collection::from_iter(iter::empty()))
