@@ -37,18 +37,18 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.add_multiple_at(0, vec![3, 4]), vec![3, 4, 1, 2]);
+  /// assert_eq!(a.add_all_at(0, vec![3, 4]), vec![3, 4, 1, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_multiple_at(1, vec![3, 4]), vec![1, 3, 4, 2]);
+  /// assert_eq!(a.add_all_at(1, vec![3, 4]), vec![1, 3, 4, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_multiple_at(2, vec![3, 4]), vec![1, 2, 3, 4]);
+  /// assert_eq!(a.add_all_at(2, vec![3, 4]), vec![1, 2, 3, 4]);
   /// # let a = source.clone();
-  /// assert_eq!(e.add_multiple_at(0, vec![1, 2]), vec![1, 2]);
+  /// assert_eq!(e.add_all_at(0, vec![1, 2]), vec![1, 2]);
   ///
   /// # let a = source.clone();
-  /// assert_eq!(a.add_multiple_at(3, vec![3, 4]), vec![1, 2]);
+  /// assert_eq!(a.add_all_at(3, vec![3, 4]), vec![1, 2]);
   /// ```
-  fn add_multiple_at(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
+  fn add_all_at(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
@@ -97,7 +97,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.add_multiple_at(index, iter::once(addition))
+    self.add_all_at(index, iter::once(addition))
   }
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
@@ -357,18 +357,18 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_multiple_at(vec![0, 2]), vec![2]);
+  /// assert_eq!(a.delete_all_at(vec![0, 2]), vec![2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_multiple_at(vec![1, 3]), vec![1, 3]);
+  /// assert_eq!(a.delete_all_at(vec![1, 3]), vec![1, 3]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_multiple_at(vec![0, 1, 2, 3]), vec![]);
+  /// assert_eq!(a.delete_all_at(vec![0, 1, 2, 3]), vec![]);
   ///
-  /// assert_eq!(e.delete_multiple_at(vec![1, 2]), vec![]);
+  /// assert_eq!(e.delete_all_at(vec![1, 2]), vec![]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_multiple_at(vec![3, 4]), vec![1, 2, 3]);
+  /// assert_eq!(a.delete_all_at(vec![3, 4]), vec![1, 2, 3]);
   /// ```
   #[inline]
-  fn delete_multiple_at(self, indices: impl IntoIterator<Item = usize>) -> Self
+  fn delete_all_at(self, indices: impl IntoIterator<Item = usize>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {

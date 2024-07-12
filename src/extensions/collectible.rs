@@ -47,10 +47,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2];
   ///
-  /// assert_eq!(a.add_multiple(vec![3, 4]), vec![1, 2, 3, 4]);
+  /// assert_eq!(a.add_all(vec![3, 4]), vec![1, 2, 3, 4]);
   /// ```
   #[inline]
-  fn add_multiple(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
@@ -107,11 +107,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_multiple(&vec![1, 3]), vec![2, 3]);
+  /// assert_eq!(a.delete_all(&vec![1, 3]), vec![2, 3]);
   ///
-  /// assert_eq!(e.delete_multiple(&vec![1]), vec![]);
+  /// assert_eq!(e.delete_all(&vec![1]), vec![]);
   /// ```
-  fn delete_multiple<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
