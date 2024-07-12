@@ -87,7 +87,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *group_fold_to*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *group_reduce*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *interleave*              |    :heavy_check_mark:     |                    |                               |                    |
-| *interleave_shortest*     |    :heavy_check_mark:     |                    |                               |                    |
+| *interleave_exact*        |    :heavy_check_mark:     |                    |                               |                    |
 | *intersect*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 | *intersperse*             |    :heavy_check_mark:     |                    |                               |                    |
 | *intersperse_with*        |    :heavy_check_mark:     |                    |                               |                    |

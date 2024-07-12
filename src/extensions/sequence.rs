@@ -500,6 +500,30 @@ pub trait Sequence<Item> {
     iterator.take(size).collect()
   }
 
+  /// Create a new sequence by interleaving the elements of this sequence with
+  /// the elements of another collection.
+  ///
+  /// If one sequence is longer than another, the remaining elements of the
+  /// longer sequence are added to the end of the new collection.
+  ///
+  /// Elements are added to the new collection in an alternating fashion.
+  /// The first element comes from this sequence, the second element
+  /// comes from the other collection and so on.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.interleave(vec![4, 5, 6]), vec![1, 4, 2, 5, 3, 6]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.interleave(vec![4, 5]), vec![1, 4, 2, 5, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.interleave(vec![]), vec![1, 2, 3]);
+  /// ```
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -508,9 +532,9 @@ pub trait Sequence<Item> {
     let mut iterator_right = elements.into_iter();
     unfold(true, |left| {
       let result = if *left {
-        iterator_left.next().or(iterator_right.next())
+        iterator_left.next().or_else(|| iterator_right.next())
       } else {
-        iterator_right.next().or(iterator_left.next())
+        iterator_right.next().or_else(|| iterator_left.next())
       };
       *left = !*left;
       result
@@ -518,8 +542,33 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+
+  /// Create a new sequence by interleaving the elements of this sequence with
+  /// the elements of another collection.
+  ///
+  /// If one sequence is longer than another, the remaining elements of the
+  /// longer sequence are omitted.
+  ///
+  /// Elements are added to the new collection in an alternating fashion.
+  /// The first element comes from this sequence, the second element
+  /// comes from the other collection and so on.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.interleave_exact(vec![4, 5, 6]), vec![1, 4, 2, 5, 3, 6]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.interleave_exact(vec![4, 5]), vec![1, 4, 2, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.interleave_exact(vec![]), vec![]);
+  /// ```
   #[inline]
-  fn interleave_shortest(self, elements: impl IntoIterator<Item = Item>) -> Self
+  fn interleave_exact(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
