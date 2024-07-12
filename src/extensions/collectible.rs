@@ -104,10 +104,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 3];
+  /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_all(&vec![1, 3]), vec![2, 3]);
+  /// assert_eq!(a.delete_all(&vec![1, 2]), vec![2, 3]);
   ///
   /// assert_eq!(e.delete_all(&vec![1]), vec![]);
   /// ```
