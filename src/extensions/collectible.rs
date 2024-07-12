@@ -1310,9 +1310,6 @@ where
   Item: Clone + 'a,
   Collection: FromIterator<Item> + Sized,
 {
-  if k == 0 {
-    return vec!(Collection::from_iter(iter::empty()));
-  }
   let values = Vec::from_iter(iterator);
   compute_combinations(&values, k)
 }
