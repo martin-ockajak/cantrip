@@ -296,7 +296,6 @@ pub trait Traversable<Item> {
   ///   (1, 4),
   /// ]));
   /// ```
-  #[allow(unused_results)]
   fn group_fold<K, B>(
     &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>

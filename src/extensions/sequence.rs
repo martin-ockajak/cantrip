@@ -1,5 +1,3 @@
-#![allow(missing_docs)]
-
 use crate::extensions::util::unfold::unfold;
 use std::cmp::Ordering;
 use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
@@ -652,6 +650,41 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+  /// Creates a new sequence without trailing elements based on a predicate
+  /// and a map the retained elements function.
+  ///
+  /// `map_while()` takes a closure as an argument. It will call this
+  /// closure on each element of the sequence, and include elements
+  /// while it returns [`Some(_)`][`Some`].
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-1, 4, 0, 1];
+  ///
+  /// let mapped = a.map_while(|x| 16_i32.checked_div(*x));
+  ///
+  /// assert_eq!(mapped, vec![-16, 4]);
+  /// ```
+  ///
+  /// Here's the same example, but with [`take_while`] and [`map`]:
+  ///
+  /// [`take_while`]: Iterator::take_while
+  /// [`map`]: Iterator::map
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![-1, 4, 0, 1];
+  ///
+  /// let mapped = a.map(|x| 16_i32.checked_div(*x)).take_while(|x| x.is_some()).map(|x| x.unwrap());
+  ///
+  /// assert_eq!(mapped, vec![-16, 4]);
+  /// ```
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
   /// Creates a new sequence by moving an element at an index into specified index
@@ -1675,7 +1708,6 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.unique(), vec![1, 2, 3]);
   /// ```
-  #[allow(unused_results)]
   fn unique(self) -> Self
   where
     Item: Eq + Hash + Clone,
@@ -1686,7 +1718,7 @@ pub trait Sequence<Item> {
     iterator
       .flat_map(|item| {
         if !occurred.contains(&item) {
-          occurred.insert(item.clone());
+          let _unused = occurred.insert(item.clone());
           Some(item)
         } else {
           None
@@ -1711,7 +1743,6 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.unique_by(|x| x.len()), vec!["a", "bb", "ccc"]);
   /// ```
-  #[allow(unused_results)]
   fn unique_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
@@ -1725,7 +1756,7 @@ pub trait Sequence<Item> {
         if occurred.contains(&key) {
           false
         } else {
-          occurred.insert(key);
+          let _unused = occurred.insert(key);
           true
         }
       })

@@ -720,7 +720,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///   (1, 4),
   /// ]));
   /// ```
-  #[allow(unused_results)]
   fn group_fold_to<K, B>(
     self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
   ) -> HashMap<K, B>
@@ -737,7 +736,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
         Some(value) => function(value, item),
         None => function(initial_value.clone(), item),
       };
-      result.insert(key, new_value);
+      let _unused = result.insert(key, new_value);
     }
     result
   }
