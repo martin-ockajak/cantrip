@@ -1715,7 +1715,7 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // assert_eq!(a.variations(0), vec![vec![]]);
+  /// assert_eq!(a.variations(0), vec![vec![]]);
   /// // assert_eq!(a.variations(1), vec![vec![1], vec![2], vec![3]]);
   /// // assert_eq!(a.variations(2), vec![
   /// //   vec![1, 2], vec![1, 3], vec![2, 1], vec![2, 3], vec![3, 1], vec![3, 2]
@@ -1907,9 +1907,7 @@ where
   .collect()
 }
 
-pub(crate) fn variations<'a, Item, Collection>(
-  iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection>
+pub(crate) fn variations<'a, Item, Collection>(iterator: impl Iterator<Item = &'a Item>, k: usize) -> Vec<Collection>
 where
   Item: Clone + 'a,
   Collection: FromIterator<Item> + Sized,
@@ -1917,33 +1915,33 @@ where
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut variation = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
-  let mut used_indices = Vec::from_iter(iter::repeat(true).take(k).chain(iter::repeat(false).take(size.saturating_sub(k))));
+  let mut used_indices =
+    Vec::from_iter(iter::repeat(true).take(k).chain(iter::repeat(false).take(size.saturating_sub(k))));
   unfold((size + 1).saturating_sub(k), |current_slot| {
     if *current_slot == 0 {
       return None;
     }
     *current_slot = k;
     let result = Some(collect_by_index(&values, &variation[1..]));
-    while ((variation[*current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
+    while *current_slot > 0 && ((variation[*current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
       used_indices[variation[*current_slot] as usize] = false;
       *current_slot -= 1;
-      if *current_slot == 0 {
-        return None;
-      }
     }
-    let initial_index = ((variation[*current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
-    used_indices[variation[*current_slot] as usize] = false;
-    used_indices[initial_index as usize] = true;
-    variation[*current_slot] = initial_index;
-    for index in &mut variation[(*current_slot + 1)..=k] {
-      let new_index = (0..=(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
-      used_indices[*index as usize] = false;
-      used_indices[new_index as usize] = true;
-      *index = new_index;
+    if *current_slot > 0 {
+      let initial_index = ((variation[*current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+      used_indices[variation[*current_slot] as usize] = false;
+      used_indices[initial_index as usize] = true;
+      variation[*current_slot] = initial_index;
+      for index in &mut variation[(*current_slot + 1)..=k] {
+        let new_index = (0..=(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+        used_indices[*index as usize] = false;
+        used_indices[new_index as usize] = true;
+        *index = new_index;
+      }
     }
     result
   })
-    .collect()
+  .collect()
 }
 
 #[allow(unused_results)]
