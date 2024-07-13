@@ -691,6 +691,70 @@ pub trait Sequence<Item> {
   /// ```
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
+  /// Create a new sequence by merging it with another sequence in ascending order.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let merged = a.merge(vec![0, 4, 5]);
+  ///
+  /// assert_eq!(merged, vec![0, 1, 2, 3, 4, 5]);
+  /// ```
+  fn merge(self, elements: impl IntoIterator<Item = Item>) -> Self
+  where
+    Item: Ord,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.merge_by(elements, |l, r| l.cmp(r))
+  }
+
+  /// Create a new sequence by merging it with another sequence in ascending order
+  /// with respect to the specified comparison function.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let merged = a.merge_by(vec![0, 4, 5], |l, r| l.cmp(r));
+  ///
+  /// assert_eq!(merged, vec![0, 1, 2, 3, 4, 5]);
+  /// ```
+  fn merge_by(self, elements: impl IntoIterator<Item = Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let mut elements_iterator = elements.into_iter();
+    unfold((iterator.next(), elements_iterator.next()), |(last_left, last_right)| {
+      match (last_left.take(), last_right.take()) {
+        (Some(left), Some(right)) => {
+          if compare(&left, &right) == Ordering::Less {
+            *last_left = iterator.next();
+            *last_right = Some(right);
+            Some(left)
+          } else {
+            *last_left = Some(left);
+            *last_right = elements_iterator.next();
+            Some(right)
+          }
+        }
+        (Some(left), None) => {
+          *last_left = iterator.next();
+          Some(left)
+        }
+        (None, Some(right)) => {
+          *last_right = elements_iterator.next();
+          Some(right)
+        }
+        (None, None) => None,
+      }
+    })
+    .collect()
+  }
+
   /// Creates a new sequence by moving an element at an index into specified index
   /// in this sequence.
   ///
