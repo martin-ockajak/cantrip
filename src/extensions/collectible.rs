@@ -1,6 +1,6 @@
-use crate::extensions::collect_by_index;
 use crate::extensions::iterable::Iterable;
 use crate::extensions::util::unfold::unfold;
+use crate::extensions::{collect_by_index, frequencies};
 use std::cmp::Reverse;
 use std::collections::{BinaryHeap, HashMap, HashSet};
 use std::hash::Hash;
@@ -60,7 +60,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a new collection from this collection without
   /// the first occurrence of an element.
   ///
-  /// The order of retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for sequences.
   ///
   /// # Example
   ///
@@ -97,7 +97,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a new collection from this collection without
   /// the first occurrences of elements found in another collection.
   ///
-  /// The order of retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for sequences.
   ///
   /// # Example
   ///
@@ -140,11 +140,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a new collection containing combinations of specified size from the elements
   /// of this collection.
   ///
-  /// Combinations for ordered collections are generated based on element positions, not values.
-  /// Therefore, if an ordered collection contains duplicate elements, the resulting combinations will too.
-  /// To obtain combinations of unique elements for ordered collections, use `.unique().combinations()`.
+  /// Combinations for sequences are generated based on element positions, not values.
+  /// Therefore, if a sequence contains duplicate elements, the resulting combinations will too.
+  /// To obtain combinations of unique elements for sequences, use `.unique().combinations()`.
   ///
-  /// The order of combination values is preserved for ordered collections.
+  /// The order of combination values is preserved for sequences.
   ///
   /// # Example
   ///
@@ -785,10 +785,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection by retaining the values representing the intersection
-  /// of this collection with another collection i.e., the values that are
-  /// both in `self` and `other`.
+  /// of this collection with another collection i.e., the values appear in the result
+  /// exactly the same amount of times as they both appear in `self` and `other`.
   ///
-  /// The order of retained values is preserved for ordered collections.
+  /// To obtain set-like semantics for sequences which only considers unique elements,
+  /// use `.unique().intersect()`.
+  ///
+  /// The order of retained values is preserved for sequences.
   ///
   /// # Example
   ///
@@ -796,12 +799,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use crate::cantrip::*;
   /// use std::collections::HashSet;
   ///
-  /// let a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// let intersection = a.intersect(&vec![4, 2, 3, 4]);
+  /// let intersection = a.intersect(&vec![4, 2, 2, 3, 4]);
   ///
-  /// assert_eq!(intersection, vec![2, 3]);
+  /// assert_eq!(intersection, vec![2, 2, 3]);
   /// assert_eq!(e.intersect(&vec![1]), vec![]);
   ///
   /// // Print 2, 3.
@@ -815,8 +818,20 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let retained: HashSet<&Item> = HashSet::from_iter(elements.iterator());
-    self.into_iter().filter(|x| retained.contains(x)).collect()
+    let mut iterator = self.into_iter();
+    let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
+    unfold((), |_| {
+      for item in &mut iterator {
+        if let Some(count) = retained.get_mut(&item) {
+          if *count > 0 {
+            *count -= 1;
+            return Some(item);
+          }
+        }
+      }
+      None
+    })
+    .collect()
   }
 
   /// Creates a new collection by applying the given closure `function` to
@@ -1031,11 +1046,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
 
   /// Creates a new collection containing all sub-collections of this collection.
   ///
-  /// Sub-collections for ordered collections are generated based on element positions, not values.
-  /// Therefore, if an ordered collection contains duplicate elements, the resulting sub-collections will too.
-  /// To obtain combinations of unique elements for ordered collections, use `.unique().powerset()`.
+  /// Sub-collections for sequences are generated based on element positions, not values.
+  /// Therefore, if an sequence contains duplicate elements, the resulting sub-collections will too.
+  /// To obtain combinations of unique elements for sequences, use `.unique().powerset()`.
   ///
-  /// The order of sub-collection values is preserved for ordered collections.
+  /// The order of sub-collection values is preserved for sequences.
   ///
   /// # Example
   ///
@@ -1140,7 +1155,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a new collection from this collection by replacing the
   /// first occurrence of an element with a replacement value.
   ///
-  /// The order of retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for sequences.
   ///
   /// # Example
   ///
@@ -1204,7 +1219,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// first occurrences of elements found in another collection with elements
   /// of a replacement collection.
   ///
-  /// The order of retained values is preserved for ordered collections.
+  /// The order of retained values is preserved for sequences.
   ///
   /// # Example
   ///
