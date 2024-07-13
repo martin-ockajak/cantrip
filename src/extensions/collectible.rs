@@ -1143,36 +1143,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
-  /// Creates a new collection from this collection by replacing the
-  /// first occurrence of an element with a replacement value.
-  ///
-  /// The order of retained values is preserved for sequences.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2, 2, 3];
-  /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
-  ///
-  /// # let a = source.clone();
-  /// assert_eq!(a.substitute(&4, 5), vec![1, 2, 2, 3]);
-  /// assert_eq!(e.substitute(&1, 2), vec![]);
-  /// ```
-  #[inline]
-  fn substitute(self, value: &Item, replacement: Item) -> Self
-  where
-    Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut replaced = Some(replacement);
-    self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
-  }
-
   // FIXME -  fix the failing test case
   /// Creates a new collection containing the n smallest elements of
   /// this collection in descending order.
@@ -1205,6 +1175,36 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     heap.into_iter().collect()
   }
 
+  /// Creates a new collection from this collection by replacing the
+  /// first occurrence of an element with a replacement value.
+  ///
+  /// The order of retained values is preserved for sequences.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute(&4, 5), vec![1, 2, 2, 3]);
+  /// assert_eq!(e.substitute(&1, 2), vec![]);
+  /// ```
+  #[inline]
+  fn substitute(self, value: &Item, replacement: Item) -> Self
+  where
+    Item: PartialEq,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut replaced = Some(replacement);
+    self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
+  }
+
   // FIXME -  fix the failing test case
   /// Creates a new collection from this collection by replacing the
   /// first occurrences of elements found in another collection with elements
@@ -1227,9 +1227,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let a = source.clone();
   /// // assert_eq!(a.replace_multi(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
-  /// assert_eq!(e.update_multi(&vec![1], vec![2]), vec![]);
+  /// assert_eq!(e.substitute_multi(&vec![1], vec![2]), vec![]);
   /// ```
-  fn update_multi<'a>(
+  fn substitute_multi<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where

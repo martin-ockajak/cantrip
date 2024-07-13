@@ -166,7 +166,7 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   }
 
   #[inline]
-  fn update_multi<'a>(
+  fn substitute_multi<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
   ) -> Self
   where
