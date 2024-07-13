@@ -238,30 +238,34 @@ pub trait Sequence<Item> {
   /// ```
   fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+    Self: FromIterator<Item> + IntoIterator<Item = Item>,
     Self::This<Self>: FromIterator<Self>,
   {
     let mut iterator = self.into_iter();
+    let mut chunk_empty = true;
     unfold(iterator.next(), |previous| {
-      let mut result = Self::default();
-      loop {
+      let chunk: Self = unfold(false, |split| {
+        if *split {
+          return None;
+        };
         if let Some(prev) = previous.take() {
           if let Some(item) = iterator.next() {
-            let split = predicate(&prev, &item);
-            result.extend(iter::once(prev));
+            *split = predicate(&prev, &item);
             *previous = Some(item);
-            if split {
-              break;
-            }
-          } else {
-            result.extend(iter::once(prev));
-            break;
           }
+          chunk_empty = false;
+          Some(prev)
         } else {
-          return None;
+          None
         }
+      })
+      .collect();
+      if chunk_empty {
+        None
+      } else {
+        chunk_empty = true;
+        Some(chunk)
       }
-      Some(result)
     })
     .collect()
   }
