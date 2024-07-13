@@ -16,9 +16,6 @@ use std::ops::RangeBounds;
 pub trait Sequence<Item> {
   type This<I>;
 
-  // FIXME - implement these methods
-  // coalesce
-
   /// Creates a new sequence by inserting all elements of another collection
   /// into specified index in this sequence.
   ///
@@ -229,7 +226,7 @@ pub trait Sequence<Item> {
   /// let b = vec![1];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// let chunked = a.chunked_by(|&prev, &next| prev > 0 && next < 3);
+  /// let chunked = a.chunked_by(|&p, &n| p > 0 && n < 3);
   /// assert_eq!(chunked, vec![vec![2, 3], vec![1], vec![1], vec![2, 3]]);
   ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
@@ -243,16 +240,16 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut chunk_empty = true;
-    unfold(iterator.next(), |previous| {
+    unfold(iterator.next(), |last| {
       let chunk: Self = unfold(false, |split| {
         if !*split {
-          if let Some(prev) = previous.take() {
-            if let Some(item) = iterator.next() {
-              *split = predicate(&prev, &item);
-              *previous = Some(item);
+          if let Some(previous) = last.take() {
+            if let Some(current) = iterator.next() {
+              *split = predicate(&previous, &current);
+              *last = Some(current);
             }
             chunk_empty = false;
-            return Some(prev);
+            return Some(previous);
           };
         };
         None
@@ -268,51 +265,56 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  // fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
-  // where
-  //   Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  // {
-  //   self.into_iter().scan(None, |last, item| {
-  //     match last {
-  //       Some(value) => match function(*value, item) {
-  //         Ok(current) => None,
-  //         Err((xx, current)) => None,
-  //       },
-  //       None => {
-  //         *last = Some(item);
-  //         None
-  //       },
-  //     }
-  //   })
-  //   // let mut prev = None;
-  //   // let mut next = None;
-  //   // self
-  //   //   .into_iter()
-  //   //   .filter_map(|item| match next {
-  //   //     Some(value) => {
-  //   //       next = None;
-  //   //       Some(value)
-  //   //     }
-  //   //     None => match prev {
-  //   //       Some(prev_value) => match function(prev_value, item) {
-  //   //         Ok(value) => {
-  //   //           prev = None;
-  //   //           Some(value)
-  //   //         }
-  //   //         Err((value, next_value)) => {
-  //   //           prev = None;
-  //   //           next = Some(next_value);
-  //   //           Some(value)
-  //   //         }
-  //   //       },
-  //   //       None => {
-  //   //         prev = Some(item);
-  //   //         None
-  //   //       }
-  //   //     },
-  //   //   })
-  //     .collect()
-  // }
+  /// Creates a new sequence by using the compression closure to
+  /// optionally merge together consecutive elements of this sequence.
+  ///
+  /// The closure `merge` is passed two elements, `previous` and `current` and may
+  /// return either (1) `Ok(merged)` to merge the two values or
+  /// (2) `Err((previous, current)` to indicate they can't be merged.
+  /// In (2), the value `previous` is included in the new sequence.
+  /// Either (1) `merged` or (2) `current` becomes the previous value
+  /// when coalesce continues with the next pair of elements to merge. The
+  /// value that remains at the end is also included in the new sequence.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 1, 2, 1, 2, 2, 3];
+  ///
+  /// let coalesced = a.coalesce(|p, n| if p % 2 == n % 2 {
+  ///   Ok(p + n)
+  /// } else {
+  ///   Err((p, n))
+  /// });
+  ///
+  /// assert_eq!(coalesced, vec![4, 1, 4, 3]);
+  /// ```
+  fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    unfold(iterator.next(), |last| {
+      loop {
+        if let Some(previous) = last.take() {
+          if let Some(current) = iterator.next() {
+            match function(previous, current) {
+              Ok(merged) => *last = Some(merged),
+              Err((new_previous, new_current)) => {
+                *last = Some(new_current);
+                return Some(new_previous);
+              }
+            }
+          } else {
+            return Some(previous);
+          }
+        } else {
+          return None;
+        }
+      }
+    })
+    .collect()
+  }
 
   /// Creates a new sequence by omitting an element at specified index
   /// in this sequence.
