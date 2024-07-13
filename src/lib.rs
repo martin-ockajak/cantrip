@@ -140,10 +140,6 @@
 /// | *reduce*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *reduce_to*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *repeat*                  |    :heavy_check_mark:     |                    |                               |                    |
-/// | *replace*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *replace_at*              |    :heavy_check_mark:     |                    |                               |                    |
-/// | *replace_at_multi*        |    :heavy_check_mark:     |                    |                               |                    |
-/// | *replace_multi*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *rev*                     |    :heavy_check_mark:     |                    |                               |                    |
 /// | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
@@ -165,6 +161,10 @@
 /// | *splice*                  |    :heavy_check_mark:     |                    |                               |                    |
 /// | *step_by*                 |    :heavy_check_mark:     |                    |                               |                    |
 /// | *subset*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *substitute*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *substitute_at*           |    :heavy_check_mark:     |                    |                               |                    |
+/// | *substitute_at_multi*     |    :heavy_check_mark:     |                    |                               |                    |
+/// | *substitute_multi*        |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *superset*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *sum*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 /// | *sum_keys*                |                           |                    |                               | :heavy_check_mark: |

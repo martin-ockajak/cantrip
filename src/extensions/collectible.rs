@@ -1137,41 +1137,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
-  // FIXME -  fix the failing test case
   /// Creates a new collection from this collection by replacing the
   /// first occurrence of an element with a replacement value.
-  ///
-  /// The order of retained values is preserved for ordered collections.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2, 3];
-  /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
-  ///
-  /// # let a = source.clone();
-  /// // assert_eq!(a.replace(&4, 5), vec![1, 2, 2, 3]);
-  /// assert_eq!(e.substitute(&1, 2), vec![]);
-  /// ```
-  #[inline]
-  fn substitute(self, value: &Item, replacement: Item) -> Self
-  where
-    Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut replaced = Some(replacement);
-    self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
-  }
-
-  // FIXME -  fix the failing test case
-  /// Creates a new collection from this collection by replacing the
-  /// first occurrences of elements found in another collection with elements
-  /// of a replacement collection.
   ///
   /// The order of retained values is preserved for ordered collections.
   ///
@@ -1184,41 +1151,20 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // assert_eq!(a.replace_multi(&vec![2, 4], vec![3, 5]), vec![1, 4, 2, 5]);
-  /// # let a = source.clone();
-  /// // assert_eq!(a.replace_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
+  /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
   ///
   /// # let a = source.clone();
-  /// // assert_eq!(a.replace_multi(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
-  /// assert_eq!(e.replace_multi(&vec![1], vec![2]), vec![]);
+  /// assert_eq!(a.substitute(&4, 5), vec![1, 2, 2, 3]);
+  /// assert_eq!(e.substitute(&1, 2), vec![]);
   /// ```
-  fn replace_multi<'a>(
-    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
-  ) -> Self
+  #[inline]
+  fn substitute(self, value: &Item, replacement: Item) -> Self
   where
-    Item: Eq + Hash + 'a,
+    Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let iterator = elements.iterator();
-    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-    for item in iterator {
-      *removed.entry(item).or_default() += 1;
-    }
-    let mut replacement_items = replacements.into_iter();
-    self
-      .into_iter()
-      .flat_map(|item| match removed.get_mut(&item) {
-        Some(count) => {
-          if *count > 0 {
-            *count -= 1;
-            replacement_items.next().or(Some(item))
-          } else {
-            Some(item)
-          }
-        }
-        None => Some(item),
-      })
-      .collect()
+    let mut replaced = Some(replacement);
+    self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
   }
 
   // FIXME -  fix the failing test case
@@ -1251,6 +1197,59 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       }
     }
     heap.into_iter().collect()
+  }
+
+  // FIXME -  fix the failing test case
+  /// Creates a new collection from this collection by replacing the
+  /// first occurrences of elements found in another collection with elements
+  /// of a replacement collection.
+  ///
+  /// The order of retained values is preserved for ordered collections.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// // assert_eq!(a.replace_multi(&vec![2, 4], vec![3, 5]), vec![1, 4, 2, 5]);
+  /// # let a = source.clone();
+  /// // assert_eq!(a.replace_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
+  ///
+  /// # let a = source.clone();
+  /// // assert_eq!(a.replace_multi(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
+  /// assert_eq!(e.update_multi(&vec![1], vec![2]), vec![]);
+  /// ```
+  fn update_multi<'a>(
+    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
+  ) -> Self
+  where
+    Item: Eq + Hash + 'a,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let iterator = elements.iterator();
+    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      *removed.entry(item).or_default() += 1;
+    }
+    let mut replacement_items = replacements.into_iter();
+    self
+      .into_iter()
+      .flat_map(|item| match removed.get_mut(&item) {
+        Some(count) => {
+          if *count > 0 {
+            *count -= 1;
+            replacement_items.next().or(Some(item))
+          } else {
+            Some(item)
+          }
+        }
+        None => Some(item),
+      })
+      .collect()
   }
 
   /// Sums the elements of this collection.
@@ -1368,7 +1367,7 @@ pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Si
     .collect()
 }
 
-pub(crate) fn replace_multi<'a, Item, Collection>(
+pub(crate) fn substitute_multi<'a, Item, Collection>(
   collection: Collection, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
 ) -> Collection
 where

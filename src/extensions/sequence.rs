@@ -998,79 +998,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  /// Creates a new sequence by replacing an element at specified index
-  /// in this sequence.
-  ///
-  /// if the specified index exceeds this sequence size, no elements are replaced.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2, 3];
-  /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.replace_at(1, 4), vec![1, 4, 3]);
-  ///
-  /// # let a = source.clone();
-  /// assert_eq!(a.replace_at(3, 5), vec![1, 2, 3]);
-  /// assert_eq!(e.replace_at(0, 1), vec![]);
-  /// ```
-  #[inline]
-  fn replace_at(self, index: usize, replacement: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.replace_at_multi(index..(index + 1), iter::once(replacement))
-  }
-
-  /// Creates a new sequence by replacing all elements at specified indices in this sequence
-  /// by elements from another collection.
-  ///
-  /// if the specified index exceeds this sequence size, no elements are replaced.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2, 3];
-  /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.replace_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.replace_at_multi(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.replace_at_multi(vec![0, 2], vec![4]), vec![4, 2, 3]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.replace_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
-  ///
-  /// # let a = source.clone();
-  /// assert_eq!(a.replace_at_multi(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
-  /// assert_eq!(e.replace_at_multi(vec![0], vec![1]), vec![]);
-  /// ```
-  fn replace_at_multi(
-    self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
-  ) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
-    let mut replacement_iterator = replacements.into_iter();
-    unfold(0_usize, |position| {
-      iterator.next().map(|item| {
-        let result = if positions.contains(position) { replacement_iterator.next().unwrap_or(item) } else { item };
-        *position += 1;
-        result
-      })
-    })
-    .collect()
-  }
-
   /// Creates a new sequence by reversing this sequence's direction.
   ///
   /// # Example
@@ -1313,6 +1240,38 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().skip_while(predicate).collect()
+  }
+
+  /// Creates a new sequence by only including elements in the specified range.
+  ///
+  /// if the specified index exceeds this sequence size, no elements are inserted.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.slice(0..2), vec![1, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.slice(1..4), vec![2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.slice(0..5), vec![1, 2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(e.slice(0..1), vec![]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.slice(3..3), vec![]);
+  /// ```
+  #[inline]
+  fn slice(self, range: impl RangeBounds<usize>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.into_iter().enumerate().filter(|(index, _)| range.contains(index)).map(|(_, x)| x).collect()
   }
 
   /// Creates a new sequence by sorting this sequence.
@@ -1644,38 +1603,6 @@ pub trait Sequence<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new sequence by only including elements in the specified range.
-  ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2, 3];
-  /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.slice(0..2), vec![1, 2]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.slice(1..4), vec![2, 3]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.slice(0..5), vec![1, 2, 3]);
-  /// # let a = source.clone();
-  /// assert_eq!(e.slice(0..1), vec![]);
-  ///
-  /// # let a = source.clone();
-  /// assert_eq!(a.slice(3..3), vec![]);
-  /// ```
-  #[inline]
-  fn slice(self, range: impl RangeBounds<usize>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.into_iter().enumerate().filter(|(index, _)| range.contains(index)).map(|(_, x)| x).collect()
-  }
-
   /// Creates a new sequence from this sequence stepping by
   /// the given amount for each retained element.
   ///
@@ -1701,6 +1628,79 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().step_by(step).collect()
+  }
+
+  /// Creates a new sequence by replacing an element at specified index
+  /// in this sequence.
+  ///
+  /// if the specified index exceeds this sequence size, no elements are replaced.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.substitute_at(1, 4), vec![1, 4, 3]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute_at(3, 5), vec![1, 2, 3]);
+  /// assert_eq!(e.substitute_at(0, 1), vec![]);
+  /// ```
+  #[inline]
+  fn substitute_at(self, index: usize, replacement: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.substitute_at_multi(index..(index + 1), iter::once(replacement))
+  }
+
+  /// Creates a new sequence by replacing all elements at specified indices in this sequence
+  /// by elements from another collection.
+  ///
+  /// if the specified index exceeds this sequence size, no elements are replaced.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute_at_multi(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4]), vec![4, 2, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
+  ///
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute_at_multi(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
+  /// assert_eq!(e.substitute_at_multi(vec![0], vec![1]), vec![]);
+  /// ```
+  fn substitute_at_multi(
+    self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
+  ) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut iterator = self.into_iter();
+    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
+    let mut replacement_iterator = replacements.into_iter();
+    unfold(0_usize, |position| {
+      iterator.next().map(|item| {
+        let result = if positions.contains(position) { replacement_iterator.next().unwrap_or(item) } else { item };
+        *position += 1;
+        result
+      })
+    })
+      .collect()
   }
 
   /// Creates a new sequence from this sequence without

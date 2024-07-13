@@ -167,13 +167,13 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
   }
 
   #[inline]
-  fn replace_multi<'a>(
+  fn update_multi<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
   ) -> Self
   where
     Item: 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    replace_multi(self, elements, replacement)
+    substitute_multi(self, elements, replacement)
   }
 }

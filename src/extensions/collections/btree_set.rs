@@ -166,13 +166,13 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   }
 
   #[inline]
-  fn replace_multi<'a>(
+  fn update_multi<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
   ) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    replace_multi(self, elements, replacement)
+    substitute_multi(self, elements, replacement)
   }
 }
