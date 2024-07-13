@@ -129,8 +129,8 @@
 /// | *partition_map_to*        |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *permutations*            |    :heavy_check_mark:     |                    |                               |                    |
 /// | *position*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *positions*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-/// | *positions_of*            |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *position_multi*          |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+/// | *position_of_multi*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *position_sequence*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |

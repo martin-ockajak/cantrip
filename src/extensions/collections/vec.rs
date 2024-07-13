@@ -234,7 +234,7 @@ impl<Item> Ordered<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
+  fn position_multi(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
     positions(self.iter(), predicate)
   }
 

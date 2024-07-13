@@ -203,9 +203,9 @@ pub trait Ordered<Item> {
 
   /// Searches for an element in this sequence, returning all its indices.
   ///
-  /// `positions()` takes a closure that returns `true` or `false`. It applies
+  /// `position_multi()` takes a closure that returns `true` or `false`. It applies
   /// this closure to each element of this sequence, each time one of them
-  /// returns `true`, then `positions()` adds the element index to its result.
+  /// returns `true`, then `position_multi()` adds the element index to its result.
   ///
   /// # Overflow Behavior
   ///
@@ -225,12 +225,12 @@ pub trait Ordered<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.positions(|&x| x % 2 == 0), vec![1]);
-  /// assert_eq!(a.positions(|&x| x % 2 == 1), vec![0, 2]);
+  /// assert_eq!(a.position_multi(|&x| x % 2 == 0), vec![1]);
+  /// assert_eq!(a.position_multi(|&x| x % 2 == 1), vec![0, 2]);
   ///
-  /// assert_eq!(a.positions(|&x| x > 3), vec![]);
+  /// assert_eq!(a.position_multi(|&x| x > 3), vec![]);
   /// ```
-  fn positions(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize>;
+  fn position_multi(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize>;
 
   /// Searches for an element in this sequence, returning its index.
   ///
@@ -275,8 +275,8 @@ pub trait Ordered<Item> {
 
   /// Searches for an element in this sequence, returning all its indices.
   ///
-  /// `positions_of()` compares each element of this sequence with the specified value,
-  /// and each time one of them matches, then `indices_f()` adds the element index
+  /// `position_of_multi()` compares each element of this sequence with the specified value,
+  /// and each time one of them matches, then `position_of_multi()` adds the element index
   /// to its result.
   ///
   /// # Overflow Behavior
@@ -297,16 +297,16 @@ pub trait Ordered<Item> {
   ///
   /// let a = vec![1, 2, 1];
   ///
-  /// assert_eq!(a.positions_of(&1), vec![0, 2]);
+  /// assert_eq!(a.position_of_multi(&1), vec![0, 2]);
   ///
-  /// assert_eq!(a.positions_of(&5), vec![]);
+  /// assert_eq!(a.position_of_multi(&5), vec![]);
   /// ```
   #[inline]
-  fn positions_of(&self, value: &Item) -> Vec<usize>
+  fn position_of_multi(&self, value: &Item) -> Vec<usize>
   where
     Item: PartialEq,
   {
-    self.positions(|x| x == value)
+    self.position_multi(|x| x == value)
   }
 
   /// Searches for a sub-sequence in this sequence, returning its index.
