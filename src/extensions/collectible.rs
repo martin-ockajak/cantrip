@@ -116,23 +116,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let iterator = elements.iterator();
-    let mut redundant: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-    for item in iterator {
-      *redundant.entry(item).or_default() += 1;
-    }
+    let mut redundant: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
       .into_iter()
-      .filter(|x| match redundant.get_mut(x) {
-        Some(count) => {
+      .filter(|x| {
+        if let Some(count) = redundant.get_mut(x) {
           if *count > 0 {
             *count -= 1;
-            false
-          } else {
-            true
+            return false;
           }
         }
-        None => true,
+        true
       })
       .collect()
   }
