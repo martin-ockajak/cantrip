@@ -45,7 +45,7 @@
 //! | Method                    | Vec, VecDeque, LinkedList |       Slice        | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap  |
 //! |---------------------------|:-------------------------:|:------------------:|:-----------------------------:|:------------------:|
 //! | *add*                     |     &#8226;     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *add_at*                  |     &#8902;     |                    |                               |                    |
+//! | *add_at*                  |     &#26AB;     |                    |                               |                    |
 //! | *add_at_multi*            |    :heavy_check_mark:     |                    |                               |                    |
 //! | *add_multi*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 //! | *all*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
