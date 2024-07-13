@@ -170,47 +170,6 @@ pub trait Sequence<Item> {
   }
 
   // FIXME - fix the failing test case
-  /// Creates a new sequence by splitting this sequence elements
-  /// into non-overlapping subsequences of specified `size`.
-  ///
-  /// The chunks are sequences and do not overlap. If `size` does not divide
-  /// the length of the slice, then the last up to `size-1` elements will be omitted.
-  ///
-  /// Due to each chunk having exactly `chunk_size` elements, the compiler can often optimize the
-  /// resulting code better than in the case of [`chunks`].
-  ///
-  /// See [`chunked`] for a variant of this function that also returns the remainder as a smaller chunk.
-  ///
-  /// [`chunked`]: Sequence::chunked
-  ///
-  /// # Panics
-  ///
-  /// Panics if chunk `size` is 0.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let source = vec![1, 2, -1, 1, 2];
-  /// let a = vec![1, 2, -1, 1, 2];
-  ///
-  /// assert_eq!(a.chunked_exact(3), vec![vec![1, 2, -1]]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2], vec![-1, 1]]);
-  /// # let a = source.clone();
-  /// // assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
-  /// ```
-  #[inline]
-  fn chunked_exact(self, size: usize) -> Self::This<Self>
-  where
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-    Self::This<Self>: Default + Extend<Self>,
-  {
-    chunked(self, size, true)
-  }
-
-  // FIXME - fix the failing test case
   /// Creates a new sequence by splitting this sequence into non-overlapping
   /// subsequences according to specified separator predicate.
   ///
@@ -266,6 +225,47 @@ pub trait Sequence<Item> {
       }
     })
     .collect()
+  }
+
+  // FIXME - fix the failing test case
+  /// Creates a new sequence by splitting this sequence elements
+  /// into non-overlapping subsequences of specified `size`.
+  ///
+  /// The chunks are sequences and do not overlap. If `size` does not divide
+  /// the length of the slice, then the last up to `size-1` elements will be omitted.
+  ///
+  /// Due to each chunk having exactly `chunk_size` elements, the compiler can often optimize the
+  /// resulting code better than in the case of [`chunks`].
+  ///
+  /// See [`chunked`] for a variant of this function that also returns the remainder as a smaller chunk.
+  ///
+  /// [`chunked`]: Sequence::chunked
+  ///
+  /// # Panics
+  ///
+  /// Panics if chunk `size` is 0.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, -1, 1, 2];
+  /// let a = vec![1, 2, -1, 1, 2];
+  ///
+  /// assert_eq!(a.chunked_exact(3), vec![vec![1, 2, -1]]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2], vec![-1, 1]]);
+  /// # let a = source.clone();
+  /// // assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
+  /// ```
+  #[inline]
+  fn chunked_exact(self, size: usize) -> Self::This<Self>
+  where
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+    Self::This<Self>: Default + Extend<Self>,
+  {
+    chunked(self, size, true)
   }
 
   /// Creates a new sequence by using the compression closure to
