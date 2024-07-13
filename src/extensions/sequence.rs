@@ -239,27 +239,31 @@ pub trait Sequence<Item> {
   fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-    Self::This<Self>: Default + Extend<Self>,
+    Self::This<Self>: FromIterator<Self>,
   {
-    let mut result = Self::This::default();
-    let mut chunk = Self::default();
     let mut iterator = self.into_iter();
-    if let Some(first) = iterator.next() {
-      let mut previous = first;
-      for item in iterator {
-        if predicate(&previous, &item) {
-          chunk.extend(iter::once(previous));
-          result.extend(iter::once(chunk));
-          chunk = Self::default();
+    unfold(iterator.next(), |previous| {
+      let mut result = Self::default();
+      loop {
+        if let Some(prev) = previous.take() {
+          if let Some(item) = iterator.next() {
+            let split = predicate(&prev, &item);
+            result.extend(iter::once(prev));
+            *previous = Some(item);
+            if split {
+              break;
+            }
+          } else {
+            result.extend(iter::once(prev));
+            break;
+          }
         } else {
-          chunk.extend(iter::once(previous));
+          return None;
         }
-        previous = item
       }
-      chunk.extend(iter::once(previous));
-      result.extend(iter::once(chunk));
-    };
-    result
+      Some(result)
+    })
+    .collect()
   }
 
   // fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
