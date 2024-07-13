@@ -245,19 +245,17 @@ pub trait Sequence<Item> {
     let mut chunk_empty = true;
     unfold(iterator.next(), |previous| {
       let chunk: Self = unfold(false, |split| {
-        if *split {
-          return None;
+        if !*split {
+          if let Some(prev) = previous.take() {
+            if let Some(item) = iterator.next() {
+              *split = predicate(&prev, &item);
+              *previous = Some(item);
+            }
+            chunk_empty = false;
+            return Some(prev);
+          };
         };
-        if let Some(prev) = previous.take() {
-          if let Some(item) = iterator.next() {
-            *split = predicate(&prev, &item);
-            *previous = Some(item);
-          }
-          chunk_empty = false;
-          Some(prev)
-        } else {
-          None
-        }
+        None
       })
       .collect();
       if chunk_empty {
