@@ -275,17 +275,17 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
-    self.iter().map_while(predicate).collect()
-  }
-
-  #[inline]
-  fn multicombinations(&self, k: usize) -> Vec<Self>
+  fn combinations_multi(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: Sized,
   {
-    multicombinations(self.iter(), k)
+    combinations_multi(self.iter(), k)
+  }
+
+  #[inline]
+  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
+    self.iter().map_while(predicate).collect()
   }
 
   #[inline]

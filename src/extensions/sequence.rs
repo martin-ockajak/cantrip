@@ -314,6 +314,41 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+  /// Creates a new sequence containing combinations with repetition of specified size
+  /// from the elements of this sequence.
+  ///
+  /// Combinations are generated based on element positions, not values.
+  /// Therefore, if this sequence contains duplicate elements, the resulting combinations will too.
+  /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
+  ///
+  /// The order or combination values is preserved.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// assert_eq!(a.combinations_multi(0), vec![vec![]]);
+  /// assert_eq!(a.combinations_multi(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.combinations_multi(2), vec![
+  ///   vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]
+  /// ]);
+  /// assert_eq!(a.combinations_multi(3), vec![
+  ///   vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
+  ///   vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
+  /// ]);
+  ///
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// assert_eq!(e.combinations_multi(2), empty_result);
+  /// ```
+  fn combinations_multi(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
+
   /// Creates a new sequence by omitting an element at specified index
   /// in this sequence.
   ///
@@ -817,41 +852,6 @@ pub trait Sequence<Item> {
     })
     .collect()
   }
-
-  /// Creates a new sequence containing combinations with repetition of specified size
-  /// from the elements of this sequence.
-  ///
-  /// Combinations are generated based on element positions, not values.
-  /// Therefore, if this sequence contains duplicate elements, the resulting combinations will too.
-  /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
-  ///
-  /// The order or combination values is preserved.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
-  ///
-  /// assert_eq!(a.multicombinations(0), vec![vec![]]);
-  /// assert_eq!(a.multicombinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// assert_eq!(a.multicombinations(2), vec![
-  ///   vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]
-  /// ]);
-  /// assert_eq!(a.multicombinations(3), vec![
-  ///   vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
-  ///   vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
-  /// ]);
-  ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
-  /// assert_eq!(e.multicombinations(2), empty_result);
-  /// ```
-  fn multicombinations(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized;
 
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
   /// and filling missing elements with specified value, starting from the back.
@@ -2110,7 +2110,7 @@ where
   result
 }
 
-pub(crate) fn multicombinations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
