@@ -770,10 +770,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let mut result: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       let key = to_key(&item);
-      let new_value = match result.remove(&key) {
-        Some(value) => function(value, item),
-        None => item,
-      };
+      let new_value = if let Some(value) = result.remove(&key) { function(value, item) } else { item };
       let _unused = result.insert(key, new_value);
     }
     result
