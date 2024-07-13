@@ -594,6 +594,9 @@ pub trait Traversable<Item> {
   /// Tests if another collection contains all elements of this collection
   /// at least as many times as their appear in this collection.
   ///
+  /// To obtain set-like semantics for sequences which only considers unique elements,
+  /// use `.unique().subset()`.
+  ///
   /// Returns `true` if this collection is empty.
   ///
   /// # Example
@@ -617,6 +620,9 @@ pub trait Traversable<Item> {
 
   /// Tests if this collection contains all elements of another collection
   /// at least as many times as their appear in the other collection.
+  ///
+  /// To obtain set-like semantics for sequences which only considers unique elements,
+  /// use `.unique().superset()`.
   ///
   /// Returns `true` if the other collection is empty.
   ///
