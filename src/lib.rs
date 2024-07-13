@@ -42,145 +42,145 @@
 //!
 //! ### Methods
 //!
-//! | Method                    | Vec, VecDeque, LinkedList |       Slice        | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap  |
-//! |---------------------------|:-------------------------:|:------------------:|:-----------------------------:|:------------------:|
-//! | *add*                     |     &#8226;     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *add_at*                  |     &#26AB;     |                    |                               |                    |
-//! | *add_at_multi*            |    :heavy_check_mark:     |                    |                               |                    |
-//! | *add_multi*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *all*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *any*                     |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *cartesian_product*       |    :heavy_check_mark:     |                    |                               |                    |
-//! | *chunked*                 |    :heavy_check_mark:     |                    |                               |                    |
-//! | *chunked_by*              |    :heavy_check_mark:     |                    |                               |                    |
-//! | *chunked_exact*           |    :heavy_check_mark:     |                    |                               |                    |
-//! | *combinations*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *combinations_multi*      |    :heavy_check_mark:     |                    |                               |                    |
-//! | *coalesce*                |    :heavy_check_mark:     |                    |                               |                    |
-//! | *common_prefix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *common_suffix_length*    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *count_by*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *count_unique*            |    :heavy_check_mark:     | :heavy_check_mark: |                               | :heavy_check_mark: |
-//! | *delete*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *delete_at*               |    :heavy_check_mark:     |                    |                               |                    |
-//! | *delete_at_multi*         |    :heavy_check_mark:     |                    |                               |                    |
-//! | *delete_multi*            |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *duplicates*              |    :heavy_check_mark:     |                    |                               |                    |
-//! | *duplicates_by*           |    :heavy_check_mark:     |                    |                               |                    |
-//! | *enumerate*               |    :heavy_check_mark:     |                    |                               |                    |
-//! | *equivalent*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *fill*                    |    :heavy_check_mark:     |                    |                               |                    |
-//! | *fill_with*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *filter*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *filter_keys*             |                           |                    |                               | :heavy_check_mark: |
-//! | *filter_map*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *filter_map_to*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *filter_values*           |                           |                    |                               | :heavy_check_mark: |
-//! | *find*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *find_map*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *find_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *find_position*           |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *first*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *flat_map*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *flat_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *flat*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *fold*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *fold_to*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *for_each*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *frequencies*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *frequencies_by*          |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *group_by*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *group_fold*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       |                    |
-//! | *group_fold_to*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *group_reduce*            |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       |                    |
-//! | *group_reduce_to*         |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *interleave*              |    :heavy_check_mark:     |                    |                               |                    |
-//! | *interleave_exact*        |    :heavy_check_mark:     |                    |                               |                    |
-//! | *intersect*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *intersperse*             |    :heavy_check_mark:     |                    |                               |                    |
-//! | *intersperse_with*        |    :heavy_check_mark:     |                    |                               |                    |
-//! | *init*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *joined*                  |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *largest*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *last*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *map*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *map_to*                  |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *map_keys*                |                           |                    |                               | :heavy_check_mark: |
-//! | *map_values*              |                           |                    |                               | :heavy_check_mark: |
-//! | *map_while*               |    :heavy_check_mark:     |                    |                               |                    |
-//! | *max_by*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *max_by_key*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *max_of*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *merge*                   |    :heavy_check_mark:     |                    |                               |                    |
-//! | *merge_by*                |    :heavy_check_mark:     |                    |                               |                    |
-//! | *min_by*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *min_by_key*              |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *min_of*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *minmax_by*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *minmax_by_key*           |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *minmax_of*               |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *move_at*                 |    :heavy_check_mark:     |                    |                               |                    |
-//! | *pad_left*                |    :heavy_check_mark:     |                    |                               |                    |
-//! | *pad_left_with*           |    :heavy_check_mark:     |                    |                               |                    |
-//! | *pad_right*               |    :heavy_check_mark:     |                    |                               |                    |
-//! | *pad_right_with*          |    :heavy_check_mark:     |                    |                               |                    |
-//! | *partition*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *partition_map*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *partition_map_to*        |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *permutations*            |    :heavy_check_mark:     |                    |                               |                    |
-//! | *position*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *position_multi*          |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *position_of_multi*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *position_sequence*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *product_keys*            |                           |                    |                               | :heavy_check_mark: |
-//! | *product_values*          |                           |                    |                               | :heavy_check_mark: |
-//! | *reduce*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *reduce_to*               |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *repeat*                  |    :heavy_check_mark:     |                    |                               |                    |
-//! | *rev*                     |    :heavy_check_mark:     |                    |                               |                    |
-//! | *rfind*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *rfold*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *rfold_to*                |    :heavy_check_mark:     |                    |                               |                    |
-//! | *rposition*               |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *scan*                    |    :heavy_check_mark:     |                    |                               |                    |
-//! | *scan_to*                 |    :heavy_check_mark:     |                    |                               |                    |
-//! | *skip*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *skip_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *slice*                   |    :heavy_check_mark:     |                    |                               |                    |
-//! | *smallest*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *sorted*                  |    :heavy_check_mark:     |                    |                               |                    |
-//! | *sorted_by*               |    :heavy_check_mark:     |                    |                               |                    |
-//! | *sorted_by_cached_key*    |    :heavy_check_mark:     |                    |                               |                    |
-//! | *sorted_by_key*           |    :heavy_check_mark:     |                    |                               |                    |
-//! | *sorted_unstable*         |    :heavy_check_mark:     |                    |                               |                    |
-//! | *sorted_unstable_by*      |    :heavy_check_mark:     |                    |                               |                    |
-//! | *sorted_unstable_by_key*  |    :heavy_check_mark:     |                    |                               |                    |
-//! | *splice*                  |    :heavy_check_mark:     |                    |                               |                    |
-//! | *step_by*                 |    :heavy_check_mark:     |                    |                               |                    |
-//! | *subset*                  |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *substitute*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *substitute_at*           |    :heavy_check_mark:     |                    |                               |                    |
-//! | *substitute_at_multi*     |    :heavy_check_mark:     |                    |                               |                    |
-//! | *substitute_multi*        |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *superset*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *sum*                     |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
-//! | *sum_keys*                |                           |                    |                               | :heavy_check_mark: |
-//! | *sum_values*              |                           |                    |                               | :heavy_check_mark: |
-//! | *tail*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *take*                    |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *take_while*              |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-//! | *unique*                  |    :heavy_check_mark:     |                    |                               |                    |
-//! | *unique_by*               |    :heavy_check_mark:     |                    |                               |                    |
-//! | *unit*                    |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-//! | *unzip*                   |    :heavy_check_mark:     |                    |                               |                    |
-//! | *variations*              |    :heavy_check_mark:     |                    |                               |                    |
-//! | *windowed*                |    :heavy_check_mark:     |                    |                               |                    |
-//! | *windowed_circular*       |    :heavy_check_mark:     |                    |                               |                    |
-//! | *zip*                     |    :heavy_check_mark:     |                    |                               |                    |
-//! | *zip_padded*              |    :heavy_check_mark:     |                    |                               |                    |
+//! | Method                   | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
+//! |--------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
+//! | *add*                    |            *              |       |              *                |         *         |
+//! | *add_at*                 |            *              |       |                               |                   |
+//! | *add_at_multi*           |            *              |       |                               |                   |
+//! | *add_multi*              |            *              |       |              *                |         *         |
+//! | *all*                    |            *              |   *   |              *                |         *         |
+//! | *any*                    |            *              |   *   |              *                |         *         |
+//! | *cartesian_product*      |            *              |       |                               |                   |
+//! | *chunked*                |            *              |       |                               |                   |
+//! | *chunked_by*             |            *              |       |                               |                   |
+//! | *chunked_exact*          |            *              |       |                               |                   |
+//! | *combinations*           |            *              |       |              *                |                   |
+//! | *combinations_multi*     |            *              |       |                               |                   |
+//! | *coalesce*               |            *              |       |                               |                   |
+//! | *common_prefix_length*   |            *              |   *   |                               |                   |
+//! | *common_suffix_length*   |            *              |   *   |                               |                   |
+//! | *count_by*               |            *              |   *   |              *                |         *         |
+//! | *count_unique*           |            *              |   *   |                               |         *         |
+//! | *delete*                 |            *              |       |              *                |         *         |
+//! | *delete_at*              |            *              |       |                               |                   |
+//! | *delete_at_multi*        |            *              |       |                               |                   |
+//! | *delete_multi*           |            *              |       |              *                |         *         |
+//! | *duplicates*             |            *              |       |                               |                   |
+//! | *duplicates_by*          |            *              |       |                               |                   |
+//! | *enumerate*              |            *              |       |                               |                   |
+//! | *equivalent*             |            *              |   *   |                               |                   |
+//! | *fill*                   |            *              |       |                               |                   |
+//! | *fill_with*              |            *              |       |              *                |         *         |
+//! | *filter*                 |            *              |       |              *                |         *         |
+//! | *filter_keys*            |                           |       |                               |         *         |
+//! | *filter_map*             |            *              |       |              *                |         *         |
+//! | *filter_map_to*          |            *              |       |              *                |         *         |
+//! | *filter_values*          |                           |       |                               |         *         |
+//! | *find*                   |            *              |   *   |              *                |         *         |
+//! | *find_map*               |            *              |   *   |              *                |         *         |
+//! | *find_map_to*            |            *              |       |              *                |         *         |
+//! | *find_position*          |            *              |   *   |                               |                   |
+//! | *first*                  |            *              |   *   |                               |                   |
+//! | *flat_map*               |            *              |       |              *                |         *         |
+//! | *flat_map_to*            |            *              |       |              *                |         *         |
+//! | *flat*                   |            *              |       |              *                |                   |
+//! | *fold*                   |            *              |   *   |              *                |         *         |
+//! | *fold_to*                |            *              |       |              *                |         *         |
+//! | *for_each*               |            *              |   *   |              *                |         *         |
+//! | *frequencies*            |            *              |   *   |                               |                   |
+//! | *frequencies_by*         |            *              |   *   |                               |                   |
+//! | *group_by*               |            *              |       |              *                |                   |
+//! | *group_fold*             |            *              |   *   |              *                |                   |
+//! | *group_fold_to*          |            *              |       |              *                |                   |
+//! | *group_reduce*           |            *              |   *   |              *                |                   |
+//! | *group_reduce_to*        |            *              |       |              *                |                   |
+//! | *interleave*             |            *              |       |                               |                   |
+//! | *interleave_exact*       |            *              |       |                               |                   |
+//! | *intersect*              |            *              |       |              *                |         *         |
+//! | *intersperse*            |            *              |       |                               |                   |
+//! | *intersperse_with*       |            *              |       |                               |                   |
+//! | *init*                   |            *              |   *   |                               |                   |
+//! | *joined*                 |            *              |   *   |                               |                   |
+//! | *largest*                |            *              |       |              *                |                   |
+//! | *last*                   |            *              |   *   |                               |                   |
+//! | *map*                    |            *              |       |              *                |         *         |
+//! | *map_to*                 |            *              |       |              *                |         *         |
+//! | *map_keys*               |                           |       |                               |         *         |
+//! | *map_values*             |                           |       |                               |         *         |
+//! | *map_while*              |            *              |       |                               |                   |
+//! | *max_by*                 |            *              |   *   |              *                |         *         |
+//! | *max_by_key*             |            *              |   *   |              *                |         *         |
+//! | *max_of*                 |            *              |   *   |              *                |         *         |
+//! | *merge*                  |            *              |       |                               |                   |
+//! | *merge_by*               |            *              |       |                               |                   |
+//! | *min_by*                 |            *              |   *   |              *                |         *         |
+//! | *min_by_key*             |            *              |   *   |              *                |         *         |
+//! | *min_of*                 |            *              |   *   |              *                |         *         |
+//! | *minmax_by*              |            *              |   *   |              *                |         *         |
+//! | *minmax_by_key*          |            *              |   *   |              *                |         *         |
+//! | *minmax_of*              |            *              |   *   |              *                |         *         |
+//! | *move_at*                |            *              |       |                               |                   |
+//! | *pad_left*               |            *              |       |                               |                   |
+//! | *pad_left_with*          |            *              |       |                               |                   |
+//! | *pad_right*              |            *              |       |                               |                   |
+//! | *pad_right_with*         |            *              |       |                               |                   |
+//! | *partition*              |            *              |       |              *                |         *         |
+//! | *partition_map*          |            *              |       |              *                |         *         |
+//! | *partition_map_to*       |            *              |       |              *                |         *         |
+//! | *permutations*           |            *              |       |                               |                   |
+//! | *position*               |            *              |   *   |                               |                   |
+//! | *position_multi*         |            *              |   *   |                               |                   |
+//! | *position_of*            |            *              |   *   |                               |                   |
+//! | *position_of_multi*      |            *              |   *   |                               |                   |
+//! | *position_sequence*      |            *              |   *   |                               |                   |
+//! | *powerset*               |            *              |       |              *                |                   |
+//! | *product*                |            *              |       |              *                |                   |
+//! | *product_keys*           |                           |       |                               |         *         |
+//! | *product_values*         |                           |       |                               |         *         |
+//! | *reduce*                 |            *              |   *   |              *                |         *         |
+//! | *reduce_to*              |            *              |       |              *                |         *         |
+//! | *repeat*                 |            *              |       |                               |                   |
+//! | *rev*                    |            *              |       |                               |                   |
+//! | *rfind*                  |            *              |   *   |                               |                   |
+//! | *rfold*                  |            *              |   *   |                               |                   |
+//! | *rfold_to*               |            *              |       |                               |                   |
+//! | *rposition*              |            *              |   *   |                               |                   |
+//! | *scan*                   |            *              |       |                               |                   |
+//! | *scan_to*                |            *              |       |                               |                   |
+//! | *skip*                   |            *              |   *   |                               |                   |
+//! | *skip_while*             |            *              |   *   |                               |                   |
+//! | *slice*                  |            *              |       |                               |                   |
+//! | *smallest*               |            *              |       |              *                |                   |
+//! | *sorted*                 |            *              |       |                               |                   |
+//! | *sorted_by*              |            *              |       |                               |                   |
+//! | *sorted_by_cached_key*   |            *              |       |                               |                   |
+//! | *sorted_by_key*          |            *              |       |                               |                   |
+//! | *sorted_unstable*        |            *              |       |                               |                   |
+//! | *sorted_unstable_by*     |            *              |       |                               |                   |
+//! | *sorted_unstable_by_key* |            *              |       |                               |                   |
+//! | *splice*                 |            *              |       |                               |                   |
+//! | *step_by*                |            *              |       |                               |                   |
+//! | *subset*                 |            *              |   *   |              *                |         *         |
+//! | *substitute*             |            *              |       |              *                |         *         |
+//! | *substitute_at*          |            *              |       |                               |                   |
+//! | *substitute_at_multi*    |            *              |       |                               |                   |
+//! | *substitute_multi*       |            *              |       |              *                |         *         |
+//! | *superset*               |            *              |   *   |              *                |         *         |
+//! | *sum*                    |            *              |       |              *                |                   |
+//! | *sum_keys*               |                           |       |                               |         *         |
+//! | *sum_values*             |                           |       |                               |         *         |
+//! | *tail*                   |            *              |   *   |                               |                   |
+//! | *take*                   |            *              |   *   |                               |                   |
+//! | *take_while*             |            *              |   *   |                               |                   |
+//! | *unique*                 |            *              |       |                               |                   |
+//! | *unique_by*              |            *              |       |                               |                   |
+//! | *unit*                   |            *              |       |              *                |         *         |
+//! | *unzip*                  |            *              |       |                               |                   |
+//! | *variations*             |            *              |       |                               |                   |
+//! | *windowed*               |            *              |       |                               |                   |
+//! | *windowed_circular*      |            *              |       |                               |                   |
+//! | *zip*                    |            *              |       |                               |                   |
+//! | *zip_padded*             |            *              |       |                               |                   |
 pub mod extensions;
 
 pub use extensions::*;
