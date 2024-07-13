@@ -1205,7 +1205,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
   }
 
-  // FIXME -  fix the failing test case
   /// Creates a new collection from this collection by replacing the
   /// first occurrences of elements found in another collection with elements
   /// of a replacement collection.
@@ -1221,12 +1220,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // assert_eq!(a.substitute_multi(&vec![2, 4], vec![3, 5]), vec![1, 4, 2, 5]);
+  /// assert_eq!(a.substitute_multi(&vec![2, 3], vec![4, 5]), vec![1, 4, 2, 5]);
   /// # let a = source.clone();
-  /// // assert_eq!(a.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
+  /// assert_eq!(a.substitute_multi(&vec![2, 2], vec![4, 5]), vec![1, 4, 5, 3]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 2, 3]);
   ///
   /// # let a = source.clone();
-  /// // assert_eq!(a.substitute_multi(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
+  /// assert_eq!(a.substitute_multi(&vec![4, 5], vec![1, 1]), vec![1, 2, 2, 3]);
   /// assert_eq!(e.substitute_multi(&vec![1], vec![2]), vec![]);
   /// ```
   fn substitute_multi<'a>(
