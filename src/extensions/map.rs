@@ -1941,22 +1941,19 @@ pub trait Map<Key, Value> {
 pub(crate) fn minmax_by_pairs<'a, K: 'a, V: 'a>(
   mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut compare: impl FnMut((&K, &V), (&K, &V)) -> Ordering,
 ) -> Option<((&'a K, &'a V), (&'a K, &'a V))> {
-  match iterator.next() {
-    Some(item) => {
-      let mut min = item;
-      let mut max = min;
-      for item in iterator {
-        if compare(item, min) == Ordering::Less {
-          min = item;
-        }
-        if compare(item, max) == Ordering::Greater {
-          max = item;
-        }
+  iterator.next().map(|item| {
+    let mut min = item;
+    let mut max = min;
+    for item in iterator {
+      if compare(item, min) == Ordering::Less {
+        min = item;
       }
-      Some((min, max))
+      if compare(item, max) == Ordering::Greater {
+        max = item;
+      }
     }
-    None => None,
-  }
+    (min, max)
+  })
 }
 
 #[inline]

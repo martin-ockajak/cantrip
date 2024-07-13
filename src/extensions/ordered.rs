@@ -92,7 +92,7 @@ pub trait Ordered<Item> {
     Item: Eq + Hash + 'a;
 
   /// Find the position and value of the first element in this sequence satisfying a predicate.
-  /// 
+  ///
   /// # Example
   ///
   /// ```
@@ -485,8 +485,7 @@ pub trait Ordered<Item> {
 
 pub(crate) fn common_prefix_length<'a, Item: PartialEq + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> usize
-{
+) -> usize {
   let mut result = 0_usize;
   for (item, element) in iterator.zip(elements.iterator()) {
     if item != element {
@@ -499,8 +498,7 @@ pub(crate) fn common_prefix_length<'a, Item: PartialEq + 'a>(
 
 pub(crate) fn common_suffix_length<'a, Item: PartialEq + 'a, I: DoubleEndedIterator<Item = &'a Item>>(
   reversed_iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>,
-) -> usize
-{
+) -> usize {
   let mut result = 0_usize;
   for (item, element) in reversed_iterator.zip(elements.iterator().rev()) {
     if item != element {
@@ -519,8 +517,7 @@ pub(crate) fn count_unique<'a, Item: Eq + Hash + 'a>(iterator: impl Iterator<Ite
 
 pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool
-{
+) -> bool {
   let elements_iterator = elements.iterator();
   let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
   let mut remaining = 0_usize;
@@ -529,25 +526,21 @@ pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
     remaining += 1;
   }
   for item in iterator {
-    match excluded.get_mut(item) {
-      Some(count) => {
-        if *count > 0 {
-          *count -= 1;
-          remaining = remaining.saturating_sub(1);
-        } else {
-          return false
-        }
-      },
-      None => return false
+    if let Some(count) = excluded.get_mut(item) {
+      if *count > 0 {
+        *count -= 1;
+        remaining = remaining.saturating_sub(1);
+        continue;
+      }
     }
-  };
+    return false;
+  }
   remaining == 0
 }
 
 pub(crate) fn frequencies_by<'a, Item: 'a, K: Eq + Hash>(
   iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
-) -> HashMap<K, usize>
-{
+) -> HashMap<K, usize> {
   let mut result = HashMap::with_capacity(iterator.size_hint().0);
   for item in iterator {
     *result.entry(to_key(item)).or_default() += 1;
@@ -555,36 +548,31 @@ pub(crate) fn frequencies_by<'a, Item: 'a, K: Eq + Hash>(
   result
 }
 
-pub(crate) fn joined<'a, Item: Display + 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, separator: &str,
-) -> String {
-  match iterator.next() {
-    Some(item) => {
-      let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
+pub(crate) fn joined<'a, Item: Display + 'a>(mut iterator: impl Iterator<Item = &'a Item>, separator: &str) -> String {
+  if let Some(item) = iterator.next() {
+    let mut result = String::with_capacity(separator.len() * iterator.size_hint().0);
+    write!(&mut result, "{}", item).unwrap();
+    for item in iterator {
+      result.push_str(separator);
       write!(&mut result, "{}", item).unwrap();
-      for item in iterator {
-        result.push_str(separator);
-        write!(&mut result, "{}", item).unwrap();
-      }
-      result.shrink_to_fit();
-      result
     }
-    None => String::new(),
+    result.shrink_to_fit();
+    result
+  } else {
+    String::new()
   }
 }
 
 #[inline]
 pub(crate) fn positions<'a, Item: 'a>(
   iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
-) -> Vec<usize>
-{
+) -> Vec<usize> {
   iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
 pub(crate) fn position_sequence<'a, Item: PartialEq + 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> Option<usize>
-{
+) -> Option<usize> {
   let mut elements_iterator = elements.iterator();
   if let Some(first_element) = elements_iterator.next() {
     if let Some(start_index) = iterator.position(|item| item == first_element) {
