@@ -68,7 +68,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
   ///
@@ -105,7 +105,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.delete_multi(&vec![1, 2]), vec![2, 3]);
   ///
@@ -146,14 +146,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.combinations(0), vec![vec![]]);
   /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
   /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(a.combinations(4), empty_result);
   /// assert_eq!(e.combinations(2), empty_result);
   /// ```
@@ -792,7 +792,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use std::collections::HashSet;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// let intersection = a.intersect(&vec![4, 2, 2, 3, 4]);
   ///
@@ -910,7 +910,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().map(function).collect()
   }
 
-  // FIXME -  fix the failing test case
   /// Creates a new collection containing the n largest elements of
   /// this collection in descending order.
   ///
@@ -919,10 +918,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![5, 1, 3, 2, 4];
-  /// let e: Vec<i32> = Vec::new();
+  /// # let source = vec![2, 1, 3];
+  /// let a = vec![2, 1, 3];
+  /// let e: Vec<i32> = vec![];
   ///
-  /// // assert_eq!(largest(3), vec![5, 4, 3]);
+  /// assert_eq!(a.largest(2), vec![3, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.largest(4), vec![3, 2, 1]);
   /// assert_eq!(e.largest(3), vec![]);
   /// ```
   fn largest(self, n: usize) -> Self
@@ -933,11 +935,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().map(|x| Reverse(x)).take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
-      if heap.peek().unwrap().0 < item {
-        *heap.peek_mut().unwrap() = Reverse(item);
+      if let Some(mut top) = heap.peek_mut() {
+        if item > top.0 {
+          *top = Reverse(item);
+        }
       }
     }
-    heap.into_iter().rev().map(|x| x.0).collect()
+    let result: Vec<Item> = unfold(|| heap.pop()).map(|x| x.0).collect();
+    result.into_iter().rev().collect()
   }
 
   /// Creates two new collections from this collection by applying
@@ -1047,7 +1052,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.powerset(), vec![
   ///   vec![],
@@ -1082,7 +1087,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![2, 3, 4];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// let product = a.product();
   ///
@@ -1141,7 +1146,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     iterator.next().map(|result| iterator.fold(result, function))
   }
 
-  // FIXME -  fix the failing test case
   /// Creates a new collection containing the n smallest elements of
   /// this collection in descending order.
   ///
@@ -1150,10 +1154,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![5, 1, 3, 2, 4];
-  /// let e: Vec<i32> = Vec::new();
+  /// # let source = vec![2, 3, 1];
+  /// let a = vec![2, 3, 1];
+  /// let e: Vec<i32> = vec![];
   ///
-  /// // assert_eq!(smallest(3), vec![1, 2, 3]);
+  /// assert_eq!(a.smallest(2), vec![1, 2]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.smallest(4), vec![1, 2, 3]);
   /// assert_eq!(e.smallest(3), vec![]);
   /// ```
   fn smallest(self, n: usize) -> Self
@@ -1164,11 +1171,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
-      if *heap.peek().unwrap() > item {
-        *heap.peek_mut().unwrap() = item;
+      if let Some(mut top) = heap.peek_mut() {
+        if item < *top {
+          *top = item;
+        }
       }
     }
-    heap.into_iter().collect()
+    let result: Vec<Item> = unfold(|| heap.pop()).collect();
+    result.into_iter().rev().collect()
   }
 
   /// Creates a new collection from this collection by replacing the
@@ -1183,7 +1193,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
   ///
@@ -1214,7 +1224,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute_multi(&vec![2, 3], vec![4, 5]), vec![1, 4, 2, 5]);
   /// # let a = source.clone();
@@ -1268,7 +1278,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// let sum = a.sum();
   ///

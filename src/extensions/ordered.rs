@@ -60,7 +60,7 @@ pub trait Ordered<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   /// let b = vec![1, 1];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.count_unique(), 3);
   /// assert_eq!(b.count_unique(), 1);
@@ -156,7 +156,7 @@ pub trait Ordered<Item> {
   /// use cantrip::*;
   ///
   /// let a = [1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.joined(", "), "1, 2, 3");
   /// assert_eq!(e.joined(", "), "");

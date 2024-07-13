@@ -28,7 +28,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2];
   /// let a = vec![1, 2];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.add_at_multi(0, vec![3, 4]), vec![3, 4, 1, 2]);
   /// # let a = source.clone();
@@ -74,7 +74,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2];
   /// let a = vec![1, 2];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.add_at(0, 3), vec![3, 1, 2]);
   /// # let a = source.clone();
@@ -109,7 +109,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.cartesian_product(0), vec![vec![]]);
   /// assert_eq!(a.cartesian_product(1), vec![vec![1], vec![2], vec![3]]);
@@ -121,7 +121,7 @@ pub trait Sequence<Item> {
   ///   ]
   /// );
   ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.cartesian_product(2), empty_result);
   /// ```
   fn cartesian_product(&self, k: usize) -> Vec<Self>
@@ -184,12 +184,12 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![2, 3, 1, 1, 2, 3];
   /// let b = vec![1];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// let chunked = a.chunked_by(|&p, &n| p > 0 && n < 3);
   /// assert_eq!(chunked, vec![vec![2, 3], vec![1], vec![1], vec![2, 3]]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(b.chunked_by(|_, _| true), vec![vec![1]]);
   /// assert_eq!(e.chunked_by(|_, _| true), empty_result);
   /// ```
@@ -333,7 +333,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.combinations_multi(0), vec![vec![]]);
   /// assert_eq!(a.combinations_multi(1), vec![vec![1], vec![2], vec![3]]);
@@ -345,7 +345,7 @@ pub trait Sequence<Item> {
   ///   vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
   /// ]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.combinations_multi(2), empty_result);
   /// ```
   fn combinations_multi(&self, k: usize) -> Vec<Self>
@@ -365,7 +365,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.delete_at(0), vec![2, 3]);
   /// # let a = source.clone();
@@ -397,7 +397,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.delete_at_multi(vec![0, 2]), vec![2]);
   /// # let a = source.clone();
@@ -564,7 +564,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.init(), vec![1, 2]);
   ///
@@ -1206,7 +1206,7 @@ pub trait Sequence<Item> {
   /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.skip(2), vec![3]);
   ///
@@ -1237,7 +1237,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-1, 0, 1];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.skip_while(|&x| x < 0), vec![0, 1]);
   ///
@@ -1262,7 +1262,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.slice(0..2), vec![1, 2]);
   /// # let a = source.clone();
@@ -1651,7 +1651,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute_at(1, 4), vec![1, 4, 3]);
   ///
@@ -1679,7 +1679,7 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
   /// # let a = source.clone();
@@ -1722,7 +1722,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.tail(), vec![2, 3]);
   ///
@@ -1764,7 +1764,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.take(5), vec![1, 2]);
   ///
@@ -1793,7 +1793,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-1, 0, 1];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.take_while(|&x| x <= 0), vec![-1, 0]);
   ///
@@ -1925,7 +1925,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.variations(0), vec![vec![]]);
   /// assert_eq!(a.variations(1), vec![vec![1], vec![2], vec![3]]);
@@ -1937,7 +1937,7 @@ pub trait Sequence<Item> {
   ///   vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1],
   /// ]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.variations(2), empty_result);
   /// ```
   fn variations(&self, k: usize) -> Vec<Self>
@@ -1969,13 +1969,13 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3, 4, 5];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.windowed(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 4], vec![4, 5]]);
   /// # let a = source.clone();
   /// assert_eq!(a.windowed(2, 2), vec![vec![1, 2], vec![3, 4]]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.windowed(1, 1), empty_result);
   /// ```
   fn windowed(&self, size: usize, step: usize) -> Self::This<Self>
@@ -2005,12 +2005,12 @@ pub trait Sequence<Item> {
   ///
   /// # let source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
   /// # let a = source.clone();
   /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
-  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.windowed(1, 1), empty_result);
   /// ```
   fn windowed_circular(&self, size: usize, step: usize) -> Self::This<Self>

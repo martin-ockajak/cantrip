@@ -31,7 +31,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert!(a.all(|&x| x > 0));
   /// assert!(e.all(|&x| x > 0));
@@ -59,7 +59,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert!(a.any(|&x| x > 0));
   ///
@@ -346,7 +346,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.max_by(|x, y| x.cmp(y)), Some(&5));
   ///
@@ -366,7 +366,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.max_by_key(|x| x.abs()), Some(&-10));
   ///
@@ -398,7 +398,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<u32> = Vec::new();
+  /// let e: Vec<u32> = vec![];
   ///
   /// assert_eq!(a.max_of(), Some(&3));
   ///
@@ -424,7 +424,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.min_by(|x, y| x.cmp(y)), Some(&-10));
   ///
@@ -444,7 +444,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.min_by_key(|x| x.abs()), Some(&0));
   ///
@@ -477,7 +477,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.min_of(), Some(&1));
   ///
@@ -504,7 +504,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.minmax_by(|x, y| x.cmp(y)), Some((&-10, &5)));
   /// assert_eq!(e.minmax_by(|x, y| x.cmp(y)), None);
@@ -524,7 +524,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.minmax_by_key(|x| x.abs()), Some((&0, &-10)));
   /// assert_eq!(e.minmax_by_key(|x| x.abs()), None);
@@ -543,7 +543,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![-3_i32, 0, 1, 5, -10];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.minmax_of(), Some((&-10, &5)));
   /// assert_eq!(e.minmax_of(), None);
@@ -605,7 +605,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert!(a.subset(&vec![4, 3, 2, 2, 1]));
   /// assert!(e.subset(&vec![1]));
@@ -632,7 +632,7 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = Vec::new();
+  /// let e: Vec<i32> = vec![];
   ///
   /// assert!(a.superset(&vec![3, 1]));
   /// assert!(a.superset(&vec![2, 2, 1]));
