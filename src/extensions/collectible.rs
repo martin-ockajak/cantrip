@@ -922,9 +922,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![5, 1, 3, 2, 4];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// let largest = a.largest(3);
-  ///
-  /// // assert_eq!(largest, vec![5, 4, 3]);
+  /// // assert_eq!(largest(3), vec![5, 4, 3]);
   /// assert_eq!(e.largest(3), vec![]);
   /// ```
   fn largest(self, n: usize) -> Self
@@ -1155,9 +1153,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![5, 1, 3, 2, 4];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// let smallest = a.smallest(3);
-  ///
-  /// // assert_eq!(smallest, vec![1, 2, 3]);
+  /// // assert_eq!(smallest(3), vec![1, 2, 3]);
   /// assert_eq!(e.smallest(3), vec![]);
   /// ```
   fn smallest(self, n: usize) -> Self
