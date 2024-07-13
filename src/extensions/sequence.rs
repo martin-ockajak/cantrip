@@ -18,7 +18,6 @@ pub trait Sequence<Item> {
 
   // FIXME - implement these methods
   // coalesce
-  // chunked_by
 
   /// Creates a new sequence by inserting all elements of another collection
   /// into specified index in this sequence.
@@ -213,53 +212,55 @@ pub trait Sequence<Item> {
     chunked(self, size, true)
   }
 
-  // // FIXME - fix the failing test case
-  // /// Creates a new sequence by splitting this sequence into non-overlapping
-  // /// subsequences according to specified separator predicate.
-  // ///
-  // /// The predicate is called for every pair of consecutive elements,
-  // /// meaning that it is called on `slice[0]` and `slice[1]`,
-  // /// followed by `slice[1]` and `slice[2]`, and so on.
-  // ///
-  // /// # Example
-  // ///
-  // /// ```
-  // /// use cantrip::*;
-  // ///
-  // /// let a = vec![1, 2, -1, 1, 2];
-  // ///
-  // /// let chunked = a.chunked_by(|&x| x >= 0);
-  // /// // assert_eq!(chunked, vec![vec![1, 2], vec![-1], vec![1, 2]])
-  // /// ```
-  // fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
-  // where
-  //   Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-  //   Self::This<Self>: Default + Extend<Self>,
-  // {
-  //   let mut result = Self::This::default();
-  //   let mut chunk = Self::default();
-  //   let mut index: usize = 0;
-  //   let mut iterator = self.into_iter();
-  //   iterator.next().map(|first| {
-  //     let prev = first;
-  //     for item in iterator {
-  //       if index > 0 && predicate(&prev, &item) {
-  //         chunk.extend(iter::once(prev));
-  //         result.extend(iter::once(chunk));
-  //         chunk = Self::default();
-  //         index = 0;
-  //       } else {
-  //         chunk.extend(iter::once(prev));
-  //       }
-  //       chunk.extend(iter::once(item));
-  //       index += 1;
-  //     }
-  //     if index > 0 {
-  //       result.extend(iter::once(chunk));
-  //     }
-  //   });
-  //   result
-  // }
+  // FIXME - fix the failing test case
+  /// Creates a new sequence by splitting this sequence into non-overlapping
+  /// subsequences according to specified separator predicate.
+  ///
+  /// The predicate is called for every pair of consecutive elements,
+  /// meaning that it is called on `slice[0]` and `slice[1]`,
+  /// followed by `slice[1]` and `slice[2]`, and so on.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![2, 3, 1, 1, 2, 3];
+  /// let b = vec![1];
+  /// let e: Vec<i32> = Vec::new();
+  ///
+  /// let chunked = a.chunked_by(|&prev, &next| prev > 0 && next < 3);
+  /// assert_eq!(chunked, vec![vec![2, 3], vec![1], vec![1], vec![2, 3]]);
+  ///
+  /// let empty_result: Vec<Vec<i32>> = Vec::new();
+  /// assert_eq!(b.chunked_by(|_, _| true), vec![vec![1]]);
+  /// assert_eq!(e.chunked_by(|_, _| true), empty_result);
+  /// ```
+  fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
+  where
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+    Self::This<Self>: Default + Extend<Self>,
+  {
+    let mut result = Self::This::default();
+    let mut chunk = Self::default();
+    let mut iterator = self.into_iter();
+    if let Some(first) = iterator.next() {
+      let mut previous = first;
+      for item in iterator {
+        if predicate(&previous, &item) {
+          chunk.extend(iter::once(previous));
+          result.extend(iter::once(chunk));
+          chunk = Self::default();
+        } else {
+          chunk.extend(iter::once(previous));
+        }
+        previous = item
+      }
+      chunk.extend(iter::once(previous));
+      result.extend(iter::once(chunk));
+    };
+    result
+  }
 
   // fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
   // where
@@ -537,7 +538,6 @@ pub trait Sequence<Item> {
     })
     .collect()
   }
-
 
   /// Create a new sequence by interleaving the elements of this sequence with
   /// the elements of another collection.
