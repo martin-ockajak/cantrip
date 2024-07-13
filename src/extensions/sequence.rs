@@ -1899,9 +1899,12 @@ pub trait Sequence<Item> {
   /// Creates a new sequence consisting of overlapping windows of `N` elements
   /// of this sequence, starting at the beginning of this sequence.
   ///
-  /// This is the generic equivalent of [`windows`].
+  /// The step parameter determines the distance between the first elements of
+  /// successive windows.
   ///
   /// If `N` is greater than the size of this sequence, it will return no windows.
+  ///
+  /// This is the generic equivalent of [`windows`].
   ///
   /// # Panics
   ///
@@ -1915,14 +1918,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3];
+  /// # let source = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.windowed(2), vec![vec![1, 2], vec![2, 3]]);
+  /// assert_eq!(a.windowed(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 4], vec![4, 5]]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.windowed(2, 2), vec![vec![1, 2], vec![3, 4]]);
+  ///
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
-  /// assert_eq!(e.windowed(1), empty_result);
+  /// assert_eq!(e.windowed(1, 1), empty_result);
   /// ```
-  fn windowed(&self, size: usize) -> Self::This<Self>
+  fn windowed(&self, size: usize, step: usize) -> Self::This<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1931,6 +1938,9 @@ pub trait Sequence<Item> {
   /// Creates a new sequence consisting of overlapping windows of `N` elements
   /// of this sequence, starting at the beginning of this sequence and wrapping
   /// back to the first elements when the window would otherwise exceed this sequence length.
+  ///
+  /// The step parameter determines the distance between the first elements of
+  /// successive windows.
   ///
   /// If `N` is greater than the size of this sequence, it will return no windows.
   ///
@@ -1944,14 +1954,17 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.windowed_circular(2), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
+  /// assert_eq!(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
   /// let empty_result: Vec<Vec<i32>> = Vec::new();
-  /// assert_eq!(e.windowed(1), empty_result);
+  /// assert_eq!(e.windowed(1, 1), empty_result);
   /// ```
-  fn windowed_circular(&self, size: usize) -> Self::This<Self>
+  fn windowed_circular(&self, size: usize, step: usize) -> Self::This<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -2169,52 +2182,54 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + 
 }
 
 pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Result: FromIterator<Collection>>(
-  mut iterator: impl Iterator<Item = &'a Item>, size: usize,
+  iterator: impl Iterator<Item = &'a Item>, size: usize, step: usize,
 ) -> Result {
   assert_ne!(size, 0, "window size must be non-zero");
+  assert_ne!(step, 0, "step must be non-zero");
   let mut window: LinkedList<Item> = LinkedList::new();
-  unfold((), |_| {
-    while window.len() < size {
-      match iterator.next() {
-        Some(item) => window.push_back(item.clone()),
-        None => return None,
+  iterator
+    .flat_map(|item| {
+      window.push_back(item.clone());
+      if window.len() >= size {
+        let result = Some(Collection::from_iter(window.clone()));
+        for _ in 0..step {
+          let _unused = window.pop_front();
+        }
+        result
+      } else {
+        None
       }
-    }
-    let result = Some(Collection::from_iter(window.clone()));
-    let _unused = window.pop_front();
-    result
-  })
-  .collect()
+    })
+    .collect()
 }
 
 pub(crate) fn windowed_circular<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Result>(
-  mut iterator: impl Iterator<Item = &'a Item>, size: usize,
+  mut iterator: impl Iterator<Item = &'a Item>, size: usize, step: usize,
 ) -> Result
 where
   Result: FromIterator<Collection>,
 {
   assert_ne!(size, 0, "window size must be non-zero");
+  assert_ne!(step, 0, "step must be non-zero");
   let mut window: LinkedList<Item> = LinkedList::new();
   let mut init: LinkedList<Item> = LinkedList::new();
   unfold((), |_| {
     while window.len() < size {
-      match iterator.next() {
-        Some(item) => {
-          window.push_back(item.clone());
-          if init.len() < size - 1 {
-            init.push_back(item.clone());
-          }
+      if let Some(item) = iterator.next() {
+        window.push_back(item.clone());
+        if init.len() < size - 1 {
+          init.push_back(item.clone());
         }
-        None => match init.pop_front() {
-          Some(item) => {
-            window.push_back(item);
-          }
-          None => return None,
-        },
+      } else if let Some(item) = init.pop_front() {
+        window.push_back(item);
+      } else {
+        return None;
       }
     }
     let result = Some(Collection::from_iter(window.clone()));
-    let _unused = window.pop_front();
+    for _ in 0..step {
+      let _unused = window.pop_front();
+    }
     result
   })
   .collect()

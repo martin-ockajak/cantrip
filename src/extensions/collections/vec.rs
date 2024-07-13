@@ -348,22 +348,22 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn windowed(&self, size: usize) -> Self::This<Self>
+  fn windowed(&self, size: usize, step: usize) -> Self::This<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>,
   {
-    windowed(self.iter(), size)
+    windowed(self.iter(), size, step)
   }
 
   #[inline]
-  fn windowed_circular(&self, size: usize) -> Self::This<Self>
+  fn windowed_circular(&self, size: usize, step: usize) -> Self::This<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Self::This<Self>: FromIterator<Self>,
   {
-    windowed_circular(self.iter(), size)
+    windowed_circular(self.iter(), size, step)
   }
 }
