@@ -5,6 +5,11 @@ where
   Unfold { state, function }
 }
 
+pub(crate) struct Unfold<S, F> {
+  state: S,
+  function: F,
+}
+
 impl<A, S, F> Iterator for Unfold<S, F>
 where
   F: FnMut(&mut S) -> Option<A>,
@@ -15,9 +20,4 @@ where
   fn next(&mut self) -> Option<Self::Item> {
     (self.function)(&mut self.state)
   }
-}
-
-pub(crate) struct Unfold<S, F> {
-  state: S,
-  function: F,
 }
