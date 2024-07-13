@@ -38,7 +38,7 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 
 ### Methods
 
-| Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
+| Method name / Collection type                                   | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
 | [add](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.add)                                       |            *              |       |              *                |         *         |
 | [add_at](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.add_at)                                    |            *              |       |                               |                   |

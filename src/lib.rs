@@ -42,7 +42,7 @@
 //!
 //! ### Methods
 //!
-//! | Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
+//! | Method name / Collection type                                   | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 //! |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
 //! | [`add`](Traversable::add)                                       |            *              |       |              *                |         *         |
 //! | [`add_at`](Sequence::add_at)                                    |            *              |       |                               |                   |
