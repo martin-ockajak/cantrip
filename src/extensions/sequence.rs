@@ -48,7 +48,7 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut added = additions.into_iter();
     let mut position = 0_usize;
-    unfold((), |_| {
+    unfold(|| {
       if position >= index {
         added.next().or_else(|| {
           position += 1;
@@ -242,9 +242,9 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut chunk_empty = true;
     let mut last = iterator.next();
-    unfold((), |_| {
+    unfold(|| {
       let mut split = false;
-      let chunk: Self = unfold((), |_| {
+      let chunk: Self = unfold(|| {
         if !split {
           if let Some(previous) = last.take() {
             if let Some(current) = iterator.next() {
@@ -298,7 +298,7 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut last = iterator.next();
-    unfold((), |_| loop {
+    unfold(|| loop {
       if let Some(previous) = last.take() {
         if let Some(current) = iterator.next() {
           match function(previous, current) {
@@ -612,7 +612,7 @@ pub trait Sequence<Item> {
     let mut iterator_left = self.into_iter();
     let mut iterator_right = elements.into_iter();
     let mut left = true;
-    unfold((), |_| {
+    unfold(|| {
       let result = if left {
         iterator_left.next().or_else(|| iterator_right.next())
       } else {
@@ -722,7 +722,7 @@ pub trait Sequence<Item> {
     let mut value = iter::repeat(to_value());
     let mut position = 0_usize;
     let mut inserted = false;
-    unfold((), |_| {
+    unfold(|| {
       if !inserted && position % interval == 0 {
         inserted = true;
         value.next()
@@ -811,7 +811,7 @@ pub trait Sequence<Item> {
     let mut elements_iterator = elements.into_iter();
     let mut last_left = iterator.next();
     let mut last_right = elements_iterator.next();
-    unfold((), |_| match (last_left.take(), last_right.take()) {
+    unfold(|| match (last_left.take(), last_right.take()) {
       (Some(left), Some(right)) => {
         if compare(&left, &right) == Ordering::Less {
           last_left = iterator.next();
@@ -872,7 +872,7 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut stored = LinkedList::<Item>::new();
     let mut position = 0_usize;
-    unfold((), |_| match (position >= source_index, position >= target_index) {
+    unfold(|| match (position >= source_index, position >= target_index) {
       (true, true) => stored.pop_front().or_else(|| iterator.next()),
       (true, false) => {
         if position == source_index {
@@ -947,7 +947,7 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
     let mut position = 0_usize;
-    unfold((), |_| {
+    unfold(|| {
       let result = if position < original_start { Some(to_value(position)) } else { iterator.next() };
       position += 1;
       result
@@ -999,7 +999,7 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut position = 0_usize;
-    unfold((), |_| {
+    unfold(|| {
       let result = iterator.next().or_else(|| if position < size { Some(to_value(position)) } else { None });
       position += 1;
       result
@@ -1703,7 +1703,7 @@ pub trait Sequence<Item> {
     let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
     let mut replacement_iterator = replacements.into_iter();
     let mut position = 0_usize;
-    unfold((), |_| {
+    unfold(|| {
       iterator.next().map(|item| {
         let result = if positions.contains(&position) { replacement_iterator.next().unwrap_or(item) } else { item };
         position += 1;
@@ -2105,7 +2105,7 @@ pub trait Sequence<Item> {
   {
     let mut left_iterator = self.into_iter();
     let mut right_iterator = elements.into_iter();
-    unfold((), |_| match (left_iterator.next(), right_iterator.next()) {
+    unfold(|| match (left_iterator.next(), right_iterator.next()) {
       (Some(left), Some(right)) => Some((left, right)),
       (Some(left), None) => Some((left, to_right_value())),
       (None, Some(right)) => Some((to_left_value(), right)),
@@ -2122,7 +2122,7 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
   let size = values.len();
   let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   let mut current_slot = (size + 1).saturating_sub(k);
-  unfold((), |_| {
+  unfold(|| {
     if current_slot == 0 {
       return None;
     }
@@ -2180,7 +2180,7 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
   let size = values.len();
   let mut multicombination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   let mut current_slot = (size + 1).saturating_sub(k);
-  unfold((), |_| {
+  unfold(|| {
     if current_slot == 0 {
       return None;
     }
@@ -2207,7 +2207,7 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + 
   let mut used_indices =
     Vec::from_iter(iter::repeat(true).take(k).chain(iter::repeat(false).take(size.saturating_sub(k))));
   let mut current_slot = (size + 1).saturating_sub(k);
-  unfold((), |_| {
+  unfold(|| {
     if current_slot == 0 {
       return None;
     }
@@ -2265,7 +2265,7 @@ where
   assert_ne!(step, 0, "step must be non-zero");
   let mut window: LinkedList<Item> = LinkedList::new();
   let mut init: LinkedList<Item> = LinkedList::new();
-  unfold((), |_| {
+  unfold(|| {
     while window.len() < size {
       if let Some(item) = iterator.next() {
         window.push_back(item.clone());

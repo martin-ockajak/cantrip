@@ -59,12 +59,13 @@ pub(crate) fn repeat<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
 ) -> Collection {
   let collection = iterator.collect::<Vec<&Item>>();
   let mut values = collection.iter().cycle();
-  unfold(collection.len() * n, |remaining| {
-    if *remaining == 0 {
+  let mut remaining = collection.len() * n;
+  unfold(|| {
+    if remaining == 0 {
       return None;
     }
     let result = values.next().map(|&x| x.clone());
-    *remaining -= 1;
+    remaining -= 1;
     result
   })
   .collect()

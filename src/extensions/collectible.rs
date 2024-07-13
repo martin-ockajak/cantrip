@@ -1325,7 +1325,7 @@ where
   let size = values.len();
   let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
   let mut current_slot = (size + 1).saturating_sub(k);
-  unfold((), |_| {
+  unfold(|| {
     if current_slot == 0 {
       return None;
     }
