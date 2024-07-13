@@ -818,20 +818,19 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
     let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
-    unfold((), |_| {
-      for item in &mut iterator {
+    self
+      .into_iter()
+      .flat_map(|item| {
         if let Some(count) = retained.get_mut(&item) {
           if *count > 0 {
             *count -= 1;
             return Some(item);
           }
         }
-      }
-      None
-    })
-    .collect()
+        None
+      })
+      .collect()
   }
 
   /// Creates a new collection by applying the given closure `function` to
