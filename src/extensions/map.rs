@@ -868,7 +868,7 @@ pub trait Map<Key, Value> {
   {
     self.into_iter().fold(initial_value, function)
   }
-  
+
   /// Calls a closure on each entry of this map.
   ///
   /// This is equivalent to using a [`for`] loop on the map, although

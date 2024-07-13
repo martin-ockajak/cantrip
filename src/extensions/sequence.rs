@@ -414,43 +414,82 @@ pub trait Sequence<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
-  // FIXME - consider creating a non-consuming version or removing clone bound
+  /// Creates a new collection by including only the elements of this collection
+  /// that appear more than once.
+  ///
+  /// Duplicates are detected using hash and equality and each duplicate is included exactly once.
+  ///
+  /// The order or duplicate values is preserved.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 1, 1, 2, 2, 3];
+  ///
+  /// let duplicates = a.duplicates();
+  ///
+  /// assert_eq!(duplicates, vec![1, 2]);
+  /// ```
   fn duplicates(self) -> Self
   where
-    Item: Eq + Hash + Clone,
+    Item: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut frequencies: HashMap<Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut values: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
+    let mut duplicates: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
-        let count = frequencies.entry(item.clone()).or_default();
-        *count += 1;
-        if *count == 1 {
-          Some(item)
-        } else {
-          None
+        if !duplicates.contains(&item) {
+          if let Some(result) = values.take(&item) {
+            let _ = duplicates.insert(item);
+            return Some(result);
+          } else {
+            let _ = values.insert(item);
+          }
         }
+        None
       })
       .collect()
   }
 
-  // FIXME - consider creating a non-consuming version or removing clone bound
-  fn duplicates_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
+  /// Creates a new collection by including only the elements of this collection
+  /// that appear more than once.
+  ///
+  /// Duplicates are detected by comparing the key they map to with the keying function
+  /// `to_key` using hash and equality and each duplicate is included exactly once.
+  ///
+  /// The order or duplicate values is preserved.
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// let duplicates = a.duplicates_by(|x| x % 2);
+  ///
+  /// assert_eq!(duplicates, vec![1, 2]);
+  /// ```
+  fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
+    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut frequencies: HashMap<K, usize> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut values: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut duplicates: HashSet<K> = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
-        let count = frequencies.entry(to_key(&item)).or_default();
-        *count += 1;
-        if *count == 1 {
-          Some(item)
-        } else {
-          None
+        let key = to_key(&item);
+        if !duplicates.contains(&key) {
+          if let Some(result) = values.remove(&key) {
+            let _ = duplicates.insert(key);
+            return Some(result);
+          } else {
+            let _unused = values.insert(key, item);
+          }
         }
+        None
       })
       .collect()
   }

@@ -1152,14 +1152,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.replace(&2, 4), vec![1, 4, 2, 3]);
+  /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
   ///
   /// # let a = source.clone();
   /// // assert_eq!(a.replace(&4, 5), vec![1, 2, 2, 3]);
-  /// assert_eq!(e.replace(&1, 2), vec![]);
+  /// assert_eq!(e.substitute(&1, 2), vec![]);
   /// ```
   #[inline]
-  fn replace(self, value: &Item, replacement: Item) -> Self
+  fn substitute(self, value: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
