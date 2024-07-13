@@ -1324,17 +1324,18 @@ where
 {
   let size = values.len();
   let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
-  unfold((size + 1).saturating_sub(k), |current_slot| {
-    if *current_slot == 0 {
+  let mut current_slot = (size + 1).saturating_sub(k);
+  unfold((), |_| {
+    if current_slot == 0 {
       return None;
     }
-    *current_slot = k;
+    current_slot = k;
     let result = Some(collect_by_index(values, &combination[1..]));
-    while combination[*current_slot] >= (size + *current_slot - k) as i64 - 1 {
-      *current_slot -= 1;
+    while combination[current_slot] >= (size + current_slot - k) as i64 - 1 {
+      current_slot -= 1;
     }
-    let mut new_index = combination[*current_slot];
-    for index in &mut combination[*current_slot..=k] {
+    let mut new_index = combination[current_slot];
+    for index in &mut combination[current_slot..=k] {
       new_index += 1;
       *index = new_index;
     }

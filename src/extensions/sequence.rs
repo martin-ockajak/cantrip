@@ -47,14 +47,15 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut added = additions.into_iter();
-    unfold(0_usize, |position| {
-      if *position >= index {
+    let mut position = 0_usize;
+    unfold((), |_| {
+      if position >= index {
         added.next().or_else(|| {
-          *position += 1;
+          position += 1;
           iterator.next()
         })
       } else {
-        *position += 1;
+        position += 1;
         iterator.next()
       }
     })
@@ -240,13 +241,15 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut chunk_empty = true;
-    unfold(iterator.next(), |last| {
-      let chunk: Self = unfold(false, |split| {
-        if !*split {
+    let mut last = iterator.next();
+    unfold((), |_| {
+      let mut split = false;
+      let chunk: Self = unfold((), |_| {
+        if !split {
           if let Some(previous) = last.take() {
             if let Some(current) = iterator.next() {
-              *split = predicate(&previous, &current);
-              *last = Some(current);
+              split = predicate(&previous, &current);
+              last = Some(current);
             }
             chunk_empty = false;
             return Some(previous);
@@ -294,13 +297,14 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    unfold(iterator.next(), |last| loop {
+    let mut last = iterator.next();
+    unfold((), |_| loop {
       if let Some(previous) = last.take() {
         if let Some(current) = iterator.next() {
           match function(previous, current) {
-            Ok(merged) => *last = Some(merged),
+            Ok(merged) => last = Some(merged),
             Err((new_previous, new_current)) => {
-              *last = Some(new_current);
+              last = Some(new_current);
               return Some(new_previous);
             }
           }
@@ -607,13 +611,14 @@ pub trait Sequence<Item> {
   {
     let mut iterator_left = self.into_iter();
     let mut iterator_right = elements.into_iter();
-    unfold(true, |left| {
-      let result = if *left {
+    let mut left = true;
+    unfold((), |_| {
+      let result = if left {
         iterator_left.next().or_else(|| iterator_right.next())
       } else {
         iterator_right.next().or_else(|| iterator_left.next())
       };
-      *left = !*left;
+      left = !left;
       result
     })
     .collect()
@@ -715,13 +720,15 @@ pub trait Sequence<Item> {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
     let mut value = iter::repeat(to_value());
-    unfold((0_usize, false), |(position, inserted)| {
-      if !*inserted && *position % interval == 0 {
-        *inserted = true;
+    let mut position = 0_usize;
+    let mut inserted = false;
+    unfold((), |_| {
+      if !inserted && position % interval == 0 {
+        inserted = true;
         value.next()
       } else {
-        *inserted = false;
-        *position += 1;
+        inserted = false;
+        position += 1;
         iterator.next()
       }
     })
@@ -802,25 +809,27 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut elements_iterator = elements.into_iter();
-    unfold((iterator.next(), elements_iterator.next()), |(last_left, last_right)| {
+    let mut last_left = iterator.next();
+    let mut last_right = elements_iterator.next();
+    unfold((), |_| {
       match (last_left.take(), last_right.take()) {
         (Some(left), Some(right)) => {
           if compare(&left, &right) == Ordering::Less {
-            *last_left = iterator.next();
-            *last_right = Some(right);
+            last_left = iterator.next();
+            last_right = Some(right);
             Some(left)
           } else {
-            *last_left = Some(left);
-            *last_right = elements_iterator.next();
+            last_left = Some(left);
+            last_right = elements_iterator.next();
             Some(right)
           }
         }
         (Some(left), None) => {
-          *last_left = iterator.next();
+          last_left = iterator.next();
           Some(left)
         }
         (None, Some(right)) => {
-          *last_right = elements_iterator.next();
+          last_right = elements_iterator.next();
           Some(right)
         }
         (None, None) => None,
@@ -864,28 +873,29 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut stored = LinkedList::<Item>::new();
-    unfold(0_usize, |position| {
-      if *position >= source_index {
-        if *position >= target_index {
+    let mut position = 0_usize;
+    unfold((), |_| {
+      if position >= source_index {
+        if position >= target_index {
           stored.pop_front().or_else(|| iterator.next())
         } else {
-          if *position == source_index {
+          if position == source_index {
             if let Some(x) = iterator.next() {
               stored.push_back(x)
             }
           }
-          *position += 1;
+          position += 1;
           iterator.next()
         }
-      } else if *position >= target_index {
+      } else if position >= target_index {
         let mut store = true;
-        while store && *position < source_index {
+        while store && position < source_index {
           iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
-          *position += 1;
+          position += 1;
         }
         iterator.next().or_else(|| stored.pop_front())
       } else {
-        *position += 1;
+        position += 1;
         iterator.next()
       }
     })
@@ -1700,7 +1710,7 @@ pub trait Sequence<Item> {
         result
       })
     })
-      .collect()
+    .collect()
   }
 
   /// Creates a new sequence from this sequence without
