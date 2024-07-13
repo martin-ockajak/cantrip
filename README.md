@@ -174,6 +174,7 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *windowed*                |    :heavy_check_mark:     |                    |                               |                    |
 | *windowed_circular*       |    :heavy_check_mark:     |                    |                               |                    |
 | *zip*                     |    :heavy_check_mark:     |                    |                               |                    |
+| *zip_padded*              |    :heavy_check_mark:     |                    |                               |                    |
 
 ### Inspiration
 

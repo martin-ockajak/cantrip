@@ -178,6 +178,7 @@
 /// | *windowed*                |    :heavy_check_mark:     |                    |                               |                    |
 /// | *windowed_circular*       |    :heavy_check_mark:     |                    |                               |                    |
 /// | *zip*                     |    :heavy_check_mark:     |                    |                               |                    |
+/// | *zip_padded*              |    :heavy_check_mark:     |                    |                               |                    |
 pub mod extensions;
 
 pub use extensions::*;
