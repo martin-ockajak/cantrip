@@ -116,11 +116,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
   {
-    let mut redundant: HashMap<&Item, usize> = frequencies(elements.iterator());
+    let mut deleted: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
       .into_iter()
       .filter(|x| {
-        if let Some(count) = redundant.get_mut(x) {
+        if let Some(count) = deleted.get_mut(x) {
           if *count > 0 {
             *count -= 1;
             return false;
@@ -1236,12 +1236,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut removed: HashMap<&Item, usize> = frequencies(elements.iterator());
+    let mut replaced: HashMap<&Item, usize> = frequencies(elements.iterator());
     let mut replacement_items = replacements.into_iter();
     self
       .into_iter()
       .flat_map(|item| {
-        if let Some(count) = removed.get_mut(&item) {
+        if let Some(count) = replaced.get_mut(&item) {
           if *count > 0 {
             *count -= 1;
             return replacement_items.next().or(Some(item));

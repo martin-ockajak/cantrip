@@ -1699,13 +1699,13 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut iterator = self.into_iter();
     let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
-    let mut replacement_iterator = replacements.into_iter();
+    let mut iterator = self.into_iter();
+    let mut replacement_items = replacements.into_iter();
     let mut position = 0_usize;
     unfold(|| {
       iterator.next().map(|item| {
-        let result = if positions.contains(&position) { replacement_iterator.next().unwrap_or(item) } else { item };
+        let result = if positions.contains(&position) { replacement_items.next().unwrap_or(item) } else { item };
         position += 1;
         result
       })
