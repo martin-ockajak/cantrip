@@ -75,9 +75,10 @@
 /// | *filter_map*              |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *filter_map_to*           |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *filter_values*           |                           |                    |                               | :heavy_check_mark: |
+/// | *find*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *find_map*                |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *find_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
-/// | *find*                    |    :heavy_check_mark:     | :heavy_check_mark: |      :heavy_check_mark:       | :heavy_check_mark: |
+/// | *find_position*           |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *first*                   |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 /// | *flat_map*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |
 /// | *flat_map_to*             |    :heavy_check_mark:     |                    |      :heavy_check_mark:       | :heavy_check_mark: |

@@ -203,6 +203,11 @@ impl<Item> Ordered<Item> for Vec<Item> {
   }
 
   #[inline]
+  fn find_position(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)> {
+    self.iter().enumerate().find(|(_, x)| predicate(x))
+  }
+
+  #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
     Item: Eq + Hash + 'a,

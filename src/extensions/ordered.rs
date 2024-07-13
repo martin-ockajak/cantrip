@@ -91,6 +91,21 @@ pub trait Ordered<Item> {
   where
     Item: Eq + Hash + 'a;
 
+  /// Find the position and value of the first element in this sequence satisfying a predicate.
+  /// 
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.find_position(|&x| x == 2), Some((1, &2)));
+  ///
+  /// assert_eq!(a.find_position(|&x| x == 5), None);
+  /// ```
+  fn find_position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)>;
+
   /// Compute number of occurrences of each element in this sequence.
   ///
   /// # Example
