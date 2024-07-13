@@ -6,13 +6,15 @@ Convenient extension methods for Rust standard library collections.
 
 Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 
+
 ### Features
 
 - Equivalents of standard iterator methods are added to standard library collections
 - Additional utility methods commonly found in collection libraries are also included
 - Transformation methods return a new collection instance instead of returning an iterator
-- All methods consider collection instances to be immutable although some may consume them
-- Asymptotic complexity is optimal and performance overhead is limited to new collection creation
+- All methods treat collection instances as immutable although some may consume them
+- Performance is near optimal and overhead is limited to new collection creation
+
 
 ### Examples
 
@@ -177,6 +179,7 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 | [zip](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip)                                          |            *              |       |                               |                   |
 | [zip_padded](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip_padded)                            |            *              |       |                               |                   |
 
+
 ### Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
@@ -187,14 +190,20 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 - [Itertools](https://docs.rs/itertools/latest/itertools/trait.Itertools.html)
 - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
 
+
 ### Build
 
 #### Requirements
 
 - [Rust](https://www.rust-lang.org) 1.79+
-- [Cargo Make](https://github.com/sagiegurari/cargo-make) 0.37+
 
-#### Command
+#### Setup
+
+```shell
+cargo install cargo-make
+```
+
+#### Test
 
 ```shell
 makers build
