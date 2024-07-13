@@ -126,8 +126,8 @@ data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3]
 | *permutations*            |    :heavy_check_mark:     |                    |                               |                    |
 | *position*                |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *position_multi*          |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
-| *position_of_multi*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *position_of*             |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
+| *position_of_multi*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *position_sequence*       |    :heavy_check_mark:     | :heavy_check_mark: |                               |                    |
 | *powerset*                |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
 | *product*                 |    :heavy_check_mark:     |                    |      :heavy_check_mark:       |                    |
