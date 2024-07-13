@@ -7,7 +7,7 @@ cd ${SCRIPT_DIR}/..
 
 grep '^\[!' README.md >README.md.tmp
 echo >>README.md.tmp
-sed -n '/pub mod extensions;/q;p' src/lib.rs | sed 's/^\/\/! \?//g' | grep -v '# let' | grep -v '^#!' >>README.md.tmp
+sed -n '/pub mod extensions;/q;p' src/lib.rs | grep -v '# let' | grep -v '^#!' | sed 's/^\/\/! \?//' | sed 's/\[`/[/' | sed 's/`\](/](https:\/\/docs.rs\/cantrip\/latest\/cantrip\/extensions\/trait./' | sed 's/::/.html#method./' | sed 's/\.html#method\.from/::from/' | sed 's/\.html#method\.\*/::*/' >>README.md.tmp
 echo >>README.md.tmp
 sed -n '/## Inspiration/,$ p' README.md >>README.md.tmp
 mv -f README.md.tmp README.md

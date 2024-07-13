@@ -1,4 +1,4 @@
-[![Documentation](https://img.shields.io/badge/Website-documentation-blue)](https://github.com/martin-ockajak/cantrip)
+[![Documentation](https://img.shields.io/badge/Website-documentation-blue)](https://docs.rs/cantrip/latest/cantrip)
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
@@ -19,163 +19,163 @@ Enables direct functional-style collection manipulation without the usual iterat
 ```rust
 use cantrip::*;
 
-let data = vec![1, 2, 3];
+let a = vec![1, 2, 3];
 
-data.fold_to(0, |r, x| r + x);       // 6
+a.fold(0, |r, &x| r + x);        // 6
 
-data.filter(|&x| x > 1);          // vec![2, 3]
+a.filter(|&x| x > 1);            // vec![2, 3]
 
-data.map(|x| x + 1);              // vec![2, 3, 4]
+a.map(|x| x + 1);                // vec![2, 3, 4]
 
-data.add(1).unique();             // vec![1, 2, 3]
+a.add(1).unique();               // vec![1, 2, 3]
 
-data.delete_at(0).tail();         // vec![3]
+a.delete_at(0).tail();           // vec![3]
 
-data.interleave(vec![4, 5, 6]);   // vec![(1, 4, 2, 5, 3, 6)]
+a.interleave(vec![4, 5, 6]);     // vec![(1, 4, 2, 5, 3, 6)]
 
-data.group_by(|x| x % 2);         // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
+a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 ```
 
 ### Methods
 
 | Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
-| [`add`](Traversable::add)                                       |            *              |       |              *                |         *         |
-| [`add_at`](Sequence::add_at)                                    |            *              |       |                               |                   |
-| [`add_at_multi`](Sequence::add_at_multi)                        |            *              |       |                               |                   |
-| [`add_multi`](Collectible::add_multi)                           |            *              |       |              *                |         *         |
-| [`all`](Traversable::all)                                       |            *              |   *   |              *                |         *         |
-| [`any`](Traversable::any)                                       |            *              |   *   |              *                |         *         |
-| [`cartesian_product`](Sequence::cartesian_product)              |            *              |       |                               |                   |
-| [`chunked`](Sequence::chunked)                                  |            *              |       |                               |                   |
-| [`chunked_by`](Sequence::chunked_by)                            |            *              |       |                               |                   |
-| [`chunked_exact`](Sequence::chunked_exact)                      |            *              |       |                               |                   |
-| [`combinations`](Collectible::combinations)                     |            *              |       |              *                |                   |
-| [`combinations_multi`](Sequence::combinations_multi)            |            *              |       |                               |                   |
-| [`coalesce`](Sequence::coalesce)                                |            *              |       |                               |                   |
-| [`common_prefix_length`](Ordered::common_prefix_length)         |            *              |   *   |                               |                   |
-| [`common_suffix_length`](Ordered::common_suffix_length)         |            *              |   *   |                               |                   |
-| [`count_by`](Traversable::count_by)                             |            *              |   *   |              *                |         *         |
-| [`count_unique`](Ordered::count_unique)                         |            *              |   *   |                               |         *         |
-| [`delete`](Collectible::delete)                                 |            *              |       |              *                |         *         |
-| [`delete_at`](Sequence::delete_at)                              |            *              |       |                               |                   |
-| [`delete_at_multi`](Sequence::delete_at_multi)                  |            *              |       |                               |                   |
-| [`delete_multi`](Collectible::delete_multi)                     |            *              |       |              *                |         *         |
-| [`duplicates`](Sequence::duplicates)                            |            *              |       |                               |                   |
-| [`duplicates_by`](Sequence::duplicates_by)                      |            *              |       |                               |                   |
-| [`enumerate`](Sequence::enumerate)                              |            *              |       |                               |                   |
-| [`equivalent`](Ordered::equivalent)                             |            *              |   *   |                               |                   |
-| [`fill`](Sequence::fill)                                        |            *              |       |                               |                   |
-| [`fill_with`](Collectible::fill_with)                           |            *              |       |              *                |         *         |
-| [`filter`](Collectible::filter)                                 |            *              |       |              *                |         *         |
-| [`filter_keys`](Map::filter_keys)                               |                           |       |                               |         *         |
-| [`filter_map`](Collectible::filter_map)                         |            *              |       |              *                |         *         |
-| [`filter_map_to`](Collectible::filter_map_to)                   |            *              |       |              *                |         *         |
-| [`filter_values`](Map::filter_values)                           |                           |       |                               |         *         |
-| [`find`](Traversable::find)                                     |            *              |   *   |              *                |         *         |
-| [`find_map`](Traversable::find_map)                             |            *              |   *   |              *                |         *         |
-| [`find_map_to`](Collectible::find_map_to)                       |            *              |       |              *                |         *         |
-| [`find_position`](Ordered::find_position)                       |            *              |   *   |                               |                   |
-| [`first`](List::first)                                          |            *              |   *   |                               |                   |
-| [`flat_map`](Collectible::flat_map)                             |            *              |       |              *                |         *         |
-| [`flat_map_to`](Collectible::flat_map_to)                       |            *              |       |              *                |         *         |
-| [`flat`](Collectible::flat)                                     |            *              |       |              *                |                   |
-| [`fold`](Traversable::fold)                                     |            *              |   *   |              *                |         *         |
-| [`fold_to`](Collectible::fold_to)                               |            *              |       |              *                |         *         |
-| [`for_each`](Traversable::for_each)                             |            *              |   *   |              *                |         *         |
-| [`frequencies`](Ordered::frequencies)                           |            *              |   *   |                               |                   |
-| [`frequencies_by`](Ordered::frequencies_by)                     |            *              |   *   |                               |                   |
-| [`group_by`](Collectible::group_by)                             |            *              |       |              *                |                   |
-| [`group_fold`](Traversable::group_fold)                         |            *              |   *   |              *                |                   |
-| [`group_fold_to`](Collectible::group_fold_to)                   |            *              |       |              *                |                   |
-| [`group_reduce`](Traversable::group_reduce)                     |            *              |   *   |              *                |                   |
-| [`group_reduce_to`](Collectible::group_reduce_to)               |            *              |       |              *                |                   |
-| [`init`](Sequence::init)                                        |            *              |   *   |                               |                   |
-| [`interleave`](Sequence::interleave)                            |            *              |       |                               |                   |
-| [`interleave_exact`](Sequence::interleave_exact)                |            *              |       |                               |                   |
-| [`intersect`](Collectible::intersect)                           |            *              |       |              *                |         *         |
-| [`intersperse`](Sequence::intersperse)                          |            *              |       |                               |                   |
-| [`intersperse_with`](Sequence::intersperse_with)                |            *              |       |                               |                   |
-| [`joined`](Ordered::joined)                                     |            *              |   *   |                               |                   |
-| [`largest`](Collectible::largest)                               |            *              |       |              *                |                   |
-| [`last`](List::last)                                            |            *              |   *   |                               |                   |
-| [`map`](Collectible::map)                                       |            *              |       |              *                |         *         |
-| [`map_to`](Collectible::map_to)                                 |            *              |       |              *                |         *         |
-| [`map_keys`](Map::map_keys)                                     |                           |       |                               |         *         |
-| [`map_values`](Map::map_values)                                 |                           |       |                               |         *         |
-| [`map_while`](Sequence::map_while)                              |            *              |       |                               |                   |
-| [`max_by`](Traversable::max_by)                                 |            *              |   *   |              *                |         *         |
-| [`max_by_key`](Traversable::max_by_key)                         |            *              |   *   |              *                |         *         |
-| [`max_of`](Traversable::max_of)                                 |            *              |   *   |              *                |         *         |
-| [`merge`](Sequence::merge)                                      |            *              |       |                               |                   |
-| [`merge_by`](Sequence::merge_by)                                |            *              |       |                               |                   |
-| [`min_by`](Traversable::min_by)                                 |            *              |   *   |              *                |         *         |
-| [`min_by_key`](Traversable::min_by_key)                         |            *              |   *   |              *                |         *         |
-| [`min_of`](Traversable::min_of)                                 |            *              |   *   |              *                |         *         |
-| [`minmax_by`](Traversable::minmax_by)                           |            *              |   *   |              *                |         *         |
-| [`minmax_by_key`](Traversable::minmax_by_key)                   |            *              |   *   |              *                |         *         |
-| [`minmax_of`](Traversable::minmax_of)                           |            *              |   *   |              *                |         *         |
-| [`move_at`](Sequence::move_at)                                  |            *              |       |                               |                   |
-| [`pad_left`](Sequence::pad_left)                                |            *              |       |                               |                   |
-| [`pad_left_with`](Sequence::pad_left_with)                      |            *              |       |                               |                   |
-| [`pad_right`](Sequence::pad_right)                              |            *              |       |                               |                   |
-| [`pad_right_with`](Sequence::pad_right_with)                    |            *              |       |                               |                   |
-| [`partition`](Collectible::partition)                           |            *              |       |              *                |         *         |
-| [`partition_map`](Collectible::partition_map)                   |            *              |       |              *                |         *         |
-| [`partition_map_to`](Collectible::partition_map_to)             |            *              |       |              *                |         *         |
-| [`permutations`](Collectible::permutations)                     |            *              |       |                               |                   |
-| [`position`](Ordered::position)                                 |            *              |   *   |                               |                   |
-| [`position_multi`](Ordered::position_multi)                     |            *              |   *   |                               |                   |
-| [`position_of`](Ordered::position_of)                           |            *              |   *   |                               |                   |
-| [`position_of_multi`](Ordered::position_of_multi)               |            *              |   *   |                               |                   |
-| [`position_sequence`](Ordered::position_sequence)               |            *              |   *   |                               |                   |
-| [`powerset`](Collectible::powerset)                             |            *              |       |              *                |                   |
-| [`product`](Collectible::product)                               |            *              |       |              *                |                   |
-| [`product_keys`](Map::product_keys)                             |                           |       |                               |         *         |
-| [`product_values`](Map::product_values)                         |                           |       |                               |         *         |
-| [`reduce`](Traversable::reduce)                                 |            *              |   *   |              *                |         *         |
-| [`reduce_to`](Collectible::reduce_to)                           |            *              |       |              *                |         *         |
-| [`repeat`](List::repeat)                                        |            *              |       |                               |                   |
-| [`rev`](Sequence::rev)                                          |            *              |       |                               |                   |
-| [`rfind`](Ordered::rfind)                                       |            *              |   *   |                               |                   |
-| [`rfold`](Ordered::rfold)                                       |            *              |   *   |                               |                   |
-| [`rfold_to`](Sequence::rfold_to)                                |            *              |       |                               |                   |
-| [`rposition`](Ordered::rposition)                               |            *              |   *   |                               |                   |
-| [`scan`](Sequence::scan)                                        |            *              |       |                               |                   |
-| [`scan_to`](Sequence::scan_to)                                  |            *              |       |                               |                   |
-| [`skip`](Sequence::skip)                                        |            *              |   *   |                               |                   |
-| [`skip_while`](Sequence::skip_while)                            |            *              |   *   |                               |                   |
-| [`slice`](Sequence::slice)                                      |            *              |       |                               |                   |
-| [`smallest`](Collectible::smallest)                             |            *              |       |              *                |                   |
-| [`sorted`](Sequence::sorted)                                    |            *              |       |                               |                   |
-| [`sorted_by`](Sequence::sorted_by)                              |            *              |       |                               |                   |
-| [`sorted_by_cached_key`](Sequence::sorted_by_cached_key)        |            *              |       |                               |                   |
-| [`sorted_by_key`](Sequence::sorted_by_key)                      |            *              |       |                               |                   |
-| [`sorted_unstable`](Sequence::sorted_unstable)                  |            *              |       |                               |                   |
-| [`sorted_unstable_by`](Sequence::sorted_unstable_by)            |            *              |       |                               |                   |
-| [`sorted_unstable_by_key`](Sequence::sorted_unstable_by_key)    |            *              |       |                               |                   |
-| [`step_by`](Sequence::step_by)                                  |            *              |       |                               |                   |
-| [`subset`](Traversable::subset)                                 |            *              |   *   |              *                |         *         |
-| [`substitute`](Collectible::substitute)                         |            *              |       |              *                |         *         |
-| [`substitute_at`](Sequence::substitute_at)                      |            *              |       |                               |                   |
-| [`substitute_at_multi`](Sequence::substitute_at_multi)          |            *              |       |                               |                   |
-| [`substitute_multi`](Collectible::substitute_multi)             |            *              |       |              *                |         *         |
-| [`superset`](Traversable::superset)                             |            *              |   *   |              *                |         *         |
-| [`sum`](Collectible::sum)                                       |            *              |       |              *                |                   |
-| [`sum_keys`](Map::sum_keys)                                     |                           |       |                               |         *         |
-| [`sum_values`](Map::sum_values)                                 |                           |       |                               |         *         |
-| [`tail`](Sequence::tail)                                        |            *              |   *   |                               |                   |
-| [`take`](Sequence::take)                                        |            *              |   *   |                               |                   |
-| [`take_while`](Sequence::take_while)                            |            *              |   *   |                               |                   |
-| [`unique`](Sequence::unique)                                    |            *              |       |                               |                   |
-| [`unique_by`](Sequence::unique_by)                              |            *              |       |                               |                   |
-| [`unit`](Collectible::unit)                                     |            *              |       |              *                |         *         |
-| [`unzip`](Sequence::unzip)                                      |            *              |       |                               |                   |
-| [`variations`](Sequence::variations)                            |            *              |       |                               |                   |
-| [`windowed`](Sequence::windowed)                                |            *              |       |                               |                   |
-| [`windowed_circular`](Sequence::windowed_circular)              |            *              |       |                               |                   |
-| [`zip`](Sequence::zip)                                          |            *              |       |                               |                   |
-| [`zip_padded`](Sequence::zip_padded)                            |            *              |       |                               |                   |
+| [add](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.add)                                       |            *              |       |              *                |         *         |
+| [add_at](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.add_at)                                    |            *              |       |                               |                   |
+| [add_at_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.add_at_multi)                        |            *              |       |                               |                   |
+| [add_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.add_multi)                           |            *              |       |              *                |         *         |
+| [all](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.all)                                       |            *              |   *   |              *                |         *         |
+| [any](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.any)                                       |            *              |   *   |              *                |         *         |
+| [cartesian_product](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.cartesian_product)              |            *              |       |                               |                   |
+| [chunked](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.chunked)                                  |            *              |       |                               |                   |
+| [chunked_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.chunked_by)                            |            *              |       |                               |                   |
+| [chunked_exact](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.chunked_exact)                      |            *              |       |                               |                   |
+| [combinations](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.combinations)                     |            *              |       |              *                |                   |
+| [combinations_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.combinations_multi)            |            *              |       |                               |                   |
+| [coalesce](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.coalesce)                                |            *              |       |                               |                   |
+| [common_prefix_length](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.common_prefix_length)         |            *              |   *   |                               |                   |
+| [common_suffix_length](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.common_suffix_length)         |            *              |   *   |                               |                   |
+| [count_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.count_by)                             |            *              |   *   |              *                |         *         |
+| [count_unique](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.count_unique)                         |            *              |   *   |                               |         *         |
+| [delete](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.delete)                                 |            *              |       |              *                |         *         |
+| [delete_at](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.delete_at)                              |            *              |       |                               |                   |
+| [delete_at_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.delete_at_multi)                  |            *              |       |                               |                   |
+| [delete_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.delete_multi)                     |            *              |       |              *                |         *         |
+| [duplicates](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.duplicates)                            |            *              |       |                               |                   |
+| [duplicates_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.duplicates_by)                      |            *              |       |                               |                   |
+| [enumerate](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.enumerate)                              |            *              |       |                               |                   |
+| [equivalent](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.equivalent)                             |            *              |   *   |                               |                   |
+| [fill](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.fill)                                        |            *              |       |                               |                   |
+| [fill_with](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.fill_with)                           |            *              |       |              *                |         *         |
+| [filter](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.filter)                                 |            *              |       |              *                |         *         |
+| [filter_keys](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.filter_keys)                               |                           |       |                               |         *         |
+| [filter_map](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.filter_map)                         |            *              |       |              *                |         *         |
+| [filter_map_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.filter_map_to)                   |            *              |       |              *                |         *         |
+| [filter_values](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.filter_values)                           |                           |       |                               |         *         |
+| [find](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.find)                                     |            *              |   *   |              *                |         *         |
+| [find_map](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.find_map)                             |            *              |   *   |              *                |         *         |
+| [find_map_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.find_map_to)                       |            *              |       |              *                |         *         |
+| [find_position](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.find_position)                       |            *              |   *   |                               |                   |
+| [first](https://docs.rs/cantrip/latest/cantrip/extensions/trait.List.html#method.first)                                          |            *              |   *   |                               |                   |
+| [flat_map](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.flat_map)                             |            *              |       |              *                |         *         |
+| [flat_map_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.flat_map_to)                       |            *              |       |              *                |         *         |
+| [flat](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.flat)                                     |            *              |       |              *                |                   |
+| [fold](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.fold)                                     |            *              |   *   |              *                |         *         |
+| [fold_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.fold_to)                               |            *              |       |              *                |         *         |
+| [for_each](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.for_each)                             |            *              |   *   |              *                |         *         |
+| [frequencies](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.frequencies)                           |            *              |   *   |                               |                   |
+| [frequencies_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.frequencies_by)                     |            *              |   *   |                               |                   |
+| [group_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.group_by)                             |            *              |       |              *                |                   |
+| [group_fold](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.group_fold)                         |            *              |   *   |              *                |                   |
+| [group_fold_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.group_fold_to)                   |            *              |       |              *                |                   |
+| [group_reduce](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.group_reduce)                     |            *              |   *   |              *                |                   |
+| [group_reduce_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.group_reduce_to)               |            *              |       |              *                |                   |
+| [init](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.init)                                        |            *              |   *   |                               |                   |
+| [interleave](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.interleave)                            |            *              |       |                               |                   |
+| [interleave_exact](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.interleave_exact)                |            *              |       |                               |                   |
+| [intersect](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.intersect)                           |            *              |       |              *                |         *         |
+| [intersperse](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.intersperse)                          |            *              |       |                               |                   |
+| [intersperse_with](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.intersperse_with)                |            *              |       |                               |                   |
+| [joined](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.joined)                                     |            *              |   *   |                               |                   |
+| [largest](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.largest)                               |            *              |       |              *                |                   |
+| [last](https://docs.rs/cantrip/latest/cantrip/extensions/trait.List.html#method.last)                                            |            *              |   *   |                               |                   |
+| [map](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.map)                                       |            *              |       |              *                |         *         |
+| [map_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.map_to)                                 |            *              |       |              *                |         *         |
+| [map_keys](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.map_keys)                                     |                           |       |                               |         *         |
+| [map_values](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.map_values)                                 |                           |       |                               |         *         |
+| [map_while](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.map_while)                              |            *              |       |                               |                   |
+| [max_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.max_by)                                 |            *              |   *   |              *                |         *         |
+| [max_by_key](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.max_by_key)                         |            *              |   *   |              *                |         *         |
+| [max_of](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.max_of)                                 |            *              |   *   |              *                |         *         |
+| [merge](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.merge)                                      |            *              |       |                               |                   |
+| [merge_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.merge_by)                                |            *              |       |                               |                   |
+| [min_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.min_by)                                 |            *              |   *   |              *                |         *         |
+| [min_by_key](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.min_by_key)                         |            *              |   *   |              *                |         *         |
+| [min_of](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.min_of)                                 |            *              |   *   |              *                |         *         |
+| [minmax_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.minmax_by)                           |            *              |   *   |              *                |         *         |
+| [minmax_by_key](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.minmax_by_key)                   |            *              |   *   |              *                |         *         |
+| [minmax_of](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.minmax_of)                           |            *              |   *   |              *                |         *         |
+| [move_at](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.move_at)                                  |            *              |       |                               |                   |
+| [pad_left](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.pad_left)                                |            *              |       |                               |                   |
+| [pad_left_with](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.pad_left_with)                      |            *              |       |                               |                   |
+| [pad_right](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.pad_right)                              |            *              |       |                               |                   |
+| [pad_right_with](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.pad_right_with)                    |            *              |       |                               |                   |
+| [partition](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.partition)                           |            *              |       |              *                |         *         |
+| [partition_map](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.partition_map)                   |            *              |       |              *                |         *         |
+| [partition_map_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.partition_map_to)             |            *              |       |              *                |         *         |
+| [permutations](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.permutations)                     |            *              |       |                               |                   |
+| [position](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position)                                 |            *              |   *   |                               |                   |
+| [position_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position_multi)                     |            *              |   *   |                               |                   |
+| [position_of](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position_of)                           |            *              |   *   |                               |                   |
+| [position_of_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position_of_multi)               |            *              |   *   |                               |                   |
+| [position_sequence](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position_sequence)               |            *              |   *   |                               |                   |
+| [powerset](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.powerset)                             |            *              |       |              *                |                   |
+| [product](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.product)                               |            *              |       |              *                |                   |
+| [product_keys](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.product_keys)                             |                           |       |                               |         *         |
+| [product_values](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.product_values)                         |                           |       |                               |         *         |
+| [reduce](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.reduce)                                 |            *              |   *   |              *                |         *         |
+| [reduce_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.reduce_to)                           |            *              |       |              *                |         *         |
+| [repeat](https://docs.rs/cantrip/latest/cantrip/extensions/trait.List.html#method.repeat)                                        |            *              |       |                               |                   |
+| [rev](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.rev)                                          |            *              |       |                               |                   |
+| [rfind](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.rfind)                                       |            *              |   *   |                               |                   |
+| [rfold](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.rfold)                                       |            *              |   *   |                               |                   |
+| [rfold_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.rfold_to)                                |            *              |       |                               |                   |
+| [rposition](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.rposition)                               |            *              |   *   |                               |                   |
+| [scan](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.scan)                                        |            *              |       |                               |                   |
+| [scan_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.scan_to)                                  |            *              |       |                               |                   |
+| [skip](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.skip)                                        |            *              |   *   |                               |                   |
+| [skip_while](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.skip_while)                            |            *              |   *   |                               |                   |
+| [slice](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.slice)                                      |            *              |       |                               |                   |
+| [smallest](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.smallest)                             |            *              |       |              *                |                   |
+| [sorted](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted)                                    |            *              |       |                               |                   |
+| [sorted_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted_by)                              |            *              |       |                               |                   |
+| [sorted_by_cached_key](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted_by_cached_key)        |            *              |       |                               |                   |
+| [sorted_by_key](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted_by_key)                      |            *              |       |                               |                   |
+| [sorted_unstable](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted_unstable)                  |            *              |       |                               |                   |
+| [sorted_unstable_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted_unstable_by)            |            *              |       |                               |                   |
+| [sorted_unstable_by_key](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.sorted_unstable_by_key)    |            *              |       |                               |                   |
+| [step_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.step_by)                                  |            *              |       |                               |                   |
+| [subset](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.subset)                                 |            *              |   *   |              *                |         *         |
+| [substitute](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.substitute)                         |            *              |       |              *                |         *         |
+| [substitute_at](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.substitute_at)                      |            *              |       |                               |                   |
+| [substitute_at_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.substitute_at_multi)          |            *              |       |                               |                   |
+| [substitute_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.substitute_multi)             |            *              |       |              *                |         *         |
+| [superset](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.superset)                             |            *              |   *   |              *                |         *         |
+| [sum](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.sum)                                       |            *              |       |              *                |                   |
+| [sum_keys](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.sum_keys)                                     |                           |       |                               |         *         |
+| [sum_values](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Map.html#method.sum_values)                                 |                           |       |                               |         *         |
+| [tail](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.tail)                                        |            *              |   *   |                               |                   |
+| [take](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.take)                                        |            *              |   *   |                               |                   |
+| [take_while](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.take_while)                            |            *              |   *   |                               |                   |
+| [unique](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.unique)                                    |            *              |       |                               |                   |
+| [unique_by](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.unique_by)                              |            *              |       |                               |                   |
+| [unit](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.unit)                                     |            *              |       |              *                |         *         |
+| [unzip](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.unzip)                                      |            *              |       |                               |                   |
+| [variations](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.variations)                            |            *              |       |                               |                   |
+| [windowed](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.windowed)                                |            *              |       |                               |                   |
+| [windowed_circular](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.windowed_circular)              |            *              |       |                               |                   |
+| [zip](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip)                                          |            *              |       |                               |                   |
+| [zip_padded](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip_padded)                            |            *              |       |                               |                   |
 
 ### Inspiration
 
