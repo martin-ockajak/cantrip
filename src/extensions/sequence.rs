@@ -811,29 +811,27 @@ pub trait Sequence<Item> {
     let mut elements_iterator = elements.into_iter();
     let mut last_left = iterator.next();
     let mut last_right = elements_iterator.next();
-    unfold((), |_| {
-      match (last_left.take(), last_right.take()) {
-        (Some(left), Some(right)) => {
-          if compare(&left, &right) == Ordering::Less {
-            last_left = iterator.next();
-            last_right = Some(right);
-            Some(left)
-          } else {
-            last_left = Some(left);
-            last_right = elements_iterator.next();
-            Some(right)
-          }
-        }
-        (Some(left), None) => {
+    unfold((), |_| match (last_left.take(), last_right.take()) {
+      (Some(left), Some(right)) => {
+        if compare(&left, &right) == Ordering::Less {
           last_left = iterator.next();
+          last_right = Some(right);
           Some(left)
-        }
-        (None, Some(right)) => {
+        } else {
+          last_left = Some(left);
           last_right = elements_iterator.next();
           Some(right)
         }
-        (None, None) => None,
       }
+      (Some(left), None) => {
+        last_left = iterator.next();
+        Some(left)
+      }
+      (None, Some(right)) => {
+        last_right = elements_iterator.next();
+        Some(right)
+      }
+      (None, None) => None,
     })
     .collect()
   }
@@ -874,27 +872,26 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut stored = LinkedList::<Item>::new();
     let mut position = 0_usize;
-    unfold((), |_| {
-      if position >= source_index {
-        if position >= target_index {
-          stored.pop_front().or_else(|| iterator.next())
-        } else {
-          if position == source_index {
-            if let Some(x) = iterator.next() {
-              stored.push_back(x)
-            }
+    unfold((), |_| match (position >= source_index, position >= target_index) {
+      (true, true) => stored.pop_front().or_else(|| iterator.next()),
+      (true, false) => {
+        if position == source_index {
+          if let Some(value) = iterator.next() {
+            stored.push_back(value)
           }
-          position += 1;
-          iterator.next()
         }
-      } else if position >= target_index {
+        position += 1;
+        iterator.next()
+      }
+      (false, true) => {
         let mut store = true;
         while store && position < source_index {
           iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
           position += 1;
         }
         iterator.next().or_else(|| stored.pop_front())
-      } else {
+      }
+      (false, false) => {
         position += 1;
         iterator.next()
       }
@@ -949,9 +946,10 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
-    unfold(0_usize, |position| {
-      let result = if *position < original_start { Some(to_value(*position)) } else { iterator.next() };
-      *position += 1;
+    let mut position = 0_usize;
+    unfold((), |_| {
+      let result = if position < original_start { Some(to_value(position)) } else { iterator.next() };
+      position += 1;
       result
     })
     .collect()
@@ -1000,9 +998,10 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    unfold(0_usize, |position| {
-      let result = iterator.next().or_else(|| if *position < size { Some(to_value(*position)) } else { None });
-      *position += 1;
+    let mut position = 0_usize;
+    unfold((), |_| {
+      let result = iterator.next().or_else(|| if position < size { Some(to_value(position)) } else { None });
+      position += 1;
       result
     })
     .collect()
@@ -1703,10 +1702,11 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
     let mut replacement_iterator = replacements.into_iter();
-    unfold(0_usize, |position| {
+    let mut position = 0_usize;
+    unfold((), |_| {
       iterator.next().map(|item| {
-        let result = if positions.contains(position) { replacement_iterator.next().unwrap_or(item) } else { item };
-        *position += 1;
+        let result = if positions.contains(&position) { replacement_iterator.next().unwrap_or(item) } else { item };
+        position += 1;
         result
       })
     })
@@ -2121,17 +2121,18 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
-  unfold((size + 1).saturating_sub(k), |current_slot| {
-    if *current_slot == 0 {
+  let mut current_slot = (size + 1).saturating_sub(k);
+  unfold((), |_| {
+    if current_slot == 0 {
       return None;
     }
-    *current_slot = k;
+    current_slot = k;
     let result = Some(collect_by_index(&values, &product[1..]));
-    while product[*current_slot] >= (size - 1) as i64 {
-      *current_slot -= 1;
+    while product[current_slot] >= (size - 1) as i64 {
+      current_slot -= 1;
     }
-    product[*current_slot] += 1;
-    for index in &mut product[(*current_slot + 1)..=k] {
+    product[current_slot] += 1;
+    for index in &mut product[(current_slot + 1)..=k] {
       *index = 0;
     }
     result
@@ -2178,17 +2179,18 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut multicombination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
-  unfold((size + 1).saturating_sub(k), |current_slot| {
-    if *current_slot == 0 {
+  let mut current_slot = (size + 1).saturating_sub(k);
+  unfold((), |_| {
+    if current_slot == 0 {
       return None;
     }
-    *current_slot = k;
+    current_slot = k;
     let result = Some(collect_by_index(&values, &multicombination[1..]));
-    while multicombination[*current_slot] >= (size - 1) as i64 {
-      *current_slot -= 1;
+    while multicombination[current_slot] >= (size - 1) as i64 {
+      current_slot -= 1;
     }
-    let new_index = multicombination[*current_slot] + 1;
-    for index in &mut multicombination[*current_slot..=k] {
+    let new_index = multicombination[current_slot] + 1;
+    for index in &mut multicombination[current_slot..=k] {
       *index = new_index;
     }
     result
@@ -2204,22 +2206,23 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + 
   let mut variation = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
   let mut used_indices =
     Vec::from_iter(iter::repeat(true).take(k).chain(iter::repeat(false).take(size.saturating_sub(k))));
-  unfold((size + 1).saturating_sub(k), |current_slot| {
-    if *current_slot == 0 {
+  let mut current_slot = (size + 1).saturating_sub(k);
+  unfold((), |_| {
+    if current_slot == 0 {
       return None;
     }
-    *current_slot = k;
+    current_slot = k;
     let result = Some(collect_by_index(&values, &variation[1..]));
-    while *current_slot > 0 && ((variation[*current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
-      used_indices[variation[*current_slot] as usize] = false;
-      *current_slot -= 1;
+    while current_slot > 0 && ((variation[current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
+      used_indices[variation[current_slot] as usize] = false;
+      current_slot -= 1;
     }
-    if *current_slot > 0 {
-      let initial_index = ((variation[*current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
-      used_indices[variation[*current_slot] as usize] = false;
+    if current_slot > 0 {
+      let initial_index = ((variation[current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+      used_indices[variation[current_slot] as usize] = false;
       used_indices[initial_index as usize] = true;
-      variation[*current_slot] = initial_index;
-      for index in &mut variation[(*current_slot + 1)..=k] {
+      variation[current_slot] = initial_index;
+      for index in &mut variation[(current_slot + 1)..=k] {
         let new_index = (0..=(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
         used_indices[new_index as usize] = true;
         *index = new_index;
