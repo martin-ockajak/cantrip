@@ -47,10 +47,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2];
   ///
-  /// assert_eq!(a.add_all(vec![3, 4]), vec![1, 2, 3, 4]);
+  /// assert_eq!(a.add_multi(vec![3, 4]), vec![1, 2, 3, 4]);
   /// ```
   #[inline]
-  fn add_all(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  fn add_multi(self, iterable: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
@@ -107,11 +107,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_all(&vec![1, 2]), vec![2, 3]);
+  /// assert_eq!(a.delete_multi(&vec![1, 2]), vec![2, 3]);
   ///
-  /// assert_eq!(e.delete_all(&vec![1]), vec![]);
+  /// assert_eq!(e.delete_multi(&vec![1]), vec![]);
   /// ```
-  fn delete_all<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
@@ -1184,15 +1184,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// // assert_eq!(a.replace_all(&vec![2, 4], vec![3, 5]), vec![1, 4, 2, 5]);
+  /// // assert_eq!(a.replace_multi(&vec![2, 4], vec![3, 5]), vec![1, 4, 2, 5]);
   /// # let a = source.clone();
-  /// // assert_eq!(a.replace_all(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
+  /// // assert_eq!(a.replace_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 3, 3]);
   ///
   /// # let a = source.clone();
-  /// // assert_eq!(a.replace_all(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
-  /// assert_eq!(e.replace_all(&vec![1], vec![2]), vec![]);
+  /// // assert_eq!(a.replace_multi(&vec![4, 6], vec![5, 7]), vec![1, 2, 3, 3]);
+  /// assert_eq!(e.replace_multi(&vec![1], vec![2]), vec![]);
   /// ```
-  fn replace_all<'a>(
+  fn replace_multi<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where
@@ -1368,7 +1368,7 @@ pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Si
     .collect()
 }
 
-pub(crate) fn replace_all<'a, Item, Collection>(
+pub(crate) fn replace_multi<'a, Item, Collection>(
   collection: Collection, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
 ) -> Collection
 where

@@ -30,18 +30,18 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.add_all_at(0, vec![3, 4]), vec![3, 4, 1, 2]);
+  /// assert_eq!(a.add_at_multi(0, vec![3, 4]), vec![3, 4, 1, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(1, vec![3, 4]), vec![1, 3, 4, 2]);
+  /// assert_eq!(a.add_at_multi(1, vec![3, 4]), vec![1, 3, 4, 2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(2, vec![3, 4]), vec![1, 2, 3, 4]);
+  /// assert_eq!(a.add_at_multi(2, vec![3, 4]), vec![1, 2, 3, 4]);
   /// # let a = source.clone();
-  /// assert_eq!(e.add_all_at(0, vec![1, 2]), vec![1, 2]);
+  /// assert_eq!(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
   ///
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all_at(3, vec![3, 4]), vec![1, 2]);
+  /// assert_eq!(a.add_at_multi(3, vec![3, 4]), vec![1, 2]);
   /// ```
-  fn add_all_at(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
+  fn add_at_multi(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
@@ -90,7 +90,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.add_all_at(index, iter::once(addition))
+    self.add_at_multi(index, iter::once(addition))
   }
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
@@ -360,18 +360,18 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.delete_all_at(vec![0, 2]), vec![2]);
+  /// assert_eq!(a.delete_at_multi(vec![0, 2]), vec![2]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_all_at(vec![1, 3]), vec![1, 3]);
+  /// assert_eq!(a.delete_at_multi(vec![1, 3]), vec![1, 3]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_all_at(vec![0, 1, 2, 3]), vec![]);
+  /// assert_eq!(a.delete_at_multi(vec![0, 1, 2, 3]), vec![]);
   ///
-  /// assert_eq!(e.delete_all_at(vec![1, 2]), vec![]);
+  /// assert_eq!(e.delete_at_multi(vec![1, 2]), vec![]);
   /// # let a = source.clone();
-  /// assert_eq!(a.delete_all_at(vec![3, 4]), vec![1, 2, 3]);
+  /// assert_eq!(a.delete_at_multi(vec![3, 4]), vec![1, 2, 3]);
   /// ```
   #[inline]
-  fn delete_all_at(self, indices: impl IntoIterator<Item = usize>) -> Self
+  fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
@@ -984,7 +984,7 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.replace_all_at(index..(index + 1), iter::once(replacement))
+    self.replace_at_multi(index..(index + 1), iter::once(replacement))
   }
 
   /// Creates a new sequence by replacing all elements at specified indices in this sequence
@@ -1001,19 +1001,19 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = Vec::new();
   ///
-  /// assert_eq!(a.replace_all_at(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
+  /// assert_eq!(a.replace_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
   /// # let a = source.clone();
-  /// assert_eq!(a.replace_all_at(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
+  /// assert_eq!(a.replace_at_multi(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
   /// # let a = source.clone();
-  /// assert_eq!(a.replace_all_at(vec![0, 2], vec![4]), vec![4, 2, 3]);
+  /// assert_eq!(a.replace_at_multi(vec![0, 2], vec![4]), vec![4, 2, 3]);
   /// # let a = source.clone();
-  /// assert_eq!(a.replace_all_at(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
+  /// assert_eq!(a.replace_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
   ///
   /// # let a = source.clone();
-  /// assert_eq!(a.replace_all_at(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
-  /// assert_eq!(e.replace_all_at(vec![0], vec![1]), vec![]);
+  /// assert_eq!(a.replace_at_multi(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
+  /// assert_eq!(e.replace_at_multi(vec![0], vec![1]), vec![]);
   /// ```
-  fn replace_all_at(
+  fn replace_at_multi(
     self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where
