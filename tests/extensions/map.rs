@@ -30,7 +30,7 @@ where
   assert!(empty.all(|(&k, &v)| k == 0 && v == 0));
   
   // replace
-  assert_map_equal(distinct.clone().replace(&0, 0, 1), &[(0, 1), (1, 1), (2, 2)]);
+  assert_map_equal(distinct.clone().substitute(&0, 0, 1), &[(0, 1), (1, 1), (2, 2)]);
   // assert_map_equal(distinct.clone().replace(&0, 1, 2), &[(1, 2), (2, 2)]);
-  assert_map_equal(empty.clone().replace(&0, 0, 1), &[]);
+  assert_map_equal(empty.clone().substitute(&0, 0, 1), &[]);
 }
