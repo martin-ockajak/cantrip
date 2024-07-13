@@ -76,7 +76,7 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// assert_eq!(a.add_all(vec![(4, "d"), (5, "e")]), HashMap::from([
+  /// assert_eq!(a.add_multi(vec![(4, "d"), (5, "e")]), HashMap::from([
   ///   (1, "a"),
   ///   (2, "b"),
   ///   (3, "c"),
@@ -84,7 +84,7 @@ pub trait Map<Key, Value> {
   ///   (5, "e"),
   /// ]));
   /// # let a = source.clone();
-  /// assert_eq!(a.add_all(vec![(1, "d"), (5, "e")]), HashMap::from([
+  /// assert_eq!(a.add_multi(vec![(1, "d"), (5, "e")]), HashMap::from([
   ///   (1, "d"),
   ///   (2, "b"),
   ///   (3, "c"),
@@ -92,7 +92,7 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   #[inline]
-  fn add_all(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
+  fn add_multi(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
@@ -268,14 +268,14 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e: HashMap<i32, &str> = HashMap::new();
   ///
-  /// assert_eq!(a.delete_all(&vec![1, 3]), HashMap::from([
+  /// assert_eq!(a.delete_multi(&vec![1, 3]), HashMap::from([
   ///   (2, "b"),
   /// ]));
   ///
-  /// assert_eq!(e.delete_all(&vec![1]), HashMap::new());
+  /// assert_eq!(e.delete_multi(&vec![1]), HashMap::new());
   /// ```
   #[inline]
-  fn delete_all<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
+  fn delete_multi<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -1706,74 +1706,6 @@ pub trait Map<Key, Value> {
     })
   }
 
-  /// Creates a new map from the original map by replacing the specified key
-  /// and its value with a different entry.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (3, "c"),
-  /// ]);
-  ///
-  /// assert_eq!(a.replace(&3, 4, "d"), HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (4, "d"),
-  /// ]));
-  /// ```
-  #[inline]
-  fn replace(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
-  where
-    Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
-    let mut replaced = Some((replacement_key, replacement_value));
-    self
-      .into_iter()
-      .map(|(key, val)| if &key == value { replaced.take().unwrap_or((key, val)) } else { (key, val) })
-      .collect()
-  }
-
-  /// Creates a new map from the original map by replacing the given occurrences of elements
-  /// found in another collection with elements of a replacement collection.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (3, "c"),
-  /// ]);
-  ///
-  /// assert_eq!(a.replace_all(&vec![2, 3], vec![(4, "d"), (5, "e")]), HashMap::from([
-  ///   (1, "a"),
-  ///   (4, "d"),
-  ///   (5, "e"),
-  /// ]));
-  /// ```
-  #[inline]
-  fn replace_all<'a>(
-    self, elements: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
-  ) -> Self
-  where
-    Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
-    let iterator = elements.iterator();
-    let removed: HashSet<&Key> = HashSet::from_iter(iterator);
-    self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
-  }
-
   /// Tests if all keys of this map can be found in another collection.
   ///
   /// Returns `true` if this map is empty.
@@ -1800,6 +1732,74 @@ pub trait Map<Key, Value> {
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a;
+
+  /// Creates a new map from the original map by replacing the specified key
+  /// and its value with a different entry.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.substitute(&3, 4, "d"), HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (4, "d"),
+  /// ]));
+  /// ```
+  #[inline]
+  fn substitute(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
+  where
+    Key: PartialEq,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    let mut replaced = Some((replacement_key, replacement_value));
+    self
+      .into_iter()
+      .map(|(key, val)| if &key == value { replaced.take().unwrap_or((key, val)) } else { (key, val) })
+      .collect()
+  }
+
+  /// Creates a new map from the original map by replacing the given occurrences of elements
+  /// found in another collection with elements of a replacement collection.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert_eq!(a.substitute_multi(&vec![2, 3], vec![(4, "d"), (5, "e")]), HashMap::from([
+  ///   (1, "a"),
+  ///   (4, "d"),
+  ///   (5, "e"),
+  /// ]));
+  /// ```
+  #[inline]
+  fn substitute_multi<'a>(
+    self, elements: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
+  ) -> Self
+  where
+    Key: Eq + Hash + 'a,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    let iterator = elements.iterator();
+    let removed: HashSet<&Key> = HashSet::from_iter(iterator);
+    self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
+  }
 
   /// Tests if all the elements of another collection can be found among the keys of this map.
   ///
