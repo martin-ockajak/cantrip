@@ -1238,24 +1238,18 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let iterator = elements.iterator();
-    let mut removed: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
-    for item in iterator {
-      *removed.entry(item).or_default() += 1;
-    }
+    let mut removed: HashMap<&Item, usize> = frequencies(elements.iterator());
     let mut replacement_items = replacements.into_iter();
     self
       .into_iter()
-      .flat_map(|item| match removed.get_mut(&item) {
-        Some(count) => {
+      .flat_map(|item| {
+        if let Some(count) = removed.get_mut(&item) {
           if *count > 0 {
             *count -= 1;
-            replacement_items.next().or(Some(item))
-          } else {
-            Some(item)
+            return replacement_items.next().or(Some(item));
           }
         }
-        None => Some(item),
+        Some(item)
       })
       .collect()
   }
