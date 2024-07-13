@@ -313,7 +313,7 @@ pub trait Ordered<Item> {
   ///
   /// After finding a starting element of specified sequence in this sequence,
   /// `position_seq()` compares each element of this sequence with the specified value,
-  /// and if all of them matche, then `position_seq()` returns [`Some(start_index)`].
+  /// and if all of them match, then `position_seq()` returns [`Some(start_index)`].
   /// If any of the elements do not match, it returns [`None`].
   ///
   /// `position_seq()` is short-circuiting; in other words, it will stop

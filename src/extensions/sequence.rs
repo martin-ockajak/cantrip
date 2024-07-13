@@ -2178,19 +2178,19 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut multicombination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
+  let mut multi_combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
       return None;
     }
     current_slot = k;
-    let result = Some(collect_by_index(&values, &multicombination[1..]));
-    while multicombination[current_slot] >= (size - 1) as i64 {
+    let result = Some(collect_by_index(&values, &multi_combination[1..]));
+    while multi_combination[current_slot] >= (size - 1) as i64 {
       current_slot -= 1;
     }
-    let new_index = multicombination[current_slot] + 1;
-    for index in &mut multicombination[current_slot..=k] {
+    let new_index = multi_combination[current_slot] + 1;
+    for index in &mut multi_combination[current_slot..=k] {
       *index = new_index;
     }
     result

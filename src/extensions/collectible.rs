@@ -2,7 +2,7 @@ use crate::extensions::iterable::Iterable;
 use crate::extensions::util::unfold::unfold;
 use crate::extensions::{collect_by_index, frequencies};
 use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::collections::{BinaryHeap, HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -38,7 +38,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   }
 
   /// Creates a new collection by appending all elements of another collection to
-  /// the this collection.
+  /// this collection.
   ///
   /// # Example
   ///
@@ -1038,7 +1038,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// Creates a new collection containing all sub-collections of this collection.
   ///
   /// Sub-collections for sequences are generated based on element positions, not values.
-  /// Therefore, if an sequence contains duplicate elements, the resulting sub-collections will too.
+  /// Therefore, if a sequence contains duplicate elements, the resulting sub-collections will too.
   /// To obtain combinations of unique elements for sequences, use `.unique().powerset()`.
   ///
   /// The order of sub-collection values is preserved for sequences.
@@ -1236,19 +1236,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut replaced: HashMap<&Item, usize> = frequencies(elements.iterator());
-    let mut replacement_items = replacements.into_iter();
+    let elements_iterator = elements.iterator();
+    let mut replaced_items: HashMap<&Item, LinkedList<Item>> = HashMap::with_capacity(elements_iterator.size_hint().0);
+    for (item, replacement) in elements_iterator.zip(replacements.into_iter()) {
+      replaced_items.entry(item).or_default().push_back(replacement);
+    }
     self
       .into_iter()
-      .flat_map(|item| {
-        if let Some(count) = replaced.get_mut(&item) {
-          if *count > 0 {
-            *count -= 1;
-            return replacement_items.next().or(Some(item));
-          }
-        }
-        Some(item)
-      })
+      .map(
+        |item| if let Some(items) = replaced_items.get_mut(&item) { items.pop_front().unwrap_or(item) } else { item },
+      )
       .collect()
   }
 
