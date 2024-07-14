@@ -226,7 +226,6 @@ pub trait Sequence<Item> {
     .collect()
   }
 
-  // FIXME - fix the failing test case
   /// Creates a new sequence by splitting this sequence elements
   /// into non-overlapping subsequences of specified `size`.
   ///
