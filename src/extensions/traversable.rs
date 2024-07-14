@@ -125,7 +125,7 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.find(|&x| x == 2), Some(&2));
+  /// assert_eq!(a.find(|&x| x % 2 == 1), Some(&1));
   ///
   /// assert_eq!(a.find(|&x| x == 5), None);
   /// ```

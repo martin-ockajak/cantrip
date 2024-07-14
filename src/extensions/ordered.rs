@@ -135,10 +135,10 @@ pub trait Ordered<Item> {
   /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   ///
   /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([
-  ///   (0, 1),
+  ///   (0, 2),
   ///   (1, 2),
   /// ]));
   /// ```
@@ -191,7 +191,7 @@ pub trait Ordered<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   ///
   /// assert_eq!(a.position(|&x| x == 2), Some(1));
   ///
@@ -221,10 +221,9 @@ pub trait Ordered<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.position_multi(|&x| x % 2 == 0), vec![1]);
-  /// assert_eq!(a.position_multi(|&x| x % 2 == 1), vec![0, 2]);
+  /// assert_eq!(a.position_multi(|&x| x % 2 == 0), vec![1, 2]);
   ///
   /// assert_eq!(a.position_multi(|&x| x > 3), vec![]);
   /// ```
@@ -257,7 +256,7 @@ pub trait Ordered<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![1, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   ///
   /// assert_eq!(a.position_of(&2), Some(1));
   ///
@@ -293,9 +292,9 @@ pub trait Ordered<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![1, 2, 1];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.position_of_multi(&1), vec![0, 2]);
+  /// assert_eq!(a.position_of_multi(&2), vec![1, 2]);
   ///
   /// assert_eq!(a.position_of_multi(&5), vec![]);
   /// ```
@@ -338,9 +337,9 @@ pub trait Ordered<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.position_sequence(&vec![2, 3, 4]), Some(1));
+  /// assert_eq!(a.position_sequence(&vec![2, 2]), Some(1));
   /// assert_eq!(a.position_sequence(&vec![]), Some(0));
   ///
   /// assert_eq!(a.position_sequence(&vec![1, 3]), None);
@@ -373,7 +372,7 @@ pub trait Ordered<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.rfind(|&x| x == 2), Some(&2));
+  /// assert_eq!(a.rfind(|&x| x % 2 == 1), Some(&3));
   ///
   /// assert_eq!(a.rfind(|&x| x == 5), None);
   /// ```
@@ -472,9 +471,9 @@ pub trait Ordered<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-1, 2, 3, 4];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.rposition(|&x| x >= 2), Some(3));
+  /// assert_eq!(a.rposition(|&x| x % 2 == 1), Some(2));
   ///
   /// assert_eq!(a.rposition(|&x| x == 5), None);
   /// ```
