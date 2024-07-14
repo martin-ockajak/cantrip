@@ -72,6 +72,13 @@ pub(crate) fn assert_equal<C: FromIterator<i64> + Equal + Debug>(values: C, expe
 }
 
 //noinspection RsUnresolvedPath
+pub(crate) fn assert_set_equal<C: IntoIterator<Item = i64> + Equal + Debug>(values: C, expected: &[i64]) {
+  let values_set = HashSet::from_iter(values);
+  let expected_set = HashSet::from_iter(expected.iter().cloned());
+  assert_equal!(values_set, expected_set)
+}
+
+//noinspection RsUnresolvedPath
 pub(crate) fn assert_map_equal<C: FromIterator<(i64, i64)> + Equal + Debug>(values: C, expected: &[(i64, i64)]) {
   assert_equal!(values, from_map_slice(expected))
 }

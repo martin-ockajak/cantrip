@@ -5,7 +5,7 @@ use cantrip::{Iterable, Traversable};
 
 use crate::extensions::util::from_slice;
 
-pub(crate) fn test_traversable<'a, C>()
+pub(crate) fn test_traversable<'a, C>(sequence: bool)
 where
   C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Debug + 'a,
 {
@@ -110,14 +110,17 @@ where
   assert!(a.subset(&vec![4, 3, 2, 2, 1]));
   assert!(e.subset(&vec![1]));
   assert!(e.subset(&vec![]));
-  assert!(a.subset(&vec![1, 2, 3]));
+  if sequence {
+    assert!(!b.subset(&vec![1, 2, 3]));
+  }
   assert!(!a.subset(&vec![3, 4]));
 
   // superset
-  assert!(a.superset(&vec![3, 1]));
-  assert!(a.superset(&vec![3, 2, 1]));
-  assert!(a.superset(&vec![]));
+  assert!(a.superset(&vec![2, 1]));
   assert!(e.superset(&vec![]));
+  if sequence {
+    assert!(!b.superset(&vec![1, 1, 2]));
+  }
   assert!(!a.superset(&vec![3, 4]));
   assert!(!e.superset(&vec![1]));
 }

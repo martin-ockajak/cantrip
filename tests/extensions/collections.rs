@@ -11,12 +11,12 @@ use crate::extensions::slice::test_slice;
 use crate::extensions::traversable::test_traversable;
 use crate::extensions::util::Equal;
 
-pub(crate) fn test_collectible_traits<'a, C>()
+pub(crate) fn test_set_traits<'a, C>()
 where
   C:
-    Traversable<i64> + Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
+  Traversable<i64> + Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
-  test_traversable::<C>();
+  test_traversable::<C>(false);
   test_collectible::<C>(false);
 }
 
@@ -34,7 +34,7 @@ where
     + Debug
     + 'a,
 {
-  test_traversable::<C>();
+  test_traversable::<C>(true);
   test_ordered::<C>();
   test_slice::<C>();
 }
@@ -54,7 +54,7 @@ where
     + Debug
     + 'a,
 {
-  test_traversable::<C>();
+  test_traversable::<C>(true);
   test_collectible::<C>(true);
   test_ordered::<C>();
   test_sequence::<C, I>();
@@ -77,7 +77,7 @@ where
     + Debug
     + 'a,
 {
-  test_traversable::<C>();
+  test_traversable::<C>(true);
   test_collectible::<C>(true);
   test_ordered::<C>();
   test_sequence::<C, I>();

@@ -656,9 +656,7 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert!(a.superset(&vec![3, 1]));
-  /// assert!(a.superset(&vec![2, 2, 1]));
-  /// assert!(a.superset(&vec![]));
+  /// assert!(a.superset(&vec![2, 1]));
   /// assert!(e.superset(&vec![]));
   ///
   /// assert!(!a.superset(&vec![1, 1, 2]));

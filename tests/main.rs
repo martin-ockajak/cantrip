@@ -7,9 +7,9 @@ mod extensions;
 fn collectibles() {
   let hash_set: HashSet<i64> = HashSet::new();
   let _ = hash_set.len();
-  test_collectible_traits::<HashSet<i64>>();
-  test_collectible_traits::<BTreeSet<i64>>();
-  test_collectible_traits::<BinaryHeap<i64>>();
+  test_set_traits::<HashSet<i64>>();
+  test_set_traits::<BTreeSet<i64>>();
+  test_set_traits::<BinaryHeap<i64>>();
 }
 
 #[test]

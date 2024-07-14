@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use cantrip::{Collectible, Iterable};
 
-use crate::extensions::util::{assert_equal, Equal, from_slice};
+use crate::extensions::util::{assert_equal, assert_set_equal, Equal, from_slice};
 
 pub(crate) fn test_collectible<'a, C>(sequence: bool)
 where
@@ -20,8 +20,7 @@ where
   if sequence {
     assert_equal(a.add(3), &[1, 2, 3, 3]);
   } else {
-    // FIXME - handle sets
-    // assert_equal(a.add(3), &[1, 2, 3]);
+    assert_set_equal(a.add(3), &[1, 2, 3]);
   }
   assert_equal(e.clone().add(1), &[1]);
 
