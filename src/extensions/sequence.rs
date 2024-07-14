@@ -163,8 +163,8 @@ pub trait Sequence<Item> {
   #[inline]
   fn chunked(self, size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-    Self::This<Self>: Default + Extend<Self>,
+    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self::This<Self>: FromIterator<Self>,
   {
     chunked(self, size, false)
   }
@@ -262,8 +262,8 @@ pub trait Sequence<Item> {
   #[inline]
   fn chunked_exact(self, size: usize) -> Self::This<Self>
   where
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-    Self::This<Self>: Default + Extend<Self>,
+    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self::This<Self>: FromIterator<Self>,
   {
     chunked(self, size, true)
   }
@@ -2225,26 +2225,30 @@ where
 
 pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
 where
-  Collection: IntoIterator<Item = Item> + Default + Extend<Item>,
-  Result: Default + Extend<Collection>,
+  Collection: FromIterator<Item> + IntoIterator<Item = Item>,
+  Result: FromIterator<Collection>,
 {
   assert_ne!(size, 0, "chunk size must be non-zero");
-  let mut result = Result::default();
-  let mut chunk = Collection::default();
-  let mut index: usize = 0;
-  for item in collection.into_iter() {
-    if index > 0 && index == size {
-      result.extend(iter::once(chunk));
-      chunk = Collection::default();
-      index = 0;
+  let mut iterator = collection.into_iter();
+  unfold(|| {
+    let mut chunk_size = 0;
+    let chunk = unfold(|| {
+      if chunk_size < size {
+        if let Some(item) = iterator.next() {
+          chunk_size += 1;
+          return Some(item);
+        }
+      }
+      None
+    })
+    .collect();
+    if chunk_size == size || !(exact && chunk_size > 0) {
+      Some(chunk)
+    } else {
+      None
     }
-    chunk.extend(iter::once(item));
-    index += 1;
-  }
-  if index > 0 && !exact {
-    result.extend(iter::once(chunk));
-  }
-  result
+  })
+  .collect()
 }
 
 pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
