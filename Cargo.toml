@@ -6,6 +6,13 @@ edition = "2021"
 [badges]
 maintenance = { status = "actively-developed" }
 
+# [dev-dependencies]
+# criterion = "0.5.1"
+
+# [[bench]]
+# name = "benchmark"
+# harness = false
+
 [profile.dev]
 opt-level = 1
 lto = false
