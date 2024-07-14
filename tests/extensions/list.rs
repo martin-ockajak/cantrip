@@ -15,19 +15,22 @@ where
     + Debug
     + 'a,
 {
-  let a = from_slice::<C>(&[1, 2, 3]);
-  let e = from_slice::<C>(&[]);
+  let a_source = from_slice::<C>(&[1, 2, 3]);
+  let e_source = from_slice::<C>(&[]);
+  let a = a_source.clone();
+  let e = e_source.clone();
 
   // first
-  assert_eq!(a.clone().first(), Some(&1));
-  assert_eq!(e.clone().first(), None);
+  assert_eq!(a.first(), Some(&1));
+  assert_eq!(e.first(), None);
 
   // last
-  assert_eq!(a.clone().last(), Some(&3));
-  assert_eq!(e.clone().last(), None);
+  assert_eq!(a.last(), Some(&3));
+  assert_eq!(e.last(), None);
 
   // repeat
-  assert_equal(a.clone().repeat(2), &[1, 2, 3, 1, 2, 3]);
-  assert_equal(a.clone().repeat(0), &[]);
-  assert_equal(e.clone().repeat(2), &[]);
+  assert_equal(a.repeat(2), &[1, 2, 3, 1, 2, 3]);
+  let a = a_source.clone();
+  assert_equal(a.repeat(0), &[]);
+  assert_equal(e.repeat(2), &[]);
 }

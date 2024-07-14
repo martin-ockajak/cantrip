@@ -596,7 +596,7 @@ pub trait Traversable<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// let reduced = a.reduce(|&acc, &e| acc + e).unwrap();
@@ -604,7 +604,7 @@ pub trait Traversable<Item> {
   /// assert_eq!(reduced, 6);
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// let folded = a.fold(0, |acc, &e| acc + e);
   ///
   /// assert_eq!(reduced, folded);

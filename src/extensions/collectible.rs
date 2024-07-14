@@ -918,12 +918,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![2, 1, 3];
+  /// # let a_source = vec![2, 1, 3];
   /// let a = vec![2, 1, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.largest(2), vec![3, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.largest(4), vec![3, 2, 1]);
   /// assert_eq!(e.largest(3), vec![]);
   /// ```
@@ -1124,7 +1124,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// let reduced = a.reduce_to(|acc, e| acc + e).unwrap();
@@ -1132,7 +1132,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(reduced, 6);
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// let folded = a.fold_to(0, |acc, e| acc + e);
   ///
   /// assert_eq!(reduced, folded);
@@ -1154,12 +1154,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![2, 3, 1];
+  /// # let a_source = vec![2, 3, 1];
   /// let a = vec![2, 3, 1];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.smallest(2), vec![1, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.smallest(4), vec![1, 2, 3]);
   /// assert_eq!(e.smallest(3), vec![]);
   /// ```
@@ -1191,13 +1191,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 2, 3];
+  /// # let a_source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute(&4, 5), vec![1, 2, 2, 3]);
   /// assert_eq!(e.substitute(&1, 2), vec![]);
   /// ```
@@ -1222,17 +1222,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 2, 3];
+  /// # let a_source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute_multi(&vec![2, 3], vec![4, 5]), vec![1, 4, 2, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_multi(&vec![2, 2], vec![4, 5]), vec![1, 4, 5, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 2, 3]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_multi(&vec![4, 5], vec![1, 1]), vec![1, 2, 2, 3]);
   /// assert_eq!(e.substitute_multi(&vec![1], vec![2]), vec![]);
   /// ```

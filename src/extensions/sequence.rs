@@ -26,19 +26,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2];
+  /// # let a_source = vec![1, 2];
   /// let a = vec![1, 2];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.add_at_multi(0, vec![3, 4]), vec![3, 4, 1, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_at_multi(1, vec![3, 4]), vec![1, 3, 4, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_at_multi(2, vec![3, 4]), vec![1, 2, 3, 4]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_at_multi(3, vec![3, 4]), vec![1, 2]);
   /// ```
   fn add_at_multi(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
@@ -72,18 +72,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2];
+  /// # let a_source = vec![1, 2];
   /// let a = vec![1, 2];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.add_at(0, 3), vec![3, 1, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_at(1, 3), vec![1, 3, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_at(2, 3), vec![1, 2, 3]);
   /// assert_eq!(e.add_at(0, 1), vec![1]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_at(3, 3), vec![1, 2]);
   /// ```
   #[inline]
@@ -151,13 +151,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, -1, 1, 2];
+  /// # let a_source = vec![1, 2, -1, 1, 2];
   /// let a = vec![1, 2, -1, 1, 2];
   ///
   /// assert_eq!(a.chunked(3), vec![vec![1, 2, -1], vec![1, 2]]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.chunked(2), vec![vec![1, 2], vec![-1, 1], vec![2]]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.chunked(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
   /// ```
   #[inline]
@@ -248,13 +248,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, -1, 1, 2];
+  /// # let a_source = vec![1, 2, -1, 1, 2];
   /// let a = vec![1, 2, -1, 1, 2];
   ///
   /// assert_eq!(a.chunked_exact(3), vec![vec![1, 2, -1]]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2], vec![-1, 1]]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
   /// ```
   #[inline]
@@ -361,18 +361,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.delete_at(0), vec![2, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at(1), vec![1, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at(2), vec![1, 2]);
   /// assert_eq!(e.delete_at(0), vec![]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at(3), vec![1, 2, 3]);
   /// ```
   #[inline]
@@ -393,18 +393,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.delete_at_multi(vec![0, 2]), vec![2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at_multi(vec![1, 3]), vec![1, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at_multi(vec![0, 1, 2, 3]), vec![]);
   ///
   /// assert_eq!(e.delete_at_multi(vec![1, 2]), vec![]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at_multi(vec![3, 4]), vec![1, 2, 3]);
   /// ```
   #[inline]
@@ -715,13 +715,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.interleave(vec![4, 5, 6]), vec![1, 4, 2, 5, 3, 6]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.interleave(vec![4, 5]), vec![1, 4, 2, 5, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.interleave(vec![]), vec![1, 2, 3]);
   /// ```
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
@@ -758,13 +758,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.interleave_exact(vec![4, 5, 6]), vec![1, 4, 2, 5, 3, 6]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.interleave_exact(vec![4, 5]), vec![1, 4, 2, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.interleave_exact(vec![]), vec![]);
   /// ```
   #[inline]
@@ -788,14 +788,14 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// // assert_eq!(a.intersperse_with(1, 0), vec![1, 0, 2, 0, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// // assert_eq!(a.intersperse_with(2, 0), vec![1, 2, 0, 3]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// // assert_eq!(a.intersperse_with(3, 0), vec![1, 2, 3]);
   /// ```
   #[inline]
@@ -821,14 +821,14 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// // assert_eq!(a.intersperse_with(1, || 0), vec![1, 0, 2, 0, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// // assert_eq!(a.intersperse_with(2, || 0), vec![1, 2, 0, 3]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// // assert_eq!(a.intersperse_with(3, || 0), vec![1, 2, 3]);
   /// ```
   fn intersperse_with(self, interval: usize, mut to_value: impl FnMut() -> Item) -> Self
@@ -966,18 +966,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// assert_eq!(a.move_at(1, 3), vec![1, 3, 4, 2, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.move_at(4, 0), vec![5, 1, 2, 3, 4]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.move_at(2, 5), vec![1, 2, 4, 5]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.move_at(3, 3), vec![1, 2, 3, 4, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.move_at(5, 1), vec![1, 2, 3, 4, 5]);
   /// ```
   fn move_at(self, source_index: usize, target_index: usize) -> Self
@@ -1036,18 +1036,18 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// assert_eq!(a.swap_at(1, 3), vec![1, 4, 3, 2, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.swap_at(4, 0), vec![5, 2, 3, 4, 1]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.swap_at(2, 5), vec![1, 2, 4, 5]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
   /// ```
   fn swap_at(self, source_index: usize, target_index: usize) -> Self
@@ -1453,19 +1453,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.slice(0..2), vec![1, 2]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.slice(1..4), vec![2, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.slice(0..5), vec![1, 2, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(e.slice(0..1), vec![]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.slice(3..3), vec![]);
   /// ```
   #[inline]
@@ -1842,13 +1842,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute_at(1, 4), vec![1, 4, 3]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at(3, 5), vec![1, 2, 3]);
   /// assert_eq!(e.substitute_at(0, 1), vec![]);
   /// ```
@@ -1870,19 +1870,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4]), vec![4, 2, 3]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
   ///
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
   /// assert_eq!(e.substitute_at_multi(vec![0], vec![1]), vec![]);
   /// ```
@@ -2160,12 +2160,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3, 4, 5];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.windowed(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 4], vec![4, 5]]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.windowed(2, 2), vec![vec![1, 2], vec![3, 4]]);
   ///
   /// let empty_result: Vec<Vec<i32>> = vec![];
@@ -2196,12 +2196,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3, 4, 5];
   /// let a = vec![1, 2, 3];
   /// let e: Vec<i32> = vec![];
   ///
   /// assert_eq!(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
   /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.windowed(1, 1), empty_result);
@@ -2229,13 +2229,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.zip(vec![4, 5, 6]), vec![(1, 4), (2, 5), (3, 6)]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.zip(vec![4, 5]), vec![(1, 4), (2, 5)]);
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.zip(vec![4, 5, 6, 7]), vec![(1, 4), (2, 5), (3, 6)]);
   /// ```
   #[inline]
@@ -2269,19 +2269,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let source = vec![1, 2, 3];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
   ///   a.zip_padded(vec![4, 5, 6], || 1, || 2),
   ///   vec![(1, 4), (2, 5), (3, 6)],
   /// );
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(
   ///   a.zip_padded(vec![4, 5, 6, 7], || 1, || 2),
   ///   vec![(1, 4), (2, 5), (3, 6), (1, 7)],
   /// );
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(
   ///   a.zip_padded(vec![4, 5], || 1, || 2),
   ///   vec![(1, 4), (2, 5), (3, 2)],

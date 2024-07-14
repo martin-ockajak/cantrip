@@ -24,7 +24,7 @@ pub trait Map<Key, Value> {
   /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// # let source = HashMap::from([
+  /// # let a_source = HashMap::from([
   /// #  (1, "a"),
   /// #  (2, "b"),
   /// #  (3, "c"),
@@ -41,7 +41,7 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   ///   (4, "d"),
   /// ]));
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add(1, "d"), HashMap::from([
   ///   (1, "d"),
   ///   (2, "b"),
@@ -65,7 +65,7 @@ pub trait Map<Key, Value> {
   /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// # let source = HashMap::from([
+  /// # let a_source = HashMap::from([
   /// #  (1, "a"),
   /// #  (2, "b"),
   /// #  (3, "c"),
@@ -83,7 +83,7 @@ pub trait Map<Key, Value> {
   ///   (4, "d"),
   ///   (5, "e"),
   /// ]));
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// assert_eq!(a.add_multi(vec![(1, "d"), (5, "e")]), HashMap::from([
   ///   (1, "d"),
   ///   (2, "b"),
@@ -1654,7 +1654,7 @@ pub trait Map<Key, Value> {
   /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// # let source = HashMap::from([
+  /// # let a_source = HashMap::from([
   /// #   (1, 2),
   /// #   (2, 3),
   /// #   (3, 4),
@@ -1670,7 +1670,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(reduced, (6, 9));
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// let folded = a.fold((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
   ///
   /// assert_eq!(reduced, folded);
@@ -1699,7 +1699,7 @@ pub trait Map<Key, Value> {
   /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// # let source = HashMap::from([
+  /// # let a_source = HashMap::from([
   /// #   (1, 2),
   /// #   (2, 3),
   /// #   (3, 4),
@@ -1715,7 +1715,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(reduced, (6, 9));
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// # let a = source.clone();
+  /// # let a = a_source.clone();
   /// let folded = a.fold_to((0, 0), |(a, b), (k, v)| (a + k, b + v));
   ///
   /// assert_eq!(reduced, folded);
