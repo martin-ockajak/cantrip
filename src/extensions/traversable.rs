@@ -96,9 +96,11 @@ pub trait Traversable<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert!(a.disjoint(&vec![4, 5]));
   /// assert!(a.disjoint(&vec![]));
+  /// assert!(e.disjoint(&vec![]));
   ///
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
@@ -125,7 +127,7 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.find(|&x| x % 2 == 1), Some(&1));
+  /// assert_eq!(a.find(|&x| x == 2), Some(&2));
   ///
   /// assert_eq!(a.find(|&x| x == 5), None);
   /// ```
@@ -365,10 +367,10 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.max_by(|x, y| x.cmp(y)), Some(&5));
+  /// assert_eq!(a.max_by(|x, y| x.cmp(y)), Some(&3));
   ///
   /// assert_eq!(e.max_by(|x, y| x.cmp(y)), None);
   /// ```
@@ -385,12 +387,12 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.max_by_key(|x| x.abs()), Some(&-10));
+  /// assert_eq!(a.max_by_key(|x| -x), Some(&1));
   ///
-  /// assert_eq!(e.max_by_key(|x| x.abs()), None);
+  /// assert_eq!(e.max_by_key(|x| -x), None);
   /// ```
   fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
@@ -443,10 +445,10 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.min_by(|x, y| x.cmp(y)), Some(&-10));
+  /// assert_eq!(a.min_by(|x, y| x.cmp(y)), Some(&1));
   ///
   /// assert_eq!(e.min_by(|x, y| x.cmp(y)), None);
   /// ```
@@ -463,12 +465,12 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.min_by_key(|x| x.abs()), Some(&0));
+  /// assert_eq!(a.min_by_key(|x| -x), Some(&3));
   ///
-  /// assert_eq!(e.min_by_key(|x| x.abs()), None);
+  /// assert_eq!(e.min_by_key(|x| -x), None);
   /// ```
   fn min_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
 
@@ -523,10 +525,10 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.minmax_by(|x, y| x.cmp(y)), Some((&-10, &5)));
+  /// assert_eq!(a.minmax_by(|x, y| x.cmp(y)), Some((&1, &3)));
   /// assert_eq!(e.minmax_by(|x, y| x.cmp(y)), None);
   /// ```
   fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
@@ -543,11 +545,11 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.minmax_by_key(|x| x.abs()), Some((&0, &-10)));
-  /// assert_eq!(e.minmax_by_key(|x| x.abs()), None);
+  /// assert_eq!(a.minmax_by_key(|x| -x), Some((&3, &1)));
+  /// assert_eq!(e.minmax_by_key(|x| -x), None);
   /// ```
   fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>;
 
@@ -562,10 +564,10 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-3_i32, 0, 1, 5, -10];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.minmax_of(), Some((&-10, &5)));
+  /// assert_eq!(a.minmax_of(), Some((&1, &3)));
   /// assert_eq!(e.minmax_of(), None);
   /// ```
   #[inline]
@@ -657,6 +659,7 @@ pub trait Traversable<Item> {
   /// assert!(a.superset(&vec![3, 1]));
   /// assert!(a.superset(&vec![2, 2, 1]));
   /// assert!(a.superset(&vec![]));
+  /// assert!(e.superset(&vec![]));
   ///
   /// assert!(!a.superset(&vec![1, 1, 2]));
   /// assert!(!a.superset(&vec![3, 4]));
