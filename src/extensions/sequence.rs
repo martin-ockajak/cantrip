@@ -870,33 +870,34 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    let mut stored = LinkedList::<Item>::new();
     let mut position = 0_usize;
-    unfold(|| match (position >= source_index, position >= target_index) {
-      (true, true) => stored.pop_front().or_else(|| iterator.next()),
-      (true, false) => {
+    if source_index <= target_index {
+      let mut moved = None;
+      unfold(|| {
         if position == source_index {
           if let Some(value) = iterator.next() {
-            stored.push_back(value)
+            moved = Some(value);
           }
         }
+        let result = if position == target_index { moved.take() } else { iterator.next() };
         position += 1;
-        iterator.next()
-      }
-      (false, true) => {
-        let mut store = true;
-        while store && position < source_index {
-          iterator.next().map(|x| stored.push_back(x)).unwrap_or_else(|| store = false);
-          position += 1;
-        }
-        iterator.next().or_else(|| stored.pop_front())
-      }
-      (false, false) => {
+        result
+      })
+      .collect()
+    } else {
+      let mut stored = LinkedList::from_iter(iterator.by_ref().take(source_index)).into_iter();
+      let mut moved = iterator.next();
+      unfold(|| {
+        let result = if position == target_index {
+          moved.take().or_else(|| stored.next().or_else(|| iterator.next()))
+        } else {
+          stored.next().or_else(|| iterator.next())
+        };
         position += 1;
-        iterator.next()
-      }
-    })
-    .collect()
+        result
+      })
+      .collect()
+    }
   }
 
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
