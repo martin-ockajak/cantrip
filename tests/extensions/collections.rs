@@ -13,8 +13,15 @@ use crate::extensions::util::Equal;
 
 pub(crate) fn test_set_traits<'a, C>()
 where
-  C:
-  Traversable<i64> + Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
+  C: Traversable<i64>
+    + Collectible<i64>
+    + FromIterator<i64>
+    + Iterable<Item<'a> = &'a i64>
+    + PartialEq
+    + Clone
+    + Equal
+    + Debug
+    + 'a,
 {
   test_traversable::<C>(false);
   test_collectible::<C>(false);
@@ -28,9 +35,9 @@ where
     + Slice<i64>
     + FromIterator<i64>
     + Iterable<Item<'a> = &'a i64>
+    + PartialEq
     + Clone
     + Equal
-    + PartialEq
     + Debug
     + 'a,
 {
@@ -49,6 +56,7 @@ where
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
+    + PartialEq
     + Clone
     + Equal
     + Debug
@@ -72,6 +80,7 @@ where
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
+    + PartialEq
     + Clone
     + Equal
     + Debug
