@@ -355,7 +355,7 @@ pub trait Traversable<Item> {
   fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
   /// Returns the element that gives the maximum value from the
-  /// specified function.
+  /// specified key function.
   ///
   /// If several elements are equally maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
@@ -433,7 +433,7 @@ pub trait Traversable<Item> {
   fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
 
   /// Returns the element that gives the minimum value from the
-  /// specified function.
+  /// specified key function.
   ///
   /// If several elements are equally minimum, the fist element is
   /// returned. If the collection is empty, [`None`] is returned.
@@ -512,7 +512,7 @@ pub trait Traversable<Item> {
   fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
 
   /// Returns the minimum and maximum element of this collection from the
-  /// specified function.
+  /// specified key function.
   ///
   /// For the minimum, the first minimal element is returned. For the maximum,
   /// the last maximal element is returned. If the collection is empty, [`None`] is returned.
