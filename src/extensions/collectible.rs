@@ -67,11 +67,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let a_source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
-  ///
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.delete(&4), vec![1, 2, 2, 3]);
   /// assert_eq!(e.delete(&2), vec![]);
   /// ```
   #[inline]

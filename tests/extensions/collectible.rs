@@ -41,16 +41,24 @@ where
     let a = a_source.clone();
     assert_equal(a.delete(&2), vec![1, 3]);
   }
+  if sequence {
+    let b = b_source.clone();
+    assert_equal(b.delete(&4), vec![1, 2, 2, 3]);
+  } else {
+    let a = a_source.clone();
+    assert_set_equal(a.delete(&4), vec![1, 2, 3]);
+  }
   let e = e_source.clone();
   assert_equal(e.delete(&2), vec![]);
-  // assert_equal(a.clone().delete(&1), &[0, 2]);
-  // assert_equal(a.clone().delete(&3), &[0, 1, 2]);
-  // assert_equal(e.clone().delete(&0), &[]);
-  // if sequence {
-  //   assert_equal(b.clone().delete(&1), &[0, 1, 2]);
-  // }
-  //
-  // // delete_all
+
+  // combinations
+  // assert_equal(a.combinations(0), vec![vec![]]);
+  // assert_equal(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
+  // assert_equal(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
+  // assert_equal(a.combinations(3), vec![vec![1, 2, 3]]);
+  // assert_equal(a.combinations(4), e);
+  // assert_equal(e.combinations(2), e);
+
   // assert_equal(a.clone().delete_multi(&vec![0, 1]), &[2]);
   // assert_equal(a.clone().delete_multi(&vec![]), &[0, 1, 2]);
   // assert_equal(e.clone().delete_multi(&vec![0, 1]), &[]);

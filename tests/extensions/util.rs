@@ -1,8 +1,7 @@
-use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
+use crate::assert_equal;
+use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::fmt::Debug;
 use std::hash::Hash;
-
-use crate::assert_equal;
 
 pub(crate) trait Equal {
   fn equal(&self, other: &Self) -> bool;
@@ -67,19 +66,21 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
 }
 
 //noinspection RsUnresolvedPath
-pub(crate) fn assert_equal<C: FromIterator<i64> + Equal + Debug>(values: C, expected: Vec<i64>) {
+pub(crate) fn assert_equal<T, C: FromIterator<T> + Equal + Debug>(values: C, expected: Vec<T>) {
   assert_equal!(values, C::from_iter(expected))
 }
 
 //noinspection RsUnresolvedPath
-pub(crate) fn assert_set_equal<C: IntoIterator<Item = i64> + Equal + Debug>(values: C, expected: Vec<i64>) {
+pub(crate) fn assert_set_equal<T: Eq + Hash + Debug, C: IntoIterator<Item = T> + Equal + Debug>(
+  values: C, expected: Vec<T>,
+) {
   let values_set = HashSet::from_iter(values);
-  let expected_set = HashSet::from_iter(expected.iter().cloned());
+  let expected_set = HashSet::from_iter(expected);
   assert_equal!(values_set, expected_set)
 }
 
 //noinspection RsUnresolvedPath
-pub(crate) fn assert_map_equal<C: FromIterator<(i64, i64)> + Equal + Debug>(values: C, expected: Vec<(i64, i64)>) {
+pub(crate) fn assert_map_equal<K, V, C: FromIterator<(K, V)> + Equal + Debug>(values: C, expected: Vec<(K, V)>) {
   assert_equal!(values, C::from_iter(expected))
 }
 
