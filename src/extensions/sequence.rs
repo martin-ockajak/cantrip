@@ -865,6 +865,9 @@ pub trait Sequence<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
+    if source_index == target_index {
+      return self;
+    };
     let mut iterator = self.into_iter();
     let mut position = 0_usize;
     if source_index <= target_index {
@@ -881,16 +884,23 @@ pub trait Sequence<Item> {
       })
       .collect()
     } else {
-      let mut stored = LinkedList::from_iter(iterator.by_ref().take(source_index)).into_iter();
-      let mut target_item = iterator.next();
-      unfold(|| {
-        let result = if position == target_index {
-          target_item.take().or_else(|| stored.next().or_else(|| iterator.next()))
-        } else {
-          stored.next().or_else(|| iterator.next())
-        };
-        position += 1;
-        result
+      let mut stored = LinkedList::<Item>::new();
+      unfold(|| match position.cmp(&target_index) {
+        Ordering::Less => {
+          position += 1;
+          iterator.next()
+        }
+        Ordering::Equal => {
+          for _ in position..source_index {
+            if let Some(item) = iterator.next() {
+              stored.push_back(item);
+            } else {
+              break;
+            }
+          }
+          iterator.next().or_else(|| stored.pop_front())
+        }
+        Ordering::Greater => stored.pop_front().or_else(|| iterator.next()),
       })
       .collect()
     }
@@ -917,15 +927,18 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.swap_at(2, 5), vec![1, 2, 4, 5]);
   ///
   /// # let a = source.clone();
-  /// // assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
   /// # let a = source.clone();
-  /// // assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
   /// ```
   fn swap_at(self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
     Item: std::fmt::Debug,
   {
+    if source_index == target_index {
+      return self;
+    };
     let (source, target) =
       if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
     let mut iterator = self.into_iter();
