@@ -13,16 +13,24 @@ where
   let b_source = from_slice::<C>(&[1, 2, 2, 3]);
   let e_source = from_slice::<C>(&[]);
   let a = a_source.clone();
+  let b = b_source.clone();
+  let e = e_source.clone();
 
   // common_prefix_length
   assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
   assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
   assert_eq!(a.common_prefix_length(&vec![]), 0);
-  
+  assert_eq!(e.common_prefix_length(&vec![]), 0);
+
   // common_suffix_length
   assert_eq!(a.common_suffix_length(&vec![0, 1, 2, 3]), 3);
   assert_eq!(a.common_suffix_length(&vec![2, 3]), 2);
   assert_eq!(a.common_suffix_length(&vec![]), 0);
+  assert_eq!(e.common_prefix_length(&vec![]), 0);
+
+  // count_unique
+  assert_eq!(b.count_unique(), 3);
+  assert_eq!(e.count_unique(), 0);
 
   // position
   let b = b_source.clone();

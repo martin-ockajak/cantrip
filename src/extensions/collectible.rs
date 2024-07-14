@@ -68,7 +68,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
   ///
@@ -105,7 +105,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete_multi(&vec![1, 2]), vec![2, 3]);
   ///
@@ -146,7 +146,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.combinations(0), vec![vec![]]);
   /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
@@ -792,7 +792,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use std::collections::HashSet;
   ///
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// let intersection = a.intersect(&vec![4, 2, 2, 3, 4]);
   ///
@@ -920,7 +920,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let a_source = vec![2, 1, 3];
   /// let a = vec![2, 1, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.largest(2), vec![3, 2]);
   /// # let a = a_source.clone();
@@ -1052,7 +1052,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.powerset(), vec![
   ///   vec![],
@@ -1087,7 +1087,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![2, 3, 4];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// let product = a.product();
   ///
@@ -1156,7 +1156,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let a_source = vec![2, 3, 1];
   /// let a = vec![2, 3, 1];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.smallest(2), vec![1, 2]);
   /// # let a = a_source.clone();
@@ -1193,7 +1193,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let a_source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.substitute(&2, 4), vec![1, 4, 2, 3]);
   ///
@@ -1224,7 +1224,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// # let a_source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.substitute_multi(&vec![2, 3], vec![4, 5]), vec![1, 4, 2, 5]);
   /// # let a = a_source.clone();
@@ -1278,7 +1278,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e: Vec<i32> = vec![];
+  /// let e = Vec::<i32>::new();
   ///
   /// let sum = a.sum();
   ///
