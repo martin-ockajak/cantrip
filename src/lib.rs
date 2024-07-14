@@ -168,6 +168,7 @@
 //! | [`sum`](Collectible::sum)                                       |            *              |       |              *                |                   |
 //! | [`sum_keys`](Map::sum_keys)                                     |                           |       |                               |         *         |
 //! | [`sum_values`](Map::sum_values)                                 |                           |       |                               |         *         |
+//! | [`swap_at`](Sequence::swap_at)                                  |            *              |       |                               |                   |
 //! | [`tail`](Sequence::tail)                                        |            *              |   *   |                               |                   |
 //! | [`take`](Sequence::take)                                        |            *              |   *   |                               |                   |
 //! | [`take_while`](Sequence::take_while)                            |            *              |   *   |                               |                   |
