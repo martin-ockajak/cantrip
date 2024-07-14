@@ -1038,13 +1038,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     (result_left, result_right)
   }
 
-  /// Creates a new collection containing all sub-collections of this collection.
+  /// Creates a new collection containing all subcollections of this collection.
   ///
   /// Sub-collections for sequences are generated based on element positions, not values.
-  /// Therefore, if a sequence contains duplicate elements, the resulting sub-collections will too.
+  /// Therefore, if a sequence contains duplicate elements, the resulting subcollections will too.
   /// To obtain combinations of unique elements for sequences, use `.unique().powerset()`.
   ///
-  /// The order of sub-collection values is preserved for sequences.
+  /// The order of subcollection values is preserved for sequences.
   ///
   /// # Example
   ///

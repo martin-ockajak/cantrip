@@ -172,7 +172,7 @@ pub trait Sequence<Item> {
   /// Creates a new sequence by splitting this sequence into non-overlapping
   /// subsequences according to specified separator predicate.
   ///
-  /// The predicate is called for every pair of consecutive elements,
+  /// The `split` predicate is called for every pair of consecutive elements,
   /// meaning that it is called on `slice[0]` and `slice[1]`,
   /// followed by `slice[1]` and `slice[2]`, and so on.
   ///
@@ -192,7 +192,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(b.chunked_by(|_, _| true), vec![vec![1]]);
   /// assert_eq!(e.chunked_by(|_, _| true), empty_result);
   /// ```
-  fn chunked_by(self, mut predicate: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
+  fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
   where
     Self: FromIterator<Item> + IntoIterator<Item = Item>,
     Self::This<Self>: FromIterator<Self>,
@@ -201,12 +201,12 @@ pub trait Sequence<Item> {
     let mut chunk_empty = true;
     let mut last = iterator.next();
     unfold(|| {
-      let mut split = false;
+      let mut chunk_done = false;
       let chunk: Self = unfold(|| {
-        if !split {
+        if !chunk_done {
           if let Some(previous) = last.take() {
             if let Some(current) = iterator.next() {
-              split = predicate(&previous, &current);
+              chunk_done = split(&previous, &current);
               last = Some(current);
             }
             chunk_empty = false;
@@ -414,6 +414,76 @@ pub trait Sequence<Item> {
   {
     let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
+  }
+
+  /// Creates a new sequence by splitting this sequence into subsequences separated
+  /// by elements that match the `separator` predicate.
+  /// Matched elements are not contained in the subsequences.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// let divided = a.divide_by(|x| x % 2 == 0);
+  ///
+  /// assert_eq!(divided, vec![vec![1], vec![3], vec![5]]);
+  /// ```
+  ///
+  /// If the first element is matched, an empty sequence will be the first
+  /// element of the result. Similarly, if the last element in the sequence
+  /// is matched, an empty sequence will be the last element of the result:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// let divided = a.divide_by(|x| x % 2 == 1);
+  ///
+  /// assert_eq!(divided, vec![vec![], vec![2], vec![4], vec![]]);
+  /// ```
+  ///
+  /// If two matched elements are directly adjacent, an empty sequence will be
+  /// present between them:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 4, 5];
+  ///
+  /// let divided = a.divide_by(|x| x % 2 == 0);
+  ///
+  /// assert_eq!(divided, vec![vec![1], vec![], vec![5]]);
+  /// ```
+  #[inline]
+  fn divide_by(self, mut separator: impl FnMut(&Item) -> bool) -> Self::This<Self>
+  where
+    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self::This<Self>: FromIterator<Self>,
+  {
+    let mut iterator = self.into_iter();
+    let mut empty = false;
+    unfold(|| {
+      if empty {
+        return None;
+      }
+      let chunk = unfold(|| {
+        if let Some(item) = iterator.next() {
+          if !separator(&item) {
+            return Some(item);
+          }
+        } else {
+          empty = true;
+        }
+        None
+      })
+      .collect();
+      Some(chunk)
+    })
+    .collect()
   }
 
   /// Creates a new collection by including only the elements of this collection
@@ -2240,7 +2310,7 @@ where
       None
     })
     .collect();
-    if chunk_size == size || !(exact && chunk_size > 0) {
+    if chunk_size == size || (!exact && chunk_size > 0) {
       Some(chunk)
     } else {
       None
