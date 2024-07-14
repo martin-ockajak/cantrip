@@ -169,7 +169,6 @@ pub trait Sequence<Item> {
     chunked(self, size, false)
   }
 
-  // FIXME - fix the failing test case
   /// Creates a new sequence by splitting this sequence into non-overlapping
   /// subsequences according to specified separator predicate.
   ///
@@ -257,7 +256,7 @@ pub trait Sequence<Item> {
   /// # let a = source.clone();
   /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2], vec![-1, 1]]);
   /// # let a = source.clone();
-  /// // assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
+  /// assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
   /// ```
   #[inline]
   fn chunked_exact(self, size: usize) -> Self::This<Self>
