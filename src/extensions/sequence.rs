@@ -417,6 +417,58 @@ pub trait Sequence<Item> {
   }
 
   /// Creates a new sequence by splitting this sequence into subsequences separated
+  /// by elements equal to the specified `separator` value.
+  /// Matched elements are not contained in the subsequences.
+  ///
+  /// # Examples
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3, 2, 5];
+  ///
+  /// let divided = a.divide(&2);
+  ///
+  /// assert_eq!(divided, vec![vec![1], vec![3], vec![5]]);
+  /// ```
+  ///
+  /// If the first element is matched, an empty sequence will be the first
+  /// element of the result. Similarly, if the last element in the sequence
+  /// is matched, an empty sequence will be the last element of the result:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 1, 4, 1];
+  ///
+  /// let divided = a.divide(&1);
+  ///
+  /// assert_eq!(divided, vec![vec![], vec![2], vec![4], vec![]]);
+  /// ```
+  ///
+  /// If two matched elements are directly adjacent, an empty sequence will be
+  /// present between them:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 2, 5];
+  ///
+  /// let divided = a.divide(&2);
+  ///
+  /// assert_eq!(divided, vec![vec![1], vec![], vec![5]]);
+  /// ```
+  #[inline]
+  fn divide(self, separator: &Item) -> Self::This<Self>
+  where
+    Item: PartialEq,
+    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self::This<Self>: FromIterator<Self>,
+  {
+    self.divide_by(|x| x == separator)
+  }
+
+  /// Creates a new sequence by splitting this sequence into subsequences separated
   /// by elements that match the `separator` predicate.
   /// Matched elements are not contained in the subsequences.
   ///

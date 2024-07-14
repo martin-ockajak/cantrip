@@ -65,6 +65,8 @@
 //! | [`delete_at`](Sequence::delete_at)                              |            *              |       |                               |                   |
 //! | [`delete_at_multi`](Sequence::delete_at_multi)                  |            *              |       |                               |                   |
 //! | [`delete_multi`](Collectible::delete_multi)                     |            *              |       |              *                |         *         |
+//! | [`divide`](Sequence::divide)                                    |            *              |       |                               |                   |
+//! | [`divide_by`](Sequence::divide_by)                              |            *              |       |                               |                   |
 //! | [`duplicates`](Sequence::duplicates)                            |            *              |       |                               |                   |
 //! | [`duplicates_by`](Sequence::duplicates_by)                      |            *              |       |                               |                   |
 //! | [`enumerate`](Sequence::enumerate)                              |            *              |       |                               |                   |
