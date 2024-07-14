@@ -839,8 +839,8 @@ pub trait Sequence<Item> {
   /// Creates a new sequence by moving an element at an index into specified index
   /// in this sequence.
   ///
-  /// if the source index exceeds this sequence size, no elements are moved.
-  /// if the target index exceeds this sequence size, the element is only removed.
+  /// If the target index exceeds this sequence size, the element is only removed.
+  /// If the source index exceeds this sequence size, no elements are moved.
   ///
   /// # Example
   ///
@@ -852,13 +852,9 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.move_at(1, 3), vec![1, 3, 4, 2, 5]);
   /// # let a = source.clone();
-  /// assert_eq!(a.move_at(2, 4), vec![1, 2, 4, 5, 3]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_at(0, 5), vec![2, 3, 4, 5]);
-  /// # let a = source.clone();
-  /// assert_eq!(a.move_at(3, 1), vec![1, 4, 2, 3, 5]);
-  /// # let a = source.clone();
   /// assert_eq!(a.move_at(4, 0), vec![5, 1, 2, 3, 4]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.move_at(2, 5), vec![1, 2, 4, 5]);
   ///
   /// # let a = source.clone();
   /// assert_eq!(a.move_at(3, 3), vec![1, 2, 3, 4, 5]);
@@ -872,24 +868,24 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut position = 0_usize;
     if source_index <= target_index {
-      let mut moved = None;
+      let mut source_item = None;
       unfold(|| {
         if position == source_index {
           if let Some(value) = iterator.next() {
-            moved = Some(value);
+            source_item = Some(value);
           }
         }
-        let result = if position == target_index { moved.take() } else { iterator.next() };
+        let result = if position == target_index { source_item.take() } else { iterator.next() };
         position += 1;
         result
       })
       .collect()
     } else {
       let mut stored = LinkedList::from_iter(iterator.by_ref().take(source_index)).into_iter();
-      let mut moved = iterator.next();
+      let mut target_item = iterator.next();
       unfold(|| {
         let result = if position == target_index {
-          moved.take().or_else(|| stored.next().or_else(|| iterator.next()))
+          target_item.take().or_else(|| stored.next().or_else(|| iterator.next()))
         } else {
           stored.next().or_else(|| iterator.next())
         };
@@ -898,6 +894,70 @@ pub trait Sequence<Item> {
       })
       .collect()
     }
+  }
+
+  /// Creates a new sequence by swapping an elements at specified indices
+  /// in this sequence.
+  ///
+  /// If one of the indices exceeds this sequence size, the element is only removed.
+  /// If both indices index exceed this sequence size, no elements are swapped.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let source = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// assert_eq!(a.swap_at(1, 3), vec![1, 4, 3, 2, 5]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.swap_at(4, 0), vec![5, 2, 3, 4, 1]);
+  /// # let a = source.clone();
+  /// assert_eq!(a.swap_at(2, 5), vec![1, 2, 4, 5]);
+  ///
+  /// # let a = source.clone();
+  /// // assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
+  /// # let a = source.clone();
+  /// // assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
+  /// ```
+  fn swap_at(self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: std::fmt::Debug,
+  {
+    let (source, target) =
+      if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
+    let mut iterator = self.into_iter();
+    let mut position = 0_usize;
+    let mut stored = LinkedList::<Item>::new();
+    let mut source_item = None;
+    unfold(|| {
+      let result = match position.cmp(&source) {
+        Ordering::Less => iterator.next(),
+        Ordering::Equal => {
+          source_item = iterator.next();
+          for _ in (position + 1)..target {
+            if let Some(item) = iterator.next() {
+              stored.push_back(item);
+            } else {
+              break;
+            }
+          }
+          iterator.next().or_else(|| stored.pop_front())
+        }
+        Ordering::Greater => {
+          if position == target {
+            source_item.take()
+          } else {
+            stored.pop_front().or_else(|| iterator.next())
+          }
+        }
+      };
+      position += 1;
+      result
+    })
+    .collect()
   }
 
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
