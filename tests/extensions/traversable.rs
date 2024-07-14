@@ -3,15 +3,13 @@ use std::fmt::Debug;
 
 use cantrip::{Iterable, Traversable};
 
-use crate::extensions::util::from_slice;
-
 pub(crate) fn test_traversable<'a, C>(sequence: bool)
 where
   C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Debug + 'a,
 {
-  let a = from_slice::<C>(&[1, 2, 3]);
-  let b = from_slice::<C>(&[1, 2, 2, 3]);
-  let e = from_slice::<C>(&[]);
+  let a = C::from_iter(vec![1, 2, 3]);
+  let b = C::from_iter(vec![1, 2, 2, 3]);
+  let e = C::from_iter(vec![]);
 
   // all
   assert!(a.all(|&x| x > 0));

@@ -3,15 +3,15 @@ use std::fmt::Debug;
 
 use cantrip::{Iterable, Ordered};
 
-use crate::extensions::util::{Equal, from_slice};
+use crate::extensions::util::Equal;
 
 pub(crate) fn test_ordered<'a, C>()
 where
   C: Ordered<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
-  let a = from_slice::<C>(&[1, 2, 3]);
-  let b = from_slice::<C>(&[1, 2, 2, 3]);
-  let e = from_slice::<C>(&[]);
+  let a = C::from_iter(vec![1, 2, 3]);
+  let b = C::from_iter(vec![1, 2, 2, 3]);
+  let e = C::from_iter(vec![]);
 
   // common_prefix_length
   assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);

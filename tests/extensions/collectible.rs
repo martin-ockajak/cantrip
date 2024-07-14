@@ -2,29 +2,47 @@ use std::fmt::Debug;
 
 use cantrip::{Collectible, Iterable};
 
-use crate::extensions::util::{assert_equal, assert_set_equal, Equal, from_slice};
+use crate::extensions::util::{assert_equal, assert_set_equal, Equal};
 
 pub(crate) fn test_collectible<'a, C>(sequence: bool)
 where
   C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
   // FIXME - implement test for all trait methods
-  let a_source = from_slice::<C>(&[1, 2, 3]);
-  // let b_source = from_slice::<C>(&[1, 2, 2, 3]);
-  let e_source = from_slice::<C>(&[]);
+  let a_source = C::from_iter(vec![1, 2, 3]);
+  let b_source = C::from_iter(vec![1, 2, 2, 3]);
+  let e_source = C::from_iter(vec![]);
   let a = a_source.clone();
-  // let b = b_source.clone();
+  let b = b_source.clone();
   let e = e_source.clone();
 
   // add
   if sequence {
-    assert_equal(a.add(3), &[1, 2, 3, 3]);
+    assert_equal(a.add(3), vec![1, 2, 3, 3]);
   } else {
-    assert_set_equal(a.add(3), &[1, 2, 3]);
+    assert_set_equal(a.add(3), vec![1, 2, 3]);
   }
-  assert_equal(e.clone().add(1), &[1]);
+  assert_equal(e.add(1), vec![1]);
 
-  // // delete
+  // add_multi
+  let a = a_source.clone();
+  if sequence {
+    assert_equal(a.add_multi(vec![3, 4]), vec![1, 2, 3, 3, 4]);
+  } else {
+    assert_set_equal(a.add_multi(vec![3, 4]), vec![1, 2, 3, 4]);
+  }
+  let e = e_source.clone();
+  assert_equal(e.add(1), vec![1]);
+
+  // delete
+  if sequence {
+    assert_equal(b.delete(&2), vec![1, 2, 3]);
+  } else {
+    let a = a_source.clone();
+    assert_equal(a.delete(&2), vec![1, 3]);
+  }
+  let e = e_source.clone();
+  assert_equal(e.delete(&2), vec![]);
   // assert_equal(a.clone().delete(&1), &[0, 2]);
   // assert_equal(a.clone().delete(&3), &[0, 1, 2]);
   // assert_equal(e.clone().delete(&0), &[]);

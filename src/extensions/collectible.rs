@@ -45,9 +45,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.add_multi(vec![3, 4]), vec![1, 2, 3, 4]);
+  /// assert_eq!(a.add_multi(vec![3, 4]), vec![1, 2, 3, 3, 4]);
   /// ```
   #[inline]
   fn add_multi(self, iterable: impl IntoIterator<Item = Item>) -> Self
