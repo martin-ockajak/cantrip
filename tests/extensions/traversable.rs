@@ -9,7 +9,6 @@ pub(crate) fn test_traversable<'a, C>()
 where
   C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Debug + 'a,
 {
-  // FIXME - implement test for all trait methods
   let a = from_slice::<C>(&[1, 2, 3]);
   let b = from_slice::<C>(&[1, 2, 2, 3]);
   let e = from_slice::<C>(&[]);
