@@ -47,15 +47,15 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let mut added = additions.into_iter();
-    let mut position = 0_usize;
+    let mut current_index = 0_usize;
     unfold(|| {
-      if position >= index {
+      if current_index >= index {
         added.next().or_else(|| {
-          position += 1;
+          current_index += 1;
           iterator.next()
         })
       } else {
-        position += 1;
+        current_index += 1;
         iterator.next()
       }
     })
@@ -720,15 +720,15 @@ pub trait Sequence<Item> {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
     let mut value = iter::repeat(to_value());
-    let mut position = 0_usize;
+    let mut index = 0_usize;
     let mut inserted = false;
     unfold(|| {
-      if !inserted && position % interval == 0 {
+      if !inserted && index % interval == 0 {
         inserted = true;
         value.next()
       } else {
         inserted = false;
-        position += 1;
+        index += 1;
         iterator.next()
       }
     })
@@ -869,29 +869,29 @@ pub trait Sequence<Item> {
       return self;
     };
     let mut iterator = self.into_iter();
-    let mut position = 0_usize;
+    let mut index = 0_usize;
     if source_index <= target_index {
       let mut source_item = None;
       unfold(|| {
-        if position == source_index {
+        if index == source_index {
           if let Some(value) = iterator.next() {
             source_item = Some(value);
           }
         }
-        let result = if position == target_index { source_item.take() } else { iterator.next() };
-        position += 1;
+        let result = if index == target_index { source_item.take() } else { iterator.next() };
+        index += 1;
         result
       })
       .collect()
     } else {
       let mut stored = LinkedList::<Item>::new();
-      unfold(|| match position.cmp(&target_index) {
+      unfold(|| match index.cmp(&target_index) {
         Ordering::Less => {
-          position += 1;
+          index += 1;
           iterator.next()
         }
         Ordering::Equal => {
-          for _ in position..source_index {
+          for _ in index..source_index {
             if let Some(item) = iterator.next() {
               stored.push_back(item);
             } else {
@@ -942,15 +942,15 @@ pub trait Sequence<Item> {
     let (source, target) =
       if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
     let mut iterator = self.into_iter();
-    let mut position = 0_usize;
+    let mut index = 0_usize;
     let mut stored = LinkedList::<Item>::new();
     let mut source_item = None;
     unfold(|| {
-      let result = match position.cmp(&source) {
+      let result = match index.cmp(&source) {
         Ordering::Less => iterator.next(),
         Ordering::Equal => {
           source_item = iterator.next();
-          for _ in (position + 1)..target {
+          for _ in (index + 1)..target {
             if let Some(item) = iterator.next() {
               stored.push_back(item);
             } else {
@@ -960,14 +960,14 @@ pub trait Sequence<Item> {
           iterator.next().or_else(|| stored.pop_front())
         }
         Ordering::Greater => {
-          if position == target {
+          if index == target {
             source_item.take()
           } else {
             stored.pop_front().or_else(|| iterator.next())
           }
         }
       };
-      position += 1;
+      index += 1;
       result
     })
     .collect()
@@ -1020,10 +1020,10 @@ pub trait Sequence<Item> {
   {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
-    let mut position = 0_usize;
+    let mut index = 0_usize;
     unfold(|| {
-      let result = if position < original_start { Some(to_value(position)) } else { iterator.next() };
-      position += 1;
+      let result = if index < original_start { Some(to_value(index)) } else { iterator.next() };
+      index += 1;
       result
     })
     .collect()
@@ -1072,10 +1072,10 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
-    let mut position = 0_usize;
+    let mut index = 0_usize;
     unfold(|| {
-      let result = iterator.next().or_else(|| if position < size { Some(to_value(position)) } else { None });
-      position += 1;
+      let result = iterator.next().or_else(|| if index < size { Some(to_value(index)) } else { None });
+      index += 1;
       result
     })
     .collect()
@@ -1776,11 +1776,11 @@ pub trait Sequence<Item> {
     let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
     let mut iterator = self.into_iter();
     let mut replacement_items = replacements.into_iter();
-    let mut position = 0_usize;
+    let mut index = 0_usize;
     unfold(|| {
       iterator.next().map(|item| {
-        let result = if positions.contains(&position) { replacement_items.next().unwrap_or(item) } else { item };
-        position += 1;
+        let result = if positions.contains(&index) { replacement_items.next().unwrap_or(item) } else { item };
+        index += 1;
         result
       })
     })
