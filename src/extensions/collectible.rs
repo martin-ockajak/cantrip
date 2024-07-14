@@ -25,9 +25,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.add(3), vec![1, 2, 3]);
+  /// assert_eq!(a.add(3), vec![1, 2, 3, 3]);
   /// ```
   #[inline]
   fn add(self, value: Item) -> Self
