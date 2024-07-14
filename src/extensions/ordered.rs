@@ -519,7 +519,7 @@ pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool {
   let elements_iterator = elements.iterator();
-  let mut excluded: HashMap<&Item, usize> = HashMap::with_capacity(iterator.size_hint().0);
+  let mut excluded = HashMap::<&Item, usize>::with_capacity(iterator.size_hint().0);
   let mut remaining = 0_usize;
   for item in elements_iterator {
     *excluded.entry(item).or_default() += 1;

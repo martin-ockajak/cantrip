@@ -440,8 +440,8 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut values: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
-    let mut duplicates: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
+    let mut values = HashSet::with_capacity(iterator.size_hint().0);
+    let mut duplicates = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
         if !duplicates.contains(&item) {
@@ -480,8 +480,8 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut values: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
-    let mut duplicates: HashSet<K> = HashSet::with_capacity(iterator.size_hint().0);
+    let mut values = HashMap::with_capacity(iterator.size_hint().0);
+    let mut duplicates = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
         let key = to_key(&item);
@@ -1828,7 +1828,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut occurred: HashSet<Item> = HashSet::with_capacity(iterator.size_hint().0);
+    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
         if !occurred.contains(&item) {
@@ -1863,7 +1863,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut occurred: HashSet<K> = HashSet::with_capacity(iterator.size_hint().0);
+    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .filter(|item| {
         let key = to_key(item);
@@ -2238,7 +2238,7 @@ pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Res
 ) -> Result {
   assert_ne!(size, 0, "window size must be non-zero");
   assert_ne!(step, 0, "step must be non-zero");
-  let mut window: LinkedList<Item> = LinkedList::new();
+  let mut window = LinkedList::<Item>::new();
   iterator
     .flat_map(|item| {
       window.push_back(item.clone());
@@ -2263,8 +2263,8 @@ where
 {
   assert_ne!(size, 0, "window size must be non-zero");
   assert_ne!(step, 0, "step must be non-zero");
-  let mut window: LinkedList<Item> = LinkedList::new();
-  let mut init: LinkedList<Item> = LinkedList::new();
+  let mut window = LinkedList::<Item>::new();
+  let mut init = LinkedList::<Item>::new();
   unfold(|| {
     while window.len() < size {
       if let Some(item) = iterator.next() {

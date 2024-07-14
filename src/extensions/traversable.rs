@@ -682,7 +682,7 @@ pub(crate) fn group_fold<'a, Item: 'a, K: Eq + Hash, B: Clone>(
   iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: B,
   mut function: impl FnMut(B, &Item) -> B,
 ) -> HashMap<K, B> {
-  let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
+  let mut result = HashMap::with_capacity(iterator.size_hint().0);
   for item in iterator {
     let key = to_key(item);
     let new_value = match result.remove(&key) {
@@ -698,7 +698,7 @@ pub(crate) fn group_reduce<'a, Item: Clone + 'a, K: Eq + Hash>(
   iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
   mut function: impl FnMut(&Item, &Item) -> Item,
 ) -> HashMap<K, Item> {
-  let mut result: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
+  let mut result = HashMap::with_capacity(iterator.size_hint().0);
   for item in iterator {
     let key = to_key(item);
     let new_value = match result.remove(&key) {

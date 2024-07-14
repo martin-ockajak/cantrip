@@ -123,7 +123,7 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert!(a.all(|(&k, &v)| k > 0 && v.len() > 0));
   /// assert!(e.all(|(&k, _)| k > 0));
@@ -156,7 +156,7 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert!(a.any(|(&k, &v)| k > 0 && v.len() > 0));
   ///
@@ -208,7 +208,7 @@ pub trait Map<Key, Value> {
   ///   (2, "a"),
   ///   (3, "a"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.count_unique(), 3);
   /// assert_eq!(b.count_unique(), 1);
@@ -234,7 +234,7 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.delete(&2), HashMap::from([
   ///   (1, "a"),
@@ -922,7 +922,7 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// let intersection = a.intersect(&vec![(4, "x"), (2, "b"), (3, "y"), (4, "x")]);
   ///
@@ -1167,7 +1167,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.max_by(|x, y| x.0.cmp(y.0)), Some((&3, &"b")));
   ///
@@ -1192,7 +1192,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-5, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.max_by_key(|(k, _)| k.abs()), Some((&-5, &"c")));
   ///
@@ -1216,7 +1216,7 @@ pub trait Map<Key, Value> {
   ///   (1, 2),
   ///   (2, 3),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.max_item(), Some((&2, &3)));
   ///
@@ -1248,7 +1248,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-5, "c"),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.min_by(|x, y| x.0.cmp(y.0)), Some((&-5, &"c")));
   ///
@@ -1273,7 +1273,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-5, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.min_by_key(|(k, _)| k.abs()), Some((&0, &"a")));
   ///
@@ -1297,7 +1297,7 @@ pub trait Map<Key, Value> {
   ///   (1, 2),
   ///   (2, 3),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.min_item(), Some((&0, &1)));
   ///
@@ -1330,7 +1330,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-5, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.minmax_by(|x, y| x.0.cmp(y.0)), Some(((&-5, &"c"), (&3, &"b"))));
   ///
@@ -1358,7 +1358,7 @@ pub trait Map<Key, Value> {
   ///   (3, "b"),
   ///   (-5, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.minmax_by_key(|(k, _)| k.abs()), Some(((&0, &"a"), (&-5, &"c"))));
   /// assert_eq!(e.minmax_by_key(|(k, _)| k.abs()), None);
@@ -1382,7 +1382,7 @@ pub trait Map<Key, Value> {
   ///   (1, 2),
   ///   (2, 3),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert_eq!(a.minmax_item(), Some(((&0, &1), (&2, &3))));
   ///
@@ -1550,7 +1550,7 @@ pub trait Map<Key, Value> {
   ///   (2, 3),
   ///   (3, 4),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// let product = a.product_keys();
   ///
@@ -1592,7 +1592,7 @@ pub trait Map<Key, Value> {
   ///   (2, 3),
   ///   (3, 4),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, i32>::new();
   ///
   /// let product = a.product_values();
   ///
@@ -1721,7 +1721,7 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert!(a.subset(&vec![4, 3, 2, 2, 1]));
   /// assert!(e.subset(&vec![1]));
@@ -1816,7 +1816,7 @@ pub trait Map<Key, Value> {
   ///   (2, "b"),
   ///   (3, "c"),
   /// ]);
-  /// let e: HashMap<i32, &str> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// assert!(a.superset(&vec![3, 1]));
   /// assert!(a.superset(&vec![]));
@@ -1857,7 +1857,7 @@ pub trait Map<Key, Value> {
   ///   (2, 3),
   ///   (3, 4),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, &str>::new();
   ///
   /// let sum = a.sum_keys();
   ///
@@ -1900,7 +1900,7 @@ pub trait Map<Key, Value> {
   ///   (2, 3),
   ///   (3, 4),
   /// ]);
-  /// let e: HashMap<i32, i32> = HashMap::new();
+  /// let e = HashMap::<i32, i32>::new();
   ///
   /// let sum = a.sum_values();
   ///

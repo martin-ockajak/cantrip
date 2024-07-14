@@ -683,7 +683,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
   {
     let iterator = self.into_iter();
-    let mut result: HashMap<K, Self> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut result = HashMap::<K, Self>::with_capacity(iterator.size_hint().0);
     for item in iterator {
       result.entry(to_key(&item)).or_default().extend(iter::once(item));
     }
@@ -723,7 +723,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: Sized,
   {
     let iterator = self.into_iter();
-    let mut result: HashMap<K, B> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut result = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       let key = to_key(&item);
       let new_value = if let Some(value) = result.remove(&key) {
@@ -767,7 +767,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: IntoIterator<Item = Item> + Sized,
   {
     let iterator = self.into_iter();
-    let mut result: HashMap<K, Item> = HashMap::with_capacity(iterator.size_hint().0);
+    let mut result = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
       let key = to_key(&item);
       let new_value = if let Some(value) = result.remove(&key) { function(value, item) } else { item };
@@ -1244,7 +1244,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let elements_iterator = elements.iterator();
-    let mut replaced_items: HashMap<&Item, LinkedList<Item>> = HashMap::with_capacity(elements_iterator.size_hint().0);
+    let mut replaced_items = HashMap::<&Item, LinkedList<Item>>::with_capacity(elements_iterator.size_hint().0);
     for (item, replacement) in elements_iterator.zip(replacements.into_iter()) {
       replaced_items.entry(item).or_default().push_back(replacement);
     }
