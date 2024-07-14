@@ -22,6 +22,14 @@ impl<Item> Traversable<Item> for LinkedList<Item> {
   }
 
   #[inline]
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a
+  {
+    disjoint(self.iter(), elements)
+  }
+
+  #[inline]
   fn find(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.iter().find(|&x| predicate(x))
   }

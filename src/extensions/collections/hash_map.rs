@@ -17,6 +17,11 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
+  fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
+    self.iter().filter(|&x| predicate(x)).count()
+  }
+
+  #[inline]
   fn count_unique(&self) -> usize
   where
     Value: Eq + Hash
@@ -25,8 +30,11 @@ impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
-    self.iter().filter(|&x| predicate(x)).count()
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a
+  {
+    disjoint(self.keys(), elements)
   }
 
   #[inline]

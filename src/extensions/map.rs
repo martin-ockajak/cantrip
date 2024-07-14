@@ -258,7 +258,6 @@ pub trait Map<Key, Value> {
   ///
   /// ```
   /// use cantrip::*;
-  ///
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -283,6 +282,31 @@ pub trait Map<Key, Value> {
     let removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
+
+  /// Tests if keys of this map and another collection have no elements in common.
+  ///
+  /// Returns `true` if aby of the collections are empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, "a"),
+  ///   (2, "b"),
+  ///   (3, "c"),
+  /// ]);
+  ///
+  /// assert!(a.disjoint(&vec![4, 5]));
+  /// assert!(a.disjoint(&vec![]));
+  ///
+  /// assert!(!a.disjoint(&vec![3, 4]));
+  /// ```
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a;
 
   /// Creates a new map containing a result of a function
   /// specified number of times.

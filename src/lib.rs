@@ -67,6 +67,7 @@
 //! | [`delete_multi`](Collectible::delete_multi)                     |            *              |       |              *                |         *         |
 //! | [`divide`](Sequence::divide)                                    |            *              |       |                               |                   |
 //! | [`divide_by`](Sequence::divide_by)                              |            *              |       |                               |                   |
+//! | [`disjoint`](Traversable::disjoint)                             |            *              |   *   |              *                |         *         |
 //! | [`duplicates`](Sequence::duplicates)                            |            *              |       |                               |                   |
 //! | [`duplicates_by`](Sequence::duplicates_by)                      |            *              |       |                               |                   |
 //! | [`enumerate`](Sequence::enumerate)                              |            *              |       |                               |                   |

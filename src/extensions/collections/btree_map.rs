@@ -17,6 +17,11 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
+  fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
+    self.iter().filter(|&x| predicate(x)).count()
+  }
+
+  #[inline]
   fn count_unique(&self) -> usize
   where
     Value: Eq + Hash
@@ -25,8 +30,11 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
-    self.iter().filter(|&x| predicate(x)).count()
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  where
+    Key: Eq + Hash + 'a
+  {
+    disjoint(self.keys(), elements)
   }
 
   #[inline]
@@ -59,6 +67,11 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   #[inline]
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     self.iter().fold(initial_value, function)
+  }
+
+  #[inline]
+  fn for_each(&self, function: impl FnMut((&Key, &Value))) {
+    self.iter().for_each(function)
   }
 
   #[inline]
@@ -131,10 +144,5 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
     Key: Eq + Hash + 'a,
   {
     superset(self.keys(), elements)
-  }
-
-  #[inline]
-  fn for_each(&self, function: impl FnMut((&Key, &Value))) {
-    self.iter().for_each(function)
   }
 }

@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
 use crate::Iterable;
@@ -85,6 +85,26 @@ pub trait Traversable<Item> {
   /// assert_eq!(a.count_by(|&x| x == 5), 0);
   /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
+
+  /// Tests this collection and  another collection have no elements in common.
+  ///
+  /// Returns `true` if aby of the collections are empty.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert!(a.disjoint(&vec![4, 5]));
+  /// assert!(a.disjoint(&vec![]));
+  ///
+  /// assert!(!a.disjoint(&vec![3, 4]));
+  /// ```
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  where
+    Item: Eq + Hash + 'a;
 
   /// Searches for an element of this collection that satisfies a predicate.
   ///
@@ -666,6 +686,24 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
 ) -> usize {
   iterator.filter(|&x| predicate(x)).count()
+}
+
+pub(crate) fn disjoint<'a, Item: Eq + Hash + 'a>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool {
+  let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    let _ = occurred.insert(item);
+  }
+  if occurred.is_empty() {
+    return true;
+  }
+  for item in elements.iterator() {
+    if occurred.contains(&item) {
+      return false;
+    }
+  }
+  true
 }
 
 pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
