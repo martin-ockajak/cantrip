@@ -45,9 +45,12 @@ pub trait List<Item> {
   /// use cantrip::*;
   /// use std::collections::LinkedList;
   ///
+  /// # let source = LinkedList::from([1, 2, 3]);
   /// let a = LinkedList::from([1, 2, 3]);
   ///
-  /// assert_eq!(a.repeat(3), LinkedList::from([1, 2, 3, 1, 2, 3, 1, 2, 3]));
+  /// assert_eq!(a.repeat(2), LinkedList::from([1, 2, 3, 1, 2, 3]));
+  /// # let a = source.clone();
+  /// assert_eq!(a.repeat(0), LinkedList::new());
   /// ```
   fn repeat(self, n: usize) -> Self
   where
