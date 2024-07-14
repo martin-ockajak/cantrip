@@ -674,7 +674,6 @@ pub trait Sequence<Item> {
     iter::repeat(value).take(size).collect()
   }
 
-  // FIXME - fix the failing test case
   /// Creates a new sequence from this sequence without
   /// the last element.
   ///
@@ -688,7 +687,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.init(), vec![1, 2]);
   ///
-  /// // assert_eq!(e.init(), vec![]);
+  /// assert_eq!(e.init(), vec![]);
   /// ```
   #[inline]
   fn init<I>(self) -> Self
@@ -697,7 +696,7 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let size = iterator.len() - 1;
+    let size = iterator.len().saturating_sub(1);
     iterator.take(size).collect()
   }
 
