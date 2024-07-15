@@ -17,7 +17,6 @@ where
     + Collectible<i64>
     + FromIterator<i64>
     + Iterable<Item<'a> = &'a i64>
-    + PartialEq
     + Clone
     + Equal
     + Debug
@@ -56,7 +55,6 @@ where
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
-    + PartialEq
     + Clone
     + Equal
     + Debug
@@ -80,7 +78,6 @@ where
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
-    + PartialEq
     + Clone
     + Equal
     + Debug

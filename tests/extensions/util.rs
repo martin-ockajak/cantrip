@@ -43,12 +43,10 @@ impl<Item: PartialEq> Equal for BTreeSet<Item> {
   }
 }
 
-impl<Item: PartialEq + Ord + Clone> Equal for BinaryHeap<Item> {
+impl<Item: Eq + Hash + Clone> Equal for BinaryHeap<Item> {
   fn equal(&self, other: &Self) -> bool {
-    let mut self_values = self.clone().into_vec();
-    let mut other_values = other.clone().into_vec();
-    self_values.sort();
-    other_values.sort();
+    let self_values: HashSet<Item> = HashSet::from_iter(self.clone());
+    let other_values: HashSet<Item> = HashSet::from_iter(other.clone());
     self_values == other_values
   }
 }

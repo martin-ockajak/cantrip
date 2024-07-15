@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 
 use crate::extensions::collections::*;
 
@@ -11,7 +11,7 @@ fn collectibles() {
   test_set_traits::<HashSet<i64>>();
   test_set_traits::<BTreeSet<i64>>();
   // FIXME - fix slice tests
-  // test_set_traits::<BinaryHeap<i64>>();
+  test_set_traits::<BinaryHeap<i64>>();
 }
 
 #[test]

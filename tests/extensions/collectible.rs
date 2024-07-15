@@ -6,7 +6,7 @@ use crate::extensions::util::{assert_equal, assert_set_equal, Equal};
 
 pub(crate) fn test_collectible<'a, C>(sequence: bool)
 where
-  C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + PartialEq + Clone + Equal + Debug + 'a,
+  C: Collectible<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
 {
   // FIXME - implement test for all trait methods
   let a_source = C::from_iter(vec![1, 2, 3]);
