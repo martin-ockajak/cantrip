@@ -152,9 +152,9 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = ["lol", "NaN", "2", "5"];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let first_number = a.find_map(|s| s.parse().ok());
+  /// let first_number = a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } );
   ///
   /// assert_eq!(first_number, Some(2));
   /// ```

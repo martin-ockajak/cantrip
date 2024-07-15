@@ -21,6 +21,7 @@ where
     + Equal
     + Debug
     + 'a,
+  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
 {
   test_traversable::<C>(false);
   test_collectible::<C>(false);
@@ -59,6 +60,7 @@ where
     + Equal
     + Debug
     + 'a,
+  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
 {
   test_traversable::<C>(true);
   test_collectible::<C>(true);
@@ -82,6 +84,7 @@ where
     + Equal
     + Debug
     + 'a,
+  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
 {
   test_traversable::<C>(true);
   test_collectible::<C>(true);

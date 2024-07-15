@@ -57,6 +57,37 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self.into_iter().chain(iterable).collect()
   }
 
+  /// Creates a new collection containing combinations of specified size from the elements
+  /// of this collection.
+  ///
+  /// Combinations for sequences are generated based on element positions, not values.
+  /// Therefore, if a sequence contains duplicate elements, the resulting combinations will too.
+  /// To obtain combinations of unique elements for sequences, use `.unique().combinations()`.
+  ///
+  /// The order of combination values is preserved for sequences.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e = Vec::<i32>::new();
+  ///
+  /// assert_eq!(a.combinations(0), vec![vec![]]);
+  /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
+  /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
+  /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
+  ///
+  /// let empty_result: Vec<Vec<i32>> = vec![];
+  /// assert_eq!(a.combinations(4), empty_result);
+  /// assert_eq!(e.combinations(2), empty_result);
+  /// ```
+  fn combinations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized;
+
   /// Creates a new collection from this collection without
   /// the first occurrence of an element.
   ///
@@ -72,6 +103,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete(&2), vec![1, 2, 3]);
+  ///
   /// # let a = a_source.clone();
   /// assert_eq!(a.delete(&4), vec![1, 2, 2, 3]);
   /// assert_eq!(e.delete(&2), vec![]);
@@ -106,11 +138,14 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
+  /// # let a_source = vec![1, 2, 2, 3];
   /// let a = vec![1, 2, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete_multi(&vec![1, 2]), vec![2, 3]);
   ///
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.delete_multi(&vec![4]), vec![1, 2, 2, 3]);
   /// assert_eq!(e.delete_multi(&vec![1]), vec![]);
   /// ```
   fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
@@ -132,37 +167,6 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
       })
       .collect()
   }
-
-  /// Creates a new collection containing combinations of specified size from the elements
-  /// of this collection.
-  ///
-  /// Combinations for sequences are generated based on element positions, not values.
-  /// Therefore, if a sequence contains duplicate elements, the resulting combinations will too.
-  /// To obtain combinations of unique elements for sequences, use `.unique().combinations()`.
-  ///
-  /// The order of combination values is preserved for sequences.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
-  ///
-  /// assert_eq!(a.combinations(0), vec![vec![]]);
-  /// assert_eq!(a.combinations(1), vec![vec![1], vec![2], vec![3]]);
-  /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
-  /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
-  ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(a.combinations(4), empty_result);
-  /// assert_eq!(e.combinations(2), empty_result);
-  /// ```
-  fn combinations(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized;
 
   /// Creates a new collection containing a result of a function
   /// specified number of times.
@@ -198,11 +202,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![0, 1, 2];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let filtered = a.filter(|&x| x > 0);
+  /// let filtered = a.filter(|&x| x > 1);
   ///
-  /// assert_eq!(filtered, vec![1, 2]);
+  /// assert_eq!(filtered, vec![2, 3]);
   /// ```
   ///
   /// Because the closure passed to `filter()` takes a reference, and some
@@ -212,11 +216,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![&0, &1, &2];
+  /// let a = vec![&1, &2, &3];
   ///
-  /// let filtered = a.filter(|x| **x > 1); // need two *s!
+  /// let filtered = a.filter(|x| **x > 2); // need two *s!
   ///
-  /// assert_eq!(filtered, vec![&2]);
+  /// assert_eq!(filtered, vec![&3]);
   /// ```
   ///
   /// It's common to instead use destructuring on the argument to strip away
@@ -225,11 +229,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![&0, &1, &2];
+  /// let a = vec![&1, &2, &3];
   ///
-  /// let filtered = a.filter(|&x| *x > 1); // both & and *
+  /// let filtered = a.filter(|&x| *x > 2); // both & and *
   ///
-  /// assert_eq!(filtered, vec![&2]);
+  /// assert_eq!(filtered, vec![&3]);
   /// ```
   ///
   /// or both:
@@ -275,11 +279,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.filter_map(|&s| s.parse::<i32>().ok());
+  /// let filter_mapped = a.filter_map(|&x| if x % 2 == 0 { Some(x + 1) } else { None } );
   ///
-  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// assert_eq!(filter_mapped, vec![3]);
   /// ```
   ///
   /// Here's the same example, but with [`filter`] and [`map`]:
@@ -287,11 +291,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.map(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map(|s| s.clone().unwrap());
+  /// let filter_mapped = a.filter(|&x| x % 2 == 0).map(|x| x + 1);
   ///
-  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// assert_eq!(filter_mapped, vec![3]);
   /// ```
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
@@ -319,11 +323,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.filter_map_to(|s| s.parse::<i32>().ok());
+  /// let filter_mapped = a.filter_map_to(|x| if x % 2 == 0 { Some(x + 1) } else { None } );
   ///
-  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// assert_eq!(filter_mapped, vec![3]);
   /// ```
   ///
   /// Here's the same example, but with [`filter`] and [`map_to`]:
@@ -331,11 +335,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec!["1", "two", "NaN", "four", "5"];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.map_to(|s| s.parse::<i32>()).filter(|s| s.is_ok()).map_to(|s| s.unwrap());
+  /// let filter_mapped = a.filter(|&x| x % 2 == 0).map(|x| x + 1);
   ///
-  /// assert_eq!(filter_mapped, vec![1, 5]);
+  /// assert_eq!(filter_mapped, vec![3]);
   /// ```
   #[inline]
   fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
@@ -364,9 +368,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec!["lol", "NaN", "2", "5"];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let first_number = a.find_map_to(|s| s.parse().ok());
+  /// let first_number = a.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None } );
   ///
   /// assert_eq!(first_number, Some(2));
   /// ```
@@ -390,11 +394,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = vec![vec![1, 2, 3, 4], vec![5, 6]];
+  /// let a = vec![vec![1, 2], vec![3]];
   ///
   /// let flattened = a.flat();
   ///
-  /// assert_eq!(flattened, vec![1, 2, 3, 4, 5, 6]);
+  /// assert_eq!(flattened, vec![1, 2, 3]);
   /// ```
   ///
   /// Mapping and then flattening:

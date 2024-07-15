@@ -27,7 +27,7 @@ where
   // // rev
   // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);
   // assert_equal(empty.clone().rev(), vec![]);
-  // 
+  //
   // // tail
   // assert_equal(repeated.clone().tail(), vec![2, 2, 3]);
 }

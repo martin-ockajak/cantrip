@@ -6,11 +6,8 @@ mod extensions;
 
 #[test]
 fn collectibles() {
-  let hash_set: HashSet<i64> = HashSet::new();
-  let _ = hash_set.len();
   test_set_traits::<HashSet<i64>>();
   test_set_traits::<BTreeSet<i64>>();
-  // FIXME - fix slice tests
   test_set_traits::<BinaryHeap<i64>>();
 }
 
@@ -30,8 +27,6 @@ fn sequences() {
 
 #[test]
 fn maps() {
-  let hash_map: HashMap<i64, i64> = HashMap::new();
-  let _ = hash_map.len();
   test_map_traits::<HashMap<i64, i64>>();
   test_map_traits::<BTreeMap<i64, i64>>();
 }

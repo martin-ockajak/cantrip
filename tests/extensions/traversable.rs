@@ -38,7 +38,9 @@ where
   assert_eq!(a.find(|&x| x == 5), None);
   assert_eq!(e.find(|&x| x == 5), None);
 
-  // find_map - FIXME
+  // find_map
+  assert_eq!(a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } ), Some(2));
+  assert_eq!(e.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } ), None);
 
   // fold
   assert_eq!(a.fold(0, |acc, x| acc + x), 6);
