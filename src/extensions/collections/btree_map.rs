@@ -24,7 +24,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   #[inline]
   fn count_unique(&self) -> usize
   where
-    Value: Eq + Hash
+    Value: Eq + Hash,
   {
     count_unique(self.values())
   }
@@ -32,7 +32,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   #[inline]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    Key: Eq + Hash + 'a
+    Key: Eq + Hash + 'a,
   {
     disjoint(self.keys(), elements)
   }
@@ -88,7 +88,10 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn max_by_key<K: Ord>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)> {
+  fn max_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
+  where
+    K: Ord,
+  {
     self.iter().max_by_key(|&x| to_key(x))
   }
 
@@ -98,7 +101,10 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn min_by_key<K: Ord>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)> {
+  fn min_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
+  where
+    K: Ord,
+  {
     self.iter().min_by_key(|&x| to_key(x))
   }
 
@@ -110,7 +116,10 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))> {
+  fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
+  where
+    K: Ord,
+  {
     minmax_by_key_pairs(self.iter(), to_key)
   }
 

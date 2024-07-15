@@ -1116,8 +1116,9 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   #[inline]
-  fn map_keys<L: Eq + Hash>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
+  fn map_keys<L>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
   where
+    L: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<L, Value>: FromIterator<(L, Value)>,
   {
@@ -1166,8 +1167,9 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   #[inline]
-  fn map_values<W: Eq + Hash>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
+  fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
   where
+    W: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<Key, W>: FromIterator<(Key, W)>,
   {
@@ -1222,7 +1224,9 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.max_by_key(|(k, _)| k.abs()), None);
   /// ```
-  fn max_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
+  fn max_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
+  where
+    K: Ord;
 
   /// Returns the maximum entry of this map.
   ///
@@ -1303,7 +1307,9 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.min_by_key(|(k, _)| k.abs()), None);
   /// ```
-  fn min_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>;
+  fn min_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
+  where
+    K: Ord;
 
   /// Returns the minimum entry of this map.
   ///
@@ -1387,7 +1393,9 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.minmax_by_key(|(k, _)| k.abs()), Some(((&0, &"a"), (&-5, &"c"))));
   /// assert_eq!(e.minmax_by_key(|(k, _)| k.abs()), None);
   /// ```
-  fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>;
+  fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
+  where
+    K: Ord;
 
   /// Return the minimum and maximum entry of this map.
   ///

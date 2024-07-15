@@ -394,7 +394,9 @@ pub trait Traversable<Item> {
   ///
   /// assert_eq!(e.max_by_key(|x| -x), None);
   /// ```
-  fn max_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
+  fn max_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
+  where
+    K: Ord;
 
   /// Returns the maximum element of this collection.
   ///
@@ -472,7 +474,9 @@ pub trait Traversable<Item> {
   ///
   /// assert_eq!(e.min_by_key(|x| -x), None);
   /// ```
-  fn min_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>;
+  fn min_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
+  where
+    K: Ord;
 
   /// Returns the minimum element of this collection.
   ///
@@ -551,7 +555,9 @@ pub trait Traversable<Item> {
   /// assert_eq!(a.minmax_by_key(|x| -x), Some((&3, &1)));
   /// assert_eq!(e.minmax_by_key(|x| -x), None);
   /// ```
-  fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>;
+  fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
+  where
+    K: Ord;
 
   /// Return the minimum and maximum element of this collection.
   ///

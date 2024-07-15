@@ -24,7 +24,7 @@ impl<Item> Traversable<Item> for [Item] {
   #[inline]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
-    Item: Eq + Hash + 'a
+    Item: Eq + Hash + 'a,
   {
     disjoint(self.iter(), elements)
   }
@@ -61,7 +61,9 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn group_reduce<K>(&self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item) -> HashMap<K, Item>
+  fn group_reduce<K>(
+    &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
+  ) -> HashMap<K, Item>
   where
     K: Eq + Hash,
     Item: Clone,
@@ -75,7 +77,10 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn max_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+  fn max_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
+  where
+    K: Ord,
+  {
     self.iter().max_by_key(|&x| to_key(x))
   }
 
@@ -85,7 +90,10 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn min_by_key<B: Ord>(&self, mut to_key: impl FnMut(&Item) -> B) -> Option<&Item> {
+  fn min_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
+  where
+    K: Ord,
+  {
     self.iter().min_by_key(|&x| to_key(x))
   }
 
@@ -95,7 +103,10 @@ impl<Item> Traversable<Item> for [Item] {
   }
 
   #[inline]
-  fn minmax_by_key<K: Ord>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)> {
+  fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
+  where
+    K: Ord,
+  {
     minmax_by_key(self.iter(), to_key)
   }
 
@@ -133,7 +144,7 @@ impl<Item> Ordered<Item> for [Item] {
   fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
-    Item: PartialEq + 'a
+    Item: PartialEq + 'a,
   {
     common_suffix_length(self.iter().rev(), elements)
   }
@@ -162,7 +173,7 @@ impl<Item> Ordered<Item> for [Item] {
   #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
-    Item: Eq + Hash + 'a
+    Item: Eq + Hash + 'a,
   {
     frequencies(self.iter())
   }

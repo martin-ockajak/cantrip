@@ -684,8 +684,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///   (1, vec![1, 3])
   /// ]));
   /// ```
-  fn group_by<K: Eq + Hash>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
+  fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
+    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
   {
     let iterator = self.into_iter();
@@ -766,10 +767,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///   (1, 4),
   /// ]));
   /// ```
-  fn group_reduce_to<K: Eq + Hash>(
+  fn group_reduce_to<K>(
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>
   where
+    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized,
   {
     let iterator = self.into_iter();
