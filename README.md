@@ -1,5 +1,5 @@
 [![API](https://img.shields.io/badge/Rustdoc-API-mediumpurple)](https://docs.rs/cantrip/latest/cantrip)
-[![Artifacts](https://img.shields.io/crates/v/cantrip.svg)]
+[Artifacts](https://img.shields.io/crates/v/cantrip.svg)
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
