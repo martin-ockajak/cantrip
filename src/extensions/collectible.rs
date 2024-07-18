@@ -802,9 +802,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// let intersection = a.intersect(&vec![4, 2, 2, 3, 4]);
+  /// let intersection = a.intersect(&vec![4, 3, 2, 2, 5]);
   ///
   /// assert_eq!(intersection, vec![2, 2, 3]);
+  ///
   /// assert_eq!(e.intersect(&vec![1]), vec![]);
   ///
   /// // Print 2, 3.

@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::fmt::Debug;
 
 use cantrip::{Iterable, Map};
@@ -22,10 +23,11 @@ where
   let e = e_source.clone();
 
   // add
-  assert_map_equal(a.add(3, 3), vec![(0, 0), (1, 1), (2, 2), (3, 3)]);
-  assert_map_equal(e.add(0, 0), vec![(0, 0)]);
-  // assert_map_equal(empty.clone(), vec![]);
-  //
+  assert_map_equal(a.add(3, 3), HashMap::from([(0, 0), (1, 1), (2, 2), (3, 3)]));
+  assert_map_equal(e.add(0, 0), HashMap::from([(0, 0)]));
+  let e = e_source.clone();
+  assert_map_equal(e, HashMap::new());
+
   // // all
   // assert!(distinct.all(|(&k, &v)| k >= 0 && v >= 0));
   // assert!(!distinct.all(|(&k, &v)| k == 1 && v >= 0));

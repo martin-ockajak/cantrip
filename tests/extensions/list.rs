@@ -2,7 +2,7 @@ use std::fmt::Debug;
 
 use cantrip::{Iterable, List};
 
-use crate::extensions::util::{assert_equal, Equal};
+use crate::extensions::util::{assert_seq_equal, Equal};
 
 pub(crate) fn test_list<'a, C>()
 where
@@ -29,8 +29,8 @@ where
   assert_eq!(e.last(), None);
 
   // repeat
-  assert_equal(a.repeat(2), vec![1, 2, 3, 1, 2, 3]);
+  assert_seq_equal(a.repeat(2), vec![1, 2, 3, 1, 2, 3]);
   let a = a_source.clone();
-  assert_equal(a.repeat(0), vec![]);
-  assert_equal(e.repeat(2), vec![]);
+  assert_seq_equal(a.repeat(0), vec![]);
+  assert_seq_equal(e.repeat(2), vec![]);
 }

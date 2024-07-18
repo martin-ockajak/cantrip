@@ -17,11 +17,13 @@ where
     + Collectible<i64>
     + FromIterator<i64>
     + Iterable<Item<'a> = &'a i64>
+    + Default
+    + Extend<i64>
     + Clone
     + Equal
     + Debug
     + 'a,
-  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
+  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
 {
   test_traversable::<C>(false);
   test_collectible::<C>(false);
@@ -56,11 +58,13 @@ where
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
+    + Default
+    + Extend<i64>
     + Clone
     + Equal
     + Debug
     + 'a,
-  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
+  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
 {
   test_traversable::<C>(true);
   test_collectible::<C>(true);
@@ -80,11 +84,13 @@ where
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
+    + Default
+    + Extend<i64>
     + Clone
     + Equal
     + Debug
     + 'a,
-  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
+  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
 {
   test_traversable::<C>(true);
   test_collectible::<C>(true);
