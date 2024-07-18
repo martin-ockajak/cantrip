@@ -16,6 +16,40 @@ use std::ops::RangeBounds;
 pub trait Sequence<Item> {
   type This<I>;
 
+  /// Creates a new sequence by inserting an element into specified index
+  /// in this sequence.
+  ///
+  /// if the specified index exceeds this sequence size, no elements are inserted.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let a_source = vec![1, 2];
+  /// let a = vec![1, 2];
+  /// let e = Vec::<i32>::new();
+  ///
+  /// assert_eq!(a.add_at(0, 3), vec![3, 1, 2]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.add_at(1, 3), vec![1, 3, 2]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.add_at(2, 3), vec![1, 2, 3]);
+  /// assert_eq!(e.add_at(0, 1), vec![1]);
+  ///
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.add_at(3, 3), vec![1, 2]);
+  /// # let e = Vec::<i32>::new();
+  /// assert_eq!(e.add_at(1, 1), vec![]);
+  /// ```
+  #[inline]
+  fn add_at(self, index: usize, addition: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.add_at_multi(index, iter::once(addition))
+  }
+
   /// Creates a new sequence by inserting all elements of another collection
   /// into specified index in this sequence.
   ///
@@ -40,6 +74,8 @@ pub trait Sequence<Item> {
   ///
   /// # let a = a_source.clone();
   /// assert_eq!(a.add_at_multi(3, vec![3, 4]), vec![1, 2]);
+  /// # let e = Vec::<i32>::new();
+  /// assert_eq!(e.add_at_multi(1, vec![1, 2]), vec![]);
   /// ```
   fn add_at_multi(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
   where
@@ -59,39 +95,7 @@ pub trait Sequence<Item> {
         iterator.next()
       }
     })
-    .collect()
-  }
-
-  /// Creates a new sequence by inserting an element into specified index
-  /// in this sequence.
-  ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let a_source = vec![1, 2];
-  /// let a = vec![1, 2];
-  /// let e = Vec::<i32>::new();
-  ///
-  /// assert_eq!(a.add_at(0, 3), vec![3, 1, 2]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at(1, 3), vec![1, 3, 2]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at(2, 3), vec![1, 2, 3]);
-  /// assert_eq!(e.add_at(0, 1), vec![1]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at(3, 3), vec![1, 2]);
-  /// ```
-  #[inline]
-  fn add_at(self, index: usize, addition: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.add_at_multi(index, iter::once(addition))
+      .collect()
   }
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
@@ -151,20 +155,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2, -1, 1, 2];
-  /// let a = vec![1, 2, -1, 1, 2];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.chunked(3), vec![vec![1, 2, -1], vec![1, 2]]);
+  /// assert_eq!(a.chunked(2), vec![vec![1, 2], vec![3]]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.chunked(2), vec![vec![1, 2], vec![-1, 1], vec![2]]);
+  /// assert_eq!(a.chunked(3), vec![vec![1, 2, 3]]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.chunked(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
+  /// assert_eq!(a.chunked(1), vec![vec![1], vec![2], vec![3]]);
   /// ```
   #[inline]
-  fn chunked(self, size: usize) -> Self::This<Self>
+  fn chunked(self, size: usize) -> Vec<Self>
   where
     Self: FromIterator<Item> + IntoIterator<Item = Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     chunked(self, size, false)
   }
@@ -181,21 +184,23 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![2, 3, 1, 1, 2, 3];
-  /// let b = vec![1];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// let chunked = a.chunked_by(|&p, &n| p > 0 && n < 3);
-  /// assert_eq!(chunked, vec![vec![2, 3], vec![1], vec![1], vec![2, 3]]);
+  /// let chunked_by = a.chunked_by(|&p, &n| p > 0 && n > 2);
+  /// assert_eq!(chunked_by, vec![vec![1, 2], vec![3]]);
+  /// let a = a_source.clone();
+  /// assert_eq!(a.chunked_by(|_, _| false), vec![vec![1, 2, 3]]);
+  /// let a = a_source.clone();
+  /// assert_eq!(a.chunked_by(|_, _| true), vec![vec![1], vec![2], vec![3]]);
   ///
   /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(b.chunked_by(|_, _| true), vec![vec![1]]);
   /// assert_eq!(e.chunked_by(|_, _| true), empty_result);
   /// ```
-  fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Self::This<Self>
+  fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Vec<Self>
   where
     Self: FromIterator<Item> + IntoIterator<Item = Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     let mut iterator = self.into_iter();
     let mut chunk_empty = true;
@@ -248,20 +253,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2, -1, 1, 2];
-  /// let a = vec![1, 2, -1, 1, 2];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.chunked_exact(3), vec![vec![1, 2, -1]]);
+  /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2]]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.chunked_exact(2), vec![vec![1, 2], vec![-1, 1]]);
+  /// assert_eq!(a.chunked_exact(3), vec![vec![1, 2, 3]]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![-1], vec![1], vec![2]]);
+  /// assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![3]]);
   /// ```
   #[inline]
-  fn chunked_exact(self, size: usize) -> Self::This<Self>
+  fn chunked_exact(self, size: usize) -> Vec<Self>
   where
     Self: FromIterator<Item> + IntoIterator<Item = Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     chunked(self, size, true)
   }
@@ -2342,10 +2346,9 @@ where
   Result::from_iter(indices.iter().map(|index| values[*index as usize].clone()))
 }
 
-pub(crate) fn chunked<Item, Collection, Result>(collection: Collection, size: usize, exact: bool) -> Result
+pub(crate) fn chunked<Item, Collection>(collection: Collection, size: usize, exact: bool) -> Vec<Collection>
 where
   Collection: FromIterator<Item> + IntoIterator<Item = Item>,
-  Result: FromIterator<Collection>,
 {
   assert_ne!(size, 0, "chunk size must be non-zero");
   let mut iterator = collection.into_iter();

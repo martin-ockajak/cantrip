@@ -149,6 +149,16 @@ pub(crate) fn assert_map_equal<K: Debug, V: Debug, C: FromIterator<(K, V)> + Equ
 }
 
 //noinspection RsUnresolvedPath
+pub(crate) fn assert_vec_seq_equal<T: Ord + Debug, C: IntoIterator<Item = T> + Debug>(
+  values: Vec<C>, expected: Vec<Vec<T>>,
+) {
+  let values_vec = Vec::from_iter(values.into_iter().map(|x| {
+    Vec::from_iter(x)
+  }));
+  assert_eq!(values_vec, expected)
+}
+
+//noinspection RsUnresolvedPath
 pub(crate) fn assert_vec_seq_equivalent<T: Equal + Ord + Clone + Debug, C: IntoIterator<Item = T> + Equal + Debug>(
   values: Vec<C>, expected: Vec<Vec<T>>,
 ) {
