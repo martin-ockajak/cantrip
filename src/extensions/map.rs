@@ -1828,8 +1828,7 @@ pub trait Map<Key, Value> {
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let iterator = keys.iterator();
-    let removed: HashSet<&Key> = HashSet::from_iter(iterator);
+    let removed: HashSet<&Key> = HashSet::from_iter(keys.iterator());
     self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
   }
 

@@ -663,8 +663,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     Self: Sized,
   {
-    let iterator = self.into_iter();
-    iterator.fold(initial_value, function)
+    self.into_iter().fold(initial_value, function)
   }
 
   /// Creates `HashMap` of keys mapped to collections of elements according to
