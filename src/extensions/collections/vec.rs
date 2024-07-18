@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use std::fmt::{Debug, Display};
+use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -365,6 +365,23 @@ impl<Item> Sequence<Item> for Vec<Item> {
     self.iter().map_while(predicate).collect()
   }
 
+  fn move_at(mut self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    if source_index < self.len() {
+      if target_index < self.len() {
+        if source_index != target_index {
+          let item = self.remove(source_index);
+          self.insert(target_index, item);
+        }
+      } else {
+        let _unused = self.remove(source_index);
+      }
+    };
+    self
+  }
+
   #[inline]
   fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
@@ -418,7 +435,6 @@ impl<Item> Sequence<Item> for Vec<Item> {
   fn swap_at(mut self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Item: Debug,
   {
     if source_index < self.len() {
       if target_index < self.len() {

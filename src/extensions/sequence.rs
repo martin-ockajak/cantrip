@@ -1871,7 +1871,6 @@ pub trait Sequence<Item> {
   fn swap_at(self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Item: std::fmt::Debug,
   {
     if source_index == target_index {
       return self;
