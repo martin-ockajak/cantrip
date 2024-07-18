@@ -407,15 +407,6 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     self.iter().scan(init, function).collect()
   }
 
-  #[inline]
-  fn variations(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    variations(self.iter(), k)
-  }
-
   fn swap_at(mut self, source_index: usize, target_index: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -430,6 +421,15 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
       let _unused = self.remove(target_index);
     };
     self
+  }
+
+  #[inline]
+  fn variations(&self, k: usize) -> Vec<Self>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    variations(self.iter(), k)
   }
 
   #[inline]
