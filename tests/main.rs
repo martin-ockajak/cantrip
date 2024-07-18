@@ -1,5 +1,4 @@
 use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
-
 use crate::extensions::traits::*;
 
 mod extensions;

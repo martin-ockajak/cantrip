@@ -95,7 +95,7 @@ pub trait Sequence<Item> {
         iterator.next()
       }
     })
-      .collect()
+    .collect()
   }
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
@@ -670,12 +670,12 @@ pub trait Sequence<Item> {
   /// assert_eq!(Vec::fill(1, 0), vec![]);
   /// ```
   #[inline]
-  fn fill(value: Item, size: usize) -> Self
+  fn fill(element: Item, size: usize) -> Self
   where
     Item: Clone,
     Self: FromIterator<Item>,
   {
-    iter::repeat(value).take(size).collect()
+    iter::repeat(element).take(size).collect()
   }
 
   /// Creates a new sequence from this sequence without
@@ -803,12 +803,12 @@ pub trait Sequence<Item> {
   /// // assert_eq!(a.intersperse_with(3, 0), vec![1, 2, 3]);
   /// ```
   #[inline]
-  fn intersperse(self, interval: usize, value: Item) -> Self
+  fn intersperse(self, interval: usize, element: Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.intersperse_with(interval, || value.clone())
+    self.intersperse_with(interval, || element.clone())
   }
 
   // FIXME - fix the failing test case
@@ -835,14 +835,14 @@ pub trait Sequence<Item> {
   /// # let a = a_source.clone();
   /// // assert_eq!(a.intersperse_with(3, || 0), vec![1, 2, 3]);
   /// ```
-  fn intersperse_with(self, interval: usize, mut to_value: impl FnMut() -> Item) -> Self
+  fn intersperse_with(self, interval: usize, mut to_element: impl FnMut() -> Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
-    let mut value = iter::repeat(to_value());
+    let mut value = iter::repeat(to_element());
     let mut index = 0_usize;
     let mut inserted = false;
     unfold(|| {
@@ -1029,73 +1029,6 @@ pub trait Sequence<Item> {
     }
   }
 
-  /// Creates a new sequence by swapping an elements at specified indices
-  /// in this sequence.
-  ///
-  /// If one of the indices exceeds this sequence size, the element is only removed.
-  /// If both indices index exceed this sequence size, no elements are swapped.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// # let a_source = vec![1, 2, 3, 4, 5];
-  /// let a = vec![1, 2, 3, 4, 5];
-  ///
-  /// assert_eq!(a.swap_at(1, 3), vec![1, 4, 3, 2, 5]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(4, 0), vec![5, 2, 3, 4, 1]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(2, 5), vec![1, 2, 4, 5]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
-  /// ```
-  fn swap_at(self, source_index: usize, target_index: usize) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Item: std::fmt::Debug,
-  {
-    if source_index == target_index {
-      return self;
-    };
-    let (source, target) =
-      if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
-    let mut iterator = self.into_iter();
-    let mut index = 0_usize;
-    let mut stored = LinkedList::<Item>::new();
-    let mut source_item = None;
-    unfold(|| {
-      let result = match index.cmp(&source) {
-        Ordering::Less => iterator.next(),
-        Ordering::Equal => {
-          source_item = iterator.next();
-          for _ in (index + 1)..target {
-            if let Some(item) = iterator.next() {
-              stored.push_back(item);
-            } else {
-              break;
-            }
-          }
-          iterator.next().or_else(|| stored.pop_front())
-        }
-        Ordering::Greater => {
-          if index == target {
-            source_item.take()
-          } else {
-            stored.pop_front().or_else(|| iterator.next())
-          }
-        }
-      };
-      index += 1;
-      result
-    })
-    .collect()
-  }
-
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
   /// and filling missing elements with specified value, starting from the back.
   ///
@@ -1111,13 +1044,13 @@ pub trait Sequence<Item> {
   /// assert_eq!(padded, vec![4, 4, 1, 2, 3]);
   /// ```
   #[inline]
-  fn pad_left<I>(self, size: usize, value: Item) -> Self
+  fn pad_left<I>(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
     I: ExactSizeIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
-    self.pad_left_with(size, |_| value.clone())
+    self.pad_left_with(size, |_| element.clone())
   }
 
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
@@ -1135,7 +1068,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(padded, vec![0, 2, 1, 2, 3]);
   /// ```
   #[inline]
-  fn pad_left_with<I>(self, size: usize, mut to_value: impl FnMut(usize) -> Item) -> Self
+  fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
     I: ExactSizeIterator<Item = Item>,
@@ -1145,7 +1078,7 @@ pub trait Sequence<Item> {
     let original_start = size - iterator.len();
     let mut index = 0_usize;
     unfold(|| {
-      let result = if index < original_start { Some(to_value(index)) } else { iterator.next() };
+      let result = if index < original_start { Some(to_element(index)) } else { iterator.next() };
       index += 1;
       result
     })
@@ -1167,12 +1100,12 @@ pub trait Sequence<Item> {
   /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
-  fn pad_right(self, size: usize, value: Item) -> Self
+  fn pad_right(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.pad_right_with(size, |_| value.clone())
+    self.pad_right_with(size, |_| element.clone())
   }
 
   /// Creates a new sequence by padding this sequence to a minimum length of
@@ -1189,7 +1122,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
   /// ```
-  fn pad_right_with(self, size: usize, mut to_value: impl FnMut(usize) -> Item) -> Self
+  fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1197,7 +1130,7 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut index = 0_usize;
     unfold(|| {
-      let result = iterator.next().or_else(|| if index < size { Some(to_value(index)) } else { None });
+      let result = iterator.next().or_else(|| if index < size { Some(to_element(index)) } else { None });
       index += 1;
       result
     })
@@ -1910,6 +1843,73 @@ pub trait Sequence<Item> {
     .collect()
   }
 
+  /// Creates a new sequence by swapping an elements at specified indices
+  /// in this sequence.
+  ///
+  /// If one of the indices exceeds this sequence size, the element is only removed.
+  /// If both indices index exceed this sequence size, no elements are swapped.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// # let a_source = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
+  ///
+  /// assert_eq!(a.swap_at(1, 3), vec![1, 4, 3, 2, 5]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.swap_at(4, 0), vec![5, 2, 3, 4, 1]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.swap_at(2, 5), vec![1, 2, 4, 5]);
+  ///
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
+  /// ```
+  fn swap_at(self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: std::fmt::Debug,
+  {
+    if source_index == target_index {
+      return self;
+    };
+    let (source, target) =
+      if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
+    let mut iterator = self.into_iter();
+    let mut index = 0_usize;
+    let mut stored = LinkedList::<Item>::new();
+    let mut source_item = None;
+    unfold(|| {
+      let result = match index.cmp(&source) {
+        Ordering::Less => iterator.next(),
+        Ordering::Equal => {
+          source_item = iterator.next();
+          for _ in (index + 1)..target {
+            if let Some(item) = iterator.next() {
+              stored.push_back(item);
+            } else {
+              break;
+            }
+          }
+          iterator.next().or_else(|| stored.pop_front())
+        }
+        Ordering::Greater => {
+          if index == target {
+            source_item.take()
+          } else {
+            stored.pop_front().or_else(|| iterator.next())
+          }
+        }
+      };
+      index += 1;
+      result
+    })
+    .collect()
+  }
+
   /// Creates a new sequence from this sequence without
   /// the first element.
   ///
@@ -2175,11 +2175,10 @@ pub trait Sequence<Item> {
   /// let empty_result: Vec<Vec<i32>> = vec![];
   /// assert_eq!(e.windowed(1, 1), empty_result);
   /// ```
-  fn windowed(&self, size: usize, step: usize) -> Self::This<Self>
+  fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Self::This<Self>: FromIterator<Self>;
+    Self: IntoIterator<Item = Item> + FromIterator<Item>;
 
   /// Creates a new sequence consisting of overlapping windows of `N` elements
   /// of this sequence, starting at the beginning of this sequence and wrapping
@@ -2208,13 +2207,12 @@ pub trait Sequence<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
   /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.windowed(1, 1), empty_result);
+  /// assert_eq!(e.windowed_circular(1, 1), empty_result);
   /// ```
-  fn windowed_circular(&self, size: usize, step: usize) -> Self::This<Self>
+  fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Self::This<Self>: FromIterator<Self>;
+    Self: IntoIterator<Item = Item> + FromIterator<Item>;
 
   /// 'Zips up' this sequence with another collection into a single sequence of pairs.
   ///
@@ -2433,9 +2431,9 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + 
   .collect()
 }
 
-pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Result: FromIterator<Collection>>(
+pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, size: usize, step: usize,
-) -> Result {
+) -> Vec<Collection> {
   assert_ne!(size, 0, "window size must be non-zero");
   assert_ne!(step, 0, "step must be non-zero");
   let mut window = LinkedList::<Item>::new();
@@ -2455,12 +2453,9 @@ pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Res
     .collect()
 }
 
-pub(crate) fn windowed_circular<'a, Item: Clone + 'a, Collection: FromIterator<Item>, Result>(
+pub(crate) fn windowed_circular<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   mut iterator: impl Iterator<Item = &'a Item>, size: usize, step: usize,
-) -> Result
-where
-  Result: FromIterator<Collection>,
-{
+) -> Vec<Collection> {
   assert_ne!(size, 0, "window size must be non-zero");
   assert_ne!(step, 0, "step must be non-zero");
   let mut window = LinkedList::<Item>::new();

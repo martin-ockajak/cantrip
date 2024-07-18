@@ -50,6 +50,28 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
+  fn delete(mut self, key: &Key) -> Self
+  where
+    Key: PartialEq,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>
+  {
+    let _unused = self.remove(key);
+    self
+  }
+
+  #[inline]
+  fn delete_multi<'a>(mut self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
+  where
+    Key: Eq + Hash + 'a,
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>
+  {
+    for key in keys.iterator() {
+      let _unused = self.remove(key);
+    }
+    self
+  }
+
+  #[inline]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,

@@ -1,11 +1,12 @@
-use crate::extensions::iterable::Iterable;
-use crate::extensions::util::unfold::unfold;
-use crate::extensions::{collect_by_index, frequencies};
 use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap, HashSet, LinkedList};
+use std::collections::{BinaryHeap, HashMap, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+
+use crate::extensions::{collect_by_index, frequencies};
+use crate::extensions::iterable::Iterable;
+use crate::extensions::util::unfold::unfold;
 
 /// Consuming collection operations.
 ///
@@ -30,11 +31,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(a.add(3), vec![1, 2, 3, 3]);
   /// ```
   #[inline]
-  fn add(self, value: Item) -> Self
+  fn add(self, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.into_iter().chain(iter::once(value)).collect()
+    self.into_iter().chain(iter::once(element)).collect()
   }
 
   /// Creates a new collection by appending all elements of another collection to
@@ -109,7 +110,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(e.delete(&2), vec![]);
   /// ```
   #[inline]
-  fn delete(self, value: &Item) -> Self
+  fn delete(self, element: &Item) -> Self
   where
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
@@ -118,7 +119,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     self
       .into_iter()
       .filter(|x| {
-        if !removed && value == x {
+        if !removed && element == x {
           removed = true;
           false
         } else {
@@ -180,12 +181,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(Vec::fill_with(|| 1, 0), vec![]);
   /// ```
   #[inline]
-  fn fill_with(mut value: impl FnMut() -> Item, size: usize) -> Self
+  fn fill_with(mut element: impl FnMut() -> Item, size: usize) -> Self
   where
     Item: Clone,
     Self: FromIterator<Item>,
   {
-    iter::repeat(value()).take(size).collect()
+    iter::repeat(element()).take(size).collect()
   }
 
   /// Creates a new collection by filtering this collection using a
@@ -1211,13 +1212,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(e.substitute(&1, 2), vec![]);
   /// ```
   #[inline]
-  fn substitute(self, value: &Item, replacement: Item) -> Self
+  fn substitute(self, element: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut replaced = Some(replacement);
-    self.into_iter().map(|item| if &item == value { replaced.take().unwrap_or(item) } else { item }).collect()
+    self.into_iter().map(|item| if &item == element { replaced.take().unwrap_or(item) } else { item }).collect()
   }
 
   /// Creates a new collection from this collection by replacing the
@@ -1314,11 +1315,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// assert_eq!(unit, vec![1]);
   #[inline]
-  fn unit(value: Item) -> Self
+  fn unit(element: Item) -> Self
   where
     Self: FromIterator<Item> + Sized,
   {
-    iter::once(value).collect()
+    iter::once(element).collect()
   }
 }
 
@@ -1379,16 +1380,4 @@ pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Si
   iter::once(Collection::from_iter(iter::empty()))
     .chain(sizes.flat_map(|size| compute_combinations::<Item, Collection>(&values, size)))
     .collect()
-}
-
-pub(crate) fn substitute_multi<'a, Item, Collection>(
-  collection: Collection, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacement: impl IntoIterator<Item = Item>,
-) -> Collection
-where
-  Item: Eq + Hash + 'a,
-  Collection: IntoIterator<Item = Item> + FromIterator<Item>,
-{
-  let iterator = elements.iterator();
-  let removed: HashSet<&Item> = HashSet::from_iter(iterator);
-  collection.into_iter().filter(|x| !removed.contains(x)).chain(replacement).collect()
 }

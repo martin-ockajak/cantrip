@@ -1,6 +1,6 @@
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use std::fmt::Display;
+use std::fmt::{Debug, Display};
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -136,11 +136,11 @@ impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
-  fn add(mut self, value: Item) -> Self
+  fn add(mut self, element: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.push(value);
+    self.push(element);
     self
   }
 
@@ -161,6 +161,32 @@ impl<Item> Collectible<Item> for Vec<Item> {
     Item: Clone,
   {
     combinations(self.iter(), k)
+  }
+
+  #[inline]
+  fn delete(mut self, element: &Item) -> Self
+  where
+    Item: PartialEq,
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    if let Some(index) = self.iter().position(|x| x == element) {
+      let _unused = self.remove(index);
+    }
+    self
+  }
+
+  #[inline]
+  fn delete_multi<'a>(mut self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  where
+    Item: Eq + Hash + 'a,
+    Self: FromIterator<Item>,
+  {
+    for element in elements.iterator() {
+      if let Some(index) = self.iter().position(|x| x == element) {
+        let _unused = self.remove(index);
+      }
+    }
+    self
   }
 
   #[inline]
@@ -204,6 +230,18 @@ impl<Item> Collectible<Item> for Vec<Item> {
     Self: Sized,
   {
     powerset(self.iter())
+  }
+
+  #[inline]
+  fn substitute(mut self, element: &Item, replacement: Item) -> Self
+  where
+    Item: PartialEq,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    if let Some(index) = self.iter().position(|x| x == element) {
+      self[index] = replacement;
+    }
+    self
   }
 }
 
@@ -377,6 +415,23 @@ impl<Item> Sequence<Item> for Vec<Item> {
     result
   }
 
+  fn swap_at(mut self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Debug,
+  {
+    if source_index < self.len() {
+      if target_index < self.len() {
+        self.swap(source_index, target_index);
+      } else {
+        let _unused = self.remove(source_index);
+      }
+    } else if target_index < self.len() {
+      let _unused = self.remove(target_index);
+    };
+    self
+  }
+
   #[inline]
   fn variations(&self, k: usize) -> Vec<Self>
   where
@@ -387,21 +442,19 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn windowed(&self, size: usize, step: usize) -> Self::This<Self>
+  fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     windowed(self.iter(), size, step)
   }
 
   #[inline]
-  fn windowed_circular(&self, size: usize, step: usize) -> Self::This<Self>
+  fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     windowed_circular(self.iter(), size, step)
   }

@@ -136,11 +136,11 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
   #[inline]
-  fn add(mut self, value: Item) -> Self
+  fn add(mut self, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>
   {
-    self.push_back(value);
+    self.push_back(element);
     self
   }
 
@@ -345,21 +345,19 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn windowed(&self, size: usize, step: usize) -> Self::This<Self>
+  fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     windowed(self.iter(), size, step)
   }
 
   #[inline]
-  fn windowed_circular(&self, size: usize, step: usize) -> Self::This<Self>
+  fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     windowed_circular(self.iter(), size, step)
   }

@@ -134,11 +134,11 @@ impl<Item: Ord> Collectible<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
 
   #[inline]
-  fn add(mut self, value: Item) -> Self
+  fn add(mut self, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>
   {
-    self.push(value);
+    self.push(element);
     self
   }
 

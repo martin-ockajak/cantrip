@@ -263,11 +263,11 @@ pub trait Ordered<Item> {
   /// assert_eq!(a.position_of(&5), None);
   /// ```
   #[inline]
-  fn position_of(&self, value: &Item) -> Option<usize>
+  fn position_of(&self, element: &Item) -> Option<usize>
   where
     Item: PartialEq,
   {
-    self.position(|x| x == value)
+    self.position(|x| x == element)
   }
 
   /// Searches for an element in this sequence, returning all its indices.
@@ -299,11 +299,11 @@ pub trait Ordered<Item> {
   /// assert_eq!(a.position_of_multi(&5), vec![]);
   /// ```
   #[inline]
-  fn position_of_multi(&self, value: &Item) -> Vec<usize>
+  fn position_of_multi(&self, element: &Item) -> Vec<usize>
   where
     Item: PartialEq,
   {
-    self.position_multi(|x| x == value)
+    self.position_multi(|x| x == element)
   }
 
   /// Searches for a sub-sequence in this sequence, returning its index.
