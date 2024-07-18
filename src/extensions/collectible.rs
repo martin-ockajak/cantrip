@@ -50,11 +50,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(a.add_multi(vec![3, 4]), vec![1, 2, 3, 3, 4]);
   /// ```
   #[inline]
-  fn add_multi(self, iterable: impl IntoIterator<Item = Item>) -> Self
+  fn add_multi(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
-    self.into_iter().chain(iterable).collect()
+    self.into_iter().chain(elements).collect()
   }
 
   /// Creates a new collection containing combinations of specified size from the elements

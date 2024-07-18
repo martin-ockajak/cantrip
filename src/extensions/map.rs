@@ -92,11 +92,11 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   #[inline]
-  fn add_multi(self, iterable: impl IntoIterator<Item = (Key, Value)>) -> Self
+  fn add_multi(self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    self.into_iter().chain(iterable).collect()
+    self.into_iter().chain(entries).collect()
   }
 
   /// Tests if every entry of the map matches a predicate.
@@ -274,12 +274,12 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.delete_multi(&vec![1]), HashMap::new());
   /// ```
   #[inline]
-  fn delete_multi<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
+  fn delete_multi<'a>(self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let removed: HashSet<&Key> = HashSet::from_iter(iterable.iterator());
+    let removed: HashSet<&Key> = HashSet::from_iter(keys.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
@@ -304,7 +304,7 @@ pub trait Map<Key, Value> {
   ///
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
-  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn disjoint<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a;
 
@@ -961,13 +961,13 @@ pub trait Map<Key, Value> {
   /// }
   /// ```
   #[inline]
-  fn intersect<'a>(self, iterable: &'a impl Iterable<Item<'a> = &'a (Key, Value)>) -> Self
+  fn intersect<'a>(self, entries: &'a impl Iterable<Item<'a> = &'a (Key, Value)>) -> Self
   where
     Key: Eq + Hash + 'a,
     Value: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(iterable.iterator().map(|(k, v)| (k, v)));
+    let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(entries.iterator().map(|(k, v)| (k, v)));
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
 
@@ -1761,7 +1761,7 @@ pub trait Map<Key, Value> {
   /// assert!(!a.subset(&vec![1, 2]));
   /// assert!(!a.subset(&vec![]));
   /// ```
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a;
 
@@ -1822,13 +1822,13 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn substitute_multi<'a>(
-    self, elements: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
+    self, keys: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
   ) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let iterator = elements.iterator();
+    let iterator = keys.iterator();
     let removed: HashSet<&Key> = HashSet::from_iter(iterator);
     self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
   }
@@ -1858,7 +1858,7 @@ pub trait Map<Key, Value> {
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a;
 

@@ -136,6 +136,26 @@ impl<Item> Collectible<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
+  fn add(mut self, value: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>
+  {
+    self.push(value);
+    self
+  }
+
+  #[inline]
+  fn add_multi(mut self, elements: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    elements.into_iter().for_each(|x| {
+      self.push(x);
+    });
+    self
+  }
+
+  #[inline]
   fn combinations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,

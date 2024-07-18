@@ -7,6 +7,26 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   type This<X, V> = BTreeMap<X, V>;
 
   #[inline]
+  fn add(mut self, key: Key, value: Value) -> Self
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    let _unused = self.insert(key, value);
+    self
+  }
+
+  #[inline]
+  fn add_multi(mut self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    for (k, v) in entries {
+      let _unused = self.insert(k, v);
+    }
+    self
+  }
+
+  #[inline]
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
     self.iter().all(predicate)
   }

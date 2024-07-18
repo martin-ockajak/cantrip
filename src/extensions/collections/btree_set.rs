@@ -134,6 +134,26 @@ impl<Item: Ord> Collectible<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
 
   #[inline]
+  fn add(mut self, value: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>
+  {
+    let _ = self.insert(value);
+    self
+  }
+
+  #[inline]
+  fn add_multi(mut self, elements: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+  {
+    for x in elements {
+      let _unused = self.insert(x);
+    };
+    self
+  }
+
+  #[inline]
   fn combinations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,

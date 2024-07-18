@@ -3,8 +3,28 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-impl<Key, Value> Map<Key, Value> for HashMap<Key, Value> {
+impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
+
+  #[inline]
+  fn add(mut self, key: Key, value: Value) -> Self
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    let _unused = self.insert(key, value);
+    self
+  }
+
+  #[inline]
+  fn add_multi(mut self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
+    for (k, v) in entries {
+      let _unused = self.insert(k, v);
+    }
+    self
+  }
 
   #[inline]
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
