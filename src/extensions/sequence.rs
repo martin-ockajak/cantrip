@@ -1224,8 +1224,7 @@ pub trait Sequence<Item> {
     I: DoubleEndedIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
   {
-    let iterator = self.into_iter();
-    iterator.rfold(initial_value, function)
+    self.into_iter().rfold(initial_value, function)
   }
 
   /// A sequence adapter which, like [`fold`], holds internal state, but
