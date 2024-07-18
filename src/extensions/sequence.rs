@@ -1154,8 +1154,7 @@ pub trait Sequence<Item> {
     I: DoubleEndedIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
-    let iterator = self.into_iter();
-    iterator.rev().collect()
+    self.into_iter().rev().collect()
   }
 
   /// Reduces this sequence's elements to a single, final value, starting from the back.
