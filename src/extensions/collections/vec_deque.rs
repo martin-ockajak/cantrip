@@ -377,6 +377,14 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
+  fn init(mut self) -> Self {
+    if !self.is_empty() {
+      let _unused = self.remove(self.len() - 1);
+    }
+    self
+  }
+
+  #[inline]
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
@@ -420,6 +428,14 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     } else if target_index < self.len() {
       let _unused = self.remove(target_index);
     };
+    self
+  }
+
+  #[inline]
+  fn tail(mut self) -> Self {
+    if !self.is_empty() {
+      let _unused = self.remove(0);
+    }
     self
   }
 

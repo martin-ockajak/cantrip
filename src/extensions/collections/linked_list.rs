@@ -138,7 +138,7 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   #[inline]
   fn add(mut self, element: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.push_back(element);
     self
@@ -323,6 +323,12 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
+  fn init(mut self) -> Self {
+    let _unused = self.pop_back();
+    self
+  }
+
+  #[inline]
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
@@ -333,6 +339,12 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     Self::This<B>: FromIterator<B>,
   {
     self.iter().scan(init, function).collect()
+  }
+
+  #[inline]
+  fn tail(mut self) -> Self {
+    let _unused = self.pop_front();
+    self
   }
 
   #[inline]

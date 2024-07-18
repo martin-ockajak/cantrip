@@ -693,16 +693,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(e.init(), vec![]);
   /// ```
-  #[inline]
-  fn init<I>(self) -> Self
-  where
-    I: ExactSizeIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
-  {
-    let iterator = self.into_iter();
-    let size = iterator.len().saturating_sub(1);
-    iterator.take(size).collect()
-  }
+  fn init(self) -> Self;
 
   /// Create a new sequence by interleaving the elements of this sequence with
   /// the elements of another collection.
@@ -1922,13 +1913,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(e.tail(), vec![]);
   /// ```
-  #[inline]
-  fn tail(self) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.into_iter().skip(1).collect()
-  }
+  fn tail(self) -> Self;
 
   /// Creates a new sequence that yields the first `n` elements, or fewer
   /// if this sequence has fewer than `n` elements.
