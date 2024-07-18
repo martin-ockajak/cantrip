@@ -104,7 +104,8 @@ where
   assert_eq!(e.minmax_of(), None);
 
   // reduce
-  assert_eq!(a.reduce(|&acc, &e| acc + e).unwrap(), 6);
+  assert_eq!(a.reduce(|&acc, &e| acc + e), Some(6));
+  assert_eq!(e.reduce(|&acc, &e| acc + e), None);
 
   // subset
   assert!(a.subset(&vec![4, 3, 2, 2, 1]));

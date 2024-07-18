@@ -17,14 +17,16 @@ where
 {
   let a_source = C::from_iter(vec![1, 2, 3]);
   let e_source = C::from_iter(vec![]);
-  let a = a_source.clone();
-  let e = e_source.clone();
 
   // first
+  let a = a_source.clone();
+  let e = e_source.clone();
   assert_eq!(a.first(), Some(&1));
   assert_eq!(e.first(), None);
 
   // last
+  let a = a_source.clone();
+  let e = e_source.clone();
   assert_eq!(a.last(), Some(&3));
   assert_eq!(e.last(), None);
 

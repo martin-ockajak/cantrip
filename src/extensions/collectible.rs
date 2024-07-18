@@ -968,7 +968,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let (even, odd) = a.partition(|n| n % 2 == 0);
+  /// let (even, odd) = a.partition(|&x| x % 2 == 0);
   ///
   /// assert_eq!(even, vec![2]);
   /// assert_eq!(odd, vec![1, 3]);
@@ -998,7 +998,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let (even, odd) = a.partition_map(|n| if n % 2 == 0 { Ok(n + 3) } else { Err(*n) });
+  /// let (even, odd) = a.partition_map(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
   ///
   /// assert_eq!(even, vec![5]);
   /// assert_eq!(odd, vec![1, 3]);
@@ -1025,7 +1025,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let (even, odd) = a.partition_map_to(|n| if n % 2 == 0 { Ok(n + 3) } else { Err(n) });
+  /// let (even, odd) = a.partition_map_to(|x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
   ///
   /// assert_eq!(even, vec![5]);
   /// assert_eq!(odd, vec![1, 3]);
@@ -1095,12 +1095,12 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![2, 3, 4];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
   /// let product = a.product();
   ///
-  /// assert_eq!(product, 24);
+  /// assert_eq!(product, 6);
   /// assert_eq!(e.product(), 1);
   /// ```
   #[inline]
@@ -1136,15 +1136,15 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// let reduced = a.reduce_to(|acc, e| acc + e).unwrap();
+  /// let reduced = a.reduce_to(|acc, e| acc + e);
   ///
-  /// assert_eq!(reduced, 6);
+  /// assert_eq!(reduced, Some(6));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold_to(0, |acc, e| acc + e);
   ///
-  /// assert_eq!(reduced, folded);
+  /// assert_eq!(reduced.unwrap(), folded);
   /// ```
   #[inline]
   fn reduce_to(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>

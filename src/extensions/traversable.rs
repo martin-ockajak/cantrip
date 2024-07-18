@@ -607,15 +607,15 @@ pub trait Traversable<Item> {
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// let reduced = a.reduce(|&acc, &e| acc + e).unwrap();
+  /// let reduced = a.reduce(|&acc, &e| acc + e);
   ///
-  /// assert_eq!(reduced, 6);
+  /// assert_eq!(reduced, Some(6));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold(0, |acc, &e| acc + e);
   ///
-  /// assert_eq!(reduced, folded);
+  /// assert_eq!(reduced.unwrap(), folded);
   /// ```
   fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 
