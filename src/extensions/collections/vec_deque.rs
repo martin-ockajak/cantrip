@@ -381,6 +381,24 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     self.iter().map_while(predicate).collect()
   }
 
+  fn move_at(mut self, source_index: usize, target_index: usize) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    if source_index < self.len() {
+      if target_index < self.len() {
+        if source_index != target_index {
+          if let Some(item) = self.remove(source_index) {
+            self.insert(target_index, item);
+          }
+        }
+      } else {
+        let _unused = self.remove(source_index);
+      }
+    };
+    self
+  }
+
   #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
