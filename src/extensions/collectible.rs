@@ -4,9 +4,9 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
-use crate::extensions::{collect_by_index, frequencies};
 use crate::extensions::iterable::Iterable;
 use crate::extensions::util::unfold::unfold;
+use crate::extensions::{collect_by_index, frequencies};
 
 /// Consuming collection operations.
 ///
@@ -1270,15 +1270,13 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let elements_iterator = elements.iterator();
-    let mut replaced_items = HashMap::<&Item, LinkedList<Item>>::with_capacity(elements_iterator.size_hint().0);
+    let mut replaced = HashMap::<&Item, LinkedList<Item>>::with_capacity(elements_iterator.size_hint().0);
     for (item, replacement) in elements_iterator.zip(replacements.into_iter()) {
-      replaced_items.entry(item).or_default().push_back(replacement);
+      replaced.entry(item).or_default().push_back(replacement);
     }
     self
       .into_iter()
-      .map(
-        |item| if let Some(items) = replaced_items.get_mut(&item) { items.pop_front().unwrap_or(item) } else { item },
-      )
+      .map(|x| if let Some(items) = replaced.get_mut(&x) { items.pop_front().unwrap_or(x) } else { x })
       .collect()
   }
 

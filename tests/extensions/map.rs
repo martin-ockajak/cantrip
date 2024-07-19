@@ -303,11 +303,10 @@ where
   assert_map_equal(a.substitute(&3, 4, 4), HashMap::from([(1, 1), (2, 2), (4, 4)]));
   assert_map_equal(e.substitute(&3, 4, 4), HashMap::new());
 
-  // substitute_multi - FIXME - fix failing test
   let a = a_source.clone();
-  // let e = e_source.clone();
+  let e = e_source.clone();
   assert_map_equal(a.substitute_multi(&vec![2, 3], vec![(4, 4), (5, 5)]), HashMap::from([(1, 1), (4, 4), (5, 5)]));
-  // assert_map_equal(e.substitute_multi(&vec![2, 3], vec![(4, 4), (5, 5)]), HashMap::new());
+  assert_map_equal(e.substitute_multi(&vec![2, 3], vec![(4, 4), (5, 5)]), HashMap::new());
 
   // superset
   let a = a_source.clone();

@@ -1,6 +1,6 @@
 use crate::extensions::iterable::Iterable;
 use std::cmp::Ordering;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -1401,7 +1401,7 @@ pub trait Map<Key, Value> {
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.minmax_by_key(|(k, _)| -k), Some(((&3, &3), (&1, &1))));
-  /// 
+  ///
   /// assert_eq!(e.minmax_by_key(|(k, _)| -k), None);
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
@@ -1842,14 +1842,23 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn substitute_multi<'a>(
-    self, keys: &'a impl Iterable<Item<'a> = &'a Key>, replacement: impl IntoIterator<Item = (Key, Value)>,
+    self, keys: &'a impl Iterable<Item<'a> = &'a Key>, replacements: impl IntoIterator<Item = (Key, Value)>,
   ) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let removed: HashSet<&Key> = HashSet::from_iter(keys.iterator());
-    self.into_iter().filter(|x| !removed.contains(&x.0)).chain(replacement).collect()
+    let keys_iterator = keys.iterator();
+    let mut replaced = HashMap::<&Key, LinkedList<(Key, Value)>>::with_capacity(keys_iterator.size_hint().0);
+    for (item, replacement) in keys_iterator.zip(replacements.into_iter()) {
+      replaced.entry(item).or_default().push_back(replacement);
+    }
+    self
+      .into_iter()
+      .map(
+        |(k, v)| if let Some(entries) = replaced.get_mut(&k) { entries.pop_front().unwrap_or((k, v)) } else { (k, v) },
+      )
+      .collect()
   }
 
   /// Tests if all the elements of another collection can be found among the keys of this map.
