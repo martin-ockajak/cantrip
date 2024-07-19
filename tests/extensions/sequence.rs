@@ -286,12 +286,40 @@ where
   let a = a_source.clone();
   let e = e_source.clone();
   assert_seq_equal(a.pad_left_with(5, |i| 2 * i as i64), vec![0, 2, 1, 2, 3]);
-  assert_seq_equal(e.pad_left_with(1, |i| 2 * i as i64), vec![2]);
+  assert_seq_equal(e.pad_left_with(1, |i| 2 * i as i64), vec![0]);
 
-  // // rev
-  // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);
-  // assert_equal(empty.clone().rev(), vec![]);
-  //
+  // pad_right
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.pad_right(5, 4), vec![1, 2, 3, 4, 4]);
+  assert_seq_equal(e.pad_right(1, 1), vec![1]);
+
+  // pad_right_with
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.pad_right_with(5, |i| 2 * i as i64), vec![1, 2, 3, 6, 8]);
+  assert_seq_equal(e.pad_right_with(1, |i| 2 * i as i64), vec![0]);
+
+  // rev
+  let a = a_source.clone();
+  let b = b_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.rev(), vec![3, 2, 1]);
+  assert_seq_equal(b.rev(), vec![3, 2, 2, 1]);
+  assert_seq_equal(e.rev(), vec![]);
+
+  // rfold
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(a.rfold_to(0, |acc, x| acc + x), 6);
+  assert_eq!(e.rfold_to(0, |acc, x| acc + x), 0);
+
+  // rfold_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(a.rfold_to(0, |acc, x| acc + x), 6);
+  assert_eq!(e.rfold_to(0, |acc, x| acc + x), 0);
+
   // // tail
   // assert_equal(repeated.clone().tail(), vec![2, 2, 3]);
 }
