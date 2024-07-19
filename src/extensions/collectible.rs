@@ -1342,7 +1342,7 @@ where
       return None;
     }
     current_slot = k;
-    let result = Some(collect_by_index(values, &combination[1..]));
+    let tuple = Some(collect_by_index(values, &combination[1..]));
     while combination[current_slot] >= (size + current_slot - k) as i64 - 1 {
       current_slot -= 1;
     }
@@ -1351,7 +1351,7 @@ where
       new_index += 1;
       *index = new_index;
     }
-    result
+    tuple
   })
   .collect()
 }

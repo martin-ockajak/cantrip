@@ -413,6 +413,26 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
+  fn substitute_at(mut self, index: usize, replacement: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>
+  {
+    self[index] = replacement;
+    self
+  }
+
+  #[inline]
+  fn substitute_at_multi(mut self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>
+  {
+    for (index, replacement) in indices.into_iter().zip(replacements) {
+      self[index] = replacement;
+    }
+    self
+  }
+
+  #[inline]
   fn swap_at(mut self, source_index: usize, target_index: usize) -> Self {
     self.swap(source_index, target_index);
     self

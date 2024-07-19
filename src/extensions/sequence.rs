@@ -368,7 +368,6 @@ pub trait Sequence<Item> {
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete_at(0), vec![2, 3]);
   /// # let a = a_source.clone();
@@ -394,7 +393,6 @@ pub trait Sequence<Item> {
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.delete_at_multi(vec![0, 2]), vec![2]);
   /// # let a = a_source.clone();
@@ -716,13 +714,13 @@ pub trait Sequence<Item> {
     let mut iterator_right = elements.into_iter();
     let mut left = true;
     unfold(|| {
-      let result = if left {
+      let new_item = if left {
         iterator_left.next().or_else(|| iterator_right.next())
       } else {
         iterator_right.next().or_else(|| iterator_left.next())
       };
       left = !left;
-      result
+      new_item
     })
     .collect()
   }
@@ -1015,9 +1013,9 @@ pub trait Sequence<Item> {
     let original_start = size - iterator.len();
     let mut index = 0_usize;
     unfold(|| {
-      let result = if index < original_start { Some(to_element(index)) } else { iterator.next() };
+      let new_item = if index < original_start { Some(to_element(index)) } else { iterator.next() };
       index += 1;
-      result
+      new_item
     })
     .collect()
   }
@@ -1067,9 +1065,9 @@ pub trait Sequence<Item> {
     let mut iterator = self.into_iter();
     let mut index = 0_usize;
     unfold(|| {
-      let result = iterator.next().or_else(|| if index < size { Some(to_element(index)) } else { None });
+      let new_item = iterator.next().or_else(|| if index < size { Some(to_element(index)) } else { None });
       index += 1;
-      result
+      new_item
     })
     .collect()
   }
@@ -1720,21 +1718,10 @@ pub trait Sequence<Item> {
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.substitute_at(1, 4), vec![1, 4, 3]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.substitute_at(3, 5), vec![1, 2, 3]);
-  /// assert_eq!(e.substitute_at(0, 1), vec![]);
   /// ```
-  #[inline]
-  fn substitute_at(self, index: usize, replacement: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.substitute_at_multi(index..(index + 1), iter::once(replacement))
-  }
+  fn substitute_at(self, index: usize, replacement: Item) -> Self;
 
   /// Creates a new sequence by replacing all elements at specified indices in this sequence
   /// by elements from another collection.
@@ -1752,39 +1739,16 @@ pub trait Sequence<Item> {
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.substitute_at_multi(vec![1, 3], vec![4, 5]), vec![1, 4, 3]);
   /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4]), vec![4, 2, 3]);
   /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.substitute_at_multi(vec![3, 4], vec![4, 5]), vec![1, 2, 3]);
-  /// assert_eq!(e.substitute_at_multi(vec![0], vec![1]), vec![]);
   /// ```
   fn substitute_at_multi(
     self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
-  ) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices);
-    let mut iterator = self.into_iter();
-    let mut replacement_items = replacements.into_iter();
-    let mut index = 0_usize;
-    unfold(|| {
-      iterator.next().map(|item| {
-        let result = if positions.contains(&index) { replacement_items.next().unwrap_or(item) } else { item };
-        index += 1;
-        result
-      })
-    })
-    .collect()
-  }
+  ) -> Self;
 
   /// Creates a new sequence by swapping an elements at specified indices
   /// in this sequence.
@@ -2099,7 +2063,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
   /// # let a = a_source.clone();
   /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
-  /// 
+  ///
   /// assert_eq!(e.windowed_circular(1, 1), Vec::<Vec<i32>>::new());
   /// ```
   fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
@@ -2215,7 +2179,7 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
       return None;
     }
     current_slot = k;
-    let result = Some(collect_by_index(&values, &product[1..]));
+    let tuple = Some(collect_by_index(&values, &product[1..]));
     while product[current_slot] >= (size - 1) as i64 {
       current_slot -= 1;
     }
@@ -2223,7 +2187,7 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
     for index in &mut product[(current_slot + 1)..=k] {
       *index = 0;
     }
-    result
+    tuple
   })
   .collect()
 }
@@ -2276,7 +2240,7 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
       return None;
     }
     current_slot = k;
-    let result = Some(collect_by_index(&values, &multi_combination[1..]));
+    let tuple = Some(collect_by_index(&values, &multi_combination[1..]));
     while multi_combination[current_slot] >= (size - 1) as i64 {
       current_slot -= 1;
     }
@@ -2284,7 +2248,7 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
     for index in &mut multi_combination[current_slot..=k] {
       *index = new_index;
     }
-    result
+    tuple
   })
   .collect()
 }
@@ -2303,7 +2267,7 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + 
       return None;
     }
     current_slot = k;
-    let result = Some(collect_by_index(&values, &variation[1..]));
+    let tuple = Some(collect_by_index(&values, &variation[1..]));
     while current_slot > 0 && ((variation[current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
       used_indices[variation[current_slot] as usize] = false;
       current_slot -= 1;
@@ -2319,7 +2283,7 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + 
         *index = new_index;
       }
     }
-    result
+    tuple
   })
   .collect()
 }
@@ -2334,11 +2298,11 @@ pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
     .flat_map(|item| {
       window.push_back(item.clone());
       if window.len() >= size {
-        let result = Some(Collection::from_iter(window.clone()));
+        let tuple = Some(Collection::from_iter(window.clone()));
         for _ in 0..step {
           let _unused = window.pop_front();
         }
-        result
+        tuple
       } else {
         None
       }
@@ -2366,11 +2330,11 @@ pub(crate) fn windowed_circular<'a, Item: Clone + 'a, Collection: FromIterator<I
         return None;
       }
     }
-    let result = Some(Collection::from_iter(window.clone()));
+    let tuple = Some(Collection::from_iter(window.clone()));
     for _ in 0..step {
       let _unused = window.pop_front();
     }
-    result
+    tuple
   })
   .collect()
 }

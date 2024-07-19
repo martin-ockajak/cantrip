@@ -1,10 +1,10 @@
-use std::cmp::Ordering;
-use std::collections::{BTreeSet, HashMap, LinkedList};
-use std::fmt::Display;
-use std::hash::Hash;
-
 use crate::extensions::util::unfold::unfold;
 use crate::extensions::*;
+use std::cmp::Ordering;
+use std::collections::{BTreeMap, BTreeSet, HashMap, LinkedList};
+use std::fmt::Display;
+use std::hash::Hash;
+use std::iter;
 
 impl<Item> Traversable<Item> for LinkedList<Item> {
   #[inline]
@@ -354,7 +354,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
-  
+
   fn move_at(self, source_index: usize, target_index: usize) -> Self {
     if source_index == target_index {
       let size = self.len();
@@ -373,9 +373,9 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
             source_item = Some(value);
           }
         }
-        let result = if index == target_index { source_item.take() } else { iterator.next() };
+        let new_item = if index == target_index { source_item.take() } else { iterator.next() };
         index += 1;
-        result
+        new_item
       })
       .collect()
     } else {
@@ -409,6 +409,36 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     self.iter().scan(init, function).collect()
   }
 
+  #[inline]
+  fn substitute_at(self, index: usize, replacement: Item) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    self.substitute_at_multi(index..(index + 1), iter::once(replacement))
+  }
+
+  fn substitute_at_multi(
+    self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
+  ) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    let mut index_replacements: BTreeMap<usize, Item> = BTreeMap::from_iter(indices.into_iter().zip(replacements));
+    let mut index = 0_usize;
+    let result = self
+      .into_iter()
+      .map(|item| {
+        let new_item = index_replacements.remove(&index).unwrap_or(item);
+        index += 1;
+        new_item
+      })
+      .collect();
+    if let Some(unused_index) = index_replacements.keys().next() {
+      panic!(r#"index (is {unused_index:?}) should be < len (is {index:?})"#);
+    };
+    result
+  }
+
   fn swap_at(self, source_index: usize, target_index: usize) -> Self {
     if source_index == target_index {
       let size = self.len();
@@ -424,7 +454,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     let mut stored = LinkedList::<Item>::new();
     let mut source_item = None;
     unfold(|| {
-      let result = match index.cmp(&source) {
+      let new_item = match index.cmp(&source) {
         Ordering::Less => iterator.next(),
         Ordering::Equal => {
           source_item = iterator.next();
@@ -446,7 +476,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
         }
       };
       index += 1;
-      result
+      new_item
     })
     .collect()
   }

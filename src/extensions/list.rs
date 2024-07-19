@@ -67,9 +67,9 @@ pub(crate) fn repeat<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
     if remaining == 0 {
       return None;
     }
-    let result = values.next().map(|&x| x.clone());
+    let new_item = values.next().map(|&x| x.clone());
     remaining -= 1;
-    result
+    new_item
   })
   .collect()
 }
