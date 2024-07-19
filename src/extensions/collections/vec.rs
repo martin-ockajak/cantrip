@@ -2,7 +2,6 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
-
 use crate::extensions::*;
 
 impl<Item> Traversable<Item> for Vec<Item> {
