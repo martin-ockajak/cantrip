@@ -517,16 +517,16 @@ pub trait Sequence<Item> {
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let iterator = self.into_iter();
-    let mut values = HashSet::with_capacity(iterator.size_hint().0);
-    let mut duplicates = HashSet::with_capacity(iterator.size_hint().0);
+    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+    let mut duplicated = HashSet::with_capacity(iterator.size_hint().0);
     iterator
       .flat_map(|item| {
-        if !duplicates.contains(&item) {
-          if let Some(result) = values.take(&item) {
-            let _ = duplicates.insert(item);
+        if !duplicated.contains(&item) {
+          if let Some(result) = occurred.take(&item) {
+            let _ = duplicated.insert(item);
             return Some(result);
           } else {
-            let _ = values.insert(item);
+            let _ = occurred.insert(item);
           }
         }
         None
@@ -534,7 +534,6 @@ pub trait Sequence<Item> {
       .collect()
   }
 
-  // FIXME - fix the failing test case
   /// Creates a new collection by including only the elements of this collection
   /// that appear more than once.
   ///
@@ -548,33 +547,35 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // assert_eq!(
-  /// //   a.duplicates_by(|x| x % 2),
-  /// //   vec![1, 3]
-  /// // );
+  /// assert_eq!(
+  ///   a.duplicates_by(|x| x % 2),
+  ///   vec![1, 3]
+  /// );
   /// ```
   fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let iterator = self.into_iter();
-    let mut values = HashMap::with_capacity(iterator.size_hint().0);
-    let mut duplicates = HashSet::with_capacity(iterator.size_hint().0);
-    iterator
-      .flat_map(|item| {
-        let key = to_key(&item);
-        if !duplicates.contains(&key) {
-          if let Some(result) = values.remove(&key) {
-            let _ = duplicates.insert(key);
-            return Some(result);
+    let mut iterator = self.into_iter();
+    let mut occurred = HashMap::<K, Option<Item>>::with_capacity(iterator.size_hint().0);
+    let mut stored: Option<Item> = None;
+    unfold(|| {
+      stored.take().or_else(|| loop {
+        if let Some(item) = iterator.next() {
+          let key = to_key(&item);
+          if let Some(value) = occurred.get_mut(&key) {
+            stored = Some(item);
+            return value.take();
           } else {
-            let _unused = values.insert(key, item);
+            let _unused = occurred.insert(key, Some(item));
           }
+        } else {
+          return None;
         }
-        None
       })
-      .collect()
+    })
+    .collect()
   }
 
   /// Creates a new sequence which contains elements of this sequence

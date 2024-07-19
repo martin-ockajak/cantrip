@@ -165,11 +165,11 @@ where
   assert_seq_equal(a.duplicates(), vec![2]);
   assert_seq_equal(e.duplicates(), vec![]);
 
-  // duplicates_by - FIXME - fix the failing test case
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.duplicates_by(|x| x % 2), vec![1, 3]);
-  // assert_seq_equal(e.duplicates_by(|x| x % 2), vec![]);
+  // duplicates_by
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.duplicates_by(|x| x % 2), vec![1, 3]);
+  assert_seq_equal(e.duplicates_by(|x| x % 2), vec![]);
 
   // enumerate - FIXME - implement test
   // let a = a_source.clone();
