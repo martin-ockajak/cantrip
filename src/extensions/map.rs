@@ -1670,19 +1670,19 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// # let a_source = HashMap::from([
-  /// #   (1, 2),
-  /// #   (2, 3),
-  /// #   (3, 4),
+  /// #   (1, 1),
+  /// #   (2, 2),
+  /// #   (3, 3),
   /// # ]);
   /// let a = HashMap::from([
-  ///   (1, 2),
-  ///   (2, 3),
-  ///   (3, 4),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// assert_eq!(
   ///   a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)),
-  ///   Some((6, 9))
+  ///   Some((6, 6))
   /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
@@ -1719,19 +1719,19 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// # let a_source = HashMap::from([
-  /// #   (1, 2),
-  /// #   (2, 3),
-  /// #   (3, 4),
+  /// #   (1, 1),
+  /// #   (2, 2),
+  /// #   (3, 3),
   /// # ]);
   /// let a = HashMap::from([
-  ///   (1, 2),
-  ///   (2, 3),
-  ///   (3, 4),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// assert_eq!(
   ///   a.reduce_to(|(a, b), (k, v)| (a + k, b + v)),
-  ///   Some((6, 9))
+  ///   Some((6, 6))
   /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
