@@ -17,15 +17,24 @@ where
     + 'a,
 {
   // FIXME - implement test for all trait methods
-  let a_source = C::from_iter(vec![(0, 0), (1, 1), (2, 2)]);
+  let a_source = C::from_iter(vec![(1, 1), (2, 2), (3, 3)]);
   let e_source = C::from_iter(vec![]);
-  let a = a_source.clone();
-  let e = e_source.clone();
 
   // add
-  assert_map_equal(a.add(3, 3), HashMap::from([(0, 0), (1, 1), (2, 2), (3, 3)]));
-  assert_map_equal(e.add(0, 0), HashMap::from([(0, 0)]));
+  let a = a_source.clone();
   let e = e_source.clone();
+  assert_map_equal(a.add(4, 4), HashMap::from([
+    (1, 1),
+    (2, 2),
+    (3, 3),
+    (4, 4),
+  ]));
+  let a = a_source.clone();
+  assert_map_equal(a.add(1, 4), HashMap::from([
+    (1, 4),
+    (2, 2),
+    (3, 3),
+  ]));
   assert_map_equal(e, HashMap::new());
 
   // // all
