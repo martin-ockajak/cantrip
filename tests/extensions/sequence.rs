@@ -207,23 +207,23 @@ where
   assert_seq_equal(a.interleave_exact(vec![]), vec![]);
   assert_seq_equal(e.interleave_exact(vec![1]), vec![]);
 
-  // intersperse - FIXME - fix the failing test case
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.intersperse(1, 0), vec![1, 0, 2, 0, 3]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.intersperse(2, 0), vec![1, 2, 0, 3]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.intersperse(3, 0), vec![1, 2, 3]);
-  // assert_seq_equal(e.intersperse(1, 0), vec![]);
+  // intersperse
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.intersperse(1, 0), vec![1, 0, 2, 0, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.intersperse(2, 0), vec![1, 2, 0, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.intersperse(3, 0), vec![1, 2, 3]);
+  assert_seq_equal(e.intersperse(1, 0), vec![]);
 
-  // intersperse_with - FIXME - fix the failing test case
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.intersperse_with(2, || 0), vec![1, 2, 0, 3]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.intersperse_with(3, || 0), vec![1, 2, 3]);
-  // assert_seq_equal(e.intersperse_with(1, || 0), vec![]);
+  // intersperse_with
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.intersperse_with(2, || 0), vec![1, 2, 0, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.intersperse_with(3, || 0), vec![1, 2, 3]);
+  assert_seq_equal(e.intersperse_with(1, || 0), vec![]);
 
   // map_while - FIXME - implement test
   // assert_seq_equal(a.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![2, 3]);
