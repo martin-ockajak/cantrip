@@ -282,6 +282,12 @@ where
   assert_seq_equal(a.pad_left(5, 4), vec![4, 4, 1, 2, 3]);
   assert_seq_equal(e.pad_left(1, 1), vec![1]);
 
+  // pad_left_with
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.pad_left_with(5, |i| 2 * i as i64), vec![0, 2, 1, 2, 3]);
+  assert_seq_equal(e.pad_left_with(1, |i| 2 * i as i64), vec![2]);
+
   // // rev
   // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);
   // assert_equal(empty.clone().rev(), vec![]);
