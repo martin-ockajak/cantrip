@@ -1,6 +1,6 @@
-use std::fmt::Debug;
-
 use cantrip::{Collectible, Iterable, List, Map, Ordered, Sequence, Slice, Traversable};
+use std::fmt::Debug;
+use std::panic::UnwindSafe;
 
 use crate::extensions::collectible::test_collectible;
 use crate::extensions::list::test_list;
@@ -65,6 +65,7 @@ where
     + Debug
     + 'a,
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  for<'c> &'c C: UnwindSafe,
 {
   test_traversable::<C>(true);
   test_collectible::<C>(true);
@@ -91,6 +92,7 @@ where
     + Debug
     + 'a,
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  for<'c> &'c C: UnwindSafe,
 {
   test_traversable::<C>(true);
   test_collectible::<C>(true);

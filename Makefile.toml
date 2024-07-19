@@ -12,7 +12,7 @@ args = ["clippy"]
 
 [tasks.test]
 command = "cargo"
-args = ["test"]
+args = ["test", "--nocapture"]
 
 [tasks.retest]
 install_crate = "cargo-watch"

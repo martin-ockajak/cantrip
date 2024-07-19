@@ -362,7 +362,10 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
 
   #[inline]
   fn delete_at(mut self, index: usize) -> Self {
-    let _unused = self.remove(index);
+    if self.remove(index).is_none() {
+      let size = self.len();
+      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
+    };
     self
   }
 
@@ -372,7 +375,10 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     deleted_indices.sort_unstable();
     for index in deleted_indices.into_iter().rev() {
       if index != last {
-        let _unused = self.remove(index);
+        if self.remove(index).is_none() {
+          let size = self.len();
+          panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
+        };
         last = index;
       }
     }

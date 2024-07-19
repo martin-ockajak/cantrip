@@ -1,9 +1,11 @@
-use std::fmt::Debug;
-
 use cantrip::{Iterable, Sequence};
+use std::fmt::Debug;
+use std::panic;
+use std::panic::UnwindSafe;
 
 use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, Equal};
 
+#[allow(box_pointers)]
 pub(crate) fn test_sequence<'a, C, I>()
 where
   I: DoubleEndedIterator<Item = i64>,
@@ -15,6 +17,7 @@ where
     + Equal
     + Debug
     + 'a,
+  for<'c> &'c C: UnwindSafe,
 {
   // FIXME - implement test for all trait methods
   let a_source = C::from_iter(vec![1, 2, 3]);
@@ -69,6 +72,10 @@ where
   let a = a_source.clone();
   assert_vec_seq_equal(a.chunked(1), vec![vec![1], vec![2], vec![3]]);
   assert_vec_seq_equal(e.chunked(1), vec![]);
+  assert!(panic::catch_unwind(|| {
+    let a = a_source.clone();
+    a.chunked(0)
+  }).is_err());
 
   // chunked_by
   let a = a_source.clone();
@@ -90,6 +97,10 @@ where
   let a = a_source.clone();
   assert_vec_seq_equal(a.chunked_exact(1), vec![vec![1], vec![2], vec![3]]);
   assert_vec_seq_equal(e.chunked_exact(1), vec![]);
+  assert!(panic::catch_unwind(|| {
+    let a = a_source.clone();
+    a.chunked_exact(0)
+  }).is_err());
 
   let c = vec![1, 1, 2, 1, 2, 2, 3];
   let e = e_source.clone();
@@ -101,14 +112,48 @@ where
   let e = e_source.clone();
   assert_vec_seq_equal(a.combinations_multi(0), vec![vec![]]);
   assert_vec_seq_equal(a.combinations_multi(1), vec![vec![1], vec![2], vec![3]]);
-  assert_vec_seq_equal(a.combinations_multi(2), vec![
-    vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]
-  ]);
-  assert_vec_seq_equal(a.combinations_multi(3), vec![
-    vec![1, 1, 1], vec![1, 1, 2], vec![1, 1, 3], vec![1, 2, 2], vec![1, 2, 3],
-    vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
-  ]);
+  assert_vec_seq_equal(
+    a.combinations_multi(2),
+    vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]],
+  );
+  assert_vec_seq_equal(
+    a.combinations_multi(3),
+    vec![
+      vec![1, 1, 1],
+      vec![1, 1, 2],
+      vec![1, 1, 3],
+      vec![1, 2, 2],
+      vec![1, 2, 3],
+      vec![1, 3, 3],
+      vec![2, 2, 2],
+      vec![2, 2, 3],
+      vec![2, 3, 3],
+      vec![3, 3, 3],
+    ],
+  );
   assert_vec_seq_equal(e.combinations_multi(2), vec![]);
+
+  // delete_at
+  let a = a_source.clone();
+  assert_seq_equal(a.delete_at(0), vec![2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.delete_at(1), vec![1, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.delete_at(2), vec![1, 2]);
+  assert!(panic::catch_unwind(|| {
+    let e = e_source.clone();
+    e.delete_at(0)
+  }).is_err());
+
+  // delete_at_multi
+  let a = a_source.clone();
+  assert_seq_equal(a.delete_at_multi(vec![0, 2]), vec![2]);
+  let a = a_source.clone();
+  assert_seq_equal(a.delete_at_multi(vec![0, 1, 2]), vec![]);
+  assert!(panic::catch_unwind(|| {
+    let e = e_source.clone();
+    e.delete_at_multi(vec![0])
+  }).is_err());
 
   // // rev
   // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);
