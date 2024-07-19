@@ -225,7 +225,7 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3];
   ///
   /// let zero = "0".to_string();
   ///
@@ -233,7 +233,7 @@ pub trait Traversable<Item> {
   ///   format!("({acc} + {x})")
   /// });
   ///
-  /// assert_eq!(folded, "(((((0 + 1) + 2) + 3) + 4) + 5)");
+  /// assert_eq!(folded, "(((0 + 1) + 2) + 3)");
   /// ```
   /// It's common for people who haven't used collections a lot to
   /// use a `for` loop with a list of things to build up a result. Those
@@ -244,7 +244,7 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3];
   ///
   /// let mut result = 0;
   ///
@@ -276,15 +276,14 @@ pub trait Traversable<Item> {
   ///
   /// ```
   /// use crate::cantrip::*;
-  /// use std::sync::mpsc::channel;
   ///
-  /// let (tx, rx) = channel();
-  /// (0..3).for_each(move |x| tx.send(x).unwrap());
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   rx.iter().collect::<Vec<i32>>(),
-  ///   vec![0, 1, 2]
-  /// );
+  /// let mut acc = 0;
+  /// 
+  /// a.for_each(|&x| acc += x);
+  ///
+  /// assert_eq!(acc, 6);
   /// ```
   ///
   /// For such a small example, a `for` loop may be cleaner, but `for_each`

@@ -48,9 +48,9 @@ where
 
   // for_each
   let mut acc = 0;
-  a.for_each(|x| acc += x);
+  a.for_each(|&x| acc += x);
   assert_eq!(acc, 6);
-  e.for_each(|x| acc += x);
+  e.for_each(|&x| acc += x);
   assert_eq!(acc, 6);
 
   // group_fold

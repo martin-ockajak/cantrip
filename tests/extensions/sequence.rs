@@ -477,10 +477,12 @@ where
   // unzip - FIXME - implement test
   // let a = a_source.clone();
   // let e = e_source.clone();
-  // let (left, right) = a.unzip();
-  // assert_seq_equal(left, vec![1, 3, 5]);
-  // assert_seq_equal(right, vec![2, 4, 6]);
-  // assert_seq_equal(e.unzip().0, vec![]);
+  // let (a_left, a_right) = a.unzip();
+  // assert_seq_equal(a_left, vec![1, 3, 5]);
+  // assert_seq_equal(a_right, vec![2, 4, 6]);
+  // let (e_left, e_right) = e.unzip();
+  // assert_seq_equal(e_left, vec![]);
+  // assert_seq_equal(e_right, vec![]);
 
   // variations
   let a = a_source.clone();

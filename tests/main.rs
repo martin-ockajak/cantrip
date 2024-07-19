@@ -19,9 +19,9 @@ fn sequences() {
   let linked_list: LinkedList<i64> = LinkedList::new();
   let slice = &vec[..];
   let _ = (slice.len(), vec.len(), linked_list.len(), vec_deque.len());
-  if false {test_sequence_traits(vec)};
-  if false {test_list_traits(linked_list)};
-  if true {test_list_traits(vec_deque)};
+  test_sequence_traits(vec);
+  if false { test_list_traits(linked_list) };
+  test_list_traits(vec_deque);
 }
 
 #[test]

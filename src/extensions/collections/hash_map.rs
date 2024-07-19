@@ -107,7 +107,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn fold<B>(self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
+  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     self.iter().fold(initial_value, function)
   }
 

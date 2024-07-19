@@ -110,6 +110,8 @@ where
     + FromIterator<(i64, i64)>
     + IntoIterator<Item = (i64, i64)>
     + Iterable<Item<'a> = (&'a i64, &'a i64)>
+    + Default
+    + Extend<(i64, i64)>
     + Clone
     + Equal
     + Debug

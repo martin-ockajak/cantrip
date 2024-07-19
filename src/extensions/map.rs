@@ -459,15 +459,15 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (1, "1"),
-  ///   (2, "two"),
-  ///   (3, "NaN"),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.filter_map(|(&k, &v)| v.parse::<i32>().ok().map(|v| (k, v))),
+  ///   a.filter_map(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }),
   ///   HashMap::from([
-  ///     (1, 1),
+  ///     (1, 2),
   /// ]));
   /// ```
   ///
@@ -478,18 +478,18 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (1, "1"),
-  ///   (2, "two"),
-  ///   (3, "NaN"),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// let filter_mapped = a
-  ///   .map(|(&k, &v)| (k, v.parse::<i32>()))
-  ///   .filter(|(_, s)| s.is_ok())
+  ///   .map(|(&k, &v)| (k, if k < 2 { Some(v + 1) } else { None }))
+  ///   .filter(|(_, s)| s.is_some())
   ///   .map(|(&k, v)| (k, v.clone().unwrap()));
   ///
   /// assert_eq!(filter_mapped, HashMap::from([
-  ///   (1, 1),
+  ///   (1, 2),
   /// ]));
   /// ```
   fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
@@ -520,15 +520,15 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (1, "1"),
-  ///   (2, "two"),
-  ///   (3, "NaN"),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.filter_map_to(|(k, v)| v.parse::<i32>().ok().map(|v| (k, v))),
+  ///   a.filter_map_to(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }),
   ///   HashMap::from([
-  ///     (1, 1),
+  ///     (1, 2),
   /// ]));
   /// ```
   ///
@@ -539,18 +539,18 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (1, "1"),
-  ///   (2, "two"),
-  ///   (3, "NaN"),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// let filter_mapped = a
-  ///   .map_to(|(k, v)| (k, v.parse::<i32>()))
-  ///   .filter(|(_, s)| s.is_ok())
+  ///   .map_to(|(k, v)|(k, if k < 2 { Some(v + 1) } else { None }))
+  ///   .filter(|(_, s)| s.is_some())
   ///   .map(|(&k, v)| (k, v.clone().unwrap()));
   ///
   /// assert_eq!(filter_mapped, HashMap::from([
-  ///   (1, 1),
+  ///   (1, 2),
   /// ]));
   /// ```
   #[inline]
@@ -613,13 +613,13 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (1, "one"),
-  ///   (2, "2"),
-  ///   (3, "NaN"),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.find_map(|(_, &v)| v.parse().ok()),
+  ///   a.find_map(|(&k, &v)| if k == 2 { Some(v) } else { None }),
   ///   Some(2)
   /// );
   /// ```
@@ -645,13 +645,13 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (1, "one"),
-  ///   (2, "2"),
-  ///   (3, "NaN"),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.find_map_to(|(_, v)| v.parse().ok()),
+  ///   a.find_map_to(|(k, v)| if k == 2 { Some(v) } else { None }),
   ///   Some(2)
   /// );
   /// ```
@@ -748,7 +748,7 @@ pub trait Map<Key, Value> {
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// assert_eq!(
-  ///   a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]),
+  ///   a.flat_map_to(|(k, v)| vec![(-k, v), (k, v)]),
   ///   HashMap::from([
   ///     (-1, 1),
   ///     (-2, 2),
@@ -828,7 +828,7 @@ pub trait Map<Key, Value> {
   /// | 3       | 5   | 3 | c | 9      |
   ///
   /// And so, our final result, `9`.
-  fn fold<B>(self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
+  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
 
   /// Folds every entry into an accumulator by applying an operation,
   /// returning the final result.
@@ -912,15 +912,19 @@ pub trait Map<Key, Value> {
   ///
   /// ```
   /// use crate::cantrip::*;
-  /// use std::sync::mpsc::channel;
+  /// use std::collections::HashMap;
   ///
-  /// let (tx, rx) = channel();
-  /// (0..3).for_each(move |x| tx.send(x).unwrap());
+  /// let a = HashMap::from([
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
+  /// ]);
   ///
-  /// assert_eq!(
-  ///   rx.iter().collect::<Vec<i32>>(),
-  ///   vec![0, 1, 2]
-  /// );
+  /// let mut acc = 0;
+  ///
+  /// a.for_each(|(&k, &v)| acc += k + v);
+  ///
+  /// assert_eq!(acc, 12);
   /// ```
   ///
   /// For such a small example, a `for` loop may be cleaner, but `for_each`
@@ -1195,13 +1199,13 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0, 1),
-  ///   (3, 2),
-  ///   (-3, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.max_by(|x, y| x.0.cmp(y.0)), Some((&3, &2)));
+  /// assert_eq!(a.max_by(|x, y| x.0.cmp(y.0)), Some((&3, &3)));
   ///
   /// assert_eq!(e.max_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
@@ -1220,15 +1224,15 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0_i32, 1),
-  ///   (3, 2),
-  ///   (-5, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.max_by_key(|(k, _)| k.abs()), Some((&-5, &3)));
+  /// assert_eq!(a.max_by_key(|(k, _)| -k), Some((&1, &1)));
   ///
-  /// assert_eq!(e.max_by_key(|(k, _)| k.abs()), None);
+  /// assert_eq!(e.max_by_key(|(k, _)| -k), None);
   /// ```
   fn max_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
   where
@@ -1246,18 +1250,18 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0, 1),
-  ///   (1, 2),
-  ///   (2, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.max_item(), Some((&2, &3)));
+  /// assert_eq!(a.max_of(), Some((&3, &3)));
   ///
-  /// assert_eq!(e.max_item(), None);
+  /// assert_eq!(e.max_of(), None);
   /// ```
   #[inline]
-  fn max_item(&self) -> Option<(&Key, &Value)>
+  fn max_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
     Value: Ord,
@@ -1278,13 +1282,13 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0, 1),
-  ///   (3, 2),
-  ///   (-5, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.min_by(|x, y| x.0.cmp(y.0)), Some((&-5, &3)));
+  /// assert_eq!(a.min_by(|x, y| x.0.cmp(y.0)), Some((&1, &1)));
   ///
   /// assert_eq!(e.min_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
@@ -1303,15 +1307,15 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0_i32, 1),
-  ///   (3, 2),
-  ///   (-5, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.min_by_key(|(k, _)| k.abs()), Some((&0, &1)));
+  /// assert_eq!(a.min_by_key(|(k, _)| -k), Some((&3, &3)));
   ///
-  /// assert_eq!(e.min_by_key(|(k, _)| k.abs()), None);
+  /// assert_eq!(e.min_by_key(|(k, _)| -k), None);
   /// ```
   fn min_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
   where
@@ -1329,18 +1333,18 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0, 1),
-  ///   (1, 2),
-  ///   (2, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.min_item(), Some((&0, &1)));
+  /// assert_eq!(a.min_of(), Some((&1, &1)));
   ///
-  /// assert_eq!(e.min_item(), None);
+  /// assert_eq!(e.min_of(), None);
   /// ```
   #[inline]
-  fn min_item(&self) -> Option<(&Key, &Value)>
+  fn min_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
     Value: Ord,
@@ -1362,13 +1366,13 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0, 1),
-  ///   (3, 2),
-  ///   (-5, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.minmax_by(|x, y| x.0.cmp(y.0)), Some(((&-5, &3), (&3, &2))));
+  /// assert_eq!(a.minmax_by(|x, y| x.0.cmp(y.0)), Some(((&1, &1), (&3, &3))));
   ///
   /// assert_eq!(e.minmax_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
@@ -1390,14 +1394,15 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0_i32, 1),
-  ///   (3, 2),
-  ///   (-5, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.minmax_by_key(|(k, _)| k.abs()), Some(((&0, &1), (&-5, &3))));
-  /// assert_eq!(e.minmax_by_key(|(k, _)| k.abs()), None);
+  /// assert_eq!(a.minmax_by_key(|(k, _)| -k), Some(((&3, &3), (&1, &1))));
+  /// 
+  /// assert_eq!(e.minmax_by_key(|(k, _)| -k), None);
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
   where
@@ -1416,18 +1421,18 @@ pub trait Map<Key, Value> {
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
-  ///   (0, 1),
-  ///   (1, 2),
-  ///   (2, 3),
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.minmax_item(), Some(((&0, &1), (&2, &3))));
+  /// assert_eq!(a.minmax_of(), Some(((&1, &1), (&3, &3))));
   ///
-  /// assert_eq!(e.minmax_item(), None);
+  /// assert_eq!(e.minmax_of(), None);
   /// ```
   #[inline]
-  fn minmax_item(&self) -> Option<((&Key, &Value), (&Key, &Value))>
+  fn minmax_of(&self) -> Option<((&Key, &Value), (&Key, &Value))>
   where
     Key: Ord,
     Value: Ord,
