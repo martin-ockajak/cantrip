@@ -270,26 +270,25 @@ where
   // substitute_multi
   let a = a_source.clone();
   let b = b_source.clone();
-  // let e = e_source.clone();
+  let e = e_source.clone();
   if sequence {
     assert_seq_equal(b.substitute_multi(&vec![2, 3], vec![4, 5]), vec![1, 4, 2, 5]);
     let b = b_source.clone();
     assert_seq_equal(b.substitute_multi(&vec![2, 2], vec![4, 5]), vec![1, 4, 5, 3]);
-    // let b = b_source.clone();
-    // assert_seq_equal(b.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 2, 3]);
+    let b = b_source.clone();
+    assert_seq_equal(b.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 2, 3]);
     let b = b_source.clone();
     assert_seq_equal(b.substitute_multi(&vec![4, 5], vec![1, 1]), vec![1, 2, 2, 3]);
   } else {
     assert_set_equal(a.substitute_multi(&vec![2, 3], vec![4, 5]), vec![1, 4, 5]);
-    // FIXME - fix the test case
-    // let a = a_source.clone();
-    // assert_set_equal(a.substitute_multi(&vec![2, 2], vec![4, 5]), vec![1, 5, 3]);
-    // let a = a_source.clone();
-    // assert_set_equal(a.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 3]);
+    let a = a_source.clone();
+    assert_set_equal(a.substitute_multi(&vec![2, 2], vec![4, 5]), vec![1, 4, 3]);
+    let a = a_source.clone();
+    assert_set_equal(a.substitute_multi(&vec![2, 4], vec![4, 5]), vec![1, 4, 3]);
     let a = a_source.clone();
     assert_set_equal(a.substitute_multi(&vec![4, 5], vec![1, 1]), vec![1, 2, 3]);
   }
-  // assert_seq_equal(e.substitute_multi(&vec![1], vec![2]), vec![]);
+  assert_seq_equal(e.substitute_multi(&vec![1], vec![2]), vec![]);
 
   // sum
   let a = a_source.clone();
