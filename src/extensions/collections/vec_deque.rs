@@ -232,33 +232,14 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
     powerset(self.iter())
   }
 
+  #[inline]
   fn substitute(mut self, element: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let size = self.len();
     if let Some(index) = self.iter().position(|x| x == element) {
-      if index >= size {
-        panic!(r#"replacement index (is {index:?}) should be < len (is {size:?})"#)
-      }
       self[index] = replacement;
-    }
-    self
-  }
-
-  #[inline]
-  fn substitute_multi<'a>(
-    mut self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
-  ) -> Self
-  where
-    Item: Eq + Hash + 'a,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    for (element, replacement) in elements.iterator().zip(replacements) {
-      if let Some(index) = self.iter().position(|x| x == element) {
-        self[index] = replacement;
-      }
     }
     self
   }
@@ -380,22 +361,16 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn delete_at(mut self, index: usize) -> Self
-  {
+  fn delete_at(mut self, index: usize) -> Self {
     let _unused = self.remove(index);
     self
   }
 
-  fn delete_at_multi(mut self, indices: impl IntoIterator<Item = usize>) -> Self
-  {
+  fn delete_at_multi(mut self, indices: impl IntoIterator<Item = usize>) -> Self {
     let mut deleted_indices = Vec::<usize>::from_iter(indices);
     let mut last = usize::MAX;
-    let size = self.len();
     deleted_indices.sort_unstable();
     for index in deleted_indices.into_iter().rev() {
-      if index >= size {
-        panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
-      }
       if index != last {
         let _unused = self.remove(index);
         last = index;
@@ -417,19 +392,15 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     self.iter().map_while(predicate).collect()
   }
 
-  fn move_at(mut self, source_index: usize, target_index: usize) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    if source_index < self.len() {
-      if target_index < self.len() {
-        if source_index != target_index {
-          if let Some(item) = self.remove(source_index) {
-            self.insert(target_index, item);
-          }
-        }
-      } else {
-        let _unused = self.remove(source_index);
+  fn move_at(mut self, source_index: usize, target_index: usize) -> Self {
+    if source_index != target_index {
+      if let Some(item) = self.remove(source_index) {
+        self.insert(target_index, item);
+      }
+    } else {
+      let size = self.len();
+      if source_index >= size {
+        panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
       }
     };
     self
@@ -443,19 +414,9 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     self.iter().scan(init, function).collect()
   }
 
-  fn swap_at(mut self, source_index: usize, target_index: usize) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    if source_index < self.len() {
-      if target_index < self.len() {
-        self.swap(source_index, target_index);
-      } else {
-        let _unused = self.remove(source_index);
-      }
-    } else if target_index < self.len() {
-      let _unused = self.remove(target_index);
-    };
+  #[inline]
+  fn swap_at(mut self, source_index: usize, target_index: usize) -> Self {
+    self.swap(source_index, target_index);
     self
   }
 

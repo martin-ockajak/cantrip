@@ -3,6 +3,7 @@ use std::collections::{BTreeSet, HashMap, LinkedList};
 use std::fmt::Display;
 use std::hash::Hash;
 
+use crate::extensions::util::unfold::unfold;
 use crate::extensions::*;
 
 impl<Item> Traversable<Item> for LinkedList<Item> {
@@ -323,8 +324,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn delete_at(self, index: usize) -> Self
-  {
+  fn delete_at(self, index: usize) -> Self {
     let size = self.len();
     if index >= size {
       panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
@@ -333,8 +333,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self
-  {
+  fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self {
     let size = self.len();
     let positions: BTreeSet<usize> = BTreeSet::from_iter(indices.into_iter().map(|index| {
       if index >= size {
@@ -355,6 +354,47 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
+  fn move_at(self, source_index: usize, target_index: usize) -> Self {
+    if source_index == target_index {
+      return self;
+    };
+    let mut iterator = self.into_iter();
+    let mut index = 0_usize;
+    if source_index <= target_index {
+      let mut source_item = None;
+      unfold(|| {
+        if index == source_index {
+          if let Some(value) = iterator.next() {
+            source_item = Some(value);
+          }
+        }
+        let result = if index == target_index { source_item.take() } else { iterator.next() };
+        index += 1;
+        result
+      })
+      .collect()
+    } else {
+      let mut stored = LinkedList::<Item>::new();
+      unfold(|| match index.cmp(&target_index) {
+        Ordering::Less => {
+          index += 1;
+          iterator.next()
+        }
+        Ordering::Equal => {
+          for _ in index..source_index {
+            if let Some(item) = iterator.next() {
+              stored.push_back(item);
+            } else {
+              break;
+            }
+          }
+          iterator.next().or_else(|| stored.pop_front())
+        }
+        Ordering::Greater => stored.pop_front().or_else(|| iterator.next()),
+      })
+      .collect()
+    }
+  }
 
   #[inline]
   fn scan<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
@@ -362,6 +402,44 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     Self::This<B>: FromIterator<B>,
   {
     self.iter().scan(init, function).collect()
+  }
+
+  fn swap_at(self, source_index: usize, target_index: usize) -> Self {
+    if source_index == target_index {
+      return self;
+    };
+    let (source, target) =
+      if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
+    let mut iterator = self.into_iter();
+    let mut index = 0_usize;
+    let mut stored = LinkedList::<Item>::new();
+    let mut source_item = None;
+    unfold(|| {
+      let result = match index.cmp(&source) {
+        Ordering::Less => iterator.next(),
+        Ordering::Equal => {
+          source_item = iterator.next();
+          for _ in (index + 1)..target {
+            if let Some(item) = iterator.next() {
+              stored.push_back(item);
+            } else {
+              break;
+            }
+          }
+          iterator.next().or_else(|| stored.pop_front())
+        }
+        Ordering::Greater => {
+          if index == target {
+            source_item.take()
+          } else {
+            stored.pop_front().or_else(|| iterator.next())
+          }
+        }
+      };
+      index += 1;
+      result
+    })
+    .collect()
   }
 
   #[inline]

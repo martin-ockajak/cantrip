@@ -360,6 +360,10 @@ pub trait Sequence<Item> {
   ///
   /// if the specified index exceeds this sequence size, no elements are deleted.
   ///
+  /// # Panics
+  ///
+  /// Panics if `index` is out of bounds.
+  ///
   /// # Example
   ///
   /// ```
@@ -381,6 +385,10 @@ pub trait Sequence<Item> {
   /// in this sequence.
   ///
   /// if the specified index exceeds this sequence size, no elements are inserted.
+  ///
+  /// # Panics
+  ///
+  /// Panics if any of the `indices` is out of bounds.
   ///
   /// # Example
   ///
@@ -940,69 +948,26 @@ pub trait Sequence<Item> {
   /// If the target index exceeds this sequence size, the element is only removed.
   /// If the source index exceeds this sequence size, no elements are moved.
   ///
+  /// # Panics
+  ///
+  /// Panics if `source_index` or `target_index` are out of bounds.
+  ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2, 3, 4, 5];
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.move_at(1, 3), vec![1, 3, 4, 2, 5]);
+  /// assert_eq!(a.move_at(0, 2), vec![2, 3, 1]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.move_at(4, 0), vec![5, 1, 2, 3, 4]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.move_at(2, 5), vec![1, 2, 4, 5]);
+  /// assert_eq!(a.move_at(2, 1), vec![1, 3, 2]);
   ///
   /// # let a = a_source.clone();
-  /// assert_eq!(a.move_at(3, 3), vec![1, 2, 3, 4, 5]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.move_at(5, 1), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.move_at(1, 1), vec![1, 2, 3]);
   /// ```
-  fn move_at(self, source_index: usize, target_index: usize) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    if source_index == target_index {
-      return self;
-    };
-    let mut iterator = self.into_iter();
-    let mut index = 0_usize;
-    if source_index <= target_index {
-      let mut source_item = None;
-      unfold(|| {
-        if index == source_index {
-          if let Some(value) = iterator.next() {
-            source_item = Some(value);
-          }
-        }
-        let result = if index == target_index { source_item.take() } else { iterator.next() };
-        index += 1;
-        result
-      })
-      .collect()
-    } else {
-      let mut stored = LinkedList::<Item>::new();
-      unfold(|| match index.cmp(&target_index) {
-        Ordering::Less => {
-          index += 1;
-          iterator.next()
-        }
-        Ordering::Equal => {
-          for _ in index..source_index {
-            if let Some(item) = iterator.next() {
-              stored.push_back(item);
-            } else {
-              break;
-            }
-          }
-          iterator.next().or_else(|| stored.pop_front())
-        }
-        Ordering::Greater => stored.pop_front().or_else(|| iterator.next()),
-      })
-      .collect()
-    }
-  }
+  fn move_at(self, source_index: usize, target_index: usize) -> Self;
 
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
   /// and filling missing elements with specified value, starting from the back.
@@ -1747,6 +1712,10 @@ pub trait Sequence<Item> {
   ///
   /// if the specified index exceeds this sequence size, no elements are replaced.
   ///
+  /// # Panics
+  ///
+  /// Panics if `index` is out of bounds.
+  ///
   /// # Example
   ///
   /// ```
@@ -1774,6 +1743,10 @@ pub trait Sequence<Item> {
   /// by elements from another collection.
   ///
   /// if the specified index exceeds this sequence size, no elements are replaced.
+  ///
+  /// # Panics
+  ///
+  /// Panics if any of the `indices` is out of bounds.
   ///
   /// # Example
   ///
@@ -1822,65 +1795,24 @@ pub trait Sequence<Item> {
   /// If one of the indices exceeds this sequence size, the element is only removed.
   /// If both indices index exceed this sequence size, no elements are swapped.
   ///
+  /// # Panics
+  ///
+  /// Panics if `source_index` or `target_index` are out of bounds.
+  ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2, 3, 4, 5];
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.swap_at(1, 3), vec![1, 4, 3, 2, 5]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(4, 0), vec![5, 2, 3, 4, 1]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(2, 5), vec![1, 2, 4, 5]);
+  /// assert_eq!(a.swap_at(0, 2), vec![3, 2, 1]);
   ///
   /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(3, 3), vec![1, 2, 3, 4, 5]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.swap_at(5, 5), vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(a.swap_at(1, 1), vec![1, 2, 3]);
   /// ```
-  fn swap_at(self, source_index: usize, target_index: usize) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    if source_index == target_index {
-      return self;
-    };
-    let (source, target) =
-      if source_index <= target_index { (source_index, target_index) } else { (target_index, source_index) };
-    let mut iterator = self.into_iter();
-    let mut index = 0_usize;
-    let mut stored = LinkedList::<Item>::new();
-    let mut source_item = None;
-    unfold(|| {
-      let result = match index.cmp(&source) {
-        Ordering::Less => iterator.next(),
-        Ordering::Equal => {
-          source_item = iterator.next();
-          for _ in (index + 1)..target {
-            if let Some(item) = iterator.next() {
-              stored.push_back(item);
-            } else {
-              break;
-            }
-          }
-          iterator.next().or_else(|| stored.pop_front())
-        }
-        Ordering::Greater => {
-          if index == target {
-            source_item.take()
-          } else {
-            stored.pop_front().or_else(|| iterator.next())
-          }
-        }
-      };
-      index += 1;
-      result
-    })
-    .collect()
-  }
+  fn swap_at(self, source_index: usize, target_index: usize) -> Self;
 
   /// Creates a new sequence from this sequence without
   /// the first element.
