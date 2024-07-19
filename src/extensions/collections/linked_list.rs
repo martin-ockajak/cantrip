@@ -383,11 +383,14 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   fn move_at(self, source_index: usize, target_index: usize) -> Self {
+    let size = self.len();
+    if source_index >= size {
+      panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
+    }
+    if target_index >= size {
+      panic!(r#"target index (is {target_index:?}) should be < len (is {size:?})"#)
+    }
     if source_index == target_index {
-      let size = self.len();
-      if source_index >= size {
-        panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
-      }
       return self;
     }
     let mut iterator = self.into_iter();
@@ -467,11 +470,14 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   fn swap_at(self, source_index: usize, target_index: usize) -> Self {
+    let size = self.len();
+    if source_index >= size {
+      panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
+    }
+    if target_index >= size {
+      panic!(r#"target index (is {target_index:?}) should be < len (is {size:?})"#)
+    }
     if source_index == target_index {
-      let size = self.len();
-      if source_index >= size {
-        panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
-      }
       return self;
     }
     let (source, target) =

@@ -20,7 +20,7 @@ fn sequences() {
   let slice = &vec[..];
   let _ = (slice.len(), vec.len(), linked_list.len(), vec_deque.len());
   test_sequence_traits(vec);
-  if false { test_list_traits(linked_list) };
+  test_list_traits(linked_list);
   test_list_traits(vec_deque);
 }
 
