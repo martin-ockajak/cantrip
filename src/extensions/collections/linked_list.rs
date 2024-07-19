@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, LinkedList};
+use std::collections::{BTreeSet, HashMap, LinkedList};
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -320,6 +320,29 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
     Self: Sized,
   {
     combinations_multi(self.iter(), k)
+  }
+
+  #[inline]
+  fn delete_at(self, index: usize) -> Self
+  {
+    let size = self.len();
+    if index >= size {
+      panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
+    }
+    self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
+  }
+
+  #[inline]
+  fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self
+  {
+    let size = self.len();
+    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices.into_iter().map(|index| {
+      if index >= size {
+        panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
+      };
+      index
+    }));
+    self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
   #[inline]

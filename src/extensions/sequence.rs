@@ -374,18 +374,8 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.delete_at(1), vec![1, 3]);
   /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at(2), vec![1, 2]);
-  /// assert_eq!(e.delete_at(0), vec![]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.delete_at(3), vec![1, 2, 3]);
   /// ```
-  #[inline]
-  fn delete_at(self, index: usize) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
-  }
+  fn delete_at(self, index: usize) -> Self;
 
   /// Creates a new sequence by omitting elements at specified indices
   /// in this sequence.
@@ -403,13 +393,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.delete_at_multi(vec![0, 2]), vec![2]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.delete_at_multi(vec![1, 3]), vec![1, 3]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.delete_at_multi(vec![0, 1, 2, 3]), vec![]);
-  ///
-  /// assert_eq!(e.delete_at_multi(vec![1, 2]), vec![]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.delete_at_multi(vec![3, 4]), vec![1, 2, 3]);
+  /// assert_eq!(a.delete_at_multi(vec![0, 1, 2]), vec![]);
   /// ```
   #[inline]
   fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self

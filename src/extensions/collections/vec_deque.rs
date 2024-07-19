@@ -232,13 +232,16 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
     powerset(self.iter())
   }
 
-  #[inline]
   fn substitute(mut self, element: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
+    let size = self.len();
     if let Some(index) = self.iter().position(|x| x == element) {
+      if index >= size {
+        panic!(r#"replacement index (is {index:?}) should be < len (is {size:?})"#)
+      }
       self[index] = replacement;
     }
     self
@@ -374,6 +377,31 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
     Self: Sized,
   {
     combinations_multi(self.iter(), k)
+  }
+
+  #[inline]
+  fn delete_at(mut self, index: usize) -> Self
+  {
+    let _unused = self.remove(index);
+    self
+  }
+
+  fn delete_at_multi(mut self, indices: impl IntoIterator<Item = usize>) -> Self
+  {
+    let mut deleted_indices = Vec::<usize>::from_iter(indices);
+    let mut last = usize::MAX;
+    let size = self.len();
+    deleted_indices.sort_unstable();
+    for index in deleted_indices.into_iter().rev() {
+      if index >= size {
+        panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
+      }
+      if index != last {
+        let _unused = self.remove(index);
+        last = index;
+      }
+    }
+    self
   }
 
   #[inline]
