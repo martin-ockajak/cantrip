@@ -1243,9 +1243,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(a.skip(2), vec![3]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.skip(5), vec![]);
   /// ```
   #[inline]
   fn skip(self, n: usize) -> Self
@@ -1803,12 +1806,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.take(5), vec![1, 2]);
-  ///
-  /// assert_eq!(e.take(1), vec![]);
+  /// assert_eq!(a.take(2), vec![1, 2]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.take(5), vec![1, 2, 3]);
   /// ```
   #[inline]
   fn take(self, n: usize) -> Self
@@ -1832,12 +1836,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-1, 0, 1];
-  /// let e = Vec::<i32>::new();
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.take_while(|&x| x <= 0), vec![-1, 0]);
-  ///
-  /// assert_eq!(e.take_while(|&x| x <= 0), vec![]);
+  /// assert_eq!(a.take_while(|&x| x < 3), vec![1, 2]);
   /// ```
   #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
@@ -1858,7 +1859,7 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 2, 3, 1];
+  /// let a = vec![1, 2, 2, 3];
   ///
   /// assert_eq!(a.unique(), vec![1, 2, 3]);
   /// ```
@@ -1893,9 +1894,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec!["a", "bb", "aa", "c", "ccc"];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.unique_by(|x| x.len()), vec!["a", "bb", "ccc"]);
+  /// assert_eq!(a.unique_by(|x| x % 2), vec![1, 2]);
   /// ```
   fn unique_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
@@ -2006,13 +2007,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2, 3, 4, 5];
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.windowed(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 4], vec![4, 5]]);
+  /// assert_eq!(a.windowed(2, 1), vec![vec![1, 2], vec![2, 3]]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.windowed(2, 2), vec![vec![1, 2], vec![3, 4]]);
+  /// assert_eq!(a.windowed(2, 2), vec![vec![1, 2]]);
   ///
   /// assert_eq!(e.windowed(1, 1), Vec::<Vec<i32>>::new());
   /// ```
@@ -2040,13 +2041,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
+  /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 1]]);
   ///
   /// assert_eq!(e.windowed_circular(1, 1), Vec::<Vec<i32>>::new());
   /// ```
@@ -2077,9 +2078,9 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.zip(vec![4, 5, 6]), vec![(1, 4), (2, 5), (3, 6)]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.zip(vec![4, 5]), vec![(1, 4), (2, 5)]);
-  /// # let a = a_source.clone();
   /// assert_eq!(a.zip(vec![4, 5, 6, 7]), vec![(1, 4), (2, 5), (3, 6)]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.zip(vec![4, 5]), vec![(1, 4), (2, 5)]);
   /// ```
   #[inline]
   fn zip<T>(self, elements: impl IntoIterator<Item = T>) -> Self::This<(Item, T)>

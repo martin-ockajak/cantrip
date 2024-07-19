@@ -35,6 +35,8 @@ where
   let a = a_source.clone();
   assert_seq_equal(a.add_at(3, 4), vec![1, 2, 3, 4]);
   assert_seq_equal(e.add_at(0, 1), vec![1]);
+  let a = a_source.clone();
+  assert!(panic::catch_unwind(|| { a.add_at(4, 1) }).is_err());
 
   // add_at_multi
   let a = a_source.clone();
@@ -45,6 +47,8 @@ where
   let a = a_source.clone();
   assert_seq_equal(a.add_at_multi(3, vec![4, 5]), vec![1, 2, 3, 4, 5]);
   assert_seq_equal(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
+  let a = a_source.clone();
+  assert!(panic::catch_unwind(|| { a.add_at_multi(4, vec![1, 2]) }).is_err());
 
   // cartesian_product
   let a = a_source.clone();
@@ -66,11 +70,8 @@ where
   let a = a_source.clone();
   assert_vec_seq_equal(a.chunked(1), vec![vec![1], vec![2], vec![3]]);
   assert_vec_seq_equal(e.chunked(1), vec![]);
-  assert!(panic::catch_unwind(|| {
-    let a = a_source.clone();
-    a.chunked(0)
-  })
-  .is_err());
+  let a = a_source.clone();
+  assert!(panic::catch_unwind(|| { a.chunked(0) }).is_err());
 
   // chunked_by
   let a = a_source.clone();
@@ -92,11 +93,8 @@ where
   let a = a_source.clone();
   assert_vec_seq_equal(a.chunked_exact(1), vec![vec![1], vec![2], vec![3]]);
   assert_vec_seq_equal(e.chunked_exact(1), vec![]);
-  assert!(panic::catch_unwind(|| {
-    let a = a_source.clone();
-    a.chunked_exact(0)
-  })
-  .is_err());
+  let a = a_source.clone();
+  assert!(panic::catch_unwind(|| { a.chunked_exact(0) }).is_err());
 
   let c = vec![1, 1, 2, 1, 2, 2, 3];
   let e = e_source.clone();
@@ -136,22 +134,16 @@ where
   assert_seq_equal(a.delete_at(1), vec![1, 3]);
   let a = a_source.clone();
   assert_seq_equal(a.delete_at(2), vec![1, 2]);
-  assert!(panic::catch_unwind(|| {
-    let e = e_source.clone();
-    e.delete_at(0)
-  })
-  .is_err());
+  let e = e_source.clone();
+  assert!(panic::catch_unwind(|| { e.delete_at(0) }).is_err());
 
   // delete_at_multi
   let a = a_source.clone();
   assert_seq_equal(a.delete_at_multi(vec![0, 2]), vec![2]);
   let a = a_source.clone();
   assert_seq_equal(a.delete_at_multi(vec![0, 1, 2]), vec![]);
-  assert!(panic::catch_unwind(|| {
-    let e = e_source.clone();
-    e.delete_at_multi(vec![0])
-  })
-  .is_err());
+  let e = e_source.clone();
+  assert!(panic::catch_unwind(|| { e.delete_at_multi(vec![0]) }).is_err());
 
   // divide
   let a = a_source.clone();
@@ -347,6 +339,8 @@ where
   let a = a_source.clone();
   let e = e_source.clone();
   assert_seq_equal(a.skip(2), vec![3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.skip(5), vec![]);
   assert_seq_equal(e.skip(1), vec![]);
 
   // skip_while
@@ -363,16 +357,10 @@ where
   assert_seq_equal(a.slice(1, 3), vec![2, 3]);
   let a = a_source.clone();
   assert_seq_equal(a.slice(1, 1), vec![]);
-  assert!(panic::catch_unwind(|| {
-    let a = a_source.clone();
-    a.slice(4, 5)
-  })
-  .is_err());
-  assert!(panic::catch_unwind(|| {
-    let a = a_source.clone();
-    a.slice(1, 5)
-  })
-  .is_err());
+  let a = a_source.clone();
+  assert!(panic::catch_unwind(|| { a.slice(4, 5) }).is_err());
+  let a = a_source.clone();
+  assert!(panic::catch_unwind(|| { a.slice(1, 5) }).is_err());
   assert_seq_equal(e.slice(0, 0), vec![]);
 
   // sorted
@@ -416,7 +404,7 @@ where
   let e = e_source.clone();
   assert_seq_equal(c.sorted_unstable_by_key(|&k| -k), vec![3, 2, 1]);
   assert_seq_equal(e.sorted_unstable_by_key(|&k| -k), vec![]);
- 
+
   // step_by
   let b = b_source.clone();
   let e = e_source.clone();
@@ -427,6 +415,119 @@ where
   assert_seq_equal(b.step_by(1), vec![1, 2, 2, 3]);
   assert_seq_equal(e.step_by(1), vec![]);
 
-  // // tail
-  // assert_equal(repeated.clone().tail(), vec![2, 2, 3]);
+  // substitute_at
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.substitute_at(1, 4), vec![1, 4, 3]);
+  assert!(panic::catch_unwind(|| { e.substitute_at(3, 1) }).is_err());
+
+  // substitute_at_multi
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.substitute_at_multi(vec![0, 2], vec![4, 5]), vec![4, 2, 5]);
+  let a = a_source.clone();
+  assert_seq_equal(a.substitute_at_multi(vec![0, 2], vec![4]), vec![4, 2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.substitute_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
+  assert!(panic::catch_unwind(|| { e.substitute_at_multi(vec![0, 4], vec![1, 2]) }).is_err());
+  let e = e_source.clone();
+  assert!(panic::catch_unwind(|| { e.substitute_at_multi(vec![3, 4], vec![1, 2]) }).is_err());
+
+  // swap_at
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.swap_at(0, 2), vec![3, 2, 1]);
+  let a = a_source.clone();
+  assert_seq_equal(a.swap_at(1, 1), vec![1, 2, 3]);
+  assert!(panic::catch_unwind(|| { e.swap_at(0, 3) }).is_err());
+  let e = e_source.clone();
+  assert!(panic::catch_unwind(|| { e.swap_at(3, 4) }).is_err());
+
+  // tail
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.tail(), vec![2, 3]);
+  assert_seq_equal(e.tail(), vec![]);
+
+  // take
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.take(2), vec![1, 2]);
+  let a = a_source.clone();
+  assert_seq_equal(a.take(5), vec![1, 2, 3]);
+  assert_seq_equal(e.take(1), vec![]);
+
+  // take_while
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.take_while(|&x| x < 3), vec![1, 2]);
+  assert_seq_equal(e.take_while(|&x| x < 3), vec![]);
+
+  // unique
+  let b = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(b.unique(), vec![1, 2, 3]);
+  assert_seq_equal(e.unique(), vec![]);
+
+  // unique_by
+  let b = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(b.unique_by(|x| x % 2), vec![1, 2]);
+  assert_seq_equal(e.unique_by(|x| x % 2), vec![]);
+
+  // unzip - FIXME - implement test
+  // let a = a_source.clone();
+  // let e = e_source.clone();
+  // let (left, right) = a.unzip();
+  // assert_seq_equal(left, vec![1, 3, 5]);
+  // assert_seq_equal(right, vec![2, 4, 6]);
+  // assert_seq_equal(e.unzip().0, vec![]);
+
+  // variations
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_vec_seq_equal(a.variations(0), vec![vec![]]);
+  assert_vec_seq_equal(a.variations(1), vec![vec![1], vec![2], vec![3]]);
+  assert_vec_seq_equal(a.variations(2), vec![vec![1, 2], vec![1, 3], vec![2, 1], vec![2, 3], vec![3, 1], vec![3, 2]]);
+  assert_vec_seq_equal(
+    a.variations(3),
+    vec![vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1]],
+  );
+  assert_vec_seq_equal(e.variations(2), vec![]);
+
+  // windowed
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_vec_seq_equal(a.windowed(2, 1), vec![vec![1, 2], vec![2, 3]]);
+  let a = a_source.clone();
+  assert_vec_seq_equal(a.windowed(2, 2), vec![vec![1, 2]]);
+  assert_vec_seq_equal(e.windowed(1, 1), vec![]);
+
+  // windowed_circular
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_vec_seq_equal(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
+  let a = a_source.clone();
+  assert_vec_seq_equal(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 1]]);
+  assert_vec_seq_equal(e.windowed_circular(1, 1), vec![]);
+
+  // zip - FIXME - implement test
+  // let a = a_source.clone();
+  // let e = e_source.clone();
+  // assert_seq_equal(a.zip(vec![4, 5, 6]), vec![(1, 4), (2, 5), (3, 6)]);
+  // let a = a_source.clone();
+  // assert_seq_equal(a.zip(vec![4, 5]), vec![(1, 4), (2, 5)]);
+  // let a = a_source.clone();
+  // assert_seq_equal(a.zip(vec![4, 5, 6, 7]), vec![(1, 4), (2, 5), (3, 6)]);
+  // assert_seq_equal(e.zip(vec![1]), vec![]);
+
+  // zip_padded - FIXME - implement test
+  // let a = a_source.clone();
+  // let e = e_source.clone();
+  // assert_seq_equal(a.zip_padded(vec![4, 5, 6], || 1, || 2), vec![(1, 4), (2, 5), (3, 6)]);
+  // let a = a_source.clone();
+  // assert_seq_equal(a.zip_padded(vec![4, 5, 6, 7], || 1, || 2), vec![(1, 4), (2, 5), (3, 6), (1, 7]);
+  // let a = a_source.clone();
+  // assert_seq_equal(a.zip_padded(vec![4, 5], || 1, || 2), vec![(1, 4), (2, 5), (3, 2)]);
+  // assert_seq_equal(e.zip_padded(vec![1]), vec![(1, 1)]);
 }
