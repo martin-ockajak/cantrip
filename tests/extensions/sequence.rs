@@ -20,7 +20,6 @@ where
     + 'a,
   for<'c> &'c C: UnwindSafe,
 {
-  // FIXME - implement test for all trait methods
   let a_source = C::from_iter(vec![1, 2, 3]);
   let b_source = C::from_iter(vec![1, 2, 2, 3]);
   let c_source = C::from_iter(vec![2, 3, 1]);

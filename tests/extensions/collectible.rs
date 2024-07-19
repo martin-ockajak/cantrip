@@ -17,7 +17,6 @@ where
     + 'a,
   C::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
 {
-  // FIXME - implement test for all trait methods
   let a_source = C::from_iter(vec![1, 2, 3]);
   let b_source = C::from_iter(vec![1, 2, 2, 3]);
   let e_source = C::from_iter(vec![]);
