@@ -354,6 +354,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
     self.iter().map_while(predicate).collect()
   }
+  
   fn move_at(self, source_index: usize, target_index: usize) -> Self {
     if source_index == target_index {
       let size = self.len();
