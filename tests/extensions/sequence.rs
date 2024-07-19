@@ -23,6 +23,7 @@ where
   // FIXME - implement test for all trait methods
   let a_source = C::from_iter(vec![1, 2, 3]);
   let b_source = C::from_iter(vec![1, 2, 2, 3]);
+  let c_source = C::from_iter(vec![2, 3, 1]);
   let e_source = C::from_iter(vec![]);
 
   // add_at
@@ -361,6 +362,78 @@ where
   let e = e_source.clone();
   assert_seq_equal(a.skip_while(|&x| x < 3), vec![3]);
   assert_seq_equal(e.skip_while(|&x| x < 3), vec![]);
+
+  // slice
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.slice(0, 2), vec![1, 2]);
+  let a = a_source.clone();
+  assert_seq_equal(a.slice(1, 3), vec![2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.slice(1, 1), vec![]);
+  assert!(panic::catch_unwind(|| {
+    let a = a_source.clone();
+    a.slice(4, 5)
+  })
+  .is_err());
+  assert!(panic::catch_unwind(|| {
+    let a = a_source.clone();
+    a.slice(1, 5)
+  })
+  .is_err());
+  assert_seq_equal(e.slice(0, 0), vec![]);
+
+  // sorted
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted(), vec![1, 2, 3]);
+  assert_seq_equal(e.sorted(), vec![]);
+
+  // sorted_by
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted_by(|a, b| a.cmp(b)), vec![1, 2, 3]);
+  assert_seq_equal(e.sorted_by(|a, b| a.cmp(b)), vec![]);
+
+  // sorted_by_cached_key
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted_by_cached_key(|k| k.to_string()), vec![1, 2, 3]);
+  assert_seq_equal(e.sorted_by_cached_key(|k| k.to_string()), vec![]);
+
+  // sorted_by_key
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted_by_key(|&k| -k), vec![3, 2, 1]);
+  assert_seq_equal(e.sorted_by_key(|&k| -k), vec![]);
+
+  // sorted_unstable
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted(), vec![1, 2, 3]);
+  assert_seq_equal(e.sorted(), vec![]);
+
+  // sorted_unstable_by
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted_unstable_by(|a, b| a.cmp(b)), vec![1, 2, 3]);
+  assert_seq_equal(e.sorted_unstable_by(|a, b| a.cmp(b)), vec![]);
+
+  // sorted_unstable_by_key
+  let c = c_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(c.sorted_unstable_by_key(|&k| -k), vec![3, 2, 1]);
+  assert_seq_equal(e.sorted_unstable_by_key(|&k| -k), vec![]);
+ 
+  // step_by
+  let b = b_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(b.step_by(3), vec![1, 3]);
+  let b = b_source.clone();
+  assert_seq_equal(b.step_by(2), vec![1, 2]);
+  let b = b_source.clone();
+  assert_seq_equal(b.step_by(1), vec![1, 2, 2, 3]);
+  assert_seq_equal(e.step_by(1), vec![]);
 
   // // tail
   // assert_equal(repeated.clone().tail(), vec![2, 2, 3]);

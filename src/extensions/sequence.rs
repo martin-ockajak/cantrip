@@ -3,7 +3,6 @@ use std::cmp::Ordering;
 use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
-use std::ops::RangeBounds;
 
 /// Sequence operations.
 ///
@@ -1325,25 +1324,28 @@ pub trait Sequence<Item> {
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.slice(0..2), vec![1, 2]);
+  /// assert_eq!(a.slice(0, 2), vec![1, 2]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.slice(1..4), vec![2, 3]);
+  /// assert_eq!(a.slice(1, 3), vec![2, 3]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.slice(0..5), vec![1, 2, 3]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(e.slice(0..1), vec![]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.slice(3..3), vec![]);
+  /// assert_eq!(a.slice(1, 1), vec![]);
   /// ```
   #[inline]
-  fn slice(self, range: impl RangeBounds<usize>) -> Self
+  fn slice<I>(self, start_index: usize, end_index: usize) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    I: ExactSizeIterator<Item = Item>,
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
   {
-    self.into_iter().enumerate().filter(|(index, _)| range.contains(index)).map(|(_, x)| x).collect()
+    let iterator = self.into_iter();
+    let size = iterator.len();
+    if start_index > size {
+      panic!(r#"start index (is {start_index:?}) should be <= len (is {size:?})"#)
+    }
+    if end_index > size {
+      panic!(r#"end index (is {end_index:?}) should be <= len (is {size:?})"#)
+    }
+    iterator.enumerate().filter(|(index, _)| *index >= start_index && *index < end_index).map(|(_, x)| x).collect()
   }
 
   /// Creates a new sequence by sorting this sequence.
@@ -1369,9 +1371,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-5, 4, 1, -3, 2];
+  /// let a = vec![2, 3, 1];
   ///
-  /// assert_eq!(a.sorted(), vec![-5, -3, 1, 2, 4]);
+  /// assert_eq!(a.sorted(), vec![1, 2, 3]);
   /// ```
   #[inline]
   fn sorted(self) -> Self
@@ -1401,11 +1403,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
   ///   a.sorted_by(|a, b| a.partial_cmp(b).unwrap()),
-  ///   vec![1.0, 2.0, 3.0, 4.0, 5.0]
+  ///   vec![1, 2, 3]
   /// );
   /// ```
   ///
@@ -1428,11 +1430,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![5, 4, 1, 3, 2];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
   ///   a.sorted_by(|a, b| a.cmp(b)),
-  ///   vec![1, 2, 3, 4, 5]
+  ///   vec![1, 2, 3]
   /// );
   /// ```
   #[inline]
@@ -1477,11 +1479,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-5_i32, 4, 32, -3, 2];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
   ///   a.sorted_by_cached_key(|k| k.to_string()),
-  ///   vec![-3, -5, 2, 32, 4]
+  ///   vec![1, 2, 3]
   /// );
   /// ```
   #[inline]
@@ -1522,11 +1524,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-5_i32, 4, 1, -3, 2];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
-  ///   a.sorted_by_key(|k| k.abs()),
-  ///   vec![1, 2, -3, 4, -5]
+  ///   a.sorted_by_key(|&k| -k),
+  ///   vec![3, 2, 1]
   /// );
   /// ```
   #[inline]
@@ -1562,9 +1564,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-5, 4, 1, -3, 2];
+  /// let a = vec![2, 3, 1];
   ///
-  /// assert_eq!(a.sorted_unstable(), vec![-5, -3, 1, 2, 4]);
+  /// assert_eq!(a.sorted_unstable(), vec![1, 2, 3]);
   /// ```
   #[inline]
   fn sorted_unstable(self) -> Self
@@ -1596,11 +1598,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
   ///   a.sorted_unstable_by(|a, b| a.partial_cmp(b).unwrap()),
-  ///   vec![1.0, 2.0, 3.0, 4.0, 5.0]
+  ///   vec![1, 2, 3]
   /// );
   /// ```
   ///
@@ -1622,11 +1624,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![5, 4, 1, 3, 2];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
   ///   a.sorted_unstable_by(|a, b| a.cmp(b)),
-  ///   vec![1, 2, 3, 4, 5]
+  ///   vec![1, 2, 3]
   /// );
   /// ```
   #[inline]
@@ -1665,11 +1667,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-5_i32, 4, 1, -3, 2];
+  /// let a = vec![2, 3, 1];
   ///
   /// assert_eq!(
-  ///   a.sorted_unstable_by_key(|k| k.abs()),
-  ///   vec![1, 2, -3, 4, -5]
+  ///   a.sorted_unstable_by_key(|&k| -k),
+  ///   vec![3, 2, 1]
   /// );
   /// ```
   #[inline]
@@ -1697,9 +1699,14 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![0, 1, 2, 3, 4, 5];
+  /// # let a_source = vec![1, 2, 2, 3];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.step_by(2), vec![0, 2, 4]);
+  /// assert_eq!(a.step_by(3), vec![1, 3]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.step_by(2), vec![1, 2]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.step_by(1), vec![1, 2, 2, 3]);
   /// ```
   #[inline]
   fn step_by(self, step: usize) -> Self
