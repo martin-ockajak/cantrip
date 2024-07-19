@@ -1,8 +1,10 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
+use crate::extensions::util::{
+  assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent, Equal,
+};
 use cantrip::{Collectible, Iterable};
-use crate::extensions::util::{assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent, Equal};
 
 pub(crate) fn test_collectible<'a, C>(sequence: bool, a_source: &C, b_source: &C, e_source: &C)
 where
@@ -136,36 +138,26 @@ where
   assert_eq!(e.fold_to(0, |acc, x| acc + x), 0);
 
   // group_by
-  let a = a_source.clone();
   let e = e_source.clone();
   if sequence {
-    // FIXME - fix the test case
-    // let b = a_source.clone();
-    // assert_map_vec_equivalent(b.group_by(|x| x % 2), HashMap::from([(0, vec![2, 2]), (1, vec![1, 3])]));
+    let b = b_source.clone();
+    assert_map_vec_equivalent(b.group_by(|x| x % 2), HashMap::from([(0, vec![2, 2]), (1, vec![1, 3])]));
   } else {
-    assert_map_vec_equivalent(a.group_by(|x| x % 2), HashMap::from([
-      (0, vec![2]),
-      (1, vec![1, 3])
-    ]));
+    let a = a_source.clone();
+    assert_map_vec_equivalent(a.group_by(|x| x % 2), HashMap::from([(0, vec![2]), (1, vec![1, 3])]));
   }
   assert_map_vec_equivalent(e.group_by(|x| x % 2), HashMap::new());
 
   // group_fold_to
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_map_equal(a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x), HashMap::from([
-    (0, 2),
-    (1, 4)
-  ]));
+  assert_map_equal(a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4)]));
   assert_map_equal(e.group_fold_to(|x| x % 2, 0, |acc, x| acc + x), HashMap::new());
 
   // group_reduce_to
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_eq!(a.group_reduce_to(|x| x % 2, |acc, x| acc + x), HashMap::from([
-    (0, 2),
-    (1, 4),
-  ]));
+  assert_eq!(a.group_reduce_to(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   assert_eq!(e.group_reduce_to(|x| x % 2, |acc, x| acc + x), HashMap::new());
 
   // intersect
@@ -229,11 +221,9 @@ where
   // powerset
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_vec_seq_equivalent(a.powerset(), vec![
-    vec![],
-    vec![1], vec![2], vec![3],
-    vec![1, 2], vec![1, 3], vec![2, 3],
-    vec![1, 2, 3]]
+  assert_vec_seq_equivalent(
+    a.powerset(),
+    vec![vec![], vec![1], vec![2], vec![3], vec![1, 2], vec![1, 3], vec![2, 3], vec![1, 2, 3]],
   );
   assert_vec_seq_equivalent(e.powerset(), vec![vec![]]);
 
@@ -311,7 +301,7 @@ where
     assert_eq!(a.sum(), 6);
   }
   assert_eq!(e.sum(), 0);
-  
+
   // unit
   assert_seq_equal(C::unit(1), vec![1]);
 }
