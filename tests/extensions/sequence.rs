@@ -155,6 +155,20 @@ where
     e.delete_at_multi(vec![0])
   }).is_err());
 
+  // divide
+  let a = a_source.clone();
+  assert_vec_seq_equal(a.divide(&2), vec![vec![1], vec![3]]);
+  let a = a_source.clone();
+  assert_vec_seq_equal(a.divide(&0), vec![vec![1, 2, 3]]);
+  let a = a_source.clone();
+  assert_vec_seq_equal(a.divide(&1), vec![vec![], vec![2, 3]]);
+  let b = b_source.clone();
+  assert_vec_seq_equal(b.divide(&2), vec![vec![1], vec![], vec![3]]);
+
+  // divide_by
+  let b = b_source.clone();
+  assert_vec_seq_equal(b.divide_by(|x| x % 2 == 0), vec![vec![1], vec![], vec![3]]);
+
   // // rev
   // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);
   // assert_equal(empty.clone().rev(), vec![]);

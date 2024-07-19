@@ -154,9 +154,10 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let first_number = a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } );
-  ///
-  /// assert_eq!(first_number, Some(2));
+  /// assert_eq!(
+  ///   a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } ),
+  ///   Some(2)
+  /// );
   /// ```
   fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
@@ -200,9 +201,10 @@ pub trait Traversable<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold(0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(sum, 6);
+  /// assert_eq!(
+  ///   a.fold(0, |acc, x| acc + x),
+  ///   6
+  /// );
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -223,15 +225,15 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let numbers = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.fold(zero, |acc, &x| {
+  /// let folded = a.fold(zero, |acc, &x| {
   ///   format!("({acc} + {x})")
   /// });
   ///
-  /// assert_eq!(result, "(((((0 + 1) + 2) + 3) + 4) + 5)");
+  /// assert_eq!(folded, "(((((0 + 1) + 2) + 3) + 4) + 5)");
   /// ```
   /// It's common for people who haven't used collections a lot to
   /// use a `for` loop with a list of things to build up a result. Those
@@ -242,17 +244,17 @@ pub trait Traversable<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let numbers = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// let mut result = 0;
   ///
   /// // for loop:
-  /// for i in &numbers {
+  /// for i in &a {
   ///   result = result + i;
   /// }
   ///
   /// // fold:
-  /// let result2 = numbers.fold(0, |acc, &x| acc + x);
+  /// let result2 = a.fold(0, |acc, &x| acc + x);
   ///
   /// // they're the same
   /// assert_eq!(result, result2);
@@ -279,8 +281,10 @@ pub trait Traversable<Item> {
   /// let (tx, rx) = channel();
   /// (0..3).for_each(move |x| tx.send(x).unwrap());
   ///
-  /// let v: Vec<_> = rx.iter().collect();
-  /// assert_eq!(v, vec![0, 1, 2]);
+  /// assert_eq!(
+  ///   rx.iter().collect::<Vec<i32>>(),
+  ///   vec![0, 1, 2]
+  /// );
   /// ```
   ///
   /// For such a small example, a `for` loop may be cleaner, but `for_each`
@@ -311,11 +315,11 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_folded = a.group_fold(|x| x % 2, 0, |acc, &x| acc + x);
-  ///
-  /// assert_eq!(group_folded, HashMap::from([
-  ///   (0, 2),
-  ///   (1, 4),
+  /// assert_eq!(
+  ///   a.group_fold(|x| x % 2, 0, |acc, &x| acc + x),
+  ///   HashMap::from([
+  ///     (0, 2),
+  ///     (1, 4),
   /// ]));
   /// ```
   fn group_fold<K, B>(
@@ -342,11 +346,11 @@ pub trait Traversable<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_reduced = a.group_reduce(|x| x % 2, |acc, x| acc + x);
-  ///
-  /// assert_eq!(group_reduced, HashMap::from([
-  ///   (0, 2),
-  ///   (1, 4),
+  /// assert_eq!(
+  ///   a.group_reduce(|x| x % 2, |acc, x| acc + x),
+  ///   HashMap::from([
+  ///     (0, 2),
+  ///     (1, 4),
   /// ]));
   /// ```
   fn group_reduce<K>(
@@ -607,15 +611,19 @@ pub trait Traversable<Item> {
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// let reduced = a.reduce(|&acc, &e| acc + e);
-  ///
-  /// assert_eq!(reduced, Some(6));
+  /// assert_eq!(
+  ///   a.reduce(|&acc, &e| acc + e),
+  ///   Some(6)
+  /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold(0, |acc, &e| acc + e);
   ///
-  /// assert_eq!(reduced.unwrap(), folded);
+  /// assert_eq!(
+  ///   a.reduce(|&acc, &e| acc + e).unwrap(),
+  ///   folded
+  /// );
   /// ```
   fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 

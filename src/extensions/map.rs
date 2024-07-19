@@ -352,11 +352,11 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let filtered = a.filter(|(&k, &v)| k != 2 && v != "b");
-  ///
-  /// assert_eq!(filtered, HashMap::from([
-  ///   (1, "a"),
-  ///   (3, "c"),
+  /// assert_eq!(
+  ///   a.filter(|(&k, &v)| k != 2 && v != "b"),
+  ///   HashMap::from([
+  ///     (1, "a"),
+  ///     (3, "c"),
   /// ]));
   /// ```
   #[inline]
@@ -386,11 +386,11 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let filtered = a.filter_keys(|&k| k != 2);
-  ///
-  /// assert_eq!(filtered, HashMap::from([
-  ///   (1, "a"),
-  ///   (3, "c"),
+  /// assert_eq!(
+  ///   a.filter_keys(|&k| k != 2),
+  ///   HashMap::from([
+  ///     (1, "a"),
+  ///     (3, "c"),
   /// ]));
   /// ```
   #[inline]
@@ -420,11 +420,11 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let filtered = a.filter_values(|&v| v != "b");
-  ///
-  /// assert_eq!(filtered, HashMap::from([
-  ///   (1, "a"),
-  ///   (3, "c"),
+  /// assert_eq!(
+  ///   a.filter_values(|&v| v != "b"),
+  ///   HashMap::from([
+  ///     (1, "a"),
+  ///     (3, "c"),
   /// ]));
   /// ```
   #[inline]
@@ -464,10 +464,10 @@ pub trait Map<Key, Value> {
   ///   (3, "NaN"),
   /// ]);
   ///
-  /// let filter_mapped = a.filter_map(|(&k, &v)| v.parse::<i32>().ok().map(|v| (k, v)));
-  ///
-  /// assert_eq!(filter_mapped, HashMap::from([
-  ///   (1, 1),
+  /// assert_eq!(
+  ///   a.filter_map(|(&k, &v)| v.parse::<i32>().ok().map(|v| (k, v))),
+  ///   HashMap::from([
+  ///     (1, 1),
   /// ]));
   /// ```
   ///
@@ -525,10 +525,10 @@ pub trait Map<Key, Value> {
   ///   (3, "NaN"),
   /// ]);
   ///
-  /// let filter_mapped = a.filter_map_to(|(k, v)| v.parse::<i32>().ok().map(|v| (k, v)));
-  ///
-  /// assert_eq!(filter_mapped, HashMap::from([
-  ///   (1, 1),
+  /// assert_eq!(
+  ///   a.filter_map_to(|(k, v)| v.parse::<i32>().ok().map(|v| (k, v))),
+  ///   HashMap::from([
+  ///     (1, 1),
   /// ]));
   /// ```
   ///
@@ -618,9 +618,10 @@ pub trait Map<Key, Value> {
   ///   (3, "NaN"),
   /// ]);
   ///
-  /// let first_number = a.find_map(|(_, &v)| v.parse().ok());
-  ///
-  /// assert_eq!(first_number, Some(2));
+  /// assert_eq!(
+  ///   a.find_map(|(_, &v)| v.parse().ok()),
+  ///   Some(2)
+  /// );
   /// ```
   fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
 
@@ -649,9 +650,10 @@ pub trait Map<Key, Value> {
   ///   (3, "NaN"),
   /// ]);
   ///
-  /// let first_number = a.find_map_to(|(_, v)| v.parse().ok());
-  ///
-  /// assert_eq!(first_number, Some(2));
+  /// assert_eq!(
+  ///   a.find_map_to(|(_, v)| v.parse().ok()),
+  ///   Some(2)
+  /// );
   /// ```
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
@@ -695,15 +697,15 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flat_mapped = a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]);
-  ///
-  /// assert_eq!(flat_mapped, HashMap::from([
-  ///   (-1, "a"),
-  ///   (-2, "b"),
-  ///   (-3, "c"),
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (3, "c"),
+  /// assert_eq!(
+  ///   a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]),
+  ///   HashMap::from([
+  ///     (-1, "a"),
+  ///     (-2, "b"),
+  ///     (-3, "c"),
+  ///     (1, "a"),
+  ///     (2, "b"),
+  ///     (3, "c"),
   /// ]));
   /// ```
   fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
@@ -745,15 +747,15 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// // Vec is iterable because it implements IntoIterator
-  /// let flat_mapped = a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]);
-  ///
-  /// assert_eq!(flat_mapped, HashMap::from([
-  ///   (-1, "a"),
-  ///   (-2, "b"),
-  ///   (-3, "c"),
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (3, "c"),
+  /// assert_eq!(
+  ///   a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]),
+  ///   HashMap::from([
+  ///     (-1, "a"),
+  ///     (-2, "b"),
+  ///     (-3, "c"),
+  ///     (1, "a"),
+  ///     (2, "b"),
+  ///     (3, "c"),
   /// ]));
   /// ```
   #[inline]
@@ -810,9 +812,10 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold(0, |acc, (&k, &v)| acc + k + v.len());
-  ///
-  /// assert_eq!(sum, 9);
+  /// assert_eq!(
+  ///   a.fold(0, |acc, (&k, &v)| acc + k + v.len()),
+  ///   9
+  /// );
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -871,9 +874,10 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold_to(0, |acc, (k, v)| acc + k + v.len());
-  ///
-  /// assert_eq!(sum, 9);
+  /// assert_eq!(
+  ///   a.fold_to(0, |acc, (k, v)| acc + k + v.len()),
+  ///   9
+  /// );
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -913,8 +917,10 @@ pub trait Map<Key, Value> {
   /// let (tx, rx) = channel();
   /// (0..3).for_each(move |x| tx.send(x).unwrap());
   ///
-  /// let v: Vec<_> = rx.iter().collect();
-  /// assert_eq!(v, vec![0, 1, 2]);
+  /// assert_eq!(
+  ///   rx.iter().collect::<Vec<i32>>(),
+  ///   vec![0, 1, 2]
+  /// );
   /// ```
   ///
   /// For such a small example, a `for` loop may be cleaner, but `for_each`
@@ -1008,12 +1014,12 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let mapped = a.map(|(&k, &v)| (k, k + v.len()));
-  ///
-  /// assert_eq!(mapped, HashMap::from([
-  ///   (1, 2),
-  ///   (2, 3),
-  ///   (3, 4),
+  /// assert_eq!(
+  ///   a.map(|(&k, &v)| (k, k + v.len())),
+  ///   HashMap::from([
+  ///     (1, 2),
+  ///     (2, 3),
+  ///     (3, 4),
   /// ]));
   /// ```
   fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
@@ -1057,12 +1063,12 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let mapped = a.map_to(|(k, v)| (k, k + v.len()));
-  ///
-  /// assert_eq!(mapped, HashMap::from([
-  ///   (1, 2),
-  ///   (2, 3),
-  ///   (3, 4),
+  /// assert_eq!(
+  ///   a.map_to(|(k, v)| (k, k + v.len())),
+  ///   HashMap::from([
+  ///     (1, 2),
+  ///     (2, 3),
+  ///     (3, 4),
   /// ]));
   /// ```
   #[inline]
@@ -1107,12 +1113,12 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let mapped = a.map_keys(|&k| k + 1);
-  ///
-  /// assert_eq!(mapped, HashMap::from([
-  ///   (2, "a"),
-  ///   (3, "b"),
-  ///   (4, "c"),
+  /// assert_eq!(
+  ///   a.map_keys(|&k| k + 1),
+  ///   HashMap::from([
+  ///     (2, "a"),
+  ///     (3, "b"),
+  ///     (4, "c"),
   /// ]));
   /// ```
   #[inline]
@@ -1158,12 +1164,12 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// let mapped = a.map_values(|v| v.len());
-  ///
-  /// assert_eq!(mapped, HashMap::from([
-  ///   (1, 1),
-  ///   (2, 1),
-  ///   (3, 1),
+  /// assert_eq!(
+  ///   a.map_values(|v| v.len()),
+  ///   HashMap::from([
+  ///     (1, 1),
+  ///     (2, 1),
+  ///     (3, 1),
   /// ]));
   /// ```
   #[inline]
@@ -1584,9 +1590,7 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e = HashMap::<i32, &str>::new();
   ///
-  /// let product = a.product_keys();
-  ///
-  /// assert_eq!(product, 6);
+  /// assert_eq!(a.product_keys(), 6);
   /// assert_eq!(e.product_keys(), 1);
   /// ```
   #[inline]
@@ -1626,9 +1630,7 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// let product = a.product_values();
-  ///
-  /// assert_eq!(product, 24);
+  /// assert_eq!(a.product_values(), 24);
   /// assert_eq!(e.product_values(), 1);
   /// ```
   #[inline]
@@ -1673,17 +1675,21 @@ pub trait Map<Key, Value> {
   ///   (3, 4),
   /// ]);
   ///
-  /// let reduced = a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap();
-  ///
-  /// assert_eq!(reduced, (6, 9));
+  /// assert_eq!(
+  ///   a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)),
+  ///   Some((6, 9))
+  /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// # let a = a_source.clone();
   /// let folded = a.fold((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
   ///
-  /// assert_eq!(reduced, folded);
+  /// # let a = a_source.clone();
+  /// assert_eq!(
+  ///   a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(),
+  ///   folded
+  /// );
   /// ```
-  fn reduce(self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
+  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
   /// Reduces the elements to a single one, by repeatedly applying a reducing
   /// operation.
@@ -1718,15 +1724,20 @@ pub trait Map<Key, Value> {
   ///   (3, 4),
   /// ]);
   ///
-  /// let reduced = a.reduce_to(|(a, b), (k, v)| (a + k, b + v)).unwrap();
-  ///
-  /// assert_eq!(reduced, (6, 9));
+  /// assert_eq!(
+  ///   a.reduce_to(|(a, b), (k, v)| (a + k, b + v)),
+  ///   Some((6, 9))
+  /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold_to((0, 0), |(a, b), (k, v)| (a + k, b + v));
   ///
-  /// assert_eq!(reduced, folded);
+  /// # let a = a_source.clone();
+  /// assert_eq!(
+  ///   a.reduce_to(|(a, b), (k, v)| (a + k, b + v)).unwrap(),
+  ///   folded
+  /// );
   /// ```
   fn reduce_to(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
   where
@@ -1780,10 +1791,12 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// assert_eq!(a.substitute(&3, 4, "d"), HashMap::from([
-  ///   (1, "a"),
-  ///   (2, "b"),
-  ///   (4, "d"),
+  /// assert_eq!(
+  ///   a.substitute(&3, 4, "d"),
+  ///   HashMap::from([
+  ///     (1, "a"),
+  ///     (2, "b"),
+  ///     (4, "d"),
   /// ]));
   /// ```
   #[inline]
@@ -1814,10 +1827,12 @@ pub trait Map<Key, Value> {
   ///   (3, "c"),
   /// ]);
   ///
-  /// assert_eq!(a.substitute_multi(&vec![2, 3], vec![(4, "d"), (5, "e")]), HashMap::from([
-  ///   (1, "a"),
-  ///   (4, "d"),
-  ///   (5, "e"),
+  /// assert_eq!(
+  ///   a.substitute_multi(&vec![2, 3], vec![(4, "d"), (5, "e")]),
+  ///   HashMap::from([
+  ///     (1, "a"),
+  ///     (4, "d"),
+  ///     (5, "e"),
   /// ]));
   /// ```
   #[inline]
@@ -1890,9 +1905,7 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e = HashMap::<i32, &str>::new();
   ///
-  /// let sum = a.sum_keys();
-  ///
-  /// assert_eq!(sum, 6);
+  /// assert_eq!(a.sum_keys(), 6);
   /// assert_eq!(e.sum_keys(), 0);
   /// ```
   #[inline]
@@ -1933,9 +1946,7 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// let sum = a.sum_values();
-  ///
-  /// assert_eq!(sum, 9);
+  /// assert_eq!(a.sum_values(), 9);
   /// assert_eq!(e.sum_values(), 0);
   /// ```
   #[inline]
@@ -1955,10 +1966,10 @@ pub trait Map<Key, Value> {
   /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let unit = HashMap::unit(1, "a");
-  ///
-  /// assert_eq!(unit, HashMap::from([
-  ///   (1, "a"),
+  /// assert_eq!(
+  ///   HashMap::unit(1, "a"),
+  ///   HashMap::from([
+  ///     (1, "a"),
   /// ]));
   #[inline]
   fn unit(key: Key, value: Value) -> Self

@@ -204,9 +204,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let filtered = a.filter(|&x| x > 1);
-  ///
-  /// assert_eq!(filtered, vec![2, 3]);
+  /// assert_eq!(
+  ///   a.filter(|&x| x > 1),
+  ///   vec![2, 3]
+  /// );
   /// ```
   ///
   /// Because the closure passed to `filter()` takes a reference, and some
@@ -218,9 +219,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![&1, &2, &3];
   ///
-  /// let filtered = a.filter(|x| **x > 2); // need two *s!
-  ///
-  /// assert_eq!(filtered, vec![&3]);
+  /// assert_eq!(
+  ///   // need two *s!
+  ///   a.filter(|x| **x > 2),
+  ///   vec![&3]
+  /// );
   /// ```
   ///
   /// It's common to instead use destructuring on the argument to strip away
@@ -231,9 +234,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![&1, &2, &3];
   ///
-  /// let filtered = a.filter(|&x| *x > 2); // both & and *
-  ///
-  /// assert_eq!(filtered, vec![&3]);
+  /// assert_eq!(
+  ///   // both & and *
+  ///   a.filter(|&x| *x > 2),
+  ///   vec![&3]
+  /// );
   /// ```
   ///
   /// or both:
@@ -243,9 +248,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![&0, &1, &2];
   ///
-  /// let filtered = a.filter(|&&x| x > 1); // two &s
-  ///
-  /// assert_eq!(filtered, vec![&2]);
+  /// assert_eq!(
+  ///   // two &s
+  ///   a.filter(|&&x| x > 1),
+  ///   vec![&2]
+  /// );
   /// ```
   ///
   /// of these layers.
@@ -281,9 +288,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.filter_map(|&x| if x % 2 == 0 { Some(x + 1) } else { None } );
-  ///
-  /// assert_eq!(filter_mapped, vec![3]);
+  /// assert_eq!(
+  ///   a.filter_map(|&x| if x % 2 == 0 { Some(x + 1) } else { None } ),
+  ///   vec![3]
+  /// );
   /// ```
   ///
   /// Here's the same example, but with [`filter`] and [`map`]:
@@ -293,9 +301,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.filter(|&x| x % 2 == 0).map(|x| x + 1);
-  ///
-  /// assert_eq!(filter_mapped, vec![3]);
+  /// assert_eq!(
+  ///   a.filter(|&x| x % 2 == 0).map(|x| x + 1),
+  ///   vec![3]
+  /// );
   /// ```
   fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
@@ -325,9 +334,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.filter_map_to(|x| if x % 2 == 0 { Some(x + 1) } else { None } );
-  ///
-  /// assert_eq!(filter_mapped, vec![3]);
+  /// assert_eq!(
+  ///   a.filter_map_to(|x| if x % 2 == 0 { Some(x + 1) } else { None } ),
+  ///   vec![3]
+  /// );
   /// ```
   ///
   /// Here's the same example, but with [`filter`] and [`map_to`]:
@@ -337,9 +347,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let filter_mapped = a.filter(|&x| x % 2 == 0).map(|x| x + 1);
-  ///
-  /// assert_eq!(filter_mapped, vec![3]);
+  /// assert_eq!(
+  ///   a.filter(|&x| x % 2 == 0).map(|x| x + 1),
+  ///   vec![3]
+  /// );
   /// ```
   #[inline]
   fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
@@ -370,9 +381,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let first_number = a.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None } );
-  ///
-  /// assert_eq!(first_number, Some(2));
+  /// assert_eq!(
+  ///   a.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None } ),
+  ///   Some(2)
+  /// );
   /// ```
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
@@ -396,9 +408,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![vec![1, 2], vec![3]];
   ///
-  /// let flattened = a.flat();
-  ///
-  /// assert_eq!(flattened, vec![1, 2, 3]);
+  /// assert_eq!(a.flat(), vec![1, 2, 3]);
   /// ```
   ///
   /// Mapping and then flattening:
@@ -408,10 +418,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // Vec is iterable because it supports IntoIterator
-  /// let flattened = a.map(|&x| vec![x, -x]).flat();
-  ///
-  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
+  /// assert_eq!(
+  ///   // Vec is iterable because it supports IntoIterator
+  ///   a.map(|&x| vec![x, -x]).flat(),
+  ///   vec![1, -1, 2, -2, 3, -3]
+  /// );
   /// ```
   ///
   /// You can also rewrite this in terms of [`flat_map()`], which is preferable
@@ -422,10 +433,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // Vec is iterable because it supports IntoIterator
-  /// let flattened = a.flat_map(|&x| vec![x, -x]);
-  ///
-  /// assert_eq!(flattened, vec![1, -1, 2, -2, 3, -3]);
+  /// assert_eq!(
+  ///   // Vec is iterable because it supports IntoIterator
+  ///   a.flat_map(|&x| vec![x, -x]),
+  ///   vec![1, -1, 2, -2, 3, -3]
+  /// );
   /// ```
   ///
   /// Flattening works on any `IntoIterator` type, including `Option` and `Result`:
@@ -436,13 +448,9 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let options = vec![Some(123), Some(321), None, Some(231)];
   /// let results = vec![Ok(123), Ok(321), Err(456), Ok(231)];
   ///
-  /// let flattened_options: Vec<_> = options.flat();
+  /// assert_eq!(options.flat(), vec![123, 321, 231]);
   ///
-  /// assert_eq!(flattened_options, vec![123, 321, 231]);
-  ///
-  /// let flattened_results: Vec<_> = results.flat();
-  ///
-  /// assert_eq!(flattened_results, vec![123, 321, 231]);
+  /// assert_eq!(results.flat(), vec![123, 321, 231]);
   /// ```
   ///
   /// Flattening only removes one level of nesting at a time:
@@ -506,10 +514,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // Vec is iterable because it implements IntoIterator
-  /// let flat_mapped = a.flat_map(|&x| vec![x, -x]);
-  ///
-  /// assert_eq!(flat_mapped, vec![1, -1, 2, -2, 3, -3]);
+  /// assert_eq!(
+  ///   // Vec is iterable because it implements IntoIterator
+  ///   a.flat_map(|&x| vec![x, -x]),
+  ///   vec![1, -1, 2, -2, 3, -3]
+  /// );
   /// ```
   fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
@@ -544,10 +553,11 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // Vec is iterable because it implements IntoIterator
-  /// let flat_mapped = a.flat_map_to(|x| vec![x, -x]);
-  ///
-  /// assert_eq!(flat_mapped, vec![1, -1, 2, -2, 3, -3]);
+  /// assert_eq!(
+  ///   // Vec is iterable because it implements IntoIterator
+  ///   a.flat_map_to(|x| vec![x, -x]),
+  ///   vec![1, -1, 2, -2, 3, -3]
+  /// );
   /// ```
   #[inline]
   fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
@@ -600,9 +610,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of the array
-  /// let sum = a.fold_to(0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(sum, 6);
+  /// assert_eq!(
+  ///   a.fold_to(0, |acc, x| acc + x),
+  ///   6
+  /// );
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -623,15 +634,16 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let numbers = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.fold_to(zero, |acc, x| {
-  ///   format!("({acc} + {x})")
-  /// });
-  ///
-  /// assert_eq!(result, "(((((0 + 1) + 2) + 3) + 4) + 5)");
+  /// assert_eq!(
+  ///   a.fold_to(zero, |acc, x| {
+  ///     format!("({acc} + {x})")
+  ///   }),
+  ///   "(((((0 + 1) + 2) + 3) + 4) + 5)"
+  /// );
   /// ```
   /// It's common for people who haven't used collections a lot to
   /// use a `for` loop with a list of things to build up a result. Those
@@ -642,17 +654,17 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let numbers = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// let mut result = 0;
   ///
   /// // for loop:
-  /// for i in &numbers {
+  /// for i in &a {
   ///   result = result + i;
   /// }
   ///
   /// // fold:
-  /// let result2 = numbers.fold_to(0, |acc, x| acc + x);
+  /// let result2 = a.fold_to(0, |acc, x| acc + x);
   ///
   /// // they're the same
   /// assert_eq!(result, result2);
@@ -865,9 +877,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let mapped = a.map(|&x| x + 1);
-  ///
-  /// assert_eq!(mapped, vec![2, 3, 4]);
+  /// assert_eq!(
+  ///   a.map(|&x| x + 1),
+  ///   vec![2, 3, 4]
+  /// );
   /// ```
   fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
@@ -905,9 +918,10 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let mapped = a.map_to(|x| x + 1);
-  ///
-  /// assert_eq!(mapped, vec![2, 3, 4]);
+  /// assert_eq!(
+  ///   a.map_to(|x| x + 1),
+  ///   vec![2, 3, 4]
+  /// );
   /// ```
   #[inline]
   fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
@@ -1097,9 +1111,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// let product = a.product();
-  ///
-  /// assert_eq!(product, 6);
+  /// assert_eq!(a.product(), 6);
+  /// 
   /// assert_eq!(e.product(), 1);
   /// ```
   #[inline]
@@ -1135,15 +1148,20 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// let reduced = a.reduce_to(|acc, e| acc + e);
-  ///
-  /// assert_eq!(reduced, Some(6));
+  /// assert_eq!(
+  ///   a.reduce_to(|acc, e| acc + e),
+  ///   Some(6)
+  /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold_to(0, |acc, e| acc + e);
   ///
-  /// assert_eq!(reduced.unwrap(), folded);
+  /// # let a = a_source.clone();
+  /// assert_eq!(
+  ///   a.reduce_to(|acc, e| acc + e).unwrap(),
+  ///   folded
+  /// );
   /// ```
   #[inline]
   fn reduce_to(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
@@ -1288,9 +1306,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// let sum = a.sum();
-  ///
-  /// assert_eq!(sum, 6);
+  /// assert_eq!(a.sum(), 6);
+  /// 
   /// assert_eq!(e.sum(), 0);
   /// ```
   #[inline]
@@ -1309,9 +1326,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let unit = Vec::unit(1);
-  ///
-  /// assert_eq!(unit, vec![1]);
+  /// assert_eq!(Vec::unit(1), vec![1]);
   #[inline]
   fn unit(element: Item) -> Self
   where

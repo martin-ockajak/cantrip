@@ -416,11 +416,13 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 2, 5];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let divided = a.divide(&2);
+  /// assert_eq!(a.divide(&2), vec![vec![1], vec![3]]);
   ///
-  /// assert_eq!(divided, vec![vec![1], vec![3], vec![5]]);
+  /// # let a = a_source.clone();
+  /// assert_eq!(a.divide(&0), vec![vec![1, 2, 3]]);
   /// ```
   ///
   /// If the first element is matched, an empty sequence will be the first
@@ -430,11 +432,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 1, 4, 1];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let divided = a.divide(&1);
-  ///
-  /// assert_eq!(divided, vec![vec![], vec![2], vec![4], vec![]]);
+  /// assert_eq!(a.divide(&1), vec![vec![], vec![2, 3]]);
   /// ```
   ///
   /// If two matched elements are directly adjacent, an empty sequence will be
@@ -443,18 +443,15 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 2, 5];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// let divided = a.divide(&2);
-  ///
-  /// assert_eq!(divided, vec![vec![1], vec![], vec![5]]);
+  /// assert_eq!(a.divide(&2), vec![vec![1], vec![], vec![3]]);
   /// ```
   #[inline]
-  fn divide(self, separator: &Item) -> Self::This<Self>
+  fn divide(self, separator: &Item) -> Vec<Self>
   where
     Item: PartialEq,
     Self: FromIterator<Item> + IntoIterator<Item = Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     self.divide_by(|x| x == separator)
   }
@@ -468,11 +465,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3];
   ///
-  /// let divided = a.divide_by(|x| x % 2 == 0);
-  ///
-  /// assert_eq!(divided, vec![vec![1], vec![3], vec![5]]);
+  /// assert_eq!(
+  ///   a.divide_by(|x| x % 2 == 0),
+  ///   vec![vec![1], vec![3]]
+  /// );
   /// ```
   ///
   /// If the first element is matched, an empty sequence will be the first
@@ -484,9 +482,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3, 4, 5];
   ///
-  /// let divided = a.divide_by(|x| x % 2 == 1);
-  ///
-  /// assert_eq!(divided, vec![vec![], vec![2], vec![4], vec![]]);
+  /// assert_eq!(
+  ///   a.divide_by(|x| x % 2 == 1),
+  ///   vec![vec![], vec![2], vec![4], vec![]]
+  /// );
   /// ```
   ///
   /// If two matched elements are directly adjacent, an empty sequence will be
@@ -495,17 +494,17 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 4, 5];
+  /// let a = vec![1, 2, 2, 3];
   ///
-  /// let divided = a.divide_by(|x| x % 2 == 0);
-  ///
-  /// assert_eq!(divided, vec![vec![1], vec![], vec![5]]);
+  /// assert_eq!(
+  ///   a.divide_by(|x| x % 2 == 0),
+  ///   vec![vec![1], vec![], vec![3]]
+  /// );
   /// ```
   #[inline]
-  fn divide_by(self, mut separator: impl FnMut(&Item) -> bool) -> Self::This<Self>
+  fn divide_by(self, mut separator: impl FnMut(&Item) -> bool) -> Vec<Self>
   where
     Self: FromIterator<Item> + IntoIterator<Item = Item>,
-    Self::This<Self>: FromIterator<Self>,
   {
     let mut iterator = self.into_iter();
     let mut empty = false;
@@ -541,9 +540,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 1, 1, 2, 2, 3];
   ///
-  /// let duplicates = a.duplicates();
-  ///
-  /// assert_eq!(duplicates, vec![1, 2]);
+  /// assert_eq!(a.duplicates(), vec![1, 2]);
   /// ```
   fn duplicates(self) -> Self
   where
@@ -581,9 +578,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3, 4, 5];
   ///
-  /// let duplicates = a.duplicates_by(|x| x % 2);
-  ///
-  /// assert_eq!(duplicates, vec![1, 2]);
+  /// assert_eq!(
+  ///   a.duplicates_by(|x| x % 2),
+  ///   vec![1, 2]
+  /// );
   /// ```
   fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
@@ -757,6 +755,7 @@ pub trait Sequence<Item> {
     self.into_iter().zip(elements).flat_map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).collect()
   }
 
+  // FIXME - fix the failint test case
   /// Creates a new sequence which places a copy of `separator` between adjacent
   /// items of the original sequence.
   ///
@@ -852,9 +851,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![-1, 4, 0, 1];
   ///
-  /// let mapped = a.map_while(|x| 16_i32.checked_div(*x));
-  ///
-  /// assert_eq!(mapped, vec![-16, 4]);
+  /// assert_eq!(
+  ///   a.map_while(|x| 16_i32.checked_div(*x)),
+  ///   vec![-16, 4]
+  /// );
   /// ```
   ///
   /// Here's the same example, but with [`take_while`] and [`map`]:
@@ -867,9 +867,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![-1, 4, 0, 1];
   ///
-  /// let mapped = a.map(|x| 16_i32.checked_div(*x)).take_while(|x| x.is_some()).map(|x| x.unwrap());
-  ///
-  /// assert_eq!(mapped, vec![-16, 4]);
+  /// assert_eq!(
+  ///   a.map(|x| 16_i32.checked_div(*x)).take_while(|x| x.is_some()).map(|x| x.unwrap()),
+  ///   vec![-16, 4]
+  /// );
   /// ```
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
 
@@ -880,9 +881,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let merged = a.merge(vec![0, 4, 5]);
-  ///
-  /// assert_eq!(merged, vec![0, 1, 2, 3, 4, 5]);
+  /// assert_eq!(
+  ///   a.merge(vec![0, 4, 5]),
+  ///   vec![0, 1, 2, 3, 4, 5]
+  ///   );
   /// ```
   fn merge(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
@@ -900,9 +902,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let merged = a.merge_by(vec![0, 4, 5], |l, r| l.cmp(r));
-  ///
-  /// assert_eq!(merged, vec![0, 1, 2, 3, 4, 5]);
+  /// assert_eq!(
+  ///   a.merge_by(vec![0, 4, 5],
+  ///   |l, r| l.cmp(r)), vec![0, 1, 2, 3, 4, 5]
+  /// );
   /// ```
   fn merge_by(self, elements: impl IntoIterator<Item = Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   where
@@ -974,9 +977,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad_left(5, 4);
-  ///
-  /// assert_eq!(padded, vec![4, 4, 1, 2, 3]);
+  /// assert_eq!(a.pad_left(5, 4), vec![4, 4, 1, 2, 3]);
   /// ```
   #[inline]
   fn pad_left<I>(self, size: usize, element: Item) -> Self
@@ -998,9 +999,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad_left_with(5, |i| 2 * i);
-  ///
-  /// assert_eq!(padded, vec![0, 2, 1, 2, 3]);
+  /// assert_eq!(
+  ///   a.pad_left_with(5, |i| 2 * i),
+  ///   vec![0, 2, 1, 2, 3]
+  /// );
   /// ```
   #[inline]
   fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
@@ -1030,9 +1032,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad_right(5, 4);
-  ///
-  /// assert_eq!(padded, vec![1, 2, 3, 4, 4]);
+  /// assert_eq!(a.pad_right(5, 4), vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
   fn pad_right(self, size: usize, element: Item) -> Self
@@ -1053,9 +1053,10 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let padded = a.pad_right_with(5, |x| 2 * x);
-  ///
-  /// assert_eq!(padded, vec![1, 2, 3, 6, 8]);
+  /// assert_eq!(
+  ///   a.pad_right_with(5, |x| 2 * x),
+  ///   vec![1, 2, 3, 6, 8]
+  /// );
   /// ```
   fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
@@ -1131,9 +1132,10 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of a
-  /// let sum = a.rfold_to(0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(sum, 6);
+  /// assert_eq!(
+  ///   a.rfold_to(0, |acc, x| acc + x),
+  ///   6
+  /// );
   /// ```
   ///
   /// This example demonstrates the right-associative nature of `rfold()`:
@@ -1143,15 +1145,16 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let numbers = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.rfold_to(zero, |acc, x| {
-  ///   format!("({x} + {acc})")
-  /// });
-  ///
-  /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
+  /// assert_eq!(
+  ///   a.rfold_to(zero, |acc, x| {
+  ///     format!("({x} + {acc})")
+  ///   }),
+  ///   "(1 + (2 + (3 + (4 + (5 + 0)))))"
+  /// );
   /// ```
   #[inline]
   fn rfold_to<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
@@ -1369,9 +1372,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![-5, 4, 1, -3, 2];
+  /// let a = vec![-5, 4, 1, -3, 2];
   ///
-  /// assert_eq!(v.sorted(), vec![-5, -3, 1, 2, 4]);
+  /// assert_eq!(a.sorted(), vec![-5, -3, 1, 2, 4]);
   /// ```
   #[inline]
   fn sorted(self) -> Self
@@ -1401,11 +1404,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let floats = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
+  /// let a = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
   ///
-  /// let sorted = floats.sorted_by(|a, b| a.partial_cmp(b).unwrap());
-  ///
-  /// assert_eq!(sorted, vec![1.0, 2.0, 3.0, 4.0, 5.0]);
+  /// assert_eq!(
+  ///   a.sorted_by(|a, b| a.partial_cmp(b).unwrap()),
+  ///   vec![1.0, 2.0, 3.0, 4.0, 5.0]
+  /// );
   /// ```
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
@@ -1427,11 +1431,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![5, 4, 1, 3, 2];
+  /// let a = vec![5, 4, 1, 3, 2];
   ///
-  /// let sorted = v.sorted_by(|a, b| a.cmp(b));
-  ///
-  /// assert_eq!(sorted, vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(
+  ///   a.sorted_by(|a, b| a.cmp(b)),
+  ///   vec![1, 2, 3, 4, 5]
+  /// );
   /// ```
   #[inline]
   fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
@@ -1475,11 +1480,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![-5_i32, 4, 32, -3, 2];
+  /// let a = vec![-5_i32, 4, 32, -3, 2];
   ///
-  /// let sorted = v.sorted_by_cached_key(|k| k.to_string());
-  ///
-  /// assert_eq!(sorted, vec![-3, -5, 2, 32, 4]);
+  /// assert_eq!(
+  ///   a.sorted_by_cached_key(|k| k.to_string()),
+  ///   vec![-3, -5, 2, 32, 4]
+  /// );
   /// ```
   #[inline]
   fn sorted_by_cached_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
@@ -1519,11 +1525,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![-5_i32, 4, 1, -3, 2];
+  /// let a = vec![-5_i32, 4, 1, -3, 2];
   ///
-  /// let sorted = v.sorted_by_key(|k| k.abs());
-  ///
-  /// assert_eq!(sorted, vec![1, 2, -3, 4, -5]);
+  /// assert_eq!(
+  ///   a.sorted_by_key(|k| k.abs()),
+  ///   vec![1, 2, -3, 4, -5]
+  /// );
   /// ```
   #[inline]
   fn sorted_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
@@ -1558,9 +1565,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![-5, 4, 1, -3, 2];
+  /// let a = vec![-5, 4, 1, -3, 2];
   ///
-  /// assert_eq!(v.sorted_unstable(), vec![-5, -3, 1, 2, 4]);
+  /// assert_eq!(a.sorted_unstable(), vec![-5, -3, 1, 2, 4]);
   /// ```
   #[inline]
   fn sorted_unstable(self) -> Self
@@ -1592,11 +1599,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let floats = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
+  /// let a = vec![5_f64, 4.0, 1.0, 3.0, 2.0];
   ///
-  /// let sorted = floats.sorted_unstable_by(|a, b| a.partial_cmp(b).unwrap());
-  ///
-  /// assert_eq!(sorted, vec![1.0, 2.0, 3.0, 4.0, 5.0]);
+  /// assert_eq!(
+  ///   a.sorted_unstable_by(|a, b| a.partial_cmp(b).unwrap()),
+  ///   vec![1.0, 2.0, 3.0, 4.0, 5.0]
+  /// );
   /// ```
   ///
   /// # Current implementation
@@ -1617,11 +1625,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![5, 4, 1, 3, 2];
+  /// let a = vec![5, 4, 1, 3, 2];
   ///
-  /// let sorted = v.sorted_unstable_by(|a, b| a.cmp(b));
-  ///
-  /// assert_eq!(sorted, vec![1, 2, 3, 4, 5]);
+  /// assert_eq!(
+  ///   a.sorted_unstable_by(|a, b| a.cmp(b)),
+  ///   vec![1, 2, 3, 4, 5]
+  /// );
   /// ```
   #[inline]
   fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
@@ -1659,11 +1668,12 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let v = vec![-5_i32, 4, 1, -3, 2];
+  /// let a = vec![-5_i32, 4, 1, -3, 2];
   ///
-  /// let sorted = v.sorted_unstable_by_key(|k| k.abs());
-  ///
-  /// assert_eq!(sorted, vec![1, 2, -3, 4, -5]);
+  /// assert_eq!(
+  ///   a.sorted_unstable_by_key(|k| k.abs()),
+  ///   vec![1, 2, -3, 4, -5]
+  /// );
   /// ```
   #[inline]
   fn sorted_unstable_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self

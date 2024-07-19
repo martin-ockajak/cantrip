@@ -114,10 +114,12 @@ pub trait Ordered<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.frequencies(), HashMap::from([
-  ///   (&1, 1),
-  ///   (&2, 2),
-  ///   (&3, 1),
+  /// assert_eq!(
+  ///   a.frequencies(),
+  ///   HashMap::from([
+  ///     (&1, 1),
+  ///     (&2, 2),
+  ///     (&3, 1),
   /// ]));
   /// ```
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
@@ -137,9 +139,11 @@ pub trait Ordered<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([
-  ///   (0, 2),
-  ///   (1, 2),
+  /// assert_eq!(
+  ///   a.frequencies_by(|x| x % 2),
+  ///   HashMap::from([
+  ///     (0, 2),
+  ///     (1, 2),
   /// ]));
   /// ```
   fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize>;
@@ -417,9 +421,10 @@ pub trait Ordered<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of a
-  /// let sum = a.rfold(0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(sum, 6);
+  /// assert_eq!(
+  ///   a.rfold(0, |acc, x| acc + x),
+  ///   6
+  /// );
   /// ```
   ///
   /// This example demonstrates the right-associative nature of `rfold()`:
@@ -429,15 +434,16 @@ pub trait Ordered<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let numbers = vec![1, 2, 3, 4, 5];
+  /// let a = vec![1, 2, 3, 4, 5];
   ///
   /// let zero = "0".to_string();
   ///
-  /// let result = numbers.rfold(zero, |acc, x| {
-  ///   format!("({x} + {acc})")
-  /// });
-  ///
-  /// assert_eq!(result, "(1 + (2 + (3 + (4 + (5 + 0)))))");
+  /// assert_eq!(
+  ///   a.rfold(zero, |acc, x| {
+  ///     format!("({x} + {acc})")
+  ///   }),
+  ///   "(1 + (2 + (3 + (4 + (5 + 0)))))"
+  /// );
   /// ```
   fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
