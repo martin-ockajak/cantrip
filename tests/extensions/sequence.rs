@@ -320,6 +320,48 @@ where
   assert_eq!(a.rfold_to(0, |acc, x| acc + x), 6);
   assert_eq!(e.rfold_to(0, |acc, x| acc + x), 0);
 
+  // scan - FIXME - implement test
+  // let a = a_source.clone();
+  // let e = e_source.clone();
+  // assert_seq_equal(
+  //   a.scan(1, |state, &x| {
+  //     *state = *state * x;
+  //     if *state > 6 {
+  //       return None;
+  //     }
+  //     Some(-*state)
+  //   }),
+  //   vec![-1, -2, -6],
+  // );
+  // assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
+
+  // scan_to - FIXME - implement test
+  // let a = a_source.clone();
+  // let e = e_source.clone();
+  // assert_seq_equal(
+  //   a.scan(1, |state, x| {
+  //     *state = *state * x;
+  //     if *state > 6 {
+  //       return None;
+  //     }
+  //     Some(-*state)
+  //   }),
+  //   vec![-1, -2, -6],
+  // );
+  // assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
+
+  // skip
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.skip(2), vec![3]);
+  assert_seq_equal(e.skip(1), vec![]);
+
+  // skip_while
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.skip_while(|&x| x < 3), vec![3]);
+  assert_seq_equal(e.skip_while(|&x| x < 3), vec![]);
+
   // // tail
   // assert_equal(repeated.clone().tail(), vec![2, 2, 3]);
 }

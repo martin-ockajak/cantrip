@@ -1275,11 +1275,8 @@ pub trait Sequence<Item> {
   /// use crate::cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.skip(2), vec![3]);
-  ///
-  /// assert_eq!(e.skip(1), vec![]);
   /// ```
   #[inline]
   fn skip(self, n: usize) -> Self
@@ -1305,12 +1302,9 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-1, 0, 1];
-  /// let e = Vec::<i32>::new();
+  /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.skip_while(|&x| x < 0), vec![0, 1]);
-  ///
-  /// assert_eq!(e.skip_while(|&x| x < 0), vec![]);
+  /// assert_eq!(a.skip_while(|&x| x < 3), vec![3]);
   /// ```
   #[inline]
   fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
