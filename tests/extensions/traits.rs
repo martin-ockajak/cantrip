@@ -58,6 +58,7 @@ where
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
   <C as Sequence<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
   <C as Sequence<i64>>::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
+  <C as Sequence<i64>>::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
   for<'c> &'c C: UnwindSafe,
 {
   test_traversable(true, a, b, e);
@@ -87,6 +88,7 @@ where
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
   <C as Sequence<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
   <C as Sequence<i64>>::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
+  <C as Sequence<i64>>::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
   for<'c> &'c C: UnwindSafe,
 {
   test_traversable(true, a, b, e);

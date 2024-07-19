@@ -19,6 +19,12 @@ impl Equal for (i64, i64) {
   }
 }
 
+impl Equal for (usize, i64) {
+  fn equal(&self, other: &Self) -> bool {
+    self.0 == other.0 && self.1 == other.1
+  }
+}
+
 impl<Item: Equal> Equal for [Item] {
   fn equal(&self, other: &Self) -> bool {
     self.iter().zip(other.iter()).all(|(x, y)| x.equal(y))

@@ -20,6 +20,7 @@ where
     + 'a,
   C::This<i64>: FromIterator<i64> + Equal + Debug,
   C::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
+  C::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
   for<'c> &'c C: UnwindSafe,
 {
   // add_at
@@ -173,11 +174,11 @@ where
   assert_seq_equal(a.duplicates_by(|x| x % 2), vec![1, 3]);
   assert_seq_equal(e.duplicates_by(|x| x % 2), vec![]);
 
-  // enumerate - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.enumerate(), vec![(0, 1), (1, 2), (2, 3)]);
-  // assert_seq_equal(e.enumerate(), vec![]);
+  // enumerate
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.enumerate(), vec![(0, 1), (1, 2), (2, 3)]);
+  assert_seq_equal(e.enumerate(), vec![]);
 
   // fill
   assert_eq!(Vec::fill(1, 2), vec![1, 1]);
@@ -227,9 +228,11 @@ where
   assert_seq_equal(a.intersperse_with(3, || 0), vec![1, 2, 3]);
   assert_seq_equal(e.intersperse_with(1, || 0), vec![]);
 
-  // map_while - FIXME - implement test
-  // assert_seq_equal(a.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![2, 3]);
-  // assert_seq_equal(e.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![]);
+  // map_while
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![2, 3]);
+  assert_seq_equal(e.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![]);
 
   // merge
   let a = a_source.clone();
