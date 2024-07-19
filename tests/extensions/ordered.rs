@@ -7,7 +7,7 @@ use crate::extensions::util::Equal;
 
 pub(crate) fn test_ordered<'a, C>(a: &C, b: &C, e: &C)
 where
-  C: Ordered<i64> + Iterable<Item<'a> = &'a i64> + Equal + Debug + 'a,
+  C: Ordered<i64> + Iterable<Item<'a> = &'a i64> + Equal + Debug + ?Sized + 'a,
 {
   // common_prefix_length
   assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);

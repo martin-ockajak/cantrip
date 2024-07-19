@@ -5,7 +5,7 @@ use cantrip::{Iterable, Traversable};
 
 pub(crate) fn test_traversable<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
 where
-  C: Traversable<i64> + Iterable<Item<'a> = &'a i64> + Debug + 'a,
+  C: Traversable<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
 {
   // all
   assert!(a.all(|&x| x > 0));

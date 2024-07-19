@@ -33,9 +33,8 @@ where
 #[allow(dead_code)]
 pub(crate) fn test_slice_traits(a: &[i64], b: &[i64], e: &[i64])
 {
-  // FIXME - fix slice tests
-  // test_traversable(true, a, b, e);
-  // test_ordered(a, b, e);
+  test_traversable(true, a, b, e);
+  test_ordered(a, b, e);
   test_slice(a, b, e);
 }
 
