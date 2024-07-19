@@ -8,7 +8,7 @@ use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, Equal};
 #[allow(box_pointers)]
 pub(crate) fn test_sequence<'a, C, I>()
 where
-  I: DoubleEndedIterator<Item = i64>,
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Sequence<i64>
     + FromIterator<i64>
     + IntoIterator<Item = i64, IntoIter = I>
@@ -276,11 +276,11 @@ where
   assert_seq_equal(a.move_at(1, 1), vec![1, 2, 3]);
   assert!(panic::catch_unwind(|| { e.move_at(0, 0) }).is_err());
 
-  // pad_left - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.pad_left(5, 4), vec![4, 4, 1, 2, 3]);
-  // assert_seq_equal(e.pad_left(1, 1), vec![1]);
+  // pad_left
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.pad_left(5, 4), vec![4, 4, 1, 2, 3]);
+  assert_seq_equal(e.pad_left(1, 1), vec![1]);
 
   // // rev
   // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);

@@ -50,7 +50,7 @@ where
 
 pub(crate) fn test_sequence_traits<'a, C, I>(empty: C)
 where
-  I: DoubleEndedIterator<Item = i64>,
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Traversable<i64>
     + Collectible<i64>
     + Ordered<i64>
@@ -77,7 +77,7 @@ where
 
 pub(crate) fn test_list_traits<'a, C, I>(empty: C)
 where
-  I: DoubleEndedIterator<Item = i64>,
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Traversable<i64>
     + Collectible<i64>
     + Ordered<i64>
