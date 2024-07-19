@@ -5,82 +5,54 @@ use std::hash::Hash;
 
 pub(crate) trait Equal {
   fn equal(&self, other: &Self) -> bool;
-  //
-  // fn compare(&self, other: &Self) -> Ordering;
 }
 
 impl Equal for i64 {
   fn equal(&self, other: &Self) -> bool {
     self == other
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   self.cmp(other)
-  // }
+}
+
+impl Equal for (i64, i64) {
+  fn equal(&self, other: &Self) -> bool {
+    self.0 == other.0 && self.1 == other.1
+  }
 }
 
 impl<Item: Equal> Equal for [Item] {
   fn equal(&self, other: &Self) -> bool {
     self.iter().zip(other.iter()).all(|(x, y)| x.equal(y))
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   self.cmp(other)
-  // }
 }
 
 impl<Item: Equal> Equal for LinkedList<Item> {
   fn equal(&self, other: &Self) -> bool {
     self.iter().zip(other.iter()).all(|(x, y)| x.equal(y))
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   self.cmp(other)
-  // }
 }
 
 impl<Item: Equal> Equal for Vec<Item> {
   fn equal(&self, other: &Self) -> bool {
     self.iter().zip(other.iter()).all(|(x, y)| x.equal(y))
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   self.cmp(other)
-  // }
 }
 
 impl<Item: Equal> Equal for VecDeque<Item> {
   fn equal(&self, other: &Self) -> bool {
     self.iter().zip(other.iter()).all(|(x, y)| x.equal(y))
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   self.cmp(other)
-  // }
 }
 
 impl<Item: Eq + Hash + Clone> Equal for HashSet<Item> {
   fn equal(&self, other: &Self) -> bool {
     self == other
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   let mut self_vec = Vec::from_iter(self.iter());
-  //   let mut other_vec = Vec::from_iter(other.iter());
-  //   self_vec.sort();
-  //   other_vec.sort();
-  //   self_vec.cmp(&other_vec)
-  // }
 }
 
 impl<Item: PartialEq> Equal for BTreeSet<Item> {
   fn equal(&self, other: &Self) -> bool {
     self == other
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   self.cmp(other)
-  // }
 }
 
 impl<Item: Eq + Hash + Clone> Equal for BinaryHeap<Item> {
@@ -89,42 +61,18 @@ impl<Item: Eq + Hash + Clone> Equal for BinaryHeap<Item> {
     let other_values: HashSet<&Item> = HashSet::from_iter(other.iter());
     self_values == other_values
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   let mut self_vec = Vec::from_iter(self.iter());
-  //   let mut other_vec = Vec::from_iter(other.iter());
-  //   self_vec.sort();
-  //   other_vec.sort();
-  //   self_vec.cmp(&other_vec)
-  // }
 }
 
 impl<Key: Eq + Hash, Value: PartialEq> Equal for HashMap<Key, Value> {
   fn equal(&self, other: &Self) -> bool {
     self == other
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   let mut self_vec = Vec::from_iter(self);
-  //   let mut other_vec = Vec::from_iter(other);
-  //   self_vec.sort();
-  //   other_vec.sort();
-  //   self_vec.cmp(&other_vec)
-  // }
 }
 
 impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
   fn equal(&self, other: &Self) -> bool {
     self == other
   }
-  //
-  // fn compare(&self, other: &Self) -> Ordering {
-  //   let mut self_vec = Vec::from_iter(self);
-  //   let mut other_vec = Vec::from_iter(other);
-  //   self_vec.sort();
-  //   other_vec.sort();
-  //   self_vec.cmp(&other_vec)
-  // }
 }
 
 //noinspection RsUnresolvedPath

@@ -18,6 +18,7 @@ where
     + UnwindSafe
     + Debug
     + 'a,
+  C::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
   for<'c> &'c C: UnwindSafe,
 {
   // add_at
@@ -507,23 +508,23 @@ where
   assert_vec_seq_equal(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 1]]);
   assert_vec_seq_equal(e.windowed_circular(1, 1), vec![]);
 
-  // zip - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.zip(vec![4, 5, 6]), vec![(1, 4), (2, 5), (3, 6)]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.zip(vec![4, 5]), vec![(1, 4), (2, 5)]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.zip(vec![4, 5, 6, 7]), vec![(1, 4), (2, 5), (3, 6)]);
-  // assert_seq_equal(e.zip(vec![1]), vec![]);
+  // zip
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.zip(vec![4_i64, 5, 6]), vec![(1, 4), (2, 5), (3, 6)]);
+  let a = a_source.clone();
+  assert_seq_equal(a.zip(vec![4_i64, 5]), vec![(1, 4), (2, 5)]);
+  let a = a_source.clone();
+  assert_seq_equal(a.zip(vec![4_i64, 5, 6, 7]), vec![(1, 4), (2, 5), (3, 6)]);
+  assert_seq_equal(e.zip(vec![1_i64]), vec![]);
 
-  // zip_padded - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(a.zip_padded(vec![4, 5, 6], || 1, || 2), vec![(1, 4), (2, 5), (3, 6)]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.zip_padded(vec![4, 5, 6, 7], || 1, || 2), vec![(1, 4), (2, 5), (3, 6), (1, 7]);
-  // let a = a_source.clone();
-  // assert_seq_equal(a.zip_padded(vec![4, 5], || 1, || 2), vec![(1, 4), (2, 5), (3, 2)]);
-  // assert_seq_equal(e.zip_padded(vec![1]), vec![(1, 1)]);
+  // zip_padded
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.zip_padded(vec![4_i64, 5, 6], || 1, || 2), vec![(1, 4), (2, 5), (3, 6)]);
+  let a = a_source.clone();
+  assert_seq_equal(a.zip_padded(vec![4_i64, 5, 6, 7], || 1, || 2), vec![(1, 4), (2, 5), (3, 6), (1, 7)]);
+  let a = a_source.clone();
+  assert_seq_equal(a.zip_padded(vec![4_i64, 5], || 1, || 2), vec![(1, 4), (2, 5), (3, 2)]);
+  assert_seq_equal(e.zip_padded(vec![1_i64], || 1, || 2), vec![(1, 1)]);
 }
