@@ -1163,21 +1163,21 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 4];
+  /// let a = vec![1, 2, 3];
   ///
   /// let mut scan = a.scan(1, |state, &x| {
   ///   // each iteration, we'll multiply the state by the element ...
   ///   *state = *state * x;
   ///
   ///   // ... and terminate if the state exceeds 6
-  ///   if *state > 6 {
+  ///   if *state > 2 {
   ///     return None;
   ///   }
   ///   // ... else yield the negation of the state
   ///   Some(-*state)
   /// });
   ///
-  /// assert_eq!(scan, vec![-1, -2, -6]);
+  /// assert_eq!(scan, vec![-1, -2]);
   /// ```
   fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
@@ -1208,21 +1208,21 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![1, 2, 3, 4];
+  /// let a = vec![1, 2, 3];
   ///
   /// let mut scan = a.scan_to(1, |state, x| {
   ///   // each iteration, we'll multiply the state by the element ...
   ///   *state = *state * x;
   ///
   ///   // ... and terminate if the state exceeds 6
-  ///   if *state > 6 {
+  ///   if *state > 2 {
   ///     return None;
   ///   }
   ///   // ... else yield the negation of the state
   ///   Some(-*state)
   /// });
   ///
-  /// assert_eq!(scan, vec![-1, -2, -6]);
+  /// assert_eq!(scan, vec![-1, -2]);
   /// ```
   #[inline]
   fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>

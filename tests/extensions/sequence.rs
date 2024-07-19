@@ -18,6 +18,7 @@ where
     + UnwindSafe
     + Debug
     + 'a,
+  C::This<i64>: FromIterator<i64> + Equal + Debug,
   C::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
   for<'c> &'c C: UnwindSafe,
 {
@@ -300,35 +301,35 @@ where
   assert_eq!(a.rfold_to(0, |acc, x| acc + x), 6);
   assert_eq!(e.rfold_to(0, |acc, x| acc + x), 0);
 
-  // scan - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(
-  //   a.scan(1, |state, &x| {
-  //     *state = *state * x;
-  //     if *state > 6 {
-  //       return None;
-  //     }
-  //     Some(-*state)
-  //   }),
-  //   vec![-1, -2, -6],
-  // );
-  // assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
+  // scan
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(
+    a.scan(1, |state, &x| {
+      *state = *state * x;
+      if *state > 2 {
+        return None;
+      }
+      Some(-*state)
+    }),
+    vec![-1_i64, -2],
+  );
+  assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
 
-  // scan_to - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_seq_equal(
-  //   a.scan(1, |state, x| {
-  //     *state = *state * x;
-  //     if *state > 6 {
-  //       return None;
-  //     }
-  //     Some(-*state)
-  //   }),
-  //   vec![-1, -2, -6],
-  // );
-  // assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
+  // scan_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(
+    a.scan(1, |state, x| {
+      *state = *state * x;
+      if *state > 2 {
+        return None;
+      }
+      Some(-*state)
+    }),
+    vec![-1_i64, -2],
+  );
+  assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
 
   // skip
   let a = a_source.clone();
