@@ -1112,7 +1112,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.product(), 6);
-  /// 
+  ///
   /// assert_eq!(e.product(), 1);
   /// ```
   #[inline]
@@ -1307,7 +1307,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.sum(), 6);
-  /// 
+  ///
   /// assert_eq!(e.sum(), 0);
   /// ```
   #[inline]

@@ -38,7 +38,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.add_at(1, 4), vec![1, 4, 2, 3]);
   /// # let a = a_source.clone();
   /// assert_eq!(a.add_at(3, 4), vec![1, 2, 3, 4]);
-  /// 
+  ///
   /// assert_eq!(e.add_at(0, 1), vec![1]);
   /// ```
   fn add_at(self, index: usize, element: Item) -> Self;

@@ -205,13 +205,13 @@ pub trait Map<Key, Value> {
   /// ]);
   /// let b = HashMap::from([
   ///   (1, 1),
-  ///   (2, 1),
+  ///   (2, 2),
   ///   (3, 1),
   /// ]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.count_unique(), 3);
-  /// assert_eq!(b.count_unique(), 1);
+  /// assert_eq!(b.count_unique(), 2);
   ///
   /// assert_eq!(e.count_unique(), 0);
   /// ```
