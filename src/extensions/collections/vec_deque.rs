@@ -393,15 +393,13 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   fn move_at(mut self, source_index: usize, target_index: usize) -> Self {
-    if source_index != target_index {
-      if let Some(item) = self.remove(source_index) {
-        self.insert(target_index, item);
-      }
-    } else {
+    if source_index == target_index {
       let size = self.len();
       if source_index >= size {
         panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
       }
+    } else if let Some(item) = self.remove(source_index) {
+      self.insert(target_index, item);
     };
     self
   }
