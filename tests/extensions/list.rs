@@ -4,7 +4,7 @@ use cantrip::{Iterable, List};
 
 use crate::extensions::util::{assert_seq_equal, Equal};
 
-pub(crate) fn test_list<'a, C>()
+pub(crate) fn test_list<'a, C>(a_source: &C, e_source: &C)
 where
   C: List<i64>
     + FromIterator<i64>
@@ -15,9 +15,6 @@ where
     + Debug
     + 'a,
 {
-  let a_source = C::from_iter(vec![1, 2, 3]);
-  let e_source = C::from_iter(vec![]);
-
   // first
   let a = a_source.clone();
   let e = e_source.clone();

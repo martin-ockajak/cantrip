@@ -6,7 +6,7 @@ use std::panic::UnwindSafe;
 use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, Equal};
 
 #[allow(box_pointers)]
-pub(crate) fn test_sequence<'a, C, I>()
+pub(crate) fn test_sequence<'a, C, I>(a_source: &C, b_source: &C, c_source: &C, e_source: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Sequence<i64>
@@ -20,11 +20,6 @@ where
     + 'a,
   for<'c> &'c C: UnwindSafe,
 {
-  let a_source = C::from_iter(vec![1, 2, 3]);
-  let b_source = C::from_iter(vec![1, 2, 2, 3]);
-  let c_source = C::from_iter(vec![2, 3, 1]);
-  let e_source = C::from_iter(vec![]);
-
   // add_at
   let a = a_source.clone();
   let e = e_source.clone();

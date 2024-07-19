@@ -1,16 +1,34 @@
-use std::fmt::Debug;
+use cantrip::Slice;
 
-use cantrip::{Iterable, Slice};
-
-pub(crate) fn test_slice<'a, C>()
-where
-  C: Slice<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + PartialEq + Debug + 'a,
+pub(crate) fn test_slice(a: &[i64], b: &[i64], e: &[i64])
 {
   // FIXME - implement test for all trait methods
-  let values = C::from_iter(vec![0, 1, 2]);
-  let empty = C::from_iter(vec![]);
 
   // init
-  assert_eq!(values.init(), &C::from_iter(vec![0, 1]));
-  assert_eq!(empty.init(), &C::from_iter(vec![]));
+  assert_eq!(a.init(), [1, 2]);
+  assert_eq!(b.init(), [1, 2, 2]);
+  assert_eq!(e.init(), []);
+
+  // skip
+  assert_eq!(a.skip(2), [3]);
+  assert_eq!(b.skip(2), [2, 3]);
+  assert_eq!(e.skip(2), []);
+
+  // skip_while
+  assert_eq!(a.skip_while(|&x| x < 3), [3]);
+  assert_eq!(e.skip_while(|&x| x < 3), []);
+
+  // tail
+  assert_eq!(a.tail(), [2, 3]);
+  assert_eq!(b.tail(), [2, 2, 3]);
+  assert_eq!(e.tail(), []);
+
+  // take
+  assert_eq!(a.take(2), [1, 2]);
+  assert_eq!(a.take(5), [1, 2, 3]);
+  assert_eq!(e.take(2), []);
+
+  // take_while
+  assert_eq!(a.take_while(|&x| x < 3), [1, 2]);
+  assert_eq!(e.take_while(|&x| x < 3), []);
 }

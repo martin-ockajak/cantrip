@@ -5,7 +5,7 @@ use cantrip::{Iterable, Map};
 
 use crate::extensions::util::{assert_map_equal, Equal};
 
-pub(crate) fn test_map<'a, C>()
+pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
   C: Map<i64, i64>
     + FromIterator<(i64, i64)>
@@ -18,10 +18,6 @@ where
     + Debug
     + 'a,
 {
-  let a_source = C::from_iter(vec![(1, 1), (2, 2), (3, 3)]);
-  let b_source = HashMap::from([(1, 1), (2, 2), (3, 1)]);
-  let e_source = C::from_iter(vec![]);
-
   // add
   let a = a_source.clone();
   let e = e_source.clone();

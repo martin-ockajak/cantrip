@@ -1,4 +1,4 @@
-use std::cmp::{max, min, Ordering};
+use std::cmp::{min, Ordering};
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
@@ -228,7 +228,7 @@ impl<Item> Ordered<Item> for [Item] {
 impl<Item> Slice<Item> for [Item] {
   #[inline]
   fn init(&self) -> &Self {
-    &self[0..max(self.len() - 1, 0)]
+    &self[0..self.len().saturating_sub(1)]
   }
 
   #[inline]

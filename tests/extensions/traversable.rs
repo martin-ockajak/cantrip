@@ -3,14 +3,10 @@ use std::fmt::Debug;
 
 use cantrip::{Iterable, Traversable};
 
-pub(crate) fn test_traversable<'a, C>(sequence: bool)
+pub(crate) fn test_traversable<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
 where
-  C: Traversable<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Debug + 'a,
+  C: Traversable<i64> + Iterable<Item<'a> = &'a i64> + Debug + 'a,
 {
-  let a = C::from_iter(vec![1, 2, 3]);
-  let b = C::from_iter(vec![1, 2, 2, 3]);
-  let e = C::from_iter(vec![]);
-
   // all
   assert!(a.all(|&x| x > 0));
   assert!(e.all(|&x| x > 0));

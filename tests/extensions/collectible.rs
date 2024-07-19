@@ -4,7 +4,7 @@ use std::fmt::Debug;
 use cantrip::{Collectible, Iterable};
 use crate::extensions::util::{assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent, Equal};
 
-pub(crate) fn test_collectible<'a, C>(sequence: bool)
+pub(crate) fn test_collectible<'a, C>(sequence: bool, a_source: &C, b_source: &C, e_source: &C)
 where
   C: Collectible<i64>
     + FromIterator<i64>
@@ -17,10 +17,6 @@ where
     + 'a,
   C::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
 {
-  let a_source = C::from_iter(vec![1, 2, 3]);
-  let b_source = C::from_iter(vec![1, 2, 2, 3]);
-  let e_source = C::from_iter(vec![]);
-
   // add
   let a = a_source.clone();
   let e = e_source.clone();

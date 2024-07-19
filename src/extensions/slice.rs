@@ -14,9 +14,9 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = &[1, 2, 3];
+  /// let mut a = [1, 2, 3];
   ///
-  /// assert_eq!(a.init(), &[1, 2]);
+  /// assert_eq!(a.init(), [1, 2]);
   /// ```
   fn init(&self) -> &Self;
 
@@ -32,9 +32,9 @@ pub trait Slice<Item> {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let a = &[1, 2, 3];
+  /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.skip(2), &[3]);
+  /// assert_eq!(a.skip(2), [3]);
   /// ```
   fn skip(&self, n: usize) -> &Self;
 
@@ -54,9 +54,9 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[-1, 0, 1];
+  /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.skip_while(|&x| x < 0), &[0, 1]);
+  /// assert_eq!(a.skip_while(|&x| x < 3), [3]);
   /// ```
   fn skip_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 
@@ -67,9 +67,9 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let mut a = &[1, 2, 3];
+  /// let mut a = [1, 2, 3];
   ///
-  /// assert_eq!(a.tail(), &[2, 3]);
+  /// assert_eq!(a.tail(), [2, 3]);
   /// ```
   fn tail(&self) -> &Self;
 
@@ -89,9 +89,9 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[1, 2, 3];
+  /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.take(2), &[1, 2]);
+  /// assert_eq!(a.take(2), [1, 2]);
   /// ```
   ///
   /// If less than `n` elements are available,
@@ -100,9 +100,10 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[1, 2];
+  /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.take(5), &[1, 2]);
+  /// assert_eq!(a.take(2), [1, 2]);
+  /// assert_eq!(a.take(5), [1, 2, 3]);
   /// ```
   fn take(&self, n: usize) -> &Self;
 
@@ -120,9 +121,9 @@ pub trait Slice<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = &[-1, 0, 1];
+  /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.take_while(|&x| x < 0), &[-1]);
+  /// assert_eq!(a.take_while(|&x| x < 3), [1, 2]);
   /// ```
   fn take_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 }

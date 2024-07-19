@@ -5,14 +5,10 @@ use cantrip::{Iterable, Ordered};
 
 use crate::extensions::util::Equal;
 
-pub(crate) fn test_ordered<'a, C>()
+pub(crate) fn test_ordered<'a, C>(a: &C, b: &C, e: &C)
 where
-  C: Ordered<i64> + FromIterator<i64> + Iterable<Item<'a> = &'a i64> + Clone + Equal + Debug + 'a,
+  C: Ordered<i64> + Iterable<Item<'a> = &'a i64> + Equal + Debug + 'a,
 {
-  let a = C::from_iter(vec![1, 2, 3]);
-  let b = C::from_iter(vec![1, 2, 2, 3]);
-  let e = C::from_iter(vec![]);
-
   // common_prefix_length
   assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
   assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
