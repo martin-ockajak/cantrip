@@ -110,6 +110,7 @@ where
     + Equal
     + Debug
     + 'a,
+  <C as Map<i64, i64>>::This<i64, i64>: FromIterator<(i64, i64)> + Equal + Debug,
 {
   test_map(a, b, e);
 }

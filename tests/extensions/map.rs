@@ -17,6 +17,7 @@ where
     + Equal
     + Debug
     + 'a,
+  C::This<i64, i64>: FromIterator<(i64, i64)> + Equal + Debug,
 {
   // add
   let a = a_source.clone();
@@ -101,17 +102,17 @@ where
   assert_map_equal(a.filter_values(|&v| v != 2), HashMap::from([(1, 1), (3, 3)]));
   assert_map_equal(e.filter_values(|&v| v != 2), HashMap::new());
 
-  // filter_map - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(a.filter_map(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::from([(1, 2)]));
-  // assert_map_equal(e.filter_map(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::new());
+  // filter_map
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(a.filter_map(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::from([(1, 2)]));
+  assert_map_equal(e.filter_map(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::new());
 
-  // filter_map_to - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_to_equal(a.filter_map_to(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::from([(1, 2)]));
-  // assert_map_to_equal(e.filter_map_to(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::new());
+  // filter_map_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(a.filter_map_to(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::from([(1, 2)]));
+  assert_map_equal(e.filter_map_to(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }), HashMap::new());
 
   // find
   let a = a_source.clone();
@@ -175,29 +176,29 @@ where
   assert_map_equal(a.intersect(&vec![(4, 4), (2, 2), (3, 4), (4, 5)]), HashMap::from([(2, 2)]));
   assert_map_equal(e.intersect(&vec![(1, 1)]), HashMap::new());
 
-  // map - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(a.map(|(&k, &v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6)]));
-  // assert_map_equal(e.map(|(&k, &v)| (k, k + v)), HashMap::new());
+  // map
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(a.map(|(&k, &v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6)]));
+  assert_map_equal(e.map(|(&k, &v)| (k, k + v)), HashMap::new());
 
-  // map_to - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(a.map_to(|(k, v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6)]));
-  // assert_map_equal(e.map_to(|(k, v)| (k, k + v)), HashMap::new());
+  // map_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(a.map_to(|(k, v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6)]));
+  assert_map_equal(e.map_to(|(k, v)| (k, k + v)), HashMap::new());
 
-  // map_keys - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(a.map_keys(|&k| k + 1), HashMap::from([(2, 1), (3, 2), (4, 3),]));
-  // assert_map_equal(e.map_keys(|&k| k + 1), HashMap::new());
+  // map_keys
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(a.map_keys(|&k| k + 1), HashMap::from([(2, 1), (3, 2), (4, 3),]));
+  assert_map_equal(e.map_keys(|&k| k + 1), HashMap::new());
 
-  // map_values - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(a.map_values(|&v| v + 1), HashMap::from([(1, 2), (2, 3), (3, 4),]));
-  // assert_map_equal(e.map_values(|&v| v + 1), HashMap::new());
+  // map_values
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(a.map_values(|&v| v + 1), HashMap::from([(1, 2), (2, 3), (3, 4),]));
+  assert_map_equal(e.map_values(|&v| v + 1), HashMap::new());
 
   // max_by
   let a = a_source.clone();
@@ -329,5 +330,5 @@ where
   assert_eq!(e.sum_values(), 0);
 
   // unit
-  assert_map_equal(HashMap::unit(1, 1), HashMap::from([(1, 1),]));
+  assert_map_equal(HashMap::unit(1, 1), HashMap::from([(1, 1)]));
 }
