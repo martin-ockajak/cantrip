@@ -1,8 +1,8 @@
+use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
-use crate::extensions::*;
 
 impl<Item> Traversable<Item> for Vec<Item> {
   #[inline]
@@ -342,6 +342,30 @@ impl<Item> Sequence<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
+  fn add_at(mut self, index: usize, element: Item) -> Self
+  {
+    let size = self.len();
+    if index > size {
+      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
+    }
+    self.insert(index, element);
+    self
+  }
+
+  #[inline]
+  fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
+  {
+    let size = self.len();
+    if index > size {
+      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
+    }
+    for (offset, element) in elements.into_iter().enumerate() {
+      self.insert(index + offset, element);
+    }
+    self
+  }
+
+  #[inline]
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
@@ -457,16 +481,18 @@ impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn substitute_at(mut self, index: usize, replacement: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self[index] = replacement;
     self
   }
 
   #[inline]
-  fn substitute_at_multi(mut self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>) -> Self
+  fn substitute_at_multi(
+    mut self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
+  ) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     for (index, replacement) in indices.into_iter().zip(replacements) {
       self[index] = replacement;

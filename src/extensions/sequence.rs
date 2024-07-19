@@ -20,34 +20,28 @@ pub trait Sequence<Item> {
   ///
   /// if the specified index exceeds this sequence size, no elements are inserted.
   ///
+  /// # Panics
+  ///
+  /// Panics if `index` is out of bounds.
+  ///
   /// # Example
   ///
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2];
-  /// let a = vec![1, 2];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.add_at(0, 3), vec![3, 1, 2]);
+  /// assert_eq!(a.add_at(0, 4), vec![4, 1, 2, 3]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at(1, 3), vec![1, 3, 2]);
+  /// assert_eq!(a.add_at(1, 4), vec![1, 4, 2, 3]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at(2, 3), vec![1, 2, 3]);
+  /// assert_eq!(a.add_at(3, 4), vec![1, 2, 3, 4]);
+  /// 
   /// assert_eq!(e.add_at(0, 1), vec![1]);
-  ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at(3, 3), vec![1, 2]);
-  /// # let e = Vec::<i32>::new();
-  /// assert_eq!(e.add_at(1, 1), vec![]);
   /// ```
-  #[inline]
-  fn add_at(self, index: usize, addition: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    self.add_at_multi(index, iter::once(addition))
-  }
+  fn add_at(self, index: usize, element: Item) -> Self;
 
   /// Creates a new sequence by inserting all elements of another collection
   /// into specified index in this sequence.
@@ -59,43 +53,19 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// # let a_source = vec![1, 2];
-  /// let a = vec![1, 2];
+  /// # let a_source = vec![1, 2, 3];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
-  /// assert_eq!(a.add_at_multi(0, vec![3, 4]), vec![3, 4, 1, 2]);
+  /// assert_eq!(a.add_at_multi(0, vec![4, 5]), vec![4, 5, 1, 2, 3]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at_multi(1, vec![3, 4]), vec![1, 3, 4, 2]);
+  /// assert_eq!(a.add_at_multi(1, vec![4, 5]), vec![1, 4, 5, 2, 3]);
   /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at_multi(2, vec![3, 4]), vec![1, 2, 3, 4]);
-  /// # let a = a_source.clone();
-  /// assert_eq!(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
+  /// assert_eq!(a.add_at_multi(3, vec![4, 5]), vec![1, 2, 3, 4, 5]);
   ///
-  /// # let a = a_source.clone();
-  /// assert_eq!(a.add_at_multi(3, vec![3, 4]), vec![1, 2]);
-  /// # let e = Vec::<i32>::new();
-  /// assert_eq!(e.add_at_multi(1, vec![1, 2]), vec![]);
+  /// assert_eq!(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
   /// ```
-  fn add_at_multi(self, index: usize, additions: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
-  {
-    let mut iterator = self.into_iter();
-    let mut added = additions.into_iter();
-    let mut current_index = 0_usize;
-    unfold(|| {
-      if current_index >= index {
-        added.next().or_else(|| {
-          current_index += 1;
-          iterator.next()
-        })
-      } else {
-        current_index += 1;
-        iterator.next()
-      }
-    })
-    .collect()
-  }
+  fn add_at_multi(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self;
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
   /// from the elements of this sequence.

@@ -306,6 +306,33 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
   #[inline]
+  fn add_at(self, index: usize, element: Item) -> Self {
+    self.add_at_multi(index, iter::once(element))
+  }
+
+  fn add_at_multi(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self {
+    let size = self.len();
+    if index > size {
+      panic!(r#"addition index (is {index:?}) should be <= len (is {size:?})"#)
+    }
+    let mut iterator = self.into_iter();
+    let mut added = elements.into_iter();
+    let mut current_index = 0_usize;
+    unfold(|| {
+      if current_index >= index {
+        added.next().or_else(|| {
+          current_index += 1;
+          iterator.next()
+        })
+      } else {
+        current_index += 1;
+        iterator.next()
+      }
+    })
+    .collect()
+  }
+
+  #[inline]
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,

@@ -343,6 +343,30 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
+  fn add_at(mut self, index: usize, element: Item) -> Self
+  {
+    let size = self.len();
+    if index > size {
+      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
+    }
+    self.insert(index, element);
+    self
+  }
+
+  #[inline]
+  fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
+  {
+    let size = self.len();
+    if index > size {
+      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
+    }
+    for (offset, element) in elements.into_iter().enumerate() {
+      self.insert(index + offset, element);
+    }
+    self
+  }
+
+  #[inline]
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,

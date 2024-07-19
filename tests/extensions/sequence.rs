@@ -27,32 +27,24 @@ where
   let e_source = C::from_iter(vec![]);
 
   // add_at
-  let b = b_source.clone();
+  let a = a_source.clone();
   let e = e_source.clone();
-  assert_seq_equal(b.add_at(0, 3), vec![3, 1, 2]);
-  let b = b_source.clone();
-  assert_seq_equal(b.add_at(1, 3), vec![1, 3, 2]);
-  let b = b_source.clone();
-  assert_seq_equal(b.add_at(2, 3), vec![1, 2, 3]);
+  assert_seq_equal(a.add_at(0, 4), vec![4, 1, 2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.add_at(1, 4), vec![1, 4, 2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.add_at(3, 4), vec![1, 2, 3, 4]);
   assert_seq_equal(e.add_at(0, 1), vec![1]);
-  let b = b_source.clone();
-  assert_seq_equal(b.add_at(3, 3), vec![1, 2]);
-  let e = e_source.clone();
-  assert_seq_equal(e.add_at(1, 1), vec![]);
 
   // add_at_multi
-  let b = b_source.clone();
+  let a = a_source.clone();
   let e = e_source.clone();
-  assert_seq_equal(b.add_at_multi(0, vec![3, 4]), vec![3, 4, 1, 2]);
-  let b = b_source.clone();
-  assert_seq_equal(b.add_at_multi(1, vec![3, 4]), vec![1, 3, 4, 2]);
-  let b = b_source.clone();
-  assert_seq_equal(b.add_at_multi(2, vec![3, 4]), vec![1, 2, 3, 4]);
+  assert_seq_equal(a.add_at_multi(0, vec![4, 5]), vec![4, 5, 1, 2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.add_at_multi(1, vec![4, 5]), vec![1, 4, 5, 2, 3]);
+  let a = a_source.clone();
+  assert_seq_equal(a.add_at_multi(3, vec![4, 5]), vec![1, 2, 3, 4, 5]);
   assert_seq_equal(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
-  let b = b_source.clone();
-  assert_seq_equal(b.add_at_multi(3, vec![3, 4]), vec![1, 2]);
-  let e = e_source.clone();
-  assert_seq_equal(e.add_at_multi(1, vec![1, 2]), vec![]);
 
   // cartesian_product
   let a = a_source.clone();
