@@ -80,9 +80,8 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   /// assert_eq!(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(a.combinations(4), empty_result);
-  /// assert_eq!(e.combinations(2), empty_result);
+  /// assert_eq!(a.combinations(4), Vec::<Vec<i32>>::new());
+  /// assert_eq!(e.combinations(2), Vec::<Vec<i32>>::new());
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
   where

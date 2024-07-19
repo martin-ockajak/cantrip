@@ -125,8 +125,7 @@ pub trait Sequence<Item> {
   ///   ]
   /// );
   ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.cartesian_product(2), empty_result);
+  /// assert_eq!(e.cartesian_product(2), Vec::<Vec<i32>>::new());
   /// ```
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
@@ -195,8 +194,7 @@ pub trait Sequence<Item> {
   /// let a = a_source.clone();
   /// assert_eq!(a.chunked_by(|_, _| true), vec![vec![1], vec![2], vec![3]]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.chunked_by(|_, _| true), empty_result);
+  /// assert_eq!(e.chunked_by(|_, _| true), Vec::<Vec<i32>>::new());
   /// ```
   fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Vec<Self>
   where
@@ -347,8 +345,7 @@ pub trait Sequence<Item> {
   ///   vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
   /// ]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.combinations_multi(2), empty_result);
+  /// assert_eq!(e.combinations_multi(2), Vec::<Vec<i32>>::new());
   /// ```
   fn combinations_multi(&self, k: usize) -> Vec<Self>
   where
@@ -2032,8 +2029,7 @@ pub trait Sequence<Item> {
   ///   vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1],
   /// ]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.variations(2), empty_result);
+  /// assert_eq!(e.variations(2), Vec::<Vec<i32>>::new());
   /// ```
   fn variations(&self, k: usize) -> Vec<Self>
   where
@@ -2070,8 +2066,7 @@ pub trait Sequence<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.windowed(2, 2), vec![vec![1, 2], vec![3, 4]]);
   ///
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.windowed(1, 1), empty_result);
+  /// assert_eq!(e.windowed(1, 1), Vec::<Vec<i32>>::new());
   /// ```
   fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
@@ -2104,8 +2099,8 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.windowed_circular(2, 1), vec![vec![1, 2], vec![2, 3], vec![3, 1]]);
   /// # let a = a_source.clone();
   /// assert_eq!(a.windowed_circular(2, 2), vec![vec![1, 2], vec![3, 4], vec![5, 1]]);
-  /// let empty_result: Vec<Vec<i32>> = vec![];
-  /// assert_eq!(e.windowed_circular(1, 1), empty_result);
+  /// 
+  /// assert_eq!(e.windowed_circular(1, 1), Vec::<Vec<i32>>::new());
   /// ```
   fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
