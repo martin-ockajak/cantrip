@@ -15,6 +15,7 @@ where
     + Iterable<Item<'a> = &'a i64>
     + Clone
     + Equal
+    + UnwindSafe
     + Debug
     + 'a,
   for<'c> &'c C: UnwindSafe,
@@ -244,6 +245,42 @@ where
   // let a = a_source.clone();
   // assert_seq_equal(a.intersperse_with(3, || 0), vec![1, 2, 3]);
   // assert_seq_equal(e.intersperse_with(1, || 0), vec![]);
+
+  // map_while - FIXME - implement test
+  // assert_seq_equal(a.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![2, 3]);
+  // assert_seq_equal(e.map_while(|&x| if x < 2 { Some(x + 1) } else { None }), vec![]);
+
+  // merge
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.merge(vec![0, 4, 5]), vec![0, 1, 2, 3, 4, 5]);
+  assert_seq_equal(e.merge(vec![1]), vec![1]);
+  let e = e_source.clone();
+  assert_seq_equal(e.merge(vec![]), vec![]);
+
+  // merge_by
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.merge_by(vec![0, 4, 5], |l, r| l.cmp(r)), vec![0, 1, 2, 3, 4, 5]);
+  assert_seq_equal(e.merge_by(vec![1], |l, r| l.cmp(r)), vec![1]);
+  let e = e_source.clone();
+  assert_seq_equal(e.merge_by(vec![], |l, r| l.cmp(r)), vec![]);
+
+  // move_at
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.move_at(0, 2), vec![2, 3, 1]);
+  let a = a_source.clone();
+  assert_seq_equal(a.move_at(2, 1), vec![1, 3, 2]);
+  let a = a_source.clone();
+  assert_seq_equal(a.move_at(1, 1), vec![1, 2, 3]);
+  assert!(panic::catch_unwind(|| { e.move_at(0, 0) }).is_err());
+
+  // pad_left - FIXME - implement test
+  // let a = a_source.clone();
+  // let e = e_source.clone();
+  // assert_seq_equal(a.pad_left(5, 4), vec![4, 4, 1, 2, 3]);
+  // assert_seq_equal(e.pad_left(1, 1), vec![1]);
 
   // // rev
   // assert_equal(repeated.clone().rev(), vec![3, 2, 2, 1]);

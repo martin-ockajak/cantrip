@@ -62,6 +62,7 @@ where
     + Extend<i64>
     + Clone
     + Equal
+    + UnwindSafe
     + Debug
     + 'a,
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
@@ -89,6 +90,7 @@ where
     + Extend<i64>
     + Clone
     + Equal
+    + UnwindSafe
     + Debug
     + 'a,
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,

@@ -852,11 +852,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-1, 4, 0, 1];
+  /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.map_while(|x| 16_i32.checked_div(*x)),
-  ///   vec![-16, 4]
+  ///   a.map_while(|&x| if x < 3 { Some(x + 1) } else { None }),
+  ///   vec![2, 3]
   /// );
   /// ```
   ///
@@ -868,11 +868,11 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = vec![-1, 4, 0, 1];
+  /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.map(|x| 16_i32.checked_div(*x)).take_while(|x| x.is_some()).map(|x| x.unwrap()),
-  ///   vec![-16, 4]
+  ///   a.map(|&x| if x < 3 { Some(x + 1) } else { None }).take_while(|x| x.is_some()).map(|x| x.unwrap()),
+  ///   vec![2, 3]
   /// );
   /// ```
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
@@ -887,7 +887,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(
   ///   a.merge(vec![0, 4, 5]),
   ///   vec![0, 1, 2, 3, 4, 5]
-  ///   );
+  /// );
   /// ```
   fn merge(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
