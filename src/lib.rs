@@ -182,8 +182,9 @@
 //! | [`windowed_circular`](Sequence::windowed_circular)              |            *              |       |                               |                   |
 //! | [`zip`](Sequence::zip)                                          |            *              |       |                               |                   |
 //! | [`zip_padded`](Sequence::zip_padded)                            |            *              |       |                               |                   |
-pub(crate) mod extensions;
+pub(crate) mod collections;
 pub(crate) mod core;
+pub(crate) mod extensions;
 
 pub use core::iterable::*;
 pub use extensions::*;

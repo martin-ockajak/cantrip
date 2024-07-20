@@ -7,7 +7,6 @@ pub use slice::*;
 pub use traversable::*;
 
 pub(crate) mod collectible;
-pub(crate) mod collections;
 pub(crate) mod list;
 pub(crate) mod map;
 pub(crate) mod ordered;
