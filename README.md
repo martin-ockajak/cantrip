@@ -7,7 +7,7 @@ Practical extension methods for Rust standard library collections.
 
 Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 
-### Features
+## Features
 
 - Equivalents of standard iterator methods are added to standard library collections
 - Additional utility methods commonly found in collection libraries are also included
@@ -15,7 +15,7 @@ Enables direct functional-style collection manipulation without the usual iterat
 - All methods consider collection instances to be immutable although some may consume them
 - Asymptotic complexity is optimal and performance overhead is limited to new collection creation
 
-### Examples
+## Examples
 
 ```rust
 use cantrip::*;
@@ -37,7 +37,7 @@ a.interleave(vec![4, 5, 6]);     // vec![(1, 4, 2, 5, 3, 6)]
 a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 ```
 
-### Methods
+## Methods
 
 | Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
@@ -182,7 +182,7 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 | [zip](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip)                                          |            *              |       |                               |                   |
 | [zip_padded](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip_padded)                            |            *              |       |                               |                   |
 
-### Inspiration
+## Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
 - [Scala Collections](https://www.scala-lang.org/api/3.3.1/scala/collection/immutable/IndexedSeq.html)
@@ -193,21 +193,38 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 - [More Itertools](https://more-itertools.readthedocs.io/en/stable/api.html)
 
 
-### Build
+## Build
 
-#### Requirements
+### Requirements
 
 - [Rust](https://www.rust-lang.org) 1.79+
 
-#### Setup
+### Setup
 
 ```shell
 cargo install cargo-make
 ```
 
-#### Test
+### Test
 
 ```shell
 makers build
 ```
+
+## License
+
+Licensed under either of
+
+ * Apache License, Version 2.0
+   ([LICENSE-APACHE](LICENSE-APACHE) or http://www.apache.org/licenses/LICENSE-2.0)
+ * MIT license
+   ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
+
+at your option.
+
+## Contribution
+
+Unless you explicitly state otherwise, any contribution intentionally submitted
+for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
+dual licensed as above, without any additional terms or conditions.
 
