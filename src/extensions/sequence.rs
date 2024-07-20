@@ -13,6 +13,7 @@ use std::iter;
 /// - May create a new sequence
 ///
 pub trait Sequence<Item> {
+  /// This sequence type constructor
   type This<I>;
 
   /// Creates a new sequence by inserting an element into specified index
@@ -263,7 +264,7 @@ pub trait Sequence<Item> {
   /// ```
   fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item> + Sized,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let mut last = iterator.next();
@@ -2215,7 +2216,7 @@ where
   .collect()
 }
 
-pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
@@ -2240,7 +2241,7 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
   .collect()
 }
 
-pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);

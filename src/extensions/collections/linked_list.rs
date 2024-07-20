@@ -148,7 +148,7 @@ impl<Item> Collectible<Item> for LinkedList<Item> {
   #[inline]
   fn add_multi(mut self, elements: impl IntoIterator<Item = Item>) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     elements.into_iter().for_each(|x| {
       self.push_back(x);

@@ -16,7 +16,7 @@ use crate::extensions::{collect_by_index, frequencies};
 /// - May create a new collection
 ///
 pub trait Collectible<Item> {
-  /// Original collection type
+  /// This collection type constructor
   type This<I>;
 
   /// Creates a new collection by appending an element to this collection.
@@ -53,7 +53,7 @@ pub trait Collectible<Item> {
   #[inline]
   fn add_multi(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().chain(elements).collect()
   }
@@ -112,7 +112,7 @@ pub trait Collectible<Item> {
   fn delete(self, element: &Item) -> Self
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut removed = false;
     self
@@ -260,7 +260,7 @@ pub trait Collectible<Item> {
   #[inline]
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.into_iter().filter(predicate).collect()
   }
@@ -356,9 +356,8 @@ pub trait Collectible<Item> {
   #[inline]
   fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
-    Self: IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
-    Self: Sized,
   {
     self.into_iter().filter_map(function).collect()
   }
@@ -566,9 +565,8 @@ pub trait Collectible<Item> {
   fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
-    Self: IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
-    Self: Sized,
   {
     self.into_iter().flat_map(function).collect()
   }
@@ -676,8 +674,7 @@ pub trait Collectible<Item> {
   #[inline]
   fn fold_to<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
+    Self: IntoIterator<Item = Item> + Sized,
   {
     self.into_iter().fold(initial_value, function)
   }
@@ -743,8 +740,7 @@ pub trait Collectible<Item> {
   where
     K: Eq + Hash,
     B: Clone,
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
+    Self: IntoIterator<Item = Item> + Sized,
   {
     let iterator = self.into_iter();
     let mut result = HashMap::with_capacity(iterator.size_hint().0);
@@ -933,9 +929,8 @@ pub trait Collectible<Item> {
   #[inline]
   fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
+    Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
   {
     self.into_iter().map(function).collect()
   }
@@ -1127,8 +1122,7 @@ pub trait Collectible<Item> {
   fn product(self) -> Item
   where
     Item: Product,
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
+    Self: IntoIterator<Item = Item> + Sized,
   {
     self.into_iter().product()
   }
@@ -1337,14 +1331,14 @@ pub trait Collectible<Item> {
   #[inline]
   fn unit(element: Item) -> Self
   where
-    Self: FromIterator<Item> + Sized,
+    Self: FromIterator<Item>,
   {
     iter::once(element).collect()
   }
 }
 
 #[inline]
-pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
@@ -1354,7 +1348,7 @@ pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item> 
 pub(crate) fn compute_combinations<'a, Item, Collection>(values: &[&Item], k: usize) -> Vec<Collection>
 where
   Item: Clone + 'a,
-  Collection: FromIterator<Item> + Sized,
+  Collection: FromIterator<Item>,
 {
   let size = values.len();
   let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
@@ -1392,7 +1386,7 @@ pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right
   (result_left, result_right)
 }
 
-pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
+pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);

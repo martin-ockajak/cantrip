@@ -147,7 +147,7 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
   #[inline]
   fn add_multi(mut self, elements: impl IntoIterator<Item = Item>) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     elements.into_iter().for_each(|x| {
       self.push_back(x);
@@ -167,7 +167,7 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
   fn delete(mut self, element: &Item) -> Self
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     if let Some(index) = self.iter().position(|x| x == element) {
       let _unused = self.remove(index);

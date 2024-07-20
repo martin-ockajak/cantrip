@@ -14,6 +14,7 @@ use std::iter::{Product, Sum};
 /// - May create a new map
 ///
 pub trait Map<Key, Value> {
+  /// This map type constructor
   type This<K, V>;
 
   /// Creates a new map by adding an entry to the original map.
