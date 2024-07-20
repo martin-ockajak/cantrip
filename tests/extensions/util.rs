@@ -91,9 +91,16 @@ where
 {
 }
 
-pub(crate) trait TestSequence<'a, T: 'a>:
-  Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T> + Iterable<Item<'a> = &'a T>
+pub(crate) trait TestSequence<'a, T: 'a, I>:
+  Traversable<T>
+  + Collectible<T>
+  + Ordered<T>
+  + Sequence<T>
+  + TestCollection<T>
+  + IntoIterator<Item = i64, IntoIter = I>
+  + Iterable<Item<'a> = &'a T>
 where
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   Self: 'a,
 {
 }
@@ -120,8 +127,17 @@ impl<'a, T: 'a, C> TestCollectible<'a, T> for C where
 {
 }
 
-impl<'a, T: 'a, C> TestSequence<'a, T> for C where
-  C: Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T> + Iterable<Item<'a> = &'a T> + 'a
+impl<'a, T: 'a, C, I> TestSequence<'a, T, I> for C
+where
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
+  C: Traversable<T>
+    + Collectible<T>
+    + Ordered<T>
+    + Sequence<T>
+    + TestCollection<T>
+    + IntoIterator<Item = i64, IntoIter = I>
+    + Iterable<Item<'a> = &'a T>
+    + 'a,
 {
 }
 

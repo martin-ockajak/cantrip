@@ -9,7 +9,7 @@ use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, TestCollec
 pub(crate) fn test_sequence<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<'a, i64> + IntoIterator<Item = i64, IntoIter = I> + UnwindSafe + 'a,
+  C: TestSequence<'a, i64, I> + UnwindSafe,
   <C as Sequence<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
   <C as Sequence<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
