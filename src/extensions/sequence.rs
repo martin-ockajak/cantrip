@@ -1,4 +1,4 @@
-use crate::extensions::util::unfold::unfold;
+use crate::extensions::core::unfold::unfold;
 use std::cmp::Ordering;
 use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
 use std::hash::Hash;

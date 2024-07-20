@@ -1,4 +1,4 @@
-use crate::extensions::util::unfold::unfold;
+use crate::extensions::core::unfold::unfold;
 
 /// List operations.
 ///

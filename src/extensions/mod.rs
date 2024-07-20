@@ -1,5 +1,5 @@
 pub use collectible::*;
-pub use iterable::*;
+pub use core::iterable::*;
 pub use list::*;
 pub use map::*;
 pub use ordered::*;
@@ -9,11 +9,10 @@ pub use traversable::*;
 
 pub(crate) mod collectible;
 pub(crate) mod collections;
-pub(crate) mod iterable;
 pub(crate) mod list;
 pub(crate) mod map;
 pub(crate) mod ordered;
 pub(crate) mod sequence;
 pub(crate) mod slice;
 pub(crate) mod traversable;
-pub(crate) mod util;
+pub(crate) mod core;

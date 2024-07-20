@@ -4,8 +4,8 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
-use crate::extensions::iterable::Iterable;
-use crate::extensions::util::unfold::unfold;
+use crate::extensions::core::iterable::Iterable;
+use crate::extensions::core::unfold::unfold;
 use crate::extensions::{collect_by_index, frequencies};
 
 /// Consuming collection operations.

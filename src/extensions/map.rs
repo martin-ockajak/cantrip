@@ -1,4 +1,4 @@
-use crate::extensions::iterable::Iterable;
+use crate::extensions::core::iterable::Iterable;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
