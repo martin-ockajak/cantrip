@@ -82,32 +82,32 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
   }
 }
 
-pub(crate) trait Testable<T>: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
+pub(crate) trait TestCollection<T>: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
 
-pub(crate) trait TestSet<T>: Traversable<T> + Collectible<T> + Testable<T> {}
+pub(crate) trait TestSet<T>: Traversable<T> + Collectible<T> + TestCollection<T> {}
 
 pub(crate) trait TestSequence<T>:
-  Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + Testable<T>
+  Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T>
 {
 }
 
-pub(crate) trait TestMap<K, V>: Map<K, V> + Testable<(K, V)> + IntoIterator<Item = (K, V)> {}
+pub(crate) trait TestMap<K, V>: Map<K, V> + TestCollection<(K, V)> + IntoIterator<Item = (K, V)> {}
 
-impl<T: Clone + Equal + Debug> Testable<T> for Vec<T> {}
+impl<T: Clone + Equal + Debug> TestCollection<T> for Vec<T> {}
 
-impl<T: Clone + Equal + Debug> Testable<T> for VecDeque<T> {}
+impl<T: Clone + Equal + Debug> TestCollection<T> for VecDeque<T> {}
 
-impl<T: Clone + Equal + Debug> Testable<T> for LinkedList<T> {}
+impl<T: Clone + Equal + Debug> TestCollection<T> for LinkedList<T> {}
 
-impl<T: Clone + Equal + Debug + Eq + Hash> Testable<T> for HashSet<T> {}
+impl<T: Clone + Equal + Debug + Eq + Hash> TestCollection<T> for HashSet<T> {}
 
-impl<T: Clone + Equal + Debug + Ord> Testable<T> for BTreeSet<T> {}
+impl<T: Clone + Equal + Debug + Ord> TestCollection<T> for BTreeSet<T> {}
 
-impl<T: Clone + Equal + Debug + Ord + Eq + Hash> Testable<T> for BinaryHeap<T> {}
+impl<T: Clone + Equal + Debug + Ord + Eq + Hash> TestCollection<T> for BinaryHeap<T> {}
 
-impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> Testable<(K, V)> for HashMap<K, V> {}
+impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)> for HashMap<K, V> {}
 
-impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> Testable<(K, V)> for BTreeMap<K, V> {}
+impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)> for BTreeMap<K, V> {}
 
 impl<T: Clone + Equal + Debug> TestSequence<T> for Vec<T> {}
 

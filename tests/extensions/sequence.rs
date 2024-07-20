@@ -3,19 +3,18 @@ use std::panic::UnwindSafe;
 
 use cantrip::{Collectible, Iterable, Sequence};
 
-use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, TestSequence, Testable};
+use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, TestSequence, TestCollection};
 
 #[allow(box_pointers)]
 pub(crate) fn test_sequence<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: TestSequence<i64> + IntoIterator<Item = i64, IntoIter = I> + Iterable<Item<'a> = &'a i64> + UnwindSafe + 'a,
-  <C as Sequence<i64>>::This<i64>: Testable<i64>,
-  <C as Sequence<i64>>::This<(i64, i64)>: Testable<(i64, i64)>,
-  <C as Sequence<i64>>::This<(usize, i64)>: Testable<(usize, i64)>,
-  G:
-    Collectible<(i64, i64)> + Sequence<(i64, i64)> + FromIterator<(i64, i64)> + IntoIterator<Item = (i64, i64)> + Clone,
-  <G as Sequence<(i64, i64)>>::This<i64>: Testable<i64>,
+  <C as Sequence<i64>>::This<i64>: TestCollection<i64>,
+  <C as Sequence<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
+  <C as Sequence<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
+  G: Collectible<(i64, i64)> + Sequence<(i64, i64)> + TestCollection<(i64, i64)>,
+  <G as Sequence<(i64, i64)>>::This<i64>: TestCollection<i64>,
   for<'c> &'c C: UnwindSafe,
 {
   // add_at

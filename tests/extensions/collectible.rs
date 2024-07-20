@@ -3,15 +3,15 @@ use std::collections::HashMap;
 use cantrip::{Collectible, Iterable};
 
 use crate::extensions::util::{
-  assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent, Testable,
+  assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent, TestCollection,
 };
 
 pub(crate) fn test_collectible<'a, C, D>(sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C)
 where
-  C: Collectible<i64> + Testable<i64> + Iterable<Item<'a> = &'a i64> + 'a,
-  C::This<i64>: Testable<i64>,
-  D: Collectible<Vec<i64>> + Testable<Vec<i64>> + 'a,
-  D::This<i64>: Testable<i64>,
+  C: Collectible<i64> + TestCollection<i64> + Iterable<Item<'a> = &'a i64> + 'a,
+  C::This<i64>: TestCollection<i64>,
+  D: Collectible<Vec<i64>> + TestCollection<Vec<i64>>,
+  D::This<i64>: TestCollection<i64>,
 {
   let _unused = d_source;
 
