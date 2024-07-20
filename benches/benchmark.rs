@@ -3,7 +3,7 @@
 use cantrip::*;
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
-static COLLECTION_SIZE: usize = 7;
+static COLLECTION_SIZE: usize = 5;
 static ARGUMENT_SIZE: usize = 3;
 
 pub fn combinations(c: &mut Criterion) {
