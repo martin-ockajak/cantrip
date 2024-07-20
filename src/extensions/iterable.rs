@@ -110,6 +110,36 @@ impl<Item> Iterable for Option<Item> {
   }
 }
 
+#[derive(Debug, Clone)]
+pub struct ResultIterator<'c, T> {
+  pub iterator: core::result::Iter<'c, T>,
+}
+
+impl<'c, T> Iterator for ResultIterator<'c, T> {
+  type Item = &'c T;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+impl<Item, E> Iterable for Result<Item, E> {
+  type Item<'c> = &'c Item
+  where
+    E: 'c,
+    Item: 'c;
+
+  type Iterator<'c> = ResultIterator<'c, Item>
+  where
+    E: 'c,
+    Item: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    ResultIterator { iterator: self.iter() }
+  }
+}
+
 impl<Item> Iterable for [Item] {
   type Item<'c> = &'c Item
   where
