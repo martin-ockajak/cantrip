@@ -10,8 +10,8 @@
 //! - Equivalents of standard iterator methods are added to standard library collections
 //! - Additional utility methods commonly found in collection libraries are also included
 //! - Transformation methods return a new collection instance instead of returning an iterator
-//! - All methods consider collection instances to be immutable although some may consume them
-//! - Asymptotic complexity is optimal and performance overhead is limited to new collection creation
+//! - All methods treat collection instances as immutable although some may consume them
+//! - Performance is near optimal and overhead is limited to new collection creation
 //!
 //!
 //! ## Examples
