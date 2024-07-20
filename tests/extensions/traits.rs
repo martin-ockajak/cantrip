@@ -9,13 +9,13 @@ use crate::extensions::ordered::test_ordered;
 use crate::extensions::sequence::test_sequence;
 use crate::extensions::slice::test_slice;
 use crate::extensions::traversable::test_traversable;
-use crate::extensions::util::{TestCollection, TestMap, TestSequence, TestSet};
+use crate::extensions::util::{TestCollectible, TestCollection, TestMap, TestSequence, TestSet};
 
 pub(crate) fn test_set_traits<'a, C, D>(a: &C, b: &C, d: &D, e: &C)
 where
-  C: TestSet<i64> + Iterable<Item<'a> = &'a i64> + 'a,
+  C: TestSet<i64> + TestCollectible<'a, i64>,
   <C as Collectible<i64>>::This<i64>: TestCollection<i64>,
-  D: Collectible<Vec<i64>> + TestCollection<Vec<i64>>,
+  D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
 {
   test_traversable(false, a, b, e);
@@ -32,14 +32,14 @@ pub(crate) fn test_slice_traits(a: &[i64], b: &[i64], e: &[i64]) {
 pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<'a, i64> + IntoIterator<Item = i64, IntoIter = I> + UnwindSafe,
+  C: TestSequence<'a, i64> + TestCollectible<'a, i64> + IntoIterator<Item = i64, IntoIter = I> + UnwindSafe,
   <C as Collectible<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
   <C as Sequence<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
-  D: Collectible<Vec<i64>> + TestCollection<Vec<i64>>,
+  D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  G: Collectible<(i64, i64)> + Sequence<(i64, i64)> + TestCollection<(i64, i64)>,
+  G: Sequence<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as Sequence<(i64, i64)>>::This<i64>: TestCollection<i64>,
   for<'c> &'c C: UnwindSafe,
 {
@@ -52,19 +52,14 @@ where
 pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<'a, i64>
-    + List<i64>
-    + TestCollection<i64>
-    + IntoIterator<Item = i64, IntoIter = I>
-    + Iterable<Item<'a> = &'a i64>
-    + UnwindSafe,
+  C: List<i64> + TestSequence<'a, i64> + TestCollectible<'a, i64> + IntoIterator<Item = i64, IntoIter = I> + UnwindSafe,
   <C as Collectible<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
   <C as Sequence<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
-  D: Collectible<Vec<i64>> + TestCollection<Vec<i64>>,
+  D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  G: Collectible<(i64, i64)> + Sequence<(i64, i64)> + TestCollection<(i64, i64)>,
+  G: Sequence<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as Sequence<(i64, i64)>>::This<i64>: TestCollection<i64>,
   for<'c> &'c C: UnwindSafe,
 {

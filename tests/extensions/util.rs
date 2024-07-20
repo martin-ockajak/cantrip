@@ -84,6 +84,12 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
 
 pub(crate) trait TestCollection<T>: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
 
+pub(crate) trait TestCollectible<'a, T: 'a>:
+  Collectible<T> + TestCollection<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> where
+  Self: 'a
+{
+}
+
 pub(crate) trait TestSet<T>: Traversable<T> + Collectible<T> + TestCollection<T> {}
 
 pub(crate) trait TestSequence<'a, T: 'a>:
@@ -113,6 +119,18 @@ impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug>
 }
 
 impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)> for BTreeMap<K, V> {}
+
+impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for Vec<T> {}
+
+impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for VecDeque<T> {}
+
+impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for LinkedList<T> {}
+
+impl<'a, T: Clone + Equal + Debug + Eq + Hash + 'a> TestCollectible<'a, T> for HashSet<T> {}
+
+impl<'a, T: Clone + Equal + Debug + Ord + 'a> TestCollectible<'a, T> for BTreeSet<T> {}
+
+impl<'a, T: Clone + Equal + Debug + Ord + Eq + Hash + 'a> TestCollectible<'a, T> for BinaryHeap<T> {}
 
 impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for Vec<T> {}
 

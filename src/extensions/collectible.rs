@@ -15,7 +15,7 @@ use crate::extensions::{collect_by_index, frequencies};
 /// - Consumes the collection and its elements
 /// - May create a new collection
 ///
-pub trait Collectible<Item>: IntoIterator<Item = Item> {
+pub trait Collectible<Item> {
   /// Original collection type
   type This<I>;
 
@@ -151,6 +151,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
+    Self: IntoIterator<Item = Item>,
     Self: FromIterator<Item>,
   {
     let mut deleted: HashMap<&Item, usize> = frequencies(elements.iterator());
@@ -355,6 +356,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   #[inline]
   fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
+    Self: IntoIterator<Item = Item>,
     Self::This<B>: FromIterator<B>,
     Self: Sized,
   {
@@ -389,6 +391,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   #[inline]
   fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
   where
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     self.into_iter().find_map(function)
@@ -563,6 +566,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
+    Self: IntoIterator<Item = Item>,
     Self::This<B>: FromIterator<B>,
     Self: Sized,
   {
@@ -672,6 +676,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   #[inline]
   fn fold_to<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     self.into_iter().fold(initial_value, function)
@@ -738,6 +743,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   where
     K: Eq + Hash,
     B: Clone,
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     let iterator = self.into_iter();
@@ -828,6 +834,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
+    Self: IntoIterator<Item = Item>,
     Self: FromIterator<Item>,
   {
     let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
@@ -927,6 +934,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     self.into_iter().map(function).collect()
@@ -1119,6 +1127,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   fn product(self) -> Item
   where
     Item: Product,
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     self.into_iter().product()
@@ -1166,6 +1175,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   #[inline]
   fn reduce_to(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   where
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     let mut iterator = self.into_iter();
@@ -1312,6 +1322,7 @@ pub trait Collectible<Item>: IntoIterator<Item = Item> {
   fn sum(self) -> Item
   where
     Item: Sum,
+    Self: IntoIterator<Item = Item>,
     Self: Sized,
   {
     self.into_iter().sum()
