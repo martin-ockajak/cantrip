@@ -133,23 +133,23 @@ where
   assert_eq!(a.find_map_to(|(k, v)| if k == 2 { Some(v) } else { None }), Some(2));
   assert_eq!(e.find_map_to(|(k, v)| if k == 2 { Some(v) } else { None }), None);
 
-  // flat_map - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(
-  //   a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]),
-  //   HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3)]),
-  // );
-  // assert_map_equal(e.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]), HashMap::new());
+  // flat_map
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(
+    a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]),
+    HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3)]),
+  );
+  assert_map_equal(e.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]), HashMap::new());
 
-  // flat_map_to - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_map_equal(
-  //   a.flat_map(|(k, v)| vec![(-k, v), (k, v)]),
-  //   HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3)]),
-  // );
-  // assert_map_equal(e.flat_map(|(k, v)| vec![(-k, v), (k, v)]), HashMap::new());
+  // flat_map_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_map_equal(
+    a.flat_map_to(|(k, v)| vec![(-k, v), (k, v)]),
+    HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3)]),
+  );
+  assert_map_equal(e.flat_map_to(|(k, v)| vec![(-k, v), (k, v)]), HashMap::new());
 
   // fold
   let a = a_source.clone();

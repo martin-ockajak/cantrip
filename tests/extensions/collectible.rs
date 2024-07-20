@@ -6,7 +6,7 @@ use crate::extensions::util::{
 };
 use cantrip::{Collectible, Iterable};
 
-pub(crate) fn test_collectible<'a, C>(sequence: bool, a_source: &C, b_source: &C, e_source: &C)
+pub(crate) fn test_collectible<'a, C, D>(sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C)
 where
   C: Collectible<i64>
     + FromIterator<i64>
@@ -18,7 +18,11 @@ where
     + Debug
     + 'a,
   C::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D::This<i64>: FromIterator<i64> + Debug + Equal + 'a,
 {
+  let _unused = d_source;
+
   // add
   let a = a_source.clone();
   let e = e_source.clone();
@@ -112,24 +116,23 @@ where
   assert_eq!(a.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   assert_eq!(e.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None }), None);
 
-  // flat - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // let c = D::from_iter(vec![C::from_iter(vec![1, 2]), C::from_iter(vec![3])]);
-  // assert_equal(c.flat(), vec![1, 2, 3]);
-  // assert_equal(e.map(|&x| C::from_iter(vec![x, -x])).flat(), vec![]);
+  // flat
+  let d = d_source.clone();
+  let e = d_source.clone().filter(|_| false);
+  assert_seq_equal(d.flat(), vec![1, 2, 3]);
+  assert_seq_equal(e.flat(), vec![]);
 
-  // flat_map - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_equal(a.flat_map(|&x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
-  // assert_equal(e.flat_map(|&x| vec![x, -x]), vec![]);
+  // flat_map
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.flat_map(|&x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
+  assert_seq_equal(e.flat_map(|&x| vec![x, -x]), vec![]);
 
-  // flat_map_to - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // assert_equal(a.flat_map_to(|x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
-  // assert_equal(e.flat_map_to(|x| vec![x, -x]), vec![]);
+  // flat_map_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.flat_map_to(|x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
+  assert_seq_equal(e.flat_map_to(|x| vec![x, -x]), vec![]);
 
   // fold_to
   let a = a_source.clone();

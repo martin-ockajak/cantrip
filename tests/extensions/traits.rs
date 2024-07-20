@@ -12,7 +12,7 @@ use crate::extensions::slice::test_slice;
 use crate::extensions::traversable::test_traversable;
 use crate::extensions::util::Equal;
 
-pub(crate) fn test_set_traits<'a, C>(a: &C, b: &C, e: &C)
+pub(crate) fn test_set_traits<'a, C, D>(a: &C, b: &C, d: &D, e: &C)
 where
   C: Traversable<i64>
     + Collectible<i64>
@@ -25,9 +25,11 @@ where
     + Debug
     + 'a,
   <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D::This<i64>: FromIterator<i64> + Debug + Equal + 'a,
 {
   test_traversable(false, a, b, e);
-  test_collectible(false, a, b, e);
+  test_collectible(false, a, b, d, e);
 }
 
 #[allow(dead_code)]
@@ -38,7 +40,7 @@ pub(crate) fn test_slice_traits(a: &[i64], b: &[i64], e: &[i64])
   test_slice(a, b, e);
 }
 
-pub(crate) fn test_sequence_traits<'a, C, I>(a: &C, b: &C, c: &C, e: &C)
+pub(crate) fn test_sequence_traits<'a, C, D, I>(a: &C, b: &C, c: &C, d: &D, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Traversable<i64>
@@ -59,15 +61,17 @@ where
   <C as Sequence<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
   <C as Sequence<i64>>::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
   <C as Sequence<i64>>::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
+  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D::This<i64>: FromIterator<i64> + Debug + Equal + 'a,
   for<'c> &'c C: UnwindSafe,
 {
   test_traversable(true, a, b, e);
-  test_collectible(true, a, b, e);
+  test_collectible(true, a, b, d, e);
   test_ordered(a, b, e);
   test_sequence(a, b, c, e);
 }
 
-pub(crate) fn test_list_traits<'a, C, I>(a: &C, b: &C, c: &C, e: &C)
+pub(crate) fn test_list_traits<'a, C, D, I>(a: &C, b: &C, c: &C, d: &D, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Traversable<i64>
@@ -89,10 +93,12 @@ where
   <C as Sequence<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
   <C as Sequence<i64>>::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
   <C as Sequence<i64>>::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
+  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D::This<i64>: FromIterator<i64> + Debug + Equal + 'a,
   for<'c> &'c C: UnwindSafe,
 {
   test_traversable(true, a, b, e);
-  test_collectible(true, a, b, e);
+  test_collectible(true, a, b, d, e);
   test_ordered(a, b, e);
   test_sequence(a, b, c, e);
   test_list(a, e);
