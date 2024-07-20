@@ -9,7 +9,7 @@ use crate::extensions::ordered::test_ordered;
 use crate::extensions::sequence::test_sequence;
 use crate::extensions::slice::test_slice;
 use crate::extensions::traversable::test_traversable;
-use crate::extensions::util::{TestMap, TestSequence, TestSet, TestCollection};
+use crate::extensions::util::{TestCollection, TestMap, TestSequence, TestSet};
 
 pub(crate) fn test_set_traits<'a, C, D>(a: &C, b: &C, d: &D, e: &C)
 where
@@ -32,7 +32,7 @@ pub(crate) fn test_slice_traits(a: &[i64], b: &[i64], e: &[i64]) {
 pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<i64> + IntoIterator<Item = i64, IntoIter = I> + Iterable<Item<'a> = &'a i64> + UnwindSafe + 'a,
+  C: TestSequence<'a, i64> + IntoIterator<Item = i64, IntoIter = I> + UnwindSafe,
   <C as Collectible<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
@@ -52,13 +52,12 @@ where
 pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<i64>
+  C: TestSequence<'a, i64>
     + List<i64>
     + TestCollection<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
-    + UnwindSafe
-    + 'a,
+    + UnwindSafe,
   <C as Collectible<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<i64>: TestCollection<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,

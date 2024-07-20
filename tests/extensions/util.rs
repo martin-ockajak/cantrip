@@ -1,5 +1,5 @@
 use crate::assert_equal;
-use cantrip::{Collectible, Map, Ordered, Sequence, Traversable};
+use cantrip::{Collectible, Iterable, Map, Ordered, Sequence, Traversable};
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::fmt::Debug;
 use std::hash::Hash;
@@ -86,8 +86,10 @@ pub(crate) trait TestCollection<T>: FromIterator<T> + Default + Extend<T> + Clon
 
 pub(crate) trait TestSet<T>: Traversable<T> + Collectible<T> + TestCollection<T> {}
 
-pub(crate) trait TestSequence<T>:
-  Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T>
+pub(crate) trait TestSequence<'a, T: 'a>:
+  Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T> + Iterable<Item<'a> = &'a T>
+where
+  Self: 'a,
 {
 }
 
@@ -105,15 +107,18 @@ impl<T: Clone + Equal + Debug + Ord> TestCollection<T> for BTreeSet<T> {}
 
 impl<T: Clone + Equal + Debug + Ord + Eq + Hash> TestCollection<T> for BinaryHeap<T> {}
 
-impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)> for HashMap<K, V> {}
+impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)>
+  for HashMap<K, V>
+{
+}
 
 impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)> for BTreeMap<K, V> {}
 
-impl<T: Clone + Equal + Debug> TestSequence<T> for Vec<T> {}
+impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for Vec<T> {}
 
-impl<T: Clone + Equal + Debug> TestSequence<T> for VecDeque<T> {}
+impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for VecDeque<T> {}
 
-impl<T: Clone + Equal + Debug> TestSequence<T> for LinkedList<T> {}
+impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for LinkedList<T> {}
 
 impl<T: Clone + Equal + Debug + Eq + Hash> TestSet<T> for HashSet<T> {}
 
