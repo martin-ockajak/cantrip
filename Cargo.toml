@@ -13,12 +13,12 @@ keywords = ["collection", "functional", "immutable", "group-by", "map"]
 [badges]
 maintenance = { status = "actively-developed" }
 
-# [dev-dependencies]
-# criterion = "0.5.1"
+[dev-dependencies]
+criterion = "0.5.1"
 
-# [[bench]]
-# name = "benchmark"
-# harness = false
+[[bench]]
+name = "benchmark"
+harness = false
 
 [profile.dev]
 opt-level = 1

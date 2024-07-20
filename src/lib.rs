@@ -1,4 +1,4 @@
-#![allow(missing_docs)]
+#![allow(unused_crate_dependencies)]
 //! Practical extension methods for Rust standard library collections.
 //!
 //! Enables direct functional-style collection manipulation without the usual iterator boilerplate.
