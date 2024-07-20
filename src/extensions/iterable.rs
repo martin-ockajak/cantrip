@@ -97,7 +97,7 @@ impl<Item> Iterable for [Item] {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct SliceIterator<'c, T> {
   pub iterator: core::slice::Iter<'c, T>,
 }
@@ -112,7 +112,6 @@ impl<'c, T> Iterator for SliceIterator<'c, T> {
 
 #[allow(single_use_lifetimes)]
 impl<'c, T> DoubleEndedIterator for SliceIterator<'c, T> {
-
   fn next_back(&mut self) -> Option<Self::Item> {
     self.iterator.next_back()
   }
@@ -133,7 +132,7 @@ impl<Item> Iterable for Vec<Item> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct LinkedListIterator<'c, T> {
   pub iterator: std::collections::linked_list::Iter<'c, T>,
 }
@@ -148,7 +147,6 @@ impl<'c, T> Iterator for LinkedListIterator<'c, T> {
 
 #[allow(single_use_lifetimes)]
 impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
-
   fn next_back(&mut self) -> Option<Self::Item> {
     self.iterator.next_back()
   }
@@ -169,7 +167,7 @@ impl<Item> Iterable for LinkedList<Item> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct VecDequeIterator<'c, T> {
   pub iterator: std::collections::vec_deque::Iter<'c, T>,
 }
@@ -184,7 +182,6 @@ impl<'c, T> Iterator for VecDequeIterator<'c, T> {
 
 #[allow(single_use_lifetimes)]
 impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
-
   fn next_back(&mut self) -> Option<Self::Item> {
     self.iterator.next_back()
   }
@@ -205,7 +202,7 @@ impl<Item> Iterable for VecDeque<Item> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct HashSetIterator<'c, T> {
   pub iterator: std::collections::hash_set::Iter<'c, T>,
 }
@@ -233,7 +230,7 @@ impl<Item> Iterable for HashSet<Item> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BTreeSetIterator<'c, T> {
   pub iterator: std::collections::btree_set::Iter<'c, T>,
 }
@@ -261,7 +258,7 @@ impl<Item> Iterable for BTreeSet<Item> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BinaryHeapIterator<'c, T> {
   pub iterator: std::collections::binary_heap::Iter<'c, T>,
 }
@@ -289,7 +286,7 @@ impl<Item> Iterable for BinaryHeap<Item> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct HashMapIterator<'c, Key, Value> {
   pub iterator: std::collections::hash_map::Iter<'c, Key, Value>,
 }
@@ -319,7 +316,7 @@ impl<Key, Value> Iterable for HashMap<Key, Value> {
   }
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct BTreeMapIterator<'c, Key, Value> {
   pub iterator: std::collections::btree_map::Iter<'c, Key, Value>,
 }
