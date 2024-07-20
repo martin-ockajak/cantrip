@@ -15,7 +15,7 @@ pub(crate) fn test_set_traits<'a, C, D>(a: &C, b: &C, d: &D, e: &C)
 where
   C: TestSet<i64> + Iterable<Item<'a> = &'a i64> + 'a,
   <C as Collectible<i64>>::This<i64>: Testable<i64>,
-  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D: Collectible<Vec<i64>> + Testable<Vec<i64>> + 'a,
   D::This<i64>: Testable<i64>,
 {
   test_traversable(false, a, b, e);
@@ -37,7 +37,7 @@ where
   <C as Sequence<i64>>::This<i64>: Testable<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: Testable<(i64, i64)>,
   <C as Sequence<i64>>::This<(usize, i64)>: Testable<(usize, i64)>,
-  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D: Collectible<Vec<i64>> + Testable<Vec<i64>> + 'a,
   D::This<i64>: Testable<i64>,
   G:
     Collectible<(i64, i64)> + Sequence<(i64, i64)> + FromIterator<(i64, i64)> + IntoIterator<Item = (i64, i64)> + Clone,
@@ -64,7 +64,7 @@ where
   <C as Sequence<i64>>::This<i64>: Testable<i64>,
   <C as Sequence<i64>>::This<(i64, i64)>: Testable<(i64, i64)>,
   <C as Sequence<i64>>::This<(usize, i64)>: Testable<(usize, i64)>,
-  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D: Collectible<Vec<i64>> + Testable<Vec<i64>> + 'a,
   D::This<i64>: Testable<i64>,
   G:
     Collectible<(i64, i64)> + Sequence<(i64, i64)> + FromIterator<(i64, i64)> + IntoIterator<Item = (i64, i64)> + Clone,

@@ -10,7 +10,7 @@ pub(crate) fn test_collectible<'a, C, D>(sequence: bool, a_source: &C, b_source:
 where
   C: Collectible<i64> + Testable<i64> + Iterable<Item<'a> = &'a i64> + 'a,
   C::This<i64>: Testable<i64>,
-  D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
+  D: Collectible<Vec<i64>> + Testable<Vec<i64>> + 'a,
   D::This<i64>: Testable<i64>,
 {
   let _unused = d_source;
