@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# Create and publish the specified version
+set -eo pipefail
+
+# Configure settings
+version="$(grep 'version = ' Cargo.toml | sed 's/.*version = //' | sed 's/"//g')"
+tag="v${version}"
+release_notes="release-notes.md"
+
+# Run test
+cargo make build
+
+# EXtract a changelog since the last tag
+git log $(git describe --tags --abbrev=0)..HEAD --format='%s' | grep '^-' > "${release_notes}"
+
+# Create a new tag
+git tag -a -m "Version: ${version}" "${tag}"
+git push --follow-tags
+
+# Publish artifacts
+cargo make publish
+
+# Create a release
+gh release create "${tag}" -T "${version}" -f "${release_notes}"
+rm -f "${release_notes}"
+
