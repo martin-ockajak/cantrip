@@ -12,17 +12,21 @@ args = ["clippy"]
 
 [tasks.test]
 command = "cargo"
-args = ["test", "--nocapture"]
+args = ["test"]
 
 [tasks.retest]
 install_crate = "cargo-watch"
 command = "cargo"
 args = ["watch", "-c", "-w", "src", "-w", "tests", "-x", "clippy", "-x", "test"]
 
-[tasks.release]
+[tasks.bench]
+command = "cargo"
+args = ["bench"]
+
+[tasks.publish]
 install_crate = "cargo-release"
 command = "cargo"
-args = ["release", "--help"]
+args = ["publish", "--dry-run"]
 
 [tasks.clean]
 command = "cargo"

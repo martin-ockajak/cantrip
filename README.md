@@ -214,6 +214,12 @@ cargo install cargo-make
 makers build
 ```
 
+### Benchmark
+
+```shell
+makers bench
+```
+
 
 ## License
 

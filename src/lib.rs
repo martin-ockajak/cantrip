@@ -1,3 +1,4 @@
+#![deny(warnings)]
 #![allow(unused_crate_dependencies)]
 //! Practical extension methods for Rust standard library collections.
 //!
