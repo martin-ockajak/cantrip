@@ -82,6 +82,34 @@ pub trait Iterable {
   fn iterator<'c>(&'c self) -> Self::Iterator<'c>;
 }
 
+#[derive(Debug, Clone)]
+pub struct OptionIterator<'c, T> {
+  pub iterator: core::option::Iter<'c, T>,
+}
+
+impl<'c, T> Iterator for OptionIterator<'c, T> {
+  type Item = &'c T;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+impl<Item> Iterable for Option<Item> {
+  type Item<'c> = &'c Item
+  where
+    Item: 'c;
+
+  type Iterator<'c> = OptionIterator<'c, Item>
+  where
+    Item: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    OptionIterator { iterator: self.iter() }
+  }
+}
+
 impl<Item> Iterable for [Item] {
   type Item<'c> = &'c Item
   where
