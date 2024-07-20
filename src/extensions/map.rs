@@ -338,8 +338,7 @@ pub trait Map<Key, Value> {
   /// closure to determine if an entry should be retained.
   ///
   /// Given an entry the closure must return `true` or `false`. The returned
-  /// map will contain only the entries for which the closure returns
-  /// true.
+  /// map will contain only the entries for which the closure returns true.
   ///
   /// # Example
   ///
@@ -441,15 +440,15 @@ pub trait Map<Key, Value> {
   /// The returned map contains only the `entries` for which the supplied
   /// closure returns `Some(entry)`.
   ///
-  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
+  /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
   /// concise. The example below shows how a `map().filter().map_to()` can be
-  /// shortened to a single call to `filter_map`.
+  /// shortened to a single call to `filter_map()`.
   ///
-  /// This is a non-consuming variant of [`filter_map_to`].
+  /// This is a non-consuming variant of [`filter_map_to()`].
   ///
-  /// [`filter`]: Map::filter
-  /// [`map`]: Map::map
-  /// [`filter_map_to`]: Map::filter_map_to
+  /// [`filter()`]: Map::filter
+  /// [`map()`]: Map::map
+  /// [`filter_map_to()`]: Map::filter_map_to
   ///
   /// # Examples
   ///
@@ -472,7 +471,7 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   ///
-  /// Here's the same example, but with [`filter`] and [`map`]:
+  /// Here's the same example, but with [`filter()`] and [`map()`]:
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -502,15 +501,15 @@ pub trait Map<Key, Value> {
   /// The returned map contains only the `entries` for which the supplied
   /// closure returns `Some(value)`.
   ///
-  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
-  /// concise. The example below shows how a `map_to().filter_to().map()` can be
-  /// shortened to a single call to `filter_map_to`.
+  /// `filter_map_to()` can be used to make chains of [`filter()`] and [`map_to()`] more
+  /// concise. The example below shows how a `map_to().filter().map()` can be
+  /// shortened to a single call to `filter_map_to()`.
   ///
-  /// This is a consuming variant of [`filter_map`].
+  /// This is a consuming variant of [`filter_map()`].
   ///
-  /// [`filter`]: Map::filter
-  /// [`map`]: Map::map
-  /// [`filter_map`]: Map::filter_map
+  /// [`filter()`]: Map::filter
+  /// [`map_to()`]: Map::map_to
+  /// [`filter_map()`]: Map::filter_map
   ///
   /// # Examples
   ///
@@ -533,7 +532,7 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   ///
-  /// Here's the same example, but with [`filter`] and [`map_to`]:
+  /// Here's the same example, but with [`filter()`] and [`map_to()`]:
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -573,8 +572,6 @@ pub trait Map<Key, Value> {
   /// `find()` is short-circuiting; in other words, it will stop processing
   /// as soon as the closure returns `true`.
   ///
-  /// If you need the index of the entry, see [`position()`].
-  ///
   /// # Example
   ///
   /// ```
@@ -596,16 +593,16 @@ pub trait Map<Key, Value> {
   /// Applies function to the entries of this map and returns
   /// the first non-none result.
   ///
-  /// `find_map` can be used to make chains of [`find`] and [`map`] more
+  /// `find_map()` can be used to make chains of [`find()`] and [`map()`] more
   /// concise.
   ///
-  /// `find_map_to(f)` is equivalent to `find().map()`.
+  /// `find_map_to(f)` is equivalent to `find().map_to()`.
   ///
-  /// This is a non-consuming variant of [`find_map_to`].
+  /// This is a non-consuming variant of [`find_map_to()`].
   ///
-  /// [`find`]: Map::find
-  /// [`map`]: Map::map
-  /// [`find_map_to`]: Map::find_map_to
+  /// [`find()`]: Map::find
+  /// [`map()`]: Map::map
+  /// [`find_map_to()`]: Map::find_map_to
   ///
   /// # Example
   ///
@@ -629,15 +626,15 @@ pub trait Map<Key, Value> {
   /// Applies function to the entries of this map and returns
   /// the first non-none result.
   ///
-  /// `find_map_to` can be used to make chains of [`find`] and [`map`] more concise.
+  /// `find_map_to()` can be used to make chains of [`find()`] and [`map_to()`] more concise.
   ///
   /// `find_map_to(f)` is equivalent to `find().map()`.
   ///
-  /// This is a consuming variant of [`find_map`].
+  /// This is a consuming variant of [`find_map()`].
   ///
-  /// [`find`]: Map::find
-  /// [`map`]: Map::map
-  /// [`find_map`]: Map::find_map
+  /// [`find()`]: Map::find
+  /// [`map_to()`]: Map::map
+  /// [`find_map()`]: Map::find_map
   ///
   /// # Example
   ///
@@ -667,23 +664,24 @@ pub trait Map<Key, Value> {
   /// Creates a new map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
-  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// The `flat_map()` method is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
   /// an extra layer of indirection. `flat_map()` will remove this extra layer
   /// on its own.
   ///
   /// You can think of `flat_map(f)` as the semantic equivalent
-  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  /// of mapping, and then flattening as in [`map(f)']['.flat()`].
   ///
-  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
+  /// Another way of thinking about `flat_map()`: [`map()`]'s closure returns
   /// one item for each entry, and `flat_map()`'s closure returns an
   /// iterable value for each entry.
   ///
-  /// This is a non-consuming variant of [`flat_map_to`].
+  /// This is a non-consuming variant of [`flat_map_to()`].
   ///
-  /// [`map`]: Map::map
-  /// [`flat`]: crate::Collectible::flat
-  /// [`flat_map_to`]: Map::flat_map_to
+  /// [`map()`]: Map::map
+  /// [`map(f)`]: Map::map
+  /// [`.flat()`]: crate::Collectible::flat
+  /// [`flat_map_to()`]: Map::flat_map_to
   ///
   /// # Example
   ///
@@ -717,23 +715,24 @@ pub trait Map<Key, Value> {
   /// Creates a new map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
-  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// The `flat_map_to()` method is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
-  /// an extra layer of indirection. `flat_map()` will remove this extra layer
+  /// an extra layer of indirection. `flat_map_to()` will remove this extra layer
   /// on its own.
   ///
-  /// You can think of `flat_map(f)` as the semantic equivalent
-  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  /// You can think of `flat_map_to(f)` as the semantic equivalent
+  /// of mapping, and then flattening as in [`map_to(f)']['.flat()`].
   ///
-  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
-  /// one item for each entry, and `flat_map()`'s closure returns an
+  /// Another way of thinking about `flat_map_to()`: [`map_to()`]'s closure returns
+  /// one item for each entry, and `flat_map_to()`'s closure returns an
   /// iterable value for each entry.
   ///
-  /// This is a consuming variant of [`flat_map`].
+  /// This is a consuming variant of [`flat_map()`].
   ///
-  /// [`map`]: Map::map
-  /// [`flat`]: crate::Collectible::flat
-  /// [`flat_map`]: Map::flat_map
+  /// [`map_to()`]: Map::map
+  /// [`map_to(f)`]: Map::map
+  /// [`.flat()`]: crate::Collectible::flat
+  /// [`flat_map()`]: Map::flat_map
   ///
   /// # Example
   ///
@@ -787,7 +786,7 @@ pub trait Map<Key, Value> {
   /// Folding is useful whenever you have a map of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a non-consuming variant of [`fold_to`].
+  /// This is a non-consuming variant of [`fold_to()`].
   ///
   /// Note: [`reduce()`] can be used to use the first entry as the initial
   /// value, if the accumulator type and item type is the same.
@@ -796,7 +795,8 @@ pub trait Map<Key, Value> {
   /// operators like `+`, the order the entries are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
   ///
-  /// [`fold_to`]: Map::fold_to
+  /// [`fold_to()`]: Map::fold_to
+  /// [`reduce()`]: Map::reduce
   ///
   /// # Examples
   ///
@@ -849,7 +849,7 @@ pub trait Map<Key, Value> {
   /// Folding is useful whenever you have a map of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a consuming variant of [`fold`].
+  /// This is a consuming variant of [`fold()`].
   ///
   /// Note: [`reduce_to()`] can be used to use the first entry as the initial
   /// value, if the accumulator type and item type is the same.
@@ -858,7 +858,8 @@ pub trait Map<Key, Value> {
   /// operators like `+`, the order the entries are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
   ///
-  /// [`fold`]: Map::fold
+  /// [`fold()`]: Map::fold
+  /// [`reduce_to()`]: Map::reduce_to
   ///
   /// # Examples
   ///
@@ -989,9 +990,9 @@ pub trait Map<Key, Value> {
   /// `(Key, Value)` and returns a value of type `(L, W)`.
   /// The resulting other are collected into a new map of the same type.
   ///
-  /// This is a consuming variant of [`map_to`].
+  /// This is a consuming variant of [`map_to()`].
   ///
-  /// [`map_to`]: Map::map_to
+  /// [`map_to()`]: Map::map_to
   ///
   /// # Arguments
   ///
@@ -1038,9 +1039,9 @@ pub trait Map<Key, Value> {
   /// `(Key, Value)` and returns a value of type `(L, W)`.
   /// The resulting other are collected into a new map of the same type.
   ///
-  /// This is a consuming variant of [`map`].
+  /// This is a consuming variant of [`map()`].
   ///
-  /// [`map`]: Map::map
+  /// [`map()`]: Map::map
   ///
   /// # Arguments
   ///
@@ -1484,9 +1485,9 @@ pub trait Map<Key, Value> {
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
   /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
-  /// This is a non-consuming variant of [`partition_map_to`].
+  /// This is a non-consuming variant of [`partition_map_to()`].
   ///
-  /// [`partition_map_to`]: Map::partition_map_to
+  /// [`partition_map_to()`]: Map::partition_map_to
   ///
   /// # Example
   ///
@@ -1523,9 +1524,9 @@ pub trait Map<Key, Value> {
   /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
   /// `partition_map_to()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
-  /// This is a consuming variant of [`partition_map`].
+  /// This is a consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map`]: Map::partition_map
+  /// [`partition_map()`]: Map::partition_map
   ///
   /// # Example
   ///
@@ -1572,13 +1573,13 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the one value of the type.
   ///
-  /// `product()` can be used to multiply any type implementing [`Product`],
+  /// `product_keys()` can be used to multiply any type implementing [`Product`],
   ///
   /// [`Product`]: Product
   ///
   /// # Panics
   ///
-  /// When calling `product()` and a primitive integer type is being returned,
+  /// When calling `product_keys()` and a primitive integer type is being returned,
   /// method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
@@ -1612,13 +1613,13 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the one value of the type.
   ///
-  /// `product()` can be used to multiply any type implementing [`Product`],
+  /// `product_values()` can be used to multiply any type implementing [`Product`],
   ///
   /// [`Product`]: Product
   ///
   /// # Panics
   ///
-  /// When calling `product()` and a primitive integer type is being returned,
+  /// When calling `product_values()` and a primitive integer type is being returned,
   /// method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
@@ -1659,7 +1660,7 @@ pub trait Map<Key, Value> {
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// This is a non-consuming variant of [`reduce_to`].
+  /// This is a non-consuming variant of [`reduce_to()`].
   ///
   /// [`fold()`]: Map::fold
   /// [`reduce_to()`]: Map::reduce_to
@@ -1708,7 +1709,7 @@ pub trait Map<Key, Value> {
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// This is a consuming variant of [`reduce`].
+  /// This is a consuming variant of [`reduce()`].
   ///
   /// [`fold_to()`]: Map::fold_to
   /// [`reduce()`]: Map::reduce
@@ -1897,13 +1898,13 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the zero value of the type.
   ///
-  /// `sum()` can be used to multiply any type implementing [`Sum`],
+  /// `sum_keys()` can be used to multiply any type implementing [`Sum`],
   ///
   /// [`Sum`]: Sum
   ///
   /// # Panics
   ///
-  /// When calling `sum()` and a primitive integer type is being returned, this
+  /// When calling `sum_keys()` and a primitive integer type is being returned, this
   /// method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
@@ -1938,13 +1939,13 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the zero value of the type.
   ///
-  /// `sum()` can be used to multiply any type implementing [`Sum`],
+  /// `sum_values()` can be used to multiply any type implementing [`Sum`],
   ///
   /// [`Sum`]: Sum
   ///
   /// # Panics
   ///
-  /// When calling `sum()` and a primitive integer type is being returned, this
+  /// When calling `sum_values()` and a primitive integer type is being returned, this
   /// method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///

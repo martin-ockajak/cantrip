@@ -63,9 +63,11 @@ pub trait Collectible<Item> {
   ///
   /// Combinations for sequences are generated based on element positions, not values.
   /// Therefore, if a sequence contains duplicate elements, the resulting combinations will too.
-  /// To obtain combinations of unique elements for sequences, use `.unique().combinations()`.
+  /// To obtain combinations of unique elements for sequences, use [`unique()`]`.combinations()`.
   ///
   /// The order of combination values is preserved for sequences.
+  ///
+  /// [`unique()`]: crate::Sequence::unique
   ///
   /// # Example
   ///
@@ -270,15 +272,15 @@ pub trait Collectible<Item> {
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
   ///
-  /// `filter_map` can be used to make chains of [`filter`] and [`map`] more
+  /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
   /// concise. The example below shows how a `map().filter().map_to()` can be
-  /// shortened to a single call to `filter_map`.
+  /// shortened to a single call to `filter_map()`.
   ///
-  /// This is a non-consuming variant of [`filter_map_to`].
+  /// This is a non-consuming variant of [`filter_map_to()`].
   ///
-  /// [`filter`]: Collectible::filter
-  /// [`map`]: Collectible::map
-  /// [`filter_map_to`]: Collectible::filter_map_to
+  /// [`filter()`]: Collectible::filter
+  /// [`map()`]: Collectible::map
+  /// [`filter_map_to()`]: Collectible::filter_map_to
   ///
   /// # Examples
   ///
@@ -295,7 +297,7 @@ pub trait Collectible<Item> {
   /// );
   /// ```
   ///
-  /// Here's the same example, but with [`filter`] and [`map`]:
+  /// Here's the same example, but with [`filter()`] and [`map()`]:
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -316,15 +318,15 @@ pub trait Collectible<Item> {
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
   ///
-  /// `filter_map_to` can be used to make chains of [`filter`] and [`map`] more
+  /// `filter_map_to()` can be used to make chains of [`filter()`] and [`map_to()`] more
   /// concise. The example below shows how a `map_to().filter().map()` can be
   /// shortened to a single call to `filter_map_to`.
   ///
-  /// This is a consuming variant of [`filter_map`].
+  /// This is a consuming variant of [`filter_map()`].
   ///
-  /// [`filter`]: Collectible::filter
-  /// [`map`]: Collectible::map
-  /// [`filter_map`]: Collectible::filter_map
+  /// [`filter()`]: Collectible::filter
+  /// [`map_to()`]: Collectible::map_to
+  /// [`filter_map()`]: Collectible::filter_map
   ///
   /// # Examples
   ///
@@ -341,7 +343,7 @@ pub trait Collectible<Item> {
   /// );
   /// ```
   ///
-  /// Here's the same example, but with [`filter`] and [`map_to`]:
+  /// Here's the same example, but with [`filter()`] and [`map_to()`]:
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -365,15 +367,15 @@ pub trait Collectible<Item> {
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
-  /// `find_map_to` can be used to make chains of [`find`] and [`map`] more concise.
+  /// `find_map_to()` can be used to make chains of [`find()`] and [`map()`] more concise.
   ///
-  /// `find_map_to(f)` is equivalent to `find().map()`.
+  /// `find_map_to(f)` is equivalent to `find().map_to()`.
   ///
-  /// This is a consuming variant of [`find_map`].
+  /// This is a consuming variant of [`find_map()`].
   ///
-  /// [`find`]: crate::Traversable::find
-  /// [`map`]: crate::Traversable::map
-  /// [`find_map`]: crate::Traversable::find_map
+  /// [`find()`]: crate::Traversable::find
+  /// [`map()`]: Collectible::map
+  /// [`find_map()`]: crate::Traversable::find_map
   ///
   /// # Example
   ///
@@ -491,23 +493,24 @@ pub trait Collectible<Item> {
   /// Creates a new collection by applying the given closure `function` to each element
   /// of this collection and flattens the nested collection.
   ///
-  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// The `flat_map()` method is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
   /// an extra layer of indirection. `flat_map()` will remove this extra layer
   /// on its own.
   ///
   /// You can think of `flat_map(f)` as the semantic equivalent
-  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  /// of mapping, and then flatttening as in [`map(f)`][`.flat()`]`.
   ///
-  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
+  /// Another way of thinking about `flat_map()`: [`map()`]'s closure returns
   /// one item for each element, and `flat_map()`'s closure returns an
   /// iterable value for each element.
   ///
-  /// This is a non-consuming variant of [`flat_map_to`].
+  /// This is a non-consuming variant of [`flat_map_to()`].
   ///
-  /// [`map`]: Collectible::map
-  /// [`flat`]: Collectible::flat
-  /// [`flat_map_to`]: Collectible::flat_map_to
+  /// [`map()`]: Collectible::map
+  /// [`map(f)`]: Collectible::map
+  /// [`.flat()`]: Collectible::flat
+  /// [`flat_map_to()`]: Collectible::flat_map_to
   ///
   /// # Example
   ///
@@ -530,23 +533,24 @@ pub trait Collectible<Item> {
   /// Creates a new collection by applying the given closure `function` to each element
   /// of this collection and flattens the nested collection.
   ///
-  /// The [`flat_map`] adapter is very useful, but only when the closure
+  /// The `flat_map_to()` method is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
-  /// an extra layer of indirection. `flat_map()` will remove this extra layer
+  /// an extra layer of indirection. `flat_map_to()` will remove this extra layer
   /// on its own.
   ///
-  /// You can think of `flat_map(f)` as the semantic equivalent
-  /// of [`map`]ping, and then [`flatten`]ing as in `map(f).flatten()`.
+  /// You can think of `flat_map_to(f)` as the semantic equivalent
+  /// of mapping, and then flattening as in [`map_to(f)`][`.flat()`].
   ///
-  /// Another way of thinking about `flat_map()`: [`map`]'s closure returns
-  /// one item for each element, and `flat_map()`'s closure returns an
+  /// Another way of thinking about `flat_map_to()`: [`map_to()`]'s closure returns
+  /// one item for each element, and `flat_map_to()`'s closure returns an
   /// iterable value for each element.
   ///
-  /// This is a consuming variant of [`flat_map`].
+  /// This is a consuming variant of [`flat_map()`].
   ///
-  /// [`map`]: Collectible::map
-  /// [`flat`]: Collectible::flat
-  /// [`flat_map`]: Collectible::flat_map
+  /// [`map_to()`]: Collectible::map
+  /// [`map_to(f)`]: Collectible::map
+  /// [`.flat()`]: Collectible::flat
+  /// [`flat_map()`]: Collectible::flat_map
   ///
   /// # Example
   ///
@@ -589,7 +593,7 @@ pub trait Collectible<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a consuming variant of [`fold`].
+  /// This is a consuming variant of [`fold()`].
   ///
   /// Note: [`reduce()`] can be used to use the first element as the initial
   /// value, if the accumulator type and item type is the same.
@@ -599,8 +603,9 @@ pub trait Collectible<Item> {
   /// operators like `-` the order will affect the final result.
   /// For a *right-associative* version of `fold_to()`, see [`rfold_to()`].
   ///
-  /// [`fold`]: crate::Traversable::fold
-  /// [`rfold_to`]: crate::Sequence::rfold_to
+  /// [`fold()`]: crate::Traversable::fold
+  /// [`reduce()`]: crate::Traversable::reduce
+  /// [`rfold_to()`]: crate::Sequence::rfold_to
   ///
   /// # Examples
   ///
@@ -679,7 +684,7 @@ pub trait Collectible<Item> {
     self.into_iter().fold(initial_value, function)
   }
 
-  /// Creates `HashMap` of keys mapped to collections of elements according to
+  /// Creates a map of keys mapped to collections of elements according to
   /// specified discriminator function.
   ///
   /// The discriminator function takes a reference to an element and returns a group key.
@@ -690,11 +695,10 @@ pub trait Collectible<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let grouped = a.group_by(|x| x % 2);
-  ///
-  /// assert_eq!(grouped, HashMap::from([
-  ///   (0, vec![2]),
-  ///   (1, vec![1, 3])
+  /// assert_eq!(
+  ///   a.group_by(|x| x % 2), HashMap::from([
+  ///     (0, vec![2]),
+  ///     (1, vec![1, 3])
   /// ]));
   /// ```
   fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
@@ -710,16 +714,16 @@ pub trait Collectible<Item> {
     result
   }
 
-  /// Creates `HashMap` of keys mapped and folded to values according to
+  /// Creates a map of keys mapped and folded to values according to
   /// specified discriminator and folding operation functions.
   ///
   /// The discriminator function takes a reference to an element and returns a group key.
   /// The folding operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a consuming variant of [`group_fold`].
+  /// This is a consuming variant of [`group_fold()`].
   ///
-  /// [`group_fold`]: Traversable::group_fold
+  /// [`group_fold()`]: crate::Traversable::group_fold
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -727,11 +731,11 @@ pub trait Collectible<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_folded = a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x);
-  ///
-  /// assert_eq!(group_folded, HashMap::from([
-  ///   (0, 2),
-  ///   (1, 4),
+  /// assert_eq!(
+  ///   a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x),
+  ///   HashMap::from([
+  ///     (0, 2),
+  ///     (1, 4),
   /// ]));
   /// ```
   fn group_fold_to<K, B>(
@@ -763,7 +767,7 @@ pub trait Collectible<Item> {
   /// The reducing operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a consuming variant of [`group_reduce`].
+  /// This is a consuming variant of [`group_reduce()`].
   ///
   /// [`group_reduce()`]: crate::Traversable::group_reduce
   ///
@@ -773,11 +777,11 @@ pub trait Collectible<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let group_reduced = a.group_reduce_to(|x| x % 2, |acc, x| acc + x);
-  ///
-  /// assert_eq!(group_reduced, HashMap::from([
-  ///   (0, 2),
-  ///   (1, 4),
+  /// assert_eq!(
+  ///   a.group_reduce_to(|x| x % 2, |acc, x| acc + x),
+  ///   HashMap::from([
+  ///     (0, 2),
+  ///     (1, 4),
   /// ]));
   /// ```
   fn group_reduce_to<K>(
@@ -802,9 +806,11 @@ pub trait Collectible<Item> {
   /// exactly the same amount of times as they both appear in `self` and `other`.
   ///
   /// To obtain set-like semantics for sequences which only considers unique elements,
-  /// use `.unique().intersect()`.
+  /// use [`unique()`]`.intersect()`.
   ///
   /// The order of retained values is preserved for sequences.
+  ///
+  /// [`unique()`]: crate::Sequence::unique
   ///
   /// # Example
   ///
@@ -855,9 +861,9 @@ pub trait Collectible<Item> {
   /// `Item` and returns a value of type `R`.
   /// The resulting other are collected into a new collection of the same type.
   ///
-  /// This is a non-consuming variant of [`map_to`].
+  /// This is a non-consuming variant of [`map_to()`].
   ///
-  /// [`map_to`]: Collectible::map_to
+  /// [`map_to()`]: Collectible::map_to
   ///
   /// # Arguments
   ///
@@ -896,9 +902,9 @@ pub trait Collectible<Item> {
   /// `Item` and returns a value of type `R`.
   /// The resulting other are collected into a new collection of the same type.
   ///
-  /// This is a consuming variant of [`map`].
+  /// This is a consuming variant of [`map()`].
   ///
-  /// [`map`]: Collectible::map
+  /// [`map()`]: Collectible::map
   ///
   /// # Arguments
   ///
@@ -1003,9 +1009,9 @@ pub trait Collectible<Item> {
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
   /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
-  /// This is a non-consuming variant of [`partition_map_to`].
+  /// This is a non-consuming variant of [`partition_map_to()`].
   ///
-  /// [`partition_map_to`]: Collectible::partition_map_to
+  /// [`partition_map_to()`]: Collectible::partition_map_to
   ///
   /// # Example
   ///
@@ -1030,9 +1036,9 @@ pub trait Collectible<Item> {
   /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
   /// `partition_map_to()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
-  /// This is a consuming variant of [`partition_map`].
+  /// This is a consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map`]: Collectible::partition_map
+  /// [`partition_map()`]: Collectible::partition_map
   ///
   /// # Example
   ///
@@ -1067,9 +1073,11 @@ pub trait Collectible<Item> {
   ///
   /// Sub-collections for sequences are generated based on element positions, not values.
   /// Therefore, if a sequence contains duplicate elements, the resulting subcollections will too.
-  /// To obtain combinations of unique elements for sequences, use `.unique().powerset()`.
+  /// To obtain combinations of unique elements for sequences, use [`unique()`]`.powerset()`.
   ///
   /// The order of subcollection values is preserved for sequences.
+  ///
+  /// [`unique()`]: crate::Sequence::unique
   ///
   /// # Example
   ///
@@ -1138,7 +1146,7 @@ pub trait Collectible<Item> {
   /// with the first element of this collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// This is a consuming variant of [`reduce`].
+  /// This is a consuming variant of [`reduce()`].
   ///
   /// [`fold_to()`]: Collectible::fold_to
   /// [`reduce()`]: crate::Traversable::reduce

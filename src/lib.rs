@@ -44,7 +44,7 @@
 //!
 //! | Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 //! |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
-//! | [`add`](Traversable::add)                                       |            *              |       |              *                |         *         |
+//! | [`add`](Collectible::add)                                       |            *              |       |              *                |         *         |
 //! | [`add_at`](Sequence::add_at)                                    |            *              |       |                               |                   |
 //! | [`add_at_multi`](Sequence::add_at_multi)                        |            *              |       |                               |                   |
 //! | [`add_multi`](Collectible::add_multi)                           |            *              |       |              *                |         *         |
@@ -122,7 +122,6 @@
 //! | [`minmax_by`](Traversable::minmax_by)                           |            *              |   *   |              *                |         *         |
 //! | [`minmax_by_key`](Traversable::minmax_by_key)                   |            *              |   *   |              *                |         *         |
 //! | [`minmax_of`](Traversable::minmax_of)                           |            *              |   *   |              *                |         *         |
-//! | [`move_at`](Sequence::move_at)                                  |            *              |       |                               |                   |
 //! | [`pad_left`](Sequence::pad_left)                                |            *              |       |                               |                   |
 //! | [`pad_left_with`](Sequence::pad_left_with)                      |            *              |       |                               |                   |
 //! | [`pad_right`](Sequence::pad_right)                              |            *              |       |                               |                   |
@@ -130,7 +129,6 @@
 //! | [`partition`](Collectible::partition)                           |            *              |       |              *                |         *         |
 //! | [`partition_map`](Collectible::partition_map)                   |            *              |       |              *                |         *         |
 //! | [`partition_map_to`](Collectible::partition_map_to)             |            *              |       |              *                |         *         |
-//! | [`permutations`](Collectible::permutations)                     |            *              |       |                               |                   |
 //! | [`position`](Ordered::position)                                 |            *              |   *   |                               |                   |
 //! | [`position_multi`](Ordered::position_multi)                     |            *              |   *   |                               |                   |
 //! | [`position_of`](Ordered::position_of)                           |            *              |   *   |                               |                   |

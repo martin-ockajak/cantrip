@@ -313,11 +313,11 @@ pub trait Ordered<Item> {
   /// Searches for a sub-sequence in this sequence, returning its index.
   ///
   /// After finding a starting element of specified sequence in this sequence,
-  /// `position_seq()` compares each element of this sequence with the specified value,
-  /// and if all of them match, then `position_seq()` returns [`Some(start_index)`].
+  /// `position_sequence()` compares each element of this sequence with the specified value,
+  /// and if all of them match, then `position_sequence()` returns [`Some(start_index)`].
   /// If any of the elements do not match, it returns [`None`].
   ///
-  /// `position_seq()` is short-circuiting; in other words, it will stop
+  /// `position_sequence()` is short-circuiting; in other words, it will stop
   /// processing as soon as it finds a matching sequence.
   ///
   /// Returns `Some(0)` if specified sequence is empty.
@@ -402,14 +402,15 @@ pub trait Ordered<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a non-consuming variant of [`rfold_to`].
+  /// This is a non-consuming variant of [`rfold_to()`].
   ///
   /// Note: `rfold()` combines elements in a *right-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *left-associative* version of `rfold()`, see [`Iterator::fold()`].
+  /// For a *left-associative* version of `rfold()`, see [`fold()`].
   ///
-  /// [`rfold_to`]: crate::Sequence::rfold_to
+  /// [`rfold_to()`]: crate::Sequence::rfold_to
+  /// [`fold()`]: crate::Traversable::fold
   ///
   /// # Examples
   ///

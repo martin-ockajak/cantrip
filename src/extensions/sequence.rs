@@ -73,9 +73,11 @@ pub trait Sequence<Item> {
   ///
   /// Members are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting tuples will too.
-  /// To obtain cartesian product of unique elements, use `.unique().cartesian_product()`.
+  /// To obtain cartesian product of unique elements, use [`unique()`]`.cartesian_product()`.
   ///
   /// The order or tuple values is preserved.
+  ///
+  /// [`unique()`]: Sequence::unique
   ///
   /// # Example
   ///
@@ -108,12 +110,10 @@ pub trait Sequence<Item> {
   /// The chunks are sequences and do not overlap. If `size` does not divide
   /// the length of the slice, then the last chunk will not have length `size`.
   ///
-  /// See [`chunked_exact`] for a variant of this function that returns chunks of always exactly
-  /// `chunk_size` elements, and [`rchunked`] for the same function but starting at the
-  /// end of this sequence.
+  /// See [`chunked_exact()`] for a variant of this function that returns chunks of
+  /// always exactly `chunk_size` elements.
   ///
-  /// [`chunked_exact`]: Sequence::chunked_exact
-  /// [`rchunked`]: crate::Reversible::rchunked
+  /// [`chunked_exact()`]: Sequence::chunked_exact
   ///
   /// # Panics
   ///
@@ -206,11 +206,11 @@ pub trait Sequence<Item> {
   /// the length of the slice, then the last up to `size-1` elements will be omitted.
   ///
   /// Due to each chunk having exactly `chunk_size` elements, the compiler can often optimize the
-  /// resulting code better than in the case of [`chunks`].
+  /// resulting code better than in the case of [`chunked()`].
   ///
-  /// See [`chunked`] for a variant of this function that also returns the remainder as a smaller chunk.
+  /// See [`chunked()`] for a variant of this function that also returns the remainder as a smaller chunk.
   ///
-  /// [`chunked`]: Sequence::chunked
+  /// [`chunked()`]: Sequence::chunked
   ///
   /// # Panics
   ///
@@ -293,9 +293,11 @@ pub trait Sequence<Item> {
   ///
   /// Combinations are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting combinations will too.
-  /// To obtain combination with repetition of unique elements, use `.unique().multicombinations()`.
+  /// To obtain combination with repetition of unique elements, use [`unique()`]`.multicombinations()`.
   ///
   /// The order or combination values is preserved.
+  ///
+  /// [`unique()`]: Sequence::unique
   ///
   /// # Example
   ///
@@ -586,7 +588,7 @@ pub trait Sequence<Item> {
   /// current index of iteration and `val` is an element of this sequence.
   ///
   /// `enumerate()` keeps its count as an [`usize`]. If you want to count by a
-  /// different sized integer, the [`zip`] function provides similar
+  /// different sized integer, the [`zip()`] function provides similar
   /// functionality.
   ///
   /// # Overflow Behavior
@@ -595,7 +597,7 @@ pub trait Sequence<Item> {
   /// [`usize::MAX`] elements either produces the wrong result or panics. If
   /// debug assertions are enabled, a panic is guaranteed.
   ///
-  /// [`zip`]: Sequence::zip
+  /// [`zip()`]: Sequence::zip
   ///
   /// # Example
   ///
@@ -1088,14 +1090,15 @@ pub trait Sequence<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a non-consuming variant of [`rfold`].
+  /// This is a consuming variant of [`rfold()`].
   ///
   /// Note: `rfold()` combines elements in a *right-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *left-associative* version of `rfold()`, see [`Iterator::fold()`].
+  /// For a *left-associative* version of `rfold()`, see [`fold_to()`].
   ///
-  /// [`rfold`]: crate::Ordered::rfold
+  /// [`rfold()`]: crate::Ordered::rfold
+  /// [`fold_to()`]: crate::Collectible::fold_to
   ///
   /// # Examples
   ///
@@ -1113,7 +1116,7 @@ pub trait Sequence<Item> {
   /// );
   /// ```
   ///
-  /// This example demonstrates the right-associative nature of `rfold()`:
+  /// This example demonstrates the right-associative nature of `rfold_to()`:
   /// it builds a string, starting with an initial value
   /// and continuing with each element from the back until the front:
   ///
@@ -1140,8 +1143,8 @@ pub trait Sequence<Item> {
     self.into_iter().rfold(initial_value, function)
   }
 
-  /// A sequence adapter which, like [`fold`], holds internal state, but
-  /// unlike [`fold`], produces a new sequence.
+  /// A sequence adapter which, like [`fold()`], holds internal state, but
+  /// unlike [`fold()`], produces a new sequence.
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
@@ -1154,10 +1157,10 @@ pub trait Sequence<Item> {
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
-  /// This is a non-consuming variant of [`scan_to`].
+  /// This is a non-consuming variant of [`scan_to()`].
   ///
-  /// [`fold`]: crate::Traversable::fold
-  /// [`scan_to`]: crate::extensions::collectible::Collectible::scan_to
+  /// [`fold()`]: crate::Traversable::fold
+  /// [`scan_to()`]: Sequence::scan_to
   ///
   /// # Example
   ///
@@ -1184,10 +1187,8 @@ pub trait Sequence<Item> {
   where
     Self::This<B>: FromIterator<B>;
 
-  /// A sequence adapter which, like [`fold`], holds internal state, but
-  /// unlike [`fold`], produces a new sequence.
-  ///
-  /// [`fold`]: crate::Traversable::fold
+  /// A sequence adapter which, like [`fold_to()`], holds internal state, but
+  /// unlike [`fold_to()`], produces a new sequence.
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
   /// state, and a closure with two arguments, the first being a mutable
@@ -1200,9 +1201,10 @@ pub trait Sequence<Item> {
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
-  /// This is a consuming variant of [`scan`].
+  /// This is a consuming variant of [`scan()`].
   ///
-  /// [`scan`]: crate::extensions::collectible::Collectible::scan
+  /// [`fold_to()`]: crate::Collectible::fold_to
+  /// [`scan()`]: Sequence::scan
   ///
   /// # Example
   ///
@@ -1330,7 +1332,7 @@ pub trait Sequence<Item> {
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable`](Sequence::sorted_unstable).
+  /// See [`sorted_unstable()`](Sequence::sorted_unstable).
   ///
   /// # Current implementation
   ///
@@ -1389,7 +1391,7 @@ pub trait Sequence<Item> {
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable_by`](Sequence::sorted_unstable_by).
+  /// See [`sorted_unstable_by()`](Sequence::sorted_unstable_by).
   ///
   /// # Current implementation
   ///
@@ -1434,7 +1436,7 @@ pub trait Sequence<Item> {
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For simple key functions (e.g., functions that are property accesses or
-  /// basic operations), [`sorted_by_key`](Sequence::sorted_by_key) is likely to be
+  /// basic operations), [`sorted_by_key()`](Sequence::sorted_by_key) is likely to be
   /// faster.
   ///
   /// # Current implementation
@@ -1478,12 +1480,12 @@ pub trait Sequence<Item> {
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For expensive key functions (e.g. functions that are not simple property accesses or
-  /// basic operations), [`sorted_by_cached_key`](Sequence::sorted_by_cached_key) is likely to be
+  /// basic operations), [`sorted_by_cached_key()`](Sequence::sorted_by_cached_key) is likely to be
   /// significantly faster, as it does not recompute element keys.
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable_by_key`](Sequence::sorted_unstable_by_key).
+  /// See [`sorted_unstable_by_key()`](Sequence::sorted_unstable_by_key).
   ///
   /// # Current implementation
   ///
@@ -1632,8 +1634,8 @@ pub trait Sequence<Item> {
   /// randomization to avoid degenerate cases, but with a fixed seed to always provide
   /// deterministic behavior.
   ///
-  /// Due to its key calling strategy, [`sorted_unstable_by_key`](Sequence::sorted_unstable_by_key)
-  /// is likely to be slower than [`sorted_by_cached_key`](Sequence::.sorted_by_cached_key) in
+  /// Due to its key calling strategy, [`sorted_unstable_by_key()`](Sequence::sorted_unstable_by_key)
+  /// is likely to be slower than [`sorted_by_cached_key()`](Sequence::.sorted_by_cached_key) in
   /// cases where the key function is expensive.
   ///
   /// [pdqsort]: https://github.com/orlp/pdqsort
@@ -1926,9 +1928,9 @@ pub trait Sequence<Item> {
   /// `unzip()` produces two sequences: one from the left elements of the pairs,
   /// and one from the right elements.
   ///
-  /// This function is, in some sense, the opposite of [`zip`].
+  /// This function is, in some sense, the opposite of [`zip()`].
   ///
-  /// [`zip`]: Sequence::zip
+  /// [`zip()`]: Sequence::zip
   ///
   /// # Example
   ///
@@ -1959,9 +1961,11 @@ pub trait Sequence<Item> {
   ///
   /// Variations are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting variations will too.
-  /// To obtain variations of unique elements, use `.unique().variations()`.
+  /// To obtain variations of unique elements, use [`unique()`]`.variations()`.
   ///
   /// The order or variation values is preserved.
+  ///
+  /// [`unique()`]: Sequence::unique
   ///
   /// # Example
   ///
@@ -1996,14 +2000,14 @@ pub trait Sequence<Item> {
   ///
   /// If `N` is greater than the size of this sequence, it will return no windows.
   ///
-  /// This is the generic equivalent of [`windows`].
+  /// This is the generalized equivalent of [`windows()`].
   ///
   /// # Panics
   ///
   /// Panics if `N` is 0. This check will most probably get changed to a compile time
   /// error before this method gets stabilized.
   ///
-  /// [`windows`]: slice::windows
+  /// [`windows()`]: slice::windows
   ///
   /// # Examples
   ///
@@ -2067,9 +2071,9 @@ pub trait Sequence<Item> {
   /// If any of the sequences contains more elements than the other one, the remaining elements
   /// are omitted and the resulting sequence length is the length of the shorter sequence.
   ///
-  /// To 'undo' the result of zipping up two sequences, see [`unzip`].
+  /// To 'undo' the result of zipping up two sequences, see [`unzip()`].
   ///
-  /// [`unzip`]: Sequence::unzip
+  /// [`unzip()`]: Sequence::unzip
   ///
   /// # Example
   ///
@@ -2107,9 +2111,9 @@ pub trait Sequence<Item> {
   /// are created by calling the `to_right_value` closure and the resulting sequence length
   /// is the length of this sequence.
   ///
-  /// To 'undo' the result of zipping up two sequences, see [`unzip`].
+  /// To 'undo' the result of zipping up two sequences, see [`unzip()`].
   ///
-  /// [`unzip`]: Sequence::unzip
+  /// [`unzip()`]: Sequence::unzip
   ///
   /// # Example
   ///

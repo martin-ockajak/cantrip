@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::{Collectible, Iterable};
 
 /// Non-consuming collection operations.
 ///
@@ -119,6 +119,8 @@ pub trait Traversable<Item> {
   /// as soon as the closure returns `true`.
   ///
   /// If you need the index of the element, see [`position()`].
+  /// 
+  /// [`position()`]: crate::Ordered::position
   ///
   /// # Example
   ///
@@ -136,16 +138,16 @@ pub trait Traversable<Item> {
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
-  /// `find_map` can be used to make chains of [`find`] and [`map`] more
+  /// `find_map()` can be used to make chains of [`find()`] and [`map()`] more
   /// concise.
   ///
   /// `find_map_to(f)` is equivalent to `find().map()`.
   ///
-  /// This is a non-consuming variant of [`find_map_to`].
+  /// This is a non-consuming variant of [`find_map_to()`].
   ///
-  /// [`find`]: Traversable::find
-  /// [`map`]: Traversable::map
-  /// [`find_map_to`]: crate::Collectible::find_map_to
+  /// [`find()`]: Traversable::find
+  /// [`map()`]: crate::Collectible::map
+  /// [`find_map_to()`]: crate::Collectible::find_map_to
   ///
   /// # Example
   ///
@@ -179,7 +181,7 @@ pub trait Traversable<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a non-consuming variant of [`fold_to`].
+  /// This is a non-consuming variant of [`fold_to()`].
   ///
   /// Note: [`reduce()`] can be used to use the first element as the initial
   /// value, if the accumulator type and item type is the same.
@@ -189,7 +191,9 @@ pub trait Traversable<Item> {
   /// operators like `-` the order will affect the final result.
   /// For a *right-associative* version of `fold()`, see [`rfold()`].
   ///
-  /// [`fold_to`]: crate::Collectible::fold_to
+  /// [`fold_to()`]: crate::Collectible::fold_to
+  /// [`reduce()`]: Traversable::reduce
+  /// [`rfold()`]: crate::Ordered::rfold
   ///
   /// # Examples
   ///
@@ -304,9 +308,9 @@ pub trait Traversable<Item> {
   /// The folding operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a consuming variant of [`group_fold_to`].
+  /// This is a consuming variant of [`group_fold_to()`].
   ///
-  /// [`group_fold_to`]: Collectible::group_fold_to
+  /// [`group_fold_to()`]: crate::Collectible::group_fold_to
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -335,7 +339,7 @@ pub trait Traversable<Item> {
   /// The reducing operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a non-consuming variant of [`group_reduce`].
+  /// This is a non-consuming variant of [`group_reduce_to()`].
   ///
   /// [`group_reduce_to()`]: crate::Collectible::group_reduce_to
   ///
@@ -407,7 +411,7 @@ pub trait Traversable<Item> {
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
-  /// incomparable. You can work around this by using [`Collectible::reduce`]:
+  /// incomparable. You can work around this by using [`reduce_to()`]:
   /// ```
   /// use cantrip::*;
   ///
@@ -418,6 +422,7 @@ pub trait Traversable<Item> {
   ///     2.4
   /// );
   /// ```
+  /// [`reduce_to()`]: crate::Collectible::reduce_to
   ///
   /// # Example
   ///
@@ -487,7 +492,9 @@ pub trait Traversable<Item> {
   /// If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
-  /// incomparable. You can work around this by using [`Collectible::reduce`]:
+  /// incomparable. You can work around this by using [`reduce()`]:
+  ///
+  /// [`reduce()`]: Traversable::reduce
   ///
   /// ```
   /// use cantrip::*;
@@ -597,10 +604,10 @@ pub trait Traversable<Item> {
   /// For collections with at least one element, this is the same as [`fold()`]
   /// with the first element of the collection as the initial accumulator value, folding
   ///
-  /// This is a non-consuming variant of [`reduce_to`].
+  /// This is a non-consuming variant of [`reduce_to()`].
   ///
   /// [`fold()`]: Traversable::fold
-  /// [`reduce_to()`]: crate::Collectible::reduce
+  /// [`reduce_to()`]: crate::Collectible::reduce_to
   ///
   /// # Example
   ///
@@ -630,9 +637,11 @@ pub trait Traversable<Item> {
   /// at least as many times as their appear in this collection.
   ///
   /// To obtain set-like semantics for sequences which only considers unique elements,
-  /// use `.unique().subset()`.
+  /// use [`unique()`]`.subset()`.
   ///
   /// Returns `true` if this collection is empty.
+  ///
+  /// [`unique()`]: crate::Sequence::unique
   ///
   /// # Example
   ///
@@ -657,9 +666,11 @@ pub trait Traversable<Item> {
   /// at least as many times as their appear in the other collection.
   ///
   /// To obtain set-like semantics for sequences which only considers unique elements,
-  /// use `.unique().superset()`.
+  /// use [`unique()`]`.superset()`.
   ///
   /// Returns `true` if the other collection is empty.
+  /// 
+  /// [`unique()`]: crate::Sequence::unique
   ///
   /// # Example
   ///
