@@ -6,7 +6,7 @@ use crate::extensions::util::{assert_map_equal, TestMap, Testable};
 
 pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
-  C: Map<i64, i64> + TestMap<i64, i64> + IntoIterator<Item = (i64, i64)> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
+  C: Map<i64, i64> + TestMap<i64, i64> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
   C::This<i64, i64>: Testable<(i64, i64)>,
 {
   // add

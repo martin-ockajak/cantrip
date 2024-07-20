@@ -80,7 +80,7 @@ where
 
 pub(crate) fn test_map_traits<'a, C>(a: &C, b: &C, e: &C)
 where
-  C: Map<i64, i64> + TestMap<i64, i64> + IntoIterator<Item = (i64, i64)> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
+  C: Map<i64, i64> + TestMap<i64, i64> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
   <C as Map<i64, i64>>::This<i64, i64>: Testable<(i64, i64)>,
 {
   test_map(a, b, e);

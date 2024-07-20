@@ -91,7 +91,7 @@ pub(crate) trait TestSequence<T>:
 {
 }
 
-pub(crate) trait TestMap<K, V>: Map<K, V> + Testable<(K, V)> {}
+pub(crate) trait TestMap<K, V>: Map<K, V> + Testable<(K, V)> + IntoIterator<Item = (K, V)> {}
 
 impl<T: Clone + Equal + Debug> Testable<T> for Vec<T> {}
 
