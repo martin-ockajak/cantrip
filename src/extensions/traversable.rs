@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
-use crate::{Collectible, Iterable};
+use crate::Iterable;
 
 /// Non-consuming collection operations.
 ///
