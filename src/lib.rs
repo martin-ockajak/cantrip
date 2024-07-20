@@ -3,7 +3,7 @@
 //!
 //! Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 //!
-//! ### Features
+//! ## Features
 //!
 //! - Equivalents of standard iterator methods are added to standard library collections
 //! - Additional utility methods commonly found in collection libraries are also included
@@ -11,7 +11,7 @@
 //! - All methods consider collection instances to be immutable although some may consume them
 //! - Asymptotic complexity is optimal and performance overhead is limited to new collection creation
 //!
-//! ### Examples
+//! ## Examples
 //!
 //! ```rust
 //! use cantrip::*;
@@ -40,7 +40,7 @@
 //! a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 //! ```
 //!
-//! ### Methods
+//! ## Methods
 //!
 //! | Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 //! |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
@@ -122,6 +122,7 @@
 //! | [`minmax_by`](Traversable::minmax_by)                           |            *              |   *   |              *                |         *         |
 //! | [`minmax_by_key`](Traversable::minmax_by_key)                   |            *              |   *   |              *                |         *         |
 //! | [`minmax_of`](Traversable::minmax_of)                           |            *              |   *   |              *                |         *         |
+//! | [`move_at`](Sequence::move_at)                                  |            *              |       |                               |                   |
 //! | [`pad_left`](Sequence::pad_left)                                |            *              |       |                               |                   |
 //! | [`pad_left_with`](Sequence::pad_left_with)                      |            *              |       |                               |                   |
 //! | [`pad_right`](Sequence::pad_right)                              |            *              |       |                               |                   |

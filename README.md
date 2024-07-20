@@ -41,7 +41,7 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 
 | Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
 |-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
-| [add](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Traversable.html#method.add)                                       |            *              |       |              *                |         *         |
+| [add](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.add)                                       |            *              |       |              *                |         *         |
 | [add_at](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.add_at)                                    |            *              |       |                               |                   |
 | [add_at_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.add_at_multi)                        |            *              |       |                               |                   |
 | [add_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.add_multi)                           |            *              |       |              *                |         *         |
@@ -127,7 +127,6 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 | [partition](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.partition)                           |            *              |       |              *                |         *         |
 | [partition_map](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.partition_map)                   |            *              |       |              *                |         *         |
 | [partition_map_to](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.partition_map_to)             |            *              |       |              *                |         *         |
-| [permutations](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Collectible.html#method.permutations)                     |            *              |       |                               |                   |
 | [position](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position)                                 |            *              |   *   |                               |                   |
 | [position_multi](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position_multi)                     |            *              |   *   |                               |                   |
 | [position_of](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Ordered.html#method.position_of)                           |            *              |   *   |                               |                   |
