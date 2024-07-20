@@ -70,8 +70,8 @@ pub trait Iterable {
   /// ```
   /// use crate::cantrip::*;
   ///
-  /// let v = vec![1, 2, 3];
-  /// let mut iter = v.iterator();
+  /// let a = vec![1, 2, 3];
+  /// let mut iter = a.iterator();
   ///
   /// assert_eq!(Some(&1), iter.next());
   /// assert_eq!(Some(&2), iter.next());
