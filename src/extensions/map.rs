@@ -1182,7 +1182,6 @@ pub trait Map<Key, Value> {
   #[inline]
   fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
   where
-    W: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<Key, W>: FromIterator<(Key, W)>,
   {
