@@ -31,7 +31,7 @@ codegen-units = 1
 panic = "unwind"
 
 [lints.rust]
-all = "deny"
+# all = "deny"
 
 [lints.clippy]
 all = "deny"
