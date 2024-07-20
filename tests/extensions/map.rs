@@ -1,23 +1,13 @@
 use std::collections::HashMap;
-use std::fmt::Debug;
 
 use cantrip::{Iterable, Map};
 
-use crate::extensions::util::{assert_map_equal, Equal};
+use crate::extensions::util::{assert_map_equal, TestMap, Testable};
 
 pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
-  C: Map<i64, i64>
-    + FromIterator<(i64, i64)>
-    + IntoIterator<Item = (i64, i64)>
-    + Iterable<Item<'a> = (&'a i64, &'a i64)>
-    + Default
-    + Extend<(i64, i64)>
-    + Clone
-    + Equal
-    + Debug
-    + 'a,
-  C::This<i64, i64>: FromIterator<(i64, i64)> + Default + Extend<(i64, i64)> + Equal + Debug,
+  C: Map<i64, i64> + TestMap<i64, i64> + IntoIterator<Item = (i64, i64)> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
+  C::This<i64, i64>: Testable<(i64, i64)>,
 {
   // add
   let a = a_source.clone();
@@ -191,13 +181,13 @@ where
   // map_keys
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_map_equal(a.map_keys(|&k| k + 1), HashMap::from([(2, 1), (3, 2), (4, 3),]));
+  assert_map_equal(a.map_keys(|&k| k + 1), HashMap::from([(2, 1), (3, 2), (4, 3)]));
   assert_map_equal(e.map_keys(|&k| k + 1), HashMap::new());
 
   // map_values
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_map_equal(a.map_values(|&v| v + 1), HashMap::from([(1, 2), (2, 3), (3, 4),]));
+  assert_map_equal(a.map_values(|&v| v + 1), HashMap::from([(1, 2), (2, 3), (3, 4)]));
   assert_map_equal(e.map_values(|&v| v + 1), HashMap::new());
 
   // max_by
@@ -252,8 +242,8 @@ where
   let a = a_source.clone();
   let e = e_source.clone();
   let (a_even, a_odd) = a.partition_map(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
-  assert_map_equal(a_even, HashMap::from([(5, 2),]));
-  assert_map_equal(a_odd, HashMap::from([(1, 1), (3, 3),]));
+  assert_map_equal(a_even, HashMap::from([(5, 2)]));
+  assert_map_equal(a_odd, HashMap::from([(1, 1), (3, 3)]));
   let (e_even, e_odd) = e.partition_map(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
   assert_map_equal(e_even, HashMap::new());
   assert_map_equal(e_odd, HashMap::new());
@@ -262,8 +252,8 @@ where
   let a = a_source.clone();
   let e = e_source.clone();
   let (a_even, a_odd) = a.partition_map_to(|(k, v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
-  assert_map_equal(a_even, HashMap::from([(5, 2),]));
-  assert_map_equal(a_odd, HashMap::from([(1, 1), (3, 3),]));
+  assert_map_equal(a_even, HashMap::from([(5, 2)]));
+  assert_map_equal(a_odd, HashMap::from([(1, 1), (3, 3)]));
   let (e_even, e_odd) = e.partition_map_to(|(k, v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
   assert_map_equal(e_even, HashMap::new());
   assert_map_equal(e_odd, HashMap::new());

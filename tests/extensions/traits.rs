@@ -1,7 +1,6 @@
-use std::fmt::Debug;
 use std::panic::UnwindSafe;
 
-use cantrip::{Collectible, Iterable, List, Map, Ordered, Sequence, Traversable};
+use cantrip::{Collectible, Iterable, List, Map, Sequence};
 
 use crate::extensions::collectible::test_collectible;
 use crate::extensions::list::test_list;
@@ -10,23 +9,14 @@ use crate::extensions::ordered::test_ordered;
 use crate::extensions::sequence::test_sequence;
 use crate::extensions::slice::test_slice;
 use crate::extensions::traversable::test_traversable;
-use crate::extensions::util::Equal;
+use crate::extensions::util::{TestMap, TestSequence, TestSet, Testable};
 
 pub(crate) fn test_set_traits<'a, C, D>(a: &C, b: &C, d: &D, e: &C)
 where
-  C: Traversable<i64>
-    + Collectible<i64>
-    + FromIterator<i64>
-    + Iterable<Item<'a> = &'a i64>
-    + Default
-    + Extend<i64>
-    + Clone
-    + Equal
-    + Debug
-    + 'a,
-  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  C: TestSet<i64> + Iterable<Item<'a> = &'a i64> + 'a,
+  <C as Collectible<i64>>::This<i64>: Testable<i64>,
   D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
-  D::This<i64>: FromIterator<i64> + Equal + Debug + 'a,
+  D::This<i64>: Testable<i64>,
 {
   test_traversable(false, a, b, e);
   test_collectible(false, a, b, d, e);
@@ -42,29 +32,16 @@ pub(crate) fn test_slice_traits(a: &[i64], b: &[i64], e: &[i64]) {
 pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: Traversable<i64>
-    + Collectible<i64>
-    + Ordered<i64>
-    + Sequence<i64>
-    + FromIterator<i64>
-    + IntoIterator<Item = i64, IntoIter = I>
-    + Iterable<Item<'a> = &'a i64>
-    + Default
-    + Extend<i64>
-    + Clone
-    + Equal
-    + UnwindSafe
-    + Debug
-    + 'a,
-  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
-  <C as Sequence<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
-  <C as Sequence<i64>>::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
-  <C as Sequence<i64>>::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
+  C: TestSequence<i64> + IntoIterator<Item = i64, IntoIter = I> + Iterable<Item<'a> = &'a i64> + UnwindSafe + 'a,
+  <C as Collectible<i64>>::This<i64>: Testable<i64>,
+  <C as Sequence<i64>>::This<i64>: Testable<i64>,
+  <C as Sequence<i64>>::This<(i64, i64)>: Testable<(i64, i64)>,
+  <C as Sequence<i64>>::This<(usize, i64)>: Testable<(usize, i64)>,
   D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
-  D::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug + 'a,
+  D::This<i64>: Testable<i64>,
   G:
     Collectible<(i64, i64)> + Sequence<(i64, i64)> + FromIterator<(i64, i64)> + IntoIterator<Item = (i64, i64)> + Clone,
-  <G as Sequence<(i64, i64)>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  <G as Sequence<(i64, i64)>>::This<i64>: Testable<i64>,
   for<'c> &'c C: UnwindSafe,
 {
   test_traversable(true, a, b, e);
@@ -76,30 +53,22 @@ where
 pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: Traversable<i64>
-    + Collectible<i64>
-    + Ordered<i64>
-    + Sequence<i64>
+  C: TestSequence<i64>
     + List<i64>
-    + FromIterator<i64>
+    + Testable<i64>
     + IntoIterator<Item = i64, IntoIter = I>
     + Iterable<Item<'a> = &'a i64>
-    + Default
-    + Extend<i64>
-    + Clone
-    + Equal
     + UnwindSafe
-    + Debug
     + 'a,
-  <C as Collectible<i64>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
-  <C as Sequence<i64>>::This<i64>: FromIterator<i64> + Equal + Debug,
-  <C as Sequence<i64>>::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
-  <C as Sequence<i64>>::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
+  <C as Collectible<i64>>::This<i64>: Testable<i64>,
+  <C as Sequence<i64>>::This<i64>: Testable<i64>,
+  <C as Sequence<i64>>::This<(i64, i64)>: Testable<(i64, i64)>,
+  <C as Sequence<i64>>::This<(usize, i64)>: Testable<(usize, i64)>,
   D: Collectible<Vec<i64>> + FromIterator<Vec<i64>> + Clone + 'a,
-  D::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug + 'a,
+  D::This<i64>: Testable<i64>,
   G:
     Collectible<(i64, i64)> + Sequence<(i64, i64)> + FromIterator<(i64, i64)> + IntoIterator<Item = (i64, i64)> + Clone,
-  <G as Sequence<(i64, i64)>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
+  <G as Sequence<(i64, i64)>>::This<i64>: Testable<i64>,
   for<'c> &'c C: UnwindSafe,
 {
   test_traversable(true, a, b, e);
@@ -111,17 +80,8 @@ where
 
 pub(crate) fn test_map_traits<'a, C>(a: &C, b: &C, e: &C)
 where
-  C: Map<i64, i64>
-    + FromIterator<(i64, i64)>
-    + IntoIterator<Item = (i64, i64)>
-    + Iterable<Item<'a> = (&'a i64, &'a i64)>
-    + Default
-    + Extend<(i64, i64)>
-    + Clone
-    + Equal
-    + Debug
-    + 'a,
-  <C as Map<i64, i64>>::This<i64, i64>: FromIterator<(i64, i64)> + Default + Extend<(i64, i64)> + Equal + Debug,
+  C: Map<i64, i64> + TestMap<i64, i64> + IntoIterator<Item = (i64, i64)> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
+  <C as Map<i64, i64>>::This<i64, i64>: Testable<(i64, i64)>,
 {
   test_map(a, b, e);
 }

@@ -1,4 +1,5 @@
 use crate::assert_equal;
+use cantrip::{Collectible, Map, Ordered, Sequence, Traversable};
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::fmt::Debug;
 use std::hash::Hash;
@@ -81,6 +82,49 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
   }
 }
 
+pub(crate) trait Testable<T>: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
+
+pub(crate) trait TestSet<T>: Traversable<T> + Collectible<T> + Testable<T> {}
+
+pub(crate) trait TestSequence<T>:
+  Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + Testable<T>
+{
+}
+
+pub(crate) trait TestMap<K, V>: Map<K, V> + Testable<(K, V)> {}
+
+impl<T: Clone + Equal + Debug> Testable<T> for Vec<T> {}
+
+impl<T: Clone + Equal + Debug> Testable<T> for VecDeque<T> {}
+
+impl<T: Clone + Equal + Debug> Testable<T> for LinkedList<T> {}
+
+impl<T: Clone + Equal + Debug + Eq + Hash> Testable<T> for HashSet<T> {}
+
+impl<T: Clone + Equal + Debug + Ord> Testable<T> for BTreeSet<T> {}
+
+impl<T: Clone + Equal + Debug + Ord + Eq + Hash> Testable<T> for BinaryHeap<T> {}
+
+impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> Testable<(K, V)> for HashMap<K, V> {}
+
+impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> Testable<(K, V)> for BTreeMap<K, V> {}
+
+impl<T: Clone + Equal + Debug> TestSequence<T> for Vec<T> {}
+
+impl<T: Clone + Equal + Debug> TestSequence<T> for VecDeque<T> {}
+
+impl<T: Clone + Equal + Debug> TestSequence<T> for LinkedList<T> {}
+
+impl<T: Clone + Equal + Debug + Eq + Hash> TestSet<T> for HashSet<T> {}
+
+impl<T: Clone + Equal + Debug + Ord> TestSet<T> for BTreeSet<T> {}
+
+impl<T: Clone + Equal + Debug + Ord + Eq + Hash> TestSet<T> for BinaryHeap<T> {}
+
+impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> TestMap<K, V> for HashMap<K, V> {}
+
+impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> TestMap<K, V> for BTreeMap<K, V> {}
+
 //noinspection RsUnresolvedPath
 pub(crate) fn assert_seq_equal<T, C: FromIterator<T> + Equal + Debug>(values: C, expected: Vec<T>) {
   assert_equal!(values, C::from_iter(expected))
@@ -106,9 +150,7 @@ pub(crate) fn assert_map_equal<K: Debug, V: Debug, C: FromIterator<(K, V)> + Equ
 pub(crate) fn assert_vec_seq_equal<T: Ord + Debug, C: IntoIterator<Item = T> + Debug>(
   values: Vec<C>, expected: Vec<Vec<T>>,
 ) {
-  let values_vec = Vec::from_iter(values.into_iter().map(|x| {
-    Vec::from_iter(x)
-  }));
+  let values_vec = Vec::from_iter(values.into_iter().map(|x| Vec::from_iter(x)));
   assert_eq!(values_vec, expected)
 }
 
