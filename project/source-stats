@@ -6,14 +6,14 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 cd ${SCRIPT_DIR}/..
 
 echo -e "\n### Files"
-echo "* Main: `find  . -name '*.rs' -type f | grep src | wc -l`"
-echo "* Test: `find  . -name '*.rs' -type f | grep tests | wc -l`"
+echo "* Main: `find  src -name '*.rs' -type f | wc -l`"
+echo "* Test: `find  tests -name '*.rs' -type f | wc -l`"
 echo "* Docs: `(find  . -name '*.md' -type f) | wc -l`"
 echo "* Build: `(find . -name '*.toml' -type f) | wc -l`"
 
 echo -e "\n### Lines"
-echo "* Main: `find  . -name '*.rs' -type f | grep src | xargs cat | wc -l`"
-echo "* Test: `find  . -name '*.rs' -type f | grep tests | xargs cat | wc -l`"
+echo "* Main: `find  src -name '*.rs' -type f | xargs cat | wc -l`"
+echo "* Test: `find  tests -name '*.rs' -type f | xargs cat | wc -l`"
 echo "* Docs: `(find  . -name '*.md' -type f) | xargs cat | wc -l`"
 echo "* Build: `(find . -name '*.toml' -type f) | xargs cat | wc -l`"
 echo
