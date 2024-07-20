@@ -1175,8 +1175,7 @@ pub trait Collectible<Item> {
   #[inline]
   fn reduce_to(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   where
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
+    Self: IntoIterator<Item = Item> + Sized,
   {
     let mut iterator = self.into_iter();
     iterator.next().map(|result| iterator.fold(result, function))
@@ -1322,8 +1321,7 @@ pub trait Collectible<Item> {
   fn sum(self) -> Item
   where
     Item: Sum,
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
+    Self: IntoIterator<Item = Item> + Sized,
   {
     self.into_iter().sum()
   }

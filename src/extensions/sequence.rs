@@ -263,7 +263,7 @@ pub trait Sequence<Item> {
   /// ```
   fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
   where
-    Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item> + Sized,
   {
     let mut iterator = self.into_iter();
     let mut last = iterator.next();
