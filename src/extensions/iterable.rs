@@ -6,11 +6,9 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 /// an iterator over references. This is common for types which describe a
 /// collection of some kind.
 ///
-/// One benefit of implementing `Iterable` is that your type will [work
-/// with Rust's `for` loop syntax](crate::iter#for-loops-and-intoiterator).
-///
 /// This is a reference-based equivalent of standard [`IntoIterator`] providing
-/// the functionality `iter()` methods for various standard collection types.
+/// the `iterator()` method which is a generic equivalent of various `iter()`
+/// methods for various standard collection types.
 ///
 /// See also: [`FromIterator`].
 ///
