@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2021"
 description = "Practical extension methods for standard Rust collections"
 authors = ["Martin Ockajak"]
-documentation = "ttps://docs.rs/cantrip/latest/cantrip"
 repository = "https://github.com/martin-ockajak/cantrip"
 license = "Apache-2.0"
 readme = "README.md"
