@@ -3,6 +3,7 @@
 //!
 //! Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 //!
+//!
 //! ## Features
 //!
 //! - Equivalents of standard iterator methods are added to standard library collections
@@ -10,6 +11,7 @@
 //! - Transformation methods return a new collection instance instead of returning an iterator
 //! - All methods consider collection instances to be immutable although some may consume them
 //! - Asymptotic complexity is optimal and performance overhead is limited to new collection creation
+//!
 //!
 //! ## Examples
 //!
@@ -39,6 +41,7 @@
 //! # let a = source.clone();
 //! a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 //! ```
+//!
 //!
 //! ## Methods
 //!

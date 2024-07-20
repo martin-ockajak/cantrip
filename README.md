@@ -181,6 +181,7 @@ a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])
 | [zip](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip)                                          |            *              |       |                               |                   |
 | [zip_padded](https://docs.rs/cantrip/latest/cantrip/extensions/trait.Sequence.html#method.zip_padded)                            |            *              |       |                               |                   |
 
+
 ## Inspiration
 
 - [Rust Collections](https://doc.rust-lang.org/std/iter/trait.Iterator.html)
@@ -210,6 +211,7 @@ cargo install cargo-make
 makers build
 ```
 
+
 ## License
 
 Licensed under either of
@@ -220,6 +222,7 @@ Licensed under either of
    ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
+
 
 ## Contribution
 
