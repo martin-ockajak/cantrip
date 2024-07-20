@@ -26,7 +26,7 @@ args = ["bench"]
 [tasks.publish]
 install_crate = "cargo-release"
 command = "cargo"
-args = ["publish", "--dry-run"]
+args = ["publish"]
 
 [tasks.clean]
 command = "cargo"
