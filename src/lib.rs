@@ -182,6 +182,6 @@
 //! | [`windowed_circular`](Sequence::windowed_circular)              |            *              |       |                               |                   |
 //! | [`zip`](Sequence::zip)                                          |            *              |       |                               |                   |
 //! | [`zip_padded`](Sequence::zip_padded)                            |            *              |       |                               |                   |
-pub mod extensions;
+pub(crate) mod extensions;
 
 pub use extensions::*;

@@ -4,7 +4,7 @@ use std::hash::Hash;
 
 use crate::Iterable;
 
-/// Non-consuming collection operations.
+/// Traversable collection operations.
 ///
 /// Methods have the following properties:
 ///
@@ -119,7 +119,7 @@ pub trait Traversable<Item> {
   /// as soon as the closure returns `true`.
   ///
   /// If you need the index of the element, see [`position()`].
-  /// 
+  ///
   /// [`position()`]: crate::Ordered::position
   ///
   /// # Example
@@ -669,7 +669,7 @@ pub trait Traversable<Item> {
   /// use [`unique()`]`.superset()`.
   ///
   /// Returns `true` if the other collection is empty.
-  /// 
+  ///
   /// [`unique()`]: crate::Sequence::unique
   ///
   /// # Example

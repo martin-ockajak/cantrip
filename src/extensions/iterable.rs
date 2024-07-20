@@ -80,6 +80,7 @@ pub trait Iterable {
   fn iterator<'c>(&'c self) -> Self::Iterator<'c>;
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct OptionIterator<'c, T> {
   pub(crate) iterator: core::option::Iter<'c, T>,
@@ -108,6 +109,7 @@ impl<Item> Iterable for Option<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct ResultIterator<'c, T> {
   pub(crate) iterator: core::result::Iter<'c, T>,
@@ -153,6 +155,7 @@ impl<Item> Iterable for [Item] {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct SliceIterator<'c, T> {
   pub(crate) iterator: core::slice::Iter<'c, T>,
@@ -188,6 +191,7 @@ impl<Item> Iterable for Vec<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct LinkedListIterator<'c, T> {
   pub(crate) iterator: std::collections::linked_list::Iter<'c, T>,
@@ -223,6 +227,7 @@ impl<Item> Iterable for LinkedList<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct VecDequeIterator<'c, T> {
   pub(crate) iterator: std::collections::vec_deque::Iter<'c, T>,
@@ -258,6 +263,7 @@ impl<Item> Iterable for VecDeque<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct HashSetIterator<'c, T> {
   pub(crate) iterator: std::collections::hash_set::Iter<'c, T>,
@@ -286,6 +292,7 @@ impl<Item> Iterable for HashSet<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct BTreeSetIterator<'c, T> {
   pub(crate) iterator: std::collections::btree_set::Iter<'c, T>,
@@ -314,6 +321,7 @@ impl<Item> Iterable for BTreeSet<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct BinaryHeapIterator<'c, T> {
   pub(crate) iterator: std::collections::binary_heap::Iter<'c, T>,
@@ -342,6 +350,7 @@ impl<Item> Iterable for BinaryHeap<Item> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct HashMapIterator<'c, Key, Value> {
   pub(crate) iterator: std::collections::hash_map::Iter<'c, Key, Value>,
@@ -372,6 +381,7 @@ impl<Key, Value> Iterable for HashMap<Key, Value> {
   }
 }
 
+#[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct BTreeMapIterator<'c, Key, Value> {
   pub(crate) iterator: std::collections::btree_map::Iter<'c, Key, Value>,
