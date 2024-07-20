@@ -1,6 +1,6 @@
 use std::panic::UnwindSafe;
 
-use cantrip::{Collectible, Iterable, List, Map, Sequence};
+use cantrip::{Collectible, Iterable, List, Map, Sequence, Traversable};
 
 use crate::extensions::collectible::test_collectible;
 use crate::extensions::list::test_list;
@@ -9,11 +9,11 @@ use crate::extensions::ordered::test_ordered;
 use crate::extensions::sequence::test_sequence;
 use crate::extensions::slice::test_slice;
 use crate::extensions::traversable::test_traversable;
-use crate::extensions::util::{TestCollectible, TestCollection, TestMap, TestSequence, TestSet};
+use crate::extensions::util::{TestCollectible, TestCollection, TestMap, TestSequence};
 
 pub(crate) fn test_set_traits<'a, C, D>(a: &C, b: &C, d: &D, e: &C)
 where
-  C: TestSet<i64> + TestCollectible<'a, i64>,
+  C: Traversable<i64> + TestCollectible<'a, i64>,
   <C as Collectible<i64>>::This<i64>: TestCollection<i64>,
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,

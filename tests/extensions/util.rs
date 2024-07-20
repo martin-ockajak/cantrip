@@ -91,8 +91,6 @@ where
 {
 }
 
-pub(crate) trait TestSet<T>: Traversable<T> + Collectible<T> + TestCollection<T> {}
-
 pub(crate) trait TestSequence<'a, T: 'a>:
   Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T> + Iterable<Item<'a> = &'a T>
 where
@@ -117,12 +115,9 @@ impl<'a, T: 'a, C> TestSequence<'a, T> for C where
 {
 }
 
-impl<T, C> TestSet<T> for C where C: Traversable<T> + Collectible<T> + TestCollection<T> {}
-
 impl<K, V, C> TestMap<K, V> for C where
   C: Map<K, V> + FromIterator<(K, V)> + Default + Extend<(K, V)> + Clone + Equal + Debug + IntoIterator<Item = (K, V)>
-{
-}
+{}
 
 //noinspection RsUnresolvedPath
 pub(crate) fn assert_seq_equal<T, C: FromIterator<T> + Equal + Debug>(values: C, expected: Vec<T>) {
