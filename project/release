@@ -21,6 +21,6 @@ git push --follow-tags
 cargo make publish
 
 # Create a release
-gh release create "${tag}" -T "${version}" -f "${release_notes}"
+gh release create "${tag}" -t "${version}" --verify-tag -F "${release_notes}"
 rm -f "${release_notes}"
 
