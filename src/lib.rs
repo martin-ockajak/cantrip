@@ -183,5 +183,7 @@
 //! | [`zip`](Sequence::zip)                                          |            *              |       |                               |                   |
 //! | [`zip_padded`](Sequence::zip_padded)                            |            *              |       |                               |                   |
 pub(crate) mod extensions;
+pub(crate) mod core;
 
+pub use core::iterable::*;
 pub use extensions::*;

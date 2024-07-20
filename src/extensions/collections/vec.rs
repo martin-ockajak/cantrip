@@ -1,4 +1,5 @@
 use crate::extensions::*;
+use crate::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Display;
@@ -342,8 +343,7 @@ impl<Item> Sequence<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
-  fn add_at(mut self, index: usize, element: Item) -> Self
-  {
+  fn add_at(mut self, index: usize, element: Item) -> Self {
     let size = self.len();
     if index > size {
       panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
@@ -353,8 +353,7 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
-  {
+  fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self {
     let size = self.len();
     if index > size {
       panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)

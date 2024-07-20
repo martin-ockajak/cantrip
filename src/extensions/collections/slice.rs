@@ -4,6 +4,7 @@ use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
+use crate::Iterable;
 
 impl<Item> Traversable<Item> for [Item] {
   #[inline]

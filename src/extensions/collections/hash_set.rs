@@ -3,6 +3,7 @@ use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 
 use crate::extensions::*;
+use crate::Iterable;
 
 impl<Item> Traversable<Item> for HashSet<Item> {
   #[inline]

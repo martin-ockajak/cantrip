@@ -4,6 +4,7 @@ use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
+use crate::Iterable;
 
 impl<Item> Traversable<Item> for VecDeque<Item> {
   #[inline]
@@ -343,8 +344,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
-  fn add_at(mut self, index: usize, element: Item) -> Self
-  {
+  fn add_at(mut self, index: usize, element: Item) -> Self {
     let size = self.len();
     if index > size {
       panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
@@ -354,8 +354,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self
-  {
+  fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self {
     let size = self.len();
     if index > size {
       panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
@@ -445,16 +444,18 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   #[inline]
   fn substitute_at(mut self, index: usize, replacement: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self[index] = replacement;
     self
   }
 
   #[inline]
-  fn substitute_at_multi(mut self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>) -> Self
+  fn substitute_at_multi(
+    mut self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
+  ) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     for (index, replacement) in indices.into_iter().zip(replacements) {
       self[index] = replacement;

@@ -1,10 +1,12 @@
-use crate::extensions::core::unfold::unfold;
-use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BTreeSet, HashMap, LinkedList};
 use std::fmt::Display;
 use std::hash::Hash;
 use std::iter;
+
+use crate::core::unfold::unfold;
+use crate::extensions::*;
+use crate::Iterable;
 
 impl<Item> Traversable<Item> for LinkedList<Item> {
   #[inline]

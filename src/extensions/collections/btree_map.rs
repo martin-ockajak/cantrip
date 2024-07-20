@@ -1,7 +1,9 @@
-use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::hash::Hash;
+
+use crate::extensions::*;
+use crate::Iterable;
 
 impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   type This<X, V> = BTreeMap<X, V>;

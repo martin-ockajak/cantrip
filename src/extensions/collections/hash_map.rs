@@ -1,7 +1,9 @@
-use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
+
+use crate::extensions::*;
+use crate::Iterable;
 
 impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
@@ -53,7 +55,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   fn delete(mut self, key: &Key) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     let _unused = self.remove(key);
     self
@@ -63,7 +65,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   fn delete_multi<'a>(mut self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
     for key in keys.iterator() {
       let _unused = self.remove(key);

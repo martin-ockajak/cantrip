@@ -1,8 +1,9 @@
-use crate::extensions::core::unfold::unfold;
 use std::cmp::Ordering;
 use std::collections::{BTreeSet, HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
+
+use crate::core::unfold::unfold;
 
 /// Sequence operations.
 ///

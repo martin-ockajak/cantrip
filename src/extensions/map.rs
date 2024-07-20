@@ -1,9 +1,10 @@
-use crate::extensions::core::iterable::Iterable;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
+
+use crate::Iterable;
 
 /// Map operations.
 ///

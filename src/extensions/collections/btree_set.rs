@@ -1,7 +1,9 @@
-use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::{BTreeSet, HashMap, LinkedList};
 use std::hash::Hash;
+
+use crate::extensions::*;
+use crate::Iterable;
 
 impl<Item> Traversable<Item> for BTreeSet<Item> {
   #[inline]

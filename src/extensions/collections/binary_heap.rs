@@ -1,7 +1,9 @@
-use crate::extensions::*;
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
 use std::hash::Hash;
+
+use crate::extensions::*;
+use crate::Iterable;
 
 impl<Item> Traversable<Item> for BinaryHeap<Item> {
   #[inline]
@@ -136,7 +138,7 @@ impl<Item: Ord> Collectible<Item> for BinaryHeap<Item> {
   #[inline]
   fn add(mut self, element: Item) -> Self
   where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.push(element);
     self
