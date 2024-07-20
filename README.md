@@ -221,6 +221,13 @@ makers bench
 ```
 
 
+## Contributing
+
+Please feel free to open an [issue](https://github.com/martin-ockajak/cantrip/issues/new) or a
+[pull request](https://github.com/martin-ockajak/cantrip/compare)
+with questions, ideas, features, improvements or fixes.
+
+
 ## License
 
 Licensed under either of
@@ -231,11 +238,4 @@ Licensed under either of
    ([LICENSE-MIT](LICENSE-MIT) or http://opensource.org/licenses/MIT)
 
 at your option.
-
-
-## Contribution
-
-Unless you explicitly state otherwise, any contribution intentionally submitted
-for inclusion in the work by you, as defined in the Apache-2.0 license, shall be
-dual licensed as above, without any additional terms or conditions.
 
