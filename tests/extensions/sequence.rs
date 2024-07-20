@@ -1,4 +1,4 @@
-use cantrip::{Iterable, Sequence};
+use cantrip::{Collectible, Iterable, Sequence};
 use std::fmt::Debug;
 use std::panic;
 use std::panic::UnwindSafe;
@@ -6,7 +6,7 @@ use std::panic::UnwindSafe;
 use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, Equal};
 
 #[allow(box_pointers)]
-pub(crate) fn test_sequence<'a, C, I>(a_source: &C, b_source: &C, c_source: &C, e_source: &C)
+pub(crate) fn test_sequence<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Sequence<i64>
@@ -21,6 +21,8 @@ where
   C::This<i64>: FromIterator<i64> + Equal + Debug,
   C::This<(i64, i64)>: FromIterator<(i64, i64)> + Equal + Debug,
   C::This<(usize, i64)>: FromIterator<(usize, i64)> + Equal + Debug,
+  G: Collectible<(i64, i64)> + Sequence<(i64, i64)> + FromIterator<(i64, i64)> + IntoIterator<Item = (i64, i64)> + Clone,
+  <G as Sequence<(i64, i64)>>::This<i64>: FromIterator<i64> + Default + Extend<i64> + Equal + Debug,
   for<'c> &'c C: UnwindSafe,
 {
   // add_at
@@ -474,15 +476,15 @@ where
   assert_seq_equal(b.unique_by(|x| x % 2), vec![1, 2]);
   assert_seq_equal(e.unique_by(|x| x % 2), vec![]);
 
-  // unzip - FIXME - implement test
-  // let a = a_source.clone();
-  // let e = e_source.clone();
-  // let (a_left, a_right) = a.unzip();
-  // assert_seq_equal(a_left, vec![1, 3, 5]);
-  // assert_seq_equal(a_right, vec![2, 4, 6]);
-  // let (e_left, e_right) = e.unzip();
-  // assert_seq_equal(e_left, vec![]);
-  // assert_seq_equal(e_right, vec![]);
+  // unzip
+  let g = g_source.clone();
+  let e = g_source.clone().filter(|_| false);
+  let (a_left, a_right) = g.unzip();
+  assert_seq_equal(a_left, vec![1, 3, 5]);
+  assert_seq_equal(a_right, vec![2, 4, 6]);
+  let (e_left, e_right) = e.unzip();
+  assert_seq_equal(e_left, vec![]);
+  assert_seq_equal(e_right, vec![]);
 
   // variations
   let a = a_source.clone();

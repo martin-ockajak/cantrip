@@ -29,21 +29,24 @@ fn sequences() {
   let b_vec = vec![1_i64, 2, 2, 3];
   let c_vec = vec![3_i64, 2, 1];
   let d_vec = vec![vec![1_i64, 2], vec![3]];
+  let g_vec = vec![(1_i64, 2), (3, 4), (5, 6)];
   let e_vec = Vec::<i64>::new();
   let a_vec_deque = VecDeque::from_iter(a_vec.clone());
   let b_vec_deque = VecDeque::from_iter(b_vec.clone());
   let c_vec_deque = VecDeque::from_iter(c_vec.clone());
   let d_vec_deque = VecDeque::from_iter(d_vec.clone());
+  let g_vec_deque = VecDeque::from_iter(g_vec.clone());
   let e_vec_deque = VecDeque::from_iter(e_vec.clone());
   let a_linked_list = LinkedList::from_iter(a_vec.clone());
   let b_linked_list = LinkedList::from_iter(b_vec.clone());
   let c_linked_list = LinkedList::from_iter(c_vec.clone());
   let d_linked_list = LinkedList::from_iter(d_vec.clone());
+  let g_linkeg_list = LinkedList::from_iter(g_vec.clone());
   let e_linked_list = LinkedList::from_iter(e_vec.clone());
   test_slice_traits(&a_vec[..], &b_vec[..], &e_vec[..]);
-  test_sequence_traits(&a_vec, &b_vec, &c_vec, &d_vec, &e_vec);
-  test_list_traits(&a_vec_deque, &b_vec_deque, &c_vec_deque, &d_vec_deque, &e_vec_deque);
-  test_list_traits(&a_linked_list, &b_linked_list, &c_linked_list, &d_linked_list, &e_linked_list);
+  test_sequence_traits(&a_vec, &b_vec, &c_vec, &d_vec, &g_vec, &e_vec);
+  test_list_traits(&a_vec_deque, &b_vec_deque, &c_vec_deque, &d_vec_deque, &g_vec_deque, &e_vec_deque);
+  test_list_traits(&a_linked_list, &b_linked_list, &c_linked_list, &d_linked_list, &g_linkeg_list, &e_linked_list);
 }
 
 #[test]
