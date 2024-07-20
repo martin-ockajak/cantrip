@@ -105,38 +105,24 @@ pub(crate) trait TestMap<K, V>:
 {
 }
 
-impl<T: Clone + Equal + Debug, C> TestCollection<T> for C where
-  C: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug
+impl<T, C> TestCollection<T> for C where C: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
+
+impl<'a, T: 'a, C> TestCollectible<'a, T> for C where
+  C: TestCollection<T> + Collectible<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> + 'a
 {
 }
 
-impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for Vec<T> {}
+impl<'a, T: 'a, C> TestSequence<'a, T> for C where
+  C: Traversable<T> + Collectible<T> + Ordered<T> + Sequence<T> + TestCollection<T> + Iterable<Item<'a> = &'a T> + 'a
+{
+}
 
-impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for VecDeque<T> {}
+impl<T, C> TestSet<T> for C where C: Traversable<T> + Collectible<T> + TestCollection<T> {}
 
-impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for LinkedList<T> {}
-
-impl<'a, T: Clone + Equal + Debug + Eq + Hash + 'a> TestCollectible<'a, T> for HashSet<T> {}
-
-impl<'a, T: Clone + Equal + Debug + Ord + 'a> TestCollectible<'a, T> for BTreeSet<T> {}
-
-impl<'a, T: Clone + Equal + Debug + Ord + Eq + Hash + 'a> TestCollectible<'a, T> for BinaryHeap<T> {}
-
-impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for Vec<T> {}
-
-impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for VecDeque<T> {}
-
-impl<'a, T: Clone + Equal + Debug + 'a> TestSequence<'a, T> for LinkedList<T> {}
-
-impl<T: Clone + Equal + Debug + Eq + Hash> TestSet<T> for HashSet<T> {}
-
-impl<T: Clone + Equal + Debug + Ord> TestSet<T> for BTreeSet<T> {}
-
-impl<T: Clone + Equal + Debug + Ord + Eq + Hash> TestSet<T> for BinaryHeap<T> {}
-
-impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> TestMap<K, V> for HashMap<K, V> {}
-
-impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> TestMap<K, V> for BTreeMap<K, V> {}
+impl<K, V, C> TestMap<K, V> for C where
+  C: Map<K, V> + FromIterator<(K, V)> + Default + Extend<(K, V)> + Clone + Equal + Debug + IntoIterator<Item = (K, V)>
+{
+}
 
 //noinspection RsUnresolvedPath
 pub(crate) fn assert_seq_equal<T, C: FromIterator<T> + Equal + Debug>(values: C, expected: Vec<T>) {
