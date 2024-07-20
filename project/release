@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Create and publish the specified version
+# Create and publish the current version
 set -eo pipefail
 
 # Configure settings
