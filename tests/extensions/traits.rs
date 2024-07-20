@@ -22,7 +22,6 @@ where
   test_collectible(false, a, b, d, e);
 }
 
-#[allow(dead_code)]
 pub(crate) fn test_slice_traits(a: &[i64], b: &[i64], e: &[i64]) {
   test_traversable(true, a, b, e);
   test_ordered(a, b, e);
