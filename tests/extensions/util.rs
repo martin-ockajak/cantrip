@@ -85,8 +85,9 @@ impl<Key: PartialEq, Value: PartialEq> Equal for BTreeMap<Key, Value> {
 pub(crate) trait TestCollection<T>: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
 
 pub(crate) trait TestCollectible<'a, T: 'a>:
-  Collectible<T> + TestCollection<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> where
-  Self: 'a
+  Collectible<T> + TestCollection<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T>
+where
+  Self: 'a,
 {
 }
 
@@ -99,26 +100,15 @@ where
 {
 }
 
-pub(crate) trait TestMap<K, V>: Map<K, V> + TestCollection<(K, V)> + IntoIterator<Item = (K, V)> {}
-
-impl<T: Clone + Equal + Debug> TestCollection<T> for Vec<T> {}
-
-impl<T: Clone + Equal + Debug> TestCollection<T> for VecDeque<T> {}
-
-impl<T: Clone + Equal + Debug> TestCollection<T> for LinkedList<T> {}
-
-impl<T: Clone + Equal + Debug + Eq + Hash> TestCollection<T> for HashSet<T> {}
-
-impl<T: Clone + Equal + Debug + Ord> TestCollection<T> for BTreeSet<T> {}
-
-impl<T: Clone + Equal + Debug + Ord + Eq + Hash> TestCollection<T> for BinaryHeap<T> {}
-
-impl<K: Clone + Equal + Debug + Eq + Hash, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)>
-  for HashMap<K, V>
+pub(crate) trait TestMap<K, V>:
+  Map<K, V> + FromIterator<(K, V)> + Default + Extend<(K, V)> + Clone + Equal + Debug + IntoIterator<Item = (K, V)>
 {
 }
 
-impl<K: Clone + Equal + Debug + Ord, V: Clone + Equal + PartialEq + Debug> TestCollection<(K, V)> for BTreeMap<K, V> {}
+impl<T: Clone + Equal + Debug, C> TestCollection<T> for C where
+  C: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug
+{
+}
 
 impl<'a, T: Clone + Equal + Debug + 'a> TestCollectible<'a, T> for Vec<T> {}
 
