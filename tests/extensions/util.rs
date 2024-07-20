@@ -98,8 +98,18 @@ where
 {
 }
 
-pub(crate) trait TestMap<K, V>:
-  Map<K, V> + FromIterator<(K, V)> + Default + Extend<(K, V)> + Clone + Equal + Debug + IntoIterator<Item = (K, V)>
+pub(crate) trait TestMap<'a, K: 'a, V: 'a>:
+  Map<K, V>
+  + FromIterator<(K, V)>
+  + Default
+  + Extend<(K, V)>
+  + Clone
+  + Equal
+  + Debug
+  + IntoIterator<Item = (K, V)>
+  + Iterable<Item<'a> = (&'a K, &'a V)>
+where
+  Self: 'a,
 {
 }
 
@@ -115,9 +125,19 @@ impl<'a, T: 'a, C> TestSequence<'a, T> for C where
 {
 }
 
-impl<K, V, C> TestMap<K, V> for C where
-  C: Map<K, V> + FromIterator<(K, V)> + Default + Extend<(K, V)> + Clone + Equal + Debug + IntoIterator<Item = (K, V)>
-{}
+impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C where
+  C: Map<K, V>
+    + FromIterator<(K, V)>
+    + Default
+    + Extend<(K, V)>
+    + Clone
+    + Equal
+    + Debug
+    + IntoIterator<Item = (K, V)>
+    + Iterable<Item<'a> = (&'a K, &'a V)>
+    + 'a
+{
+}
 
 //noinspection RsUnresolvedPath
 pub(crate) fn assert_seq_equal<T, C: FromIterator<T> + Equal + Debug>(values: C, expected: Vec<T>) {

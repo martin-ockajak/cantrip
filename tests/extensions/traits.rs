@@ -1,6 +1,6 @@
 use std::panic::UnwindSafe;
 
-use cantrip::{Collectible, Iterable, List, Map, Sequence, Traversable};
+use cantrip::{Collectible, List, Map, Sequence, Traversable};
 
 use crate::extensions::collectible::test_collectible;
 use crate::extensions::list::test_list;
@@ -71,7 +71,7 @@ where
 
 pub(crate) fn test_map_traits<'a, C>(a: &C, b: &C, e: &C)
 where
-  C: Map<i64, i64> + TestMap<i64, i64> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
+  C: TestMap<'a, i64, i64>,
   <C as Map<i64, i64>>::This<i64, i64>: TestCollection<(i64, i64)>,
 {
   test_map(a, b, e);

@@ -1,12 +1,12 @@
 use std::collections::HashMap;
 
-use cantrip::{Iterable, Map};
+use cantrip::Map;
 
-use crate::extensions::util::{assert_map_equal, TestMap, TestCollection};
+use crate::extensions::util::{assert_map_equal, TestCollection, TestMap};
 
 pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
-  C: Map<i64, i64> + TestMap<i64, i64> + Iterable<Item<'a> = (&'a i64, &'a i64)> + 'a,
+  C: TestMap<'a, i64, i64>,
   C::This<i64, i64>: TestCollection<(i64, i64)>,
 {
   // add
