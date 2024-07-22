@@ -5,8 +5,8 @@ pub use map::*;
 pub use sequence::*;
 pub use sequence_to::*;
 pub use slice::*;
-pub use transform_to::*;
 pub use transform::*;
+pub use transform_to::*;
 pub use transform_vec::*;
 pub use transform_vec_to::*;
 
