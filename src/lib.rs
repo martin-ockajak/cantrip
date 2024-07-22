@@ -90,6 +90,7 @@
 //! | [`filter_keys`](Map::filter_keys)                                 |                           |       |                               |         *         |     Y     |
 //! | [`filter_map`](CollectionInto::filter_map)                        |            *              |       |              *                |         *         |     Y     |
 //! | [`filter_map_ref`](CollectionInto::filter_map_ref)                |            *              |       |              *                |         *         |     N     |
+//! | [`filter_ref`](CollectionInto::filter_ref)                        |            *              |       |              *                |         *         |     N     |
 //! | [`filter_values`](Map::filter_values)                             |                           |       |                               |         *         |     Y     |
 //! | [`find`](Collection::find)                                        |            *              |   *   |              *                |         *         |     N     |
 //! | [`find_map`](CollectionInto::find_map)                            |            *              |       |              *                |         *         |     Y     |

@@ -316,6 +316,10 @@ pub trait CollectionInto<Item> {
   /// collection will contain only the elements for which the closure returns
   /// true.
   ///
+  /// This is a non-consuming variant of [`filter_ref()`].
+  ///
+  /// [`filter_ref()`]: CollectionInto::filter_ref
+  ///
   /// # Examples
   ///
   /// Basic usage:
@@ -384,6 +388,82 @@ pub trait CollectionInto<Item> {
   {
     self.into_iter().filter(predicate).collect()
   }
+
+  /// Creates a new collection by filtering this collection using a
+  /// closure to determine if an element should be retained.
+  ///
+  /// Given an element the closure must return `true` or `false`. The returned
+  /// collection will contain only the elements for which the closure returns
+  /// true.
+  ///
+  /// This is a non-consuming variant of [`filter()`].
+  ///
+  /// [`filter()`]: CollectionInto::filter
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.filter_ref(|&x| x > 1),
+  ///   vec![2, 3]
+  /// );
+  /// ```
+  ///
+  /// Because the closure passed to `filter()` takes a reference, and some
+  /// collections may contain references, this leads to a possibly confusing
+  /// situation, where the type of the closure is a double reference:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![&1, &2, &3];
+  ///
+  /// assert_eq!(
+  ///   // need two *s!
+  ///   a.filter_ref(|x| **x > 2),
+  ///   vec![&3]
+  /// );
+  /// ```
+  ///
+  /// It's common to instead use destructuring on the argument to strip away
+  /// one:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![&1, &2, &3];
+  ///
+  /// assert_eq!(
+  ///   // both & and *
+  ///   a.filter_ref(|&x| *x > 2),
+  ///   vec![&3]
+  /// );
+  /// ```
+  ///
+  /// or both:
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  ///
+  /// let a = vec![&0, &1, &2];
+  ///
+  /// assert_eq!(
+  ///   // two &s
+  ///   a.filter_ref(|&&x| x > 1),
+  ///   vec![&2]
+  /// );
+  /// ```
+  ///
+  /// of these layers.
+  fn filter_ref(&self, predicate: impl FnMut(&Item) -> bool) -> Self
+  where
+    Item: Clone;
 
   /// Creates a new collection by filters and maps this collection.
   ///

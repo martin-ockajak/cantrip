@@ -208,6 +208,14 @@ impl<Item> CollectionInto<Item> for Vec<Item> {
   }
 
   #[inline]
+  fn filter_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> Self
+  where
+    Item: Clone,
+  {
+    self.iter().filter(|&x| predicate(x)).cloned().collect()
+  }
+
+  #[inline]
   fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,

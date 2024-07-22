@@ -78,6 +78,15 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
+  fn filter_ref(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
+  where
+    Key: Clone,
+    Value: Clone,
+  {
+    self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
+  }
+
+  #[inline]
   fn find(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)> {
     self.iter().find(|&x| predicate(x))
   }

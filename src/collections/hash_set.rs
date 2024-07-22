@@ -195,6 +195,14 @@ impl<Item: Eq + Hash> CollectionInto<Item> for HashSet<Item> {
   }
 
   #[inline]
+  fn filter_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> Self
+  where
+    Item: Clone,
+  {
+    self.iter().filter(|&x| predicate(x)).cloned().collect()
+  }
+
+  #[inline]
   fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,

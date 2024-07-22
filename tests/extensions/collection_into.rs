@@ -112,6 +112,12 @@ pub(crate) fn test_collection_into<'a, C, D>(
   assert_seq_equal(a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
   assert_seq_equal(e.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![]);
 
+  // filter_ref
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.filter_ref(|&x| x > 1), vec![2, 3]);
+  assert_seq_equal(e.filter_ref(|&x| x > 1), vec![]);
+
   // find_map
   assert_eq!(a.find_map(|x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   assert_eq!(e.find_map(|x| if x % 2 == 0 { Some(x) } else { None }), None);

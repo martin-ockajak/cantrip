@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, BTreeMap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -525,6 +525,10 @@ pub trait Map<Key, Value> {
   /// Given an entry the closure must return `true` or `false`. The returned
   /// map will contain only the entries for which the closure returns true.
   ///
+  /// This is a non-consuming variant of [`filter_ref()`].
+  ///
+  /// [`filter_ref()`]: Map::filter_ref
+  ///
   /// # Example
   ///
   /// ```
@@ -551,6 +555,40 @@ pub trait Map<Key, Value> {
   {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
+
+  /// Creates a new map by filtering the original map using a
+  /// closure to determine if an entry should be retained.
+  ///
+  /// Given an entry the closure must return `true` or `false`. The returned
+  /// map will contain only the entries for which the closure returns true.
+  ///
+  /// This is a non-consuming variant of [`filter()`].
+  ///
+  /// [`filter()`]: Map::filter
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use crate::cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
+  /// ]);
+  ///
+  /// assert_eq!(
+  ///   a.filter_ref(|(&k, &v)| k != 2 && v != 2),
+  ///   HashMap::from([
+  ///     (1, 1),
+  ///     (3, 3),
+  /// ]));
+  /// ```
+  fn filter_ref(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
+  where
+    Key: Clone,
+    Value: Clone;
 
   /// Creates a new map by filtering the original map using a
   /// closure to determine if a key should be retained.
