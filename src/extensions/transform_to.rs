@@ -1,12 +1,12 @@
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::hash::Hash;
 
-/// Non-consuming transform operations.
+/// Consuming transform operations.
 ///
 /// Methods have the following properties:
 ///
 /// - Requires collection elements to implement [`Clone`]
-/// - Does not consume the collection or its elements
+/// - Consumes the collection or its elements
 /// - Creates a new collection
 ///
 pub trait TransformTo<Item> {

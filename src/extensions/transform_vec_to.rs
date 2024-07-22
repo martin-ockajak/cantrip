@@ -1,7 +1,8 @@
-/// Vector transform operations.
+/// Consuming vector transform operations.
 ///
 /// Methods have the following properties:
 ///
+/// - Consumes the collection or its elements
 /// - Creates a new collection
 /// 
 pub trait TransformVecTo<Item> {
