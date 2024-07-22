@@ -1,7 +1,6 @@
 [![API](https://img.shields.io/badge/Rustdoc-API-mediumpurple)](https://docs.rs/cantrip/latest/cantrip)
 [![Artifacts](https://img.shields.io/crates/v/cantrip.svg?label=Artifacts)](https://crates.io/crates/cantrip)
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
-[![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
 Practical extension methods for Rust standard library collections.
 
