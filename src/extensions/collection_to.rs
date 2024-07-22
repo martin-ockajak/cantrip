@@ -493,7 +493,7 @@ pub trait CollectionTo<Item> {
   ///
   /// [`find()`]: crate::Collection::find
   /// [`map()`]: CollectionTo::map_ref
-  /// [`find_map()`]: crate::Collection::find_map_ref
+  /// [`find_map_ref()`]: crate::Collection::find_map_ref
   ///
   /// # Example
   ///

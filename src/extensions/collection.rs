@@ -145,7 +145,7 @@ pub trait Collection<Item> {
   /// This is a consuming variant of [`find_map()`].
   ///
   /// [`find()`]: Collection::find
-  /// [`map_ref()`]: Collection::map_ref
+  /// [`map_ref()`]: crate::CollectionTo::map_ref
   /// [`find_map()`]: crate::CollectionTo::find_map
   ///
   /// # Example

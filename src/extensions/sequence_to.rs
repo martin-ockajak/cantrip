@@ -1207,7 +1207,7 @@ pub trait SequenceTo<Item> {
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
-  /// This is a non-consuming variant of [`scan_to()`].
+  /// This is a non-consuming variant of [`scan()`].
   ///
   /// [`fold_ref()`]: crate::Collection::fold_ref
   /// [`scan()`]: SequenceTo::scan
