@@ -145,8 +145,8 @@ pub trait Collection<Item> {
   /// This is a consuming variant of [`find_map()`].
   ///
   /// [`find()`]: Collection::find
-  /// [`map_ref()`]: crate::CollectionTo::map_ref
-  /// [`find_map()`]: crate::CollectionTo::find_map
+  /// [`map_ref()`]: crate::CollectionInto::map_ref
+  /// [`find_map()`]: crate::CollectionInto::find_map
   ///
   /// # Example
   ///
@@ -190,7 +190,7 @@ pub trait Collection<Item> {
   /// operators like `-` the order will affect the final result.
   /// For a *right-associative* version of `fold_ref()`, see [`rfold_ref()`].
   ///
-  /// [`fold()`]: crate::CollectionTo::fold
+  /// [`fold()`]: crate::CollectionInto::fold
   /// [`reduce_ref()`]: Collection::reduce_ref
   /// [`rfold_ref()`]: crate::Sequence::rfold_ref
   ///
@@ -309,7 +309,7 @@ pub trait Collection<Item> {
   ///
   /// This is a consuming variant of [`group_fold()`].
   ///
-  /// [`group_fold()`]: crate::CollectionTo::group_fold
+  /// [`group_fold()`]: crate::CollectionInto::group_fold
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -340,7 +340,7 @@ pub trait Collection<Item> {
   ///
   /// This is a non-consuming variant of [`group_reduce()`].
   ///
-  /// [`group_reduce()`]: crate::CollectionTo::group_reduce
+  /// [`group_reduce()`]: crate::CollectionInto::group_reduce
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -421,7 +421,7 @@ pub trait Collection<Item> {
   ///     2.4
   /// );
   /// ```
-  /// [`reduce()`]: crate::CollectionTo::reduce
+  /// [`reduce()`]: crate::CollectionInto::reduce
   ///
   /// # Example
   ///
@@ -606,7 +606,7 @@ pub trait Collection<Item> {
   /// This is a non-consuming variant of [`reduce()`].
   ///
   /// [`fold_ref()`]: Collection::fold_ref
-  /// [`reduce()`]: crate::CollectionTo::reduce
+  /// [`reduce()`]: crate::CollectionInto::reduce
   ///
   /// # Example
   ///
@@ -640,7 +640,7 @@ pub trait Collection<Item> {
   ///
   /// Returns `true` if this collection is empty.
   ///
-  /// [`unique()`]: crate::SequenceTo::unique
+  /// [`unique()`]: crate::SequenceInto::unique
   ///
   /// # Example
   ///
@@ -669,7 +669,7 @@ pub trait Collection<Item> {
   ///
   /// Returns `true` if the other collection is empty.
   ///
-  /// [`unique()`]: crate::SequenceTo::unique
+  /// [`unique()`]: crate::SequenceInto::unique
   ///
   /// # Example
   ///

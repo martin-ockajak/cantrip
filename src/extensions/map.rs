@@ -859,7 +859,7 @@ pub trait Map<Key, Value> {
   ///
   /// [`map()`]: Map::map_ref
   /// [`map(f)`]: Map::map_ref
-  /// [`.flat()`]: crate::CollectionTo::flat
+  /// [`.flat()`]: crate::CollectionInto::flat
   /// [`flat_map_ref()`]: Map::flat_map_ref
   ///
   /// # Example
@@ -915,7 +915,7 @@ pub trait Map<Key, Value> {
   ///
   /// [`map_ref()`]: Map::map_ref
   /// [`map_ref(f)`]: Map::map_ref
-  /// [`.flat()`]: crate::CollectionTo::flat
+  /// [`.flat()`]: crate::CollectionInto::flat
   /// [`flat_map()`]: Map::flat_map
   ///
   /// # Example
@@ -2188,7 +2188,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_bmap()`].
   ///
-  /// [`into_bmap()`]: crate::TransformTo::into_bmap
+  /// [`into_bmap()`]: crate::TransformInto::into_bmap
   ///
   /// # Example
   ///
@@ -2219,7 +2219,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_bset()`].
   ///
-  /// [`into_bset()`]: crate::TransformTo::into_bset
+  /// [`into_bset()`]: crate::TransformInto::into_bset
   ///
   /// # Example
   ///
@@ -2246,7 +2246,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_deque()`].
   ///
-  /// [`into_deque()`]: crate::TransformTo::into_deque
+  /// [`into_deque()`]: crate::TransformInto::into_deque
   ///
   /// # Example
   ///
@@ -2273,7 +2273,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_heap()`].
   ///
-  /// [`into_heap()`]: crate::TransformTo::into_heap
+  /// [`into_heap()`]: crate::TransformInto::into_heap
   ///
   /// # Example
   ///
@@ -2326,7 +2326,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_list()`].
   ///
-  /// [`into_list()`]: crate::TransformTo::into_list
+  /// [`into_list()`]: crate::TransformInto::into_list
   ///
   /// # Example
   ///
@@ -2353,7 +2353,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_map()`].
   ///
-  /// [`into_map()`]: crate::TransformTo::into_map
+  /// [`into_map()`]: crate::TransformInto::into_map
   ///
   /// # Example
   ///
@@ -2384,7 +2384,7 @@ pub trait Map<Key, Value> {
   ///
   /// This is a non-consuming variant of [`into_set()`].
   ///
-  /// [`into_set()`]: crate::TransformTo::into_set
+  /// [`into_set()`]: crate::TransformInto::into_set
   ///
   /// # Example
   ///

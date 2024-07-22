@@ -1,10 +1,10 @@
-use cantrip::TransformVecTo;
+use cantrip::TransformVecInto;
 
 use crate::extensions::util::assert_set_equal;
 
-pub(crate) fn test_transform_vec_to<C>(sequence: bool, a: C, e: C)
+pub(crate) fn test_transform_vec_into<C>(sequence: bool, a: C, e: C)
 where
-  C: TransformVecTo<i64> + IntoIterator<Item = i64>,
+  C: TransformVecInto<i64> + IntoIterator<Item = i64>,
 {
   // into_vec
   if sequence {

@@ -1,12 +1,12 @@
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 
-use cantrip::TransformTo;
+use cantrip::TransformInto;
 
 use crate::extensions::util::{assert_set_equal, TestCollectible, TestCollection};
 
-pub(crate) fn test_transform_to<'a, C, G>(sequence: bool, a_source: &C, g_source: &G, e_source: &C)
+pub(crate) fn test_transform_into<'a, C, G>(sequence: bool, a_source: &C, g_source: &G, e_source: &C)
 where
-  C: TransformTo<i64> + TestCollection<i64> + IntoIterator<Item = i64> + 'a,
+  C: TransformInto<i64> + TestCollection<i64> + IntoIterator<Item = i64> + 'a,
   G: TestCollectible<'a, (i64, i64)>,
 {
   // into_bmap

@@ -133,7 +133,7 @@ impl<Item> Collection<Item> for HashSet<Item> {
   }
 }
 
-impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
+impl<Item: Eq + Hash> CollectionInto<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
   #[inline]

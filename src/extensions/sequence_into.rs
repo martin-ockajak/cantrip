@@ -13,7 +13,7 @@ use crate::core::unfold::unfold;
 /// - May consume the sequence and its elements
 /// - May create a new sequence
 ///
-pub trait SequenceTo<Item> {
+pub trait SequenceInto<Item> {
   /// This sequence type constructor
   type This<I>;
 
@@ -78,7 +78,7 @@ pub trait SequenceTo<Item> {
   ///
   /// The order or tuple values is preserved.
   ///
-  /// [`unique()`]: SequenceTo::unique
+  /// [`unique()`]: SequenceInto::unique
   ///
   /// # Example
   ///
@@ -114,7 +114,7 @@ pub trait SequenceTo<Item> {
   /// See [`chunked_exact()`] for a variant of this function that returns chunks of
   /// always exactly `chunk_size` elements.
   ///
-  /// [`chunked_exact()`]: SequenceTo::chunked_exact
+  /// [`chunked_exact()`]: SequenceInto::chunked_exact
   ///
   /// # Panics
   ///
@@ -211,7 +211,7 @@ pub trait SequenceTo<Item> {
   ///
   /// See [`chunked()`] for a variant of this function that also returns the remainder as a smaller chunk.
   ///
-  /// [`chunked()`]: SequenceTo::chunked
+  /// [`chunked()`]: SequenceInto::chunked
   ///
   /// # Panics
   ///
@@ -298,7 +298,7 @@ pub trait SequenceTo<Item> {
   ///
   /// The order or combination values is preserved.
   ///
-  /// [`unique()`]: SequenceTo::unique
+  /// [`unique()`]: SequenceInto::unique
   ///
   /// # Example
   ///
@@ -598,7 +598,7 @@ pub trait SequenceTo<Item> {
   /// [`usize::MAX`] elements either produces the wrong result or panics. If
   /// debug assertions are enabled, a panic is guaranteed.
   ///
-  /// [`zip()`]: SequenceTo::zip
+  /// [`zip()`]: SequenceInto::zip
   ///
   /// # Example
   ///
@@ -737,7 +737,7 @@ pub trait SequenceTo<Item> {
   /// In case `separator` does not implement [`Clone`] or needs to be
   /// computed every time, use [`intersperse_with`].
   ///
-  /// [`intersperse_with`]: SequenceTo::intersperse_with
+  /// [`intersperse_with`]: SequenceInto::intersperse_with
   ///
   /// # Examples
   ///
@@ -1099,7 +1099,7 @@ pub trait SequenceTo<Item> {
   /// For a *left-associative* version of `rfold()`, see [`fold()`].
   ///
   /// [`rfold_ref()`]: crate::Sequence::rfold_ref
-  /// [`fold()`]: crate::CollectionTo::fold
+  /// [`fold()`]: crate::CollectionInto::fold
   ///
   /// # Examples
   ///
@@ -1160,8 +1160,8 @@ pub trait SequenceTo<Item> {
   ///
   /// This is a consuming variant of [`scan()`].
   ///
-  /// [`fold()`]: crate::CollectionTo::fold
-  /// [`scan()`]: SequenceTo::scan_ref
+  /// [`fold()`]: crate::CollectionInto::fold
+  /// [`scan()`]: SequenceInto::scan_ref
   ///
   /// # Example
   ///
@@ -1210,7 +1210,7 @@ pub trait SequenceTo<Item> {
   /// This is a non-consuming variant of [`scan()`].
   ///
   /// [`fold_ref()`]: crate::Collection::fold_ref
-  /// [`scan()`]: SequenceTo::scan
+  /// [`scan()`]: SequenceInto::scan
   ///
   /// # Example
   ///
@@ -1333,7 +1333,7 @@ pub trait SequenceTo<Item> {
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable()`](SequenceTo::sorted_unstable).
+  /// See [`sorted_unstable()`](SequenceInto::sorted_unstable).
   ///
   /// # Current implementation
   ///
@@ -1392,7 +1392,7 @@ pub trait SequenceTo<Item> {
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable_by()`](SequenceTo::sorted_unstable_by).
+  /// See [`sorted_unstable_by()`](SequenceInto::sorted_unstable_by).
   ///
   /// # Current implementation
   ///
@@ -1437,7 +1437,7 @@ pub trait SequenceTo<Item> {
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For simple key functions (e.g., functions that are property accesses or
-  /// basic operations), [`sorted_by_key()`](SequenceTo::sorted_by_key) is likely to be
+  /// basic operations), [`sorted_by_key()`](SequenceInto::sorted_by_key) is likely to be
   /// faster.
   ///
   /// # Current implementation
@@ -1481,12 +1481,12 @@ pub trait SequenceTo<Item> {
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For expensive key functions (e.g. functions that are not simple property accesses or
-  /// basic operations), [`sorted_by_cached_key()`](SequenceTo::sorted_by_cached_key) is likely to be
+  /// basic operations), [`sorted_by_cached_key()`](SequenceInto::sorted_by_cached_key) is likely to be
   /// significantly faster, as it does not recompute element keys.
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable_by_key()`](SequenceTo::sorted_unstable_by_key).
+  /// See [`sorted_unstable_by_key()`](SequenceInto::sorted_unstable_by_key).
   ///
   /// # Current implementation
   ///
@@ -1635,7 +1635,7 @@ pub trait SequenceTo<Item> {
   /// randomization to avoid degenerate cases, but with a fixed seed to always provide
   /// deterministic behavior.
   ///
-  /// Due to its key calling strategy, [`sorted_unstable_by_key()`](SequenceTo::sorted_unstable_by_key)
+  /// Due to its key calling strategy, [`sorted_unstable_by_key()`](SequenceInto::sorted_unstable_by_key)
   /// is likely to be slower than [`sorted_by_cached_key()`](Sequence::.sorted_by_cached_key) in
   /// cases where the key function is expensive.
   ///
@@ -1931,7 +1931,7 @@ pub trait SequenceTo<Item> {
   ///
   /// This function is, in some sense, the opposite of [`zip()`].
   ///
-  /// [`zip()`]: SequenceTo::zip
+  /// [`zip()`]: SequenceInto::zip
   ///
   /// # Example
   ///
@@ -1966,7 +1966,7 @@ pub trait SequenceTo<Item> {
   ///
   /// The order or variation values is preserved.
   ///
-  /// [`unique()`]: SequenceTo::unique
+  /// [`unique()`]: SequenceInto::unique
   ///
   /// # Example
   ///
@@ -2074,7 +2074,7 @@ pub trait SequenceTo<Item> {
   ///
   /// To 'undo' the result of zipping up two sequences, see [`unzip()`].
   ///
-  /// [`unzip()`]: SequenceTo::unzip
+  /// [`unzip()`]: SequenceInto::unzip
   ///
   /// # Example
   ///
@@ -2114,7 +2114,7 @@ pub trait SequenceTo<Item> {
   ///
   /// To 'undo' the result of zipping up two sequences, see [`unzip()`].
   ///
-  /// [`unzip()`]: SequenceTo::unzip
+  /// [`unzip()`]: SequenceInto::unzip
   ///
   /// # Example
   ///

@@ -30,7 +30,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`collect_to()`].
   ///
-  /// [`collect_to()`]: crate::CollectionTo::collect_to
+  /// [`collect_to()`]: crate::CollectionInto::collect_to
   ///
   /// # Examples
   ///
@@ -134,7 +134,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_bset()`].
   ///
-  /// [`into_bset()`]: crate::TransformTo::into_bset
+  /// [`into_bset()`]: crate::TransformInto::into_bset
   ///
   /// # Example
   ///
@@ -156,7 +156,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_bmap()`].
   ///
-  /// [`into_bmap()`]: crate::TransformTo::into_bmap
+  /// [`into_bmap()`]: crate::TransformInto::into_bmap
   ///
   /// # Example
   ///
@@ -188,7 +188,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_deque()`].
   ///
-  /// [`into_deque()`]: crate::TransformTo::into_deque
+  /// [`into_deque()`]: crate::TransformInto::into_deque
   ///
   /// # Example
   ///
@@ -210,7 +210,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_heap()`].
   ///
-  /// [`into_heap()`]: crate::TransformTo::into_heap
+  /// [`into_heap()`]: crate::TransformInto::into_heap
   ///
   /// # Example
   ///
@@ -235,7 +235,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_list()`].
   ///
-  /// [`into_list()`]: crate::TransformTo::into_list
+  /// [`into_list()`]: crate::TransformInto::into_list
   ///
   /// # Example
   ///
@@ -257,7 +257,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_map()`].
   ///
-  /// [`into_map()`]: crate::TransformTo::into_map
+  /// [`into_map()`]: crate::TransformInto::into_map
   ///
   /// # Example
   ///
@@ -289,7 +289,7 @@ pub trait Transform<Item> {
   ///
   /// This is a non-consuming variant of [`into_set()`].
   ///
-  /// [`into_set()`]: crate::TransformTo::into_set
+  /// [`into_set()`]: crate::TransformInto::into_set
   ///
   /// # Example
   ///

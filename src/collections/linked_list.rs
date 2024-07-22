@@ -136,7 +136,7 @@ impl<Item> Collection<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> CollectionTo<Item> for LinkedList<Item> {
+impl<Item> CollectionInto<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
   #[inline]
@@ -305,7 +305,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> SequenceTo<Item> for LinkedList<Item> {
+impl<Item> SequenceInto<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
   #[inline]

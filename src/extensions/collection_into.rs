@@ -15,7 +15,7 @@ use crate::Iterable;
 /// - Consumes the collection and its elements
 /// - May create a new collection
 ///
-pub trait CollectionTo<Item> {
+pub trait CollectionInto<Item> {
   /// This collection type constructor
   type This<I>;
 
@@ -185,7 +185,7 @@ pub trait CollectionTo<Item> {
   ///
   /// The order of combination values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::SequenceTo::unique
+  /// [`unique()`]: crate::SequenceInto::unique
   ///
   /// # Example
   ///
@@ -396,9 +396,9 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a consuming variant of [`filter_map_ref()`].
   ///
-  /// [`filter()`]: CollectionTo::filter
-  /// [`map()`]: CollectionTo::map
-  /// [`filter_map_ref()`]: CollectionTo::filter_map_ref
+  /// [`filter()`]: CollectionInto::filter
+  /// [`map()`]: CollectionInto::map
+  /// [`filter_map_ref()`]: CollectionInto::filter_map_ref
   ///
   /// # Examples
   ///
@@ -447,9 +447,9 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a non-consuming variant of [`filter_map()`].
   ///
-  /// [`filter()`]: CollectionTo::filter
-  /// [`map_ref()`]: CollectionTo::map_ref
-  /// [`filter_map()`]: CollectionTo::filter_map_ref
+  /// [`filter()`]: CollectionInto::filter
+  /// [`map_ref()`]: CollectionInto::map_ref
+  /// [`filter_map()`]: CollectionInto::filter_map_ref
   ///
   /// # Examples
   ///
@@ -492,7 +492,7 @@ pub trait CollectionTo<Item> {
   /// This is a consuming variant of [`find_map_ref()`].
   ///
   /// [`find()`]: crate::Collection::find
-  /// [`map()`]: CollectionTo::map_ref
+  /// [`map()`]: CollectionInto::map_ref
   /// [`find_map_ref()`]: crate::Collection::find_map_ref
   ///
   /// # Example
@@ -597,7 +597,7 @@ pub trait CollectionTo<Item> {
   /// two-dimensional and not one-dimensional. To get a one-dimensional
   /// structure, you have to `flat()` again.
   ///
-  /// [`flat_map()`]: CollectionTo::flat_map_ref
+  /// [`flat_map()`]: CollectionInto::flat_map_ref
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
@@ -625,10 +625,10 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a consuming variant of [`flat_map_ref()`].
   ///
-  /// [`map()`]: CollectionTo::map
-  /// [`map(f)`]: CollectionTo::map
-  /// [`.flat()`]: CollectionTo::flat
-  /// [`flat_map_ref()`]: CollectionTo::flat_map_ref
+  /// [`map()`]: CollectionInto::map
+  /// [`map(f)`]: CollectionInto::map
+  /// [`.flat()`]: CollectionInto::flat
+  /// [`flat_map_ref()`]: CollectionInto::flat_map_ref
   ///
   /// # Example
   ///
@@ -670,10 +670,10 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a non-consuming variant of [`flat_map()`].
   ///
-  /// [`map_ref()`]: CollectionTo::map_ref
-  /// [`map_ref(f)`]: CollectionTo::map_ref
-  /// [`.flat()`]: CollectionTo::flat
-  /// [`flat_map()`]: CollectionTo::flat_map
+  /// [`map_ref()`]: CollectionInto::map_ref
+  /// [`map_ref(f)`]: CollectionInto::map_ref
+  /// [`.flat()`]: CollectionInto::flat
+  /// [`flat_map()`]: CollectionInto::flat_map
   ///
   /// # Example
   ///
@@ -722,8 +722,8 @@ pub trait CollectionTo<Item> {
   /// For a *right-associative* version of `fold()`, see [`rfold()`].
   ///
   /// [`fold_ref()`]: crate::Collection::fold_ref
-  /// [`reduce()`]: CollectionTo::reduce
-  /// [`rfold()`]: crate::SequenceTo::rfold
+  /// [`reduce()`]: CollectionInto::reduce
+  /// [`rfold()`]: crate::SequenceInto::rfold
   ///
   /// # Examples
   ///
@@ -928,7 +928,7 @@ pub trait CollectionTo<Item> {
   ///
   /// The order of retained values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::SequenceTo::unique
+  /// [`unique()`]: crate::SequenceInto::unique
   ///
   /// # Example
   ///
@@ -1016,7 +1016,7 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a consuming variant of [`map_ref()`].
   ///
-  /// [`map_ref()`]: CollectionTo::map_ref
+  /// [`map_ref()`]: CollectionInto::map_ref
   ///
   /// # Arguments
   ///
@@ -1062,7 +1062,7 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a non-consuming variant of [`map()`].
   ///
-  /// [`map()`]: CollectionTo::map
+  /// [`map()`]: CollectionInto::map
   ///
   /// # Arguments
   ///
@@ -1129,7 +1129,7 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map()`]: CollectionTo::partition_map_ref
+  /// [`partition_map()`]: CollectionInto::partition_map_ref
   ///
   /// # Example
   ///
@@ -1168,7 +1168,7 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a non-consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map()`]: CollectionTo::partition_map
+  /// [`partition_map()`]: CollectionInto::partition_map
   ///
   /// # Example
   ///
@@ -1195,7 +1195,7 @@ pub trait CollectionTo<Item> {
   ///
   /// The order of sub-collection values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::SequenceTo::unique
+  /// [`unique()`]: crate::SequenceInto::unique
   ///
   /// # Example
   ///
@@ -1266,7 +1266,7 @@ pub trait CollectionTo<Item> {
   ///
   /// This is a consuming variant of [`reduce_ref()`].
   ///
-  /// [`fold()`]: CollectionTo::fold
+  /// [`fold()`]: CollectionInto::fold
   /// [`reduce_ref()`]: crate::Collection::reduce_ref
   ///
   /// # Example

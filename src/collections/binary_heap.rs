@@ -133,7 +133,7 @@ impl<Item> Collection<Item> for BinaryHeap<Item> {
   }
 }
 
-impl<Item: Ord> CollectionTo<Item> for BinaryHeap<Item> {
+impl<Item: Ord> CollectionInto<Item> for BinaryHeap<Item> {
   type This<I> = BinaryHeap<I>;
 
   #[inline]

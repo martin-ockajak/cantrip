@@ -5,7 +5,7 @@
 /// - Consumes the collection or its elements
 /// - Creates a new collection
 /// 
-pub trait TransformVecTo<Item> {
+pub trait TransformVecInto<Item> {
   /// Creates a new vector from the elements of this collection.
   ///
   /// This is an equivalent of [`Iterator::collect`].
@@ -33,7 +33,7 @@ pub trait TransformVecTo<Item> {
   }
 }
 
-impl <Item, I> TransformVecTo<Item> for I where I: Iterator<Item = Item> {
+impl <Item, I> TransformVecInto<Item> for I where I: Iterator<Item = Item> {
   #[inline]
   fn into_vec(self) -> Vec<Item>
   where

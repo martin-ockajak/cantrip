@@ -133,7 +133,7 @@ impl<Item> Collection<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> CollectionTo<Item> for VecDeque<Item> {
+impl<Item> CollectionInto<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
@@ -340,7 +340,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> SequenceTo<Item> for VecDeque<Item> {
+impl<Item> SequenceInto<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]

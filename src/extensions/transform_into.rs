@@ -9,7 +9,7 @@ use std::hash::Hash;
 /// - Consumes the collection or its elements
 /// - Creates a new collection
 ///
-pub trait TransformTo<Item> {
+pub trait TransformInto<Item> {
   /// Creates a new ordered map from the elements of this collection.
   ///
   /// This is an equivalent of [`Iterator::collect`].
@@ -209,4 +209,4 @@ pub trait TransformTo<Item> {
   }
 }
 
-impl<Item, I> TransformTo<Item> for I where I: IntoIterator<Item = Item> {}
+impl<Item, I> TransformInto<Item> for I where I: IntoIterator<Item = Item> {}

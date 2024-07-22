@@ -133,7 +133,7 @@ impl<Item> Collection<Item> for BTreeSet<Item> {
   }
 }
 
-impl<Item: Ord> CollectionTo<Item> for BTreeSet<Item> {
+impl<Item: Ord> CollectionInto<Item> for BTreeSet<Item> {
   type This<I> = BTreeSet<I>;
 
   #[inline]

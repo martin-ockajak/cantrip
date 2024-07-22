@@ -409,7 +409,7 @@ pub trait Sequence<Item> {
   /// operators like `-` the order will affect the final result.
   /// For a *left-associative* version of `rfold_ref()`, see [`fold_ref()`].
   ///
-  /// [`rfold()`]: crate::SequenceTo::rfold
+  /// [`rfold()`]: crate::SequenceInto::rfold
   /// [`fold_ref()`]: crate::Collection::fold_ref
   ///
   /// # Examples
