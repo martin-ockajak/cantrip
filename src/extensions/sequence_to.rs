@@ -846,7 +846,7 @@ pub trait SequenceTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.map(|&x| if x < 3 { Some(x + 1) } else { None }).take_while(|x| x.is_some()).map(|x| x.unwrap()),
+  ///   a.map_ref(|&x| if x < 3 { Some(x + 1) } else { None }).take_while(|x| x.is_some()).map_ref(|x| x.unwrap()),
   ///   vec![2, 3]
   /// );
   /// ```
@@ -1091,15 +1091,15 @@ pub trait SequenceTo<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a consuming variant of [`rfold()`].
+  /// This is a consuming variant of [`rfold_ref()`].
   ///
   /// Note: `rfold()` combines elements in a *right-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *left-associative* version of `rfold()`, see [`fold_to()`].
+  /// For a *left-associative* version of `rfold()`, see [`fold()`].
   ///
-  /// [`rfold()`]: crate::Sequence::rfold
-  /// [`fold_to()`]: crate::CollectionTo::fold_to
+  /// [`rfold_ref()`]: crate::Sequence::rfold_ref
+  /// [`fold()`]: crate::CollectionTo::fold
   ///
   /// # Examples
   ///
@@ -1112,7 +1112,7 @@ pub trait SequenceTo<Item> {
   ///
   /// // the sum of all the elements of a
   /// assert_eq!(
-  ///   a.rfold_to(0, |acc, x| acc + x),
+  ///   a.rfold_ref(0, |acc, &x| acc + x),
   ///   6
   /// );
   /// ```
@@ -1129,14 +1129,14 @@ pub trait SequenceTo<Item> {
   /// let zero = "0".to_string();
   ///
   /// assert_eq!(
-  ///   a.rfold_to(zero, |acc, x| {
+  ///   a.rfold(zero, |acc, x| {
   ///     format!("({x} + {acc})")
   ///   }),
   ///   "(1 + (2 + (3 + (4 + (5 + 0)))))"
   /// );
   /// ```
   #[inline]
-  fn rfold_to<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
+  fn rfold<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
     I: DoubleEndedIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
@@ -1158,54 +1158,10 @@ pub trait SequenceTo<Item> {
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
-  /// This is a non-consuming variant of [`scan_to()`].
-  ///
-  /// [`fold()`]: crate::Collection::fold
-  /// [`scan_to()`]: SequenceTo::scan_to
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// let mut scan = a.scan(1, |state, &x| {
-  ///   // each iteration, we'll multiply the state by the element ...
-  ///   *state = *state * x;
-  ///
-  ///   // ... and terminate if the state exceeds 6
-  ///   if *state > 2 {
-  ///     return None;
-  ///   }
-  ///   // ... else yield the negation of the state
-  ///   Some(-*state)
-  /// });
-  ///
-  /// assert_eq!(scan, vec![-1, -2]);
-  /// ```
-  fn scan<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>;
-
-  /// A sequence adapter which, like [`fold_to()`], holds internal state, but
-  /// unlike [`fold_to()`], produces a new sequence.
-  ///
-  /// `scan()` takes two arguments: an initial value which seeds the internal
-  /// state, and a closure with two arguments, the first being a mutable
-  /// reference to the internal state and the second element of this sequence.
-  /// The closure can assign to the internal state to share state between
-  /// iterations.
-  ///
-  /// On iteration, the closure will be applied to each element of this
-  /// sequence and the return value from the closure, an [`Option`], is
-  /// returned by the `next` method. The closure can return
-  /// `Some(value)` to yield `value`, or `None` to end the iteration.
-  ///
   /// This is a consuming variant of [`scan()`].
   ///
-  /// [`fold_to()`]: crate::CollectionTo::fold_to
-  /// [`scan()`]: SequenceTo::scan
+  /// [`fold()`]: crate::CollectionTo::fold
+  /// [`scan()`]: SequenceTo::scan_ref
   ///
   /// # Example
   ///
@@ -1214,7 +1170,7 @@ pub trait SequenceTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let mut scan = a.scan_to(1, |state, x| {
+  /// let mut scan = a.scan(1, |state, x| {
   ///   // each iteration, we'll multiply the state by the element ...
   ///   *state = *state * x;
   ///
@@ -1229,13 +1185,57 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(scan, vec![-1, -2]);
   /// ```
   #[inline]
-  fn scan_to<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
+  fn scan<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
   {
     self.into_iter().scan(initial_state, function).collect()
   }
+
+  /// A sequence adapter which, like [`fold_ref()`], holds internal state, but
+  /// unlike [`fold_ref()`], produces a new sequence.
+  ///
+  /// `scan_ref()` takes two arguments: an initial value which seeds the internal
+  /// state, and a closure with two arguments, the first being a mutable
+  /// reference to the internal state and the second element of this sequence.
+  /// The closure can assign to the internal state to share state between
+  /// iterations.
+  ///
+  /// On iteration, the closure will be applied to each element of this
+  /// sequence and the return value from the closure, an [`Option`], is
+  /// returned by the `next` method. The closure can return
+  /// `Some(value)` to yield `value`, or `None` to end the iteration.
+  ///
+  /// This is a non-consuming variant of [`scan_to()`].
+  ///
+  /// [`fold_ref()`]: crate::Collection::fold_ref
+  /// [`scan()`]: SequenceTo::scan
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let mut scan = a.scan(1, |state, x| {
+  ///   // each iteration, we'll multiply the state by the element ...
+  ///   *state = *state * x;
+  ///
+  ///   // ... and terminate if the state exceeds 6
+  ///   if *state > 2 {
+  ///     return None;
+  ///   }
+  ///   // ... else yield the negation of the state
+  ///   Some(-*state)
+  /// });
+  ///
+  /// assert_eq!(scan, vec![-1, -2]);
+  /// ```
+  fn scan_ref<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
 
   /// Creates a new sequence that skips the first `n` elements from this sequence.
   ///

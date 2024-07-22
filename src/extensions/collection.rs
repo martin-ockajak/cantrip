@@ -138,16 +138,15 @@ pub trait Collection<Item> {
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
-  /// `find_map()` can be used to make chains of [`find()`] and [`map()`] more
-  /// concise.
+  /// `find_map_ref()` can be used to make chains of [`find()`] and [`map_ref()`] more concise.
   ///
-  /// `find_map_to(f)` is equivalent to `find().map()`.
+  /// `find_map_ref(f)` is equivalent to `find().map_ref()`.
   ///
-  /// This is a non-consuming variant of [`find_map_to()`].
+  /// This is a consuming variant of [`find_map()`].
   ///
   /// [`find()`]: Collection::find
-  /// [`map()`]: crate::CollectionTo::map
-  /// [`find_map_to()`]: crate::CollectionTo::find_map_to
+  /// [`map_ref()`]: Collection::map_ref
+  /// [`find_map()`]: crate::CollectionTo::find_map
   ///
   /// # Example
   ///
@@ -157,11 +156,11 @@ pub trait Collection<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } ),
+  ///   a.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None } ),
   ///   Some(2)
   /// );
   /// ```
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+  fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
   /// Folds every element into an accumulator by applying an operation,
   /// returning the final result.
@@ -173,7 +172,7 @@ pub trait Collection<Item> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of the collection, `fold()`
+  /// After applying this closure to every element of the collection, `fold_ref()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -181,19 +180,19 @@ pub trait Collection<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a non-consuming variant of [`fold_to()`].
+  /// This is a non-consuming variant of [`fold()`].
   ///
-  /// Note: [`reduce()`] can be used to use the first element as the initial
+  /// Note: [`reduce_ref()`] can be used to use the first element as the initial
   /// value, if the accumulator type and item type is the same.
   ///
-  /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
+  /// Note: `fold_ref()` combines elements in a *left-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *right-associative* version of `fold()`, see [`rfold()`].
+  /// For a *right-associative* version of `fold_ref()`, see [`rfold_ref()`].
   ///
-  /// [`fold_to()`]: crate::CollectionTo::fold_to
-  /// [`reduce()`]: Collection::reduce
-  /// [`rfold()`]: crate::Sequence::rfold
+  /// [`fold()`]: crate::CollectionTo::fold
+  /// [`reduce_ref()`]: Collection::reduce_ref
+  /// [`rfold_ref()`]: crate::Sequence::rfold_ref
   ///
   /// # Examples
   ///
@@ -206,7 +205,7 @@ pub trait Collection<Item> {
   ///
   /// // the sum of all the elements of the array
   /// assert_eq!(
-  ///   a.fold(0, |acc, x| acc + x),
+  ///   a.fold_ref(0, |acc, x| acc + x),
   ///   6
   /// );
   /// ```
@@ -233,7 +232,7 @@ pub trait Collection<Item> {
   ///
   /// let zero = "0".to_string();
   ///
-  /// let folded = a.fold(zero, |acc, &x| {
+  /// let folded = a.fold_ref(zero, |acc, &x| {
   ///   format!("({acc} + {x})")
   /// });
   ///
@@ -241,7 +240,7 @@ pub trait Collection<Item> {
   /// ```
   /// It's common for people who haven't used collections a lot to
   /// use a `for` loop with a list of things to build up a result. Those
-  /// can be turned into `fold()`s:
+  /// can be turned into `fold_ref()`s:
   ///
   /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
   ///
@@ -258,12 +257,12 @@ pub trait Collection<Item> {
   /// }
   ///
   /// // fold:
-  /// let result2 = a.fold(0, |acc, &x| acc + x);
+  /// let result2 = a.fold_ref(0, |acc, &x| acc + x);
   ///
   /// // they're the same
   /// assert_eq!(result, result2);
   /// ```
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
   /// Calls a closure on each element of this collection.
   ///
@@ -284,7 +283,7 @@ pub trait Collection<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let mut acc = 0;
-  /// 
+  ///
   /// a.for_each(|&x| acc += x);
   ///
   /// assert_eq!(acc, 6);
@@ -308,9 +307,9 @@ pub trait Collection<Item> {
   /// The folding operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a consuming variant of [`group_fold_to()`].
+  /// This is a consuming variant of [`group_fold()`].
   ///
-  /// [`group_fold_to()`]: crate::CollectionTo::group_fold_to
+  /// [`group_fold()`]: crate::CollectionTo::group_fold
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -319,13 +318,13 @@ pub trait Collection<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.group_fold(|x| x % 2, 0, |acc, &x| acc + x),
+  ///   a.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x),
   ///   HashMap::from([
   ///     (0, 2),
   ///     (1, 4),
   /// ]));
   /// ```
-  fn group_fold<K, B>(
+  fn group_fold_ref<K, B>(
     &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>
   where
@@ -339,9 +338,9 @@ pub trait Collection<Item> {
   /// The reducing operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a non-consuming variant of [`group_reduce_to()`].
+  /// This is a non-consuming variant of [`group_reduce()`].
   ///
-  /// [`group_reduce_to()`]: crate::CollectionTo::group_reduce_to
+  /// [`group_reduce()`]: crate::CollectionTo::group_reduce
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -350,13 +349,13 @@ pub trait Collection<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.group_reduce(|x| x % 2, |acc, x| acc + x),
+  ///   a.group_reduce_ref(|x| x % 2, |acc, x| acc + x),
   ///   HashMap::from([
   ///     (0, 2),
   ///     (1, 4),
   /// ]));
   /// ```
-  fn group_reduce<K>(
+  fn group_reduce_ref<K>(
     &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
   ) -> HashMap<K, Item>
   where
@@ -411,18 +410,18 @@ pub trait Collection<Item> {
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
-  /// incomparable. You can work around this by using [`reduce_to()`]:
+  /// incomparable. You can work around this by using [`reduce()`]:
   /// ```
   /// use cantrip::*;
   ///
   /// assert_eq!(
   ///     vec![2.4, f32::NAN, 1.3]
-  ///         .reduce_to(f32::max)
+  ///         .reduce(f32::max)
   ///         .unwrap(),
   ///     2.4
   /// );
   /// ```
-  /// [`reduce_to()`]: crate::CollectionTo::reduce_to
+  /// [`reduce()`]: crate::CollectionTo::reduce
   ///
   /// # Example
   ///
@@ -494,14 +493,14 @@ pub trait Collection<Item> {
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
   /// incomparable. You can work around this by using [`reduce()`]:
   ///
-  /// [`reduce()`]: Collection::reduce
+  /// [`reduce()`]: Collection::reduce_ref
   ///
   /// ```
   /// use cantrip::*;
   ///
   /// assert_eq!(
   ///   vec![2.4, f32::NAN, 1.3]
-  ///     .reduce_to(f32::min)
+  ///     .reduce(f32::min)
   ///     .unwrap(),
   ///   1.3
   /// );
@@ -601,13 +600,13 @@ pub trait Collection<Item> {
   /// result of the reduction.
   ///
   /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
-  /// For collections with at least one element, this is the same as [`fold()`]
+  /// For collections with at least one element, this is the same as [`fold_ref()`]
   /// with the first element of the collection as the initial accumulator value, folding
   ///
-  /// This is a non-consuming variant of [`reduce_to()`].
+  /// This is a non-consuming variant of [`reduce()`].
   ///
-  /// [`fold()`]: Collection::fold
-  /// [`reduce_to()`]: crate::CollectionTo::reduce_to
+  /// [`fold_ref()`]: Collection::fold_ref
+  /// [`reduce()`]: crate::CollectionTo::reduce
   ///
   /// # Example
   ///
@@ -618,20 +617,20 @@ pub trait Collection<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.reduce(|&acc, &e| acc + e),
+  ///   a.reduce_ref(|&acc, &e| acc + e),
   ///   Some(6)
   /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
-  /// let folded = a.fold(0, |acc, &e| acc + e);
+  /// let folded = a.fold_ref(0, |acc, &e| acc + e);
   ///
   /// assert_eq!(
-  ///   a.reduce(|&acc, &e| acc + e).unwrap(),
+  ///   a.reduce_ref(|&acc, &e| acc + e).unwrap(),
   ///   folded
   /// );
   /// ```
-  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
+  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 
   /// Tests if another collection contains all elements of this collection
   /// at least as many times as their appear in this collection.

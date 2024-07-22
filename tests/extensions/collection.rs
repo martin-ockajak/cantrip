@@ -34,13 +34,13 @@ where
   assert_eq!(a.find(|&x| x == 5), None);
   assert_eq!(e.find(|&x| x == 5), None);
 
-  // find_map
-  assert_eq!(a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
-  assert_eq!(e.find_map(|&x| if x % 2 == 0 { Some(x) } else { None }), None);
+  // find_map_ref
+  assert_eq!(a.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
+  assert_eq!(e.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None }), None);
 
-  // fold
-  assert_eq!(a.fold(0, |acc, x| acc + x), 6);
-  assert_eq!(e.fold(0, |acc, x| acc + x), 0);
+  // fold_ref
+  assert_eq!(a.fold_ref(0, |acc, x| acc + x), 6);
+  assert_eq!(e.fold_ref(0, |acc, x| acc + x), 0);
 
   // for_each
   let mut acc = 0;
@@ -49,13 +49,13 @@ where
   e.for_each(|&x| acc += x);
   assert_eq!(acc, 6);
 
-  // group_fold
-  assert_eq!(a.group_fold(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([(0, 2), (1, 4),]));
-  assert_eq!(e.group_fold(|x| x % 2, 0, |acc, &x| acc + x), HashMap::new());
+  // group_fold_ref
+  assert_eq!(a.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([(0, 2), (1, 4),]));
+  assert_eq!(e.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x), HashMap::new());
 
-  // group_reduce
-  assert_eq!(a.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
-  assert_eq!(e.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::new());
+  // group_reduce_ref
+  assert_eq!(a.group_reduce_ref(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
+  assert_eq!(e.group_reduce_ref(|x| x % 2, |acc, x| acc + x), HashMap::new());
 
   // max_by
   assert_eq!(b.max_by(i64::cmp), Some(&3));
@@ -93,9 +93,9 @@ where
   assert_eq!(b.minmax_of(), Some((&1, &3)));
   assert_eq!(e.minmax_of(), None);
 
-  // reduce
-  assert_eq!(a.reduce(|&acc, &e| acc + e), Some(6));
-  assert_eq!(e.reduce(|&acc, &e| acc + e), None);
+  // reduce_ref
+  assert_eq!(a.reduce_ref(|&acc, &e| acc + e), Some(6));
+  assert_eq!(e.reduce_ref(|&acc, &e| acc + e), None);
 
   // subset
   assert!(a.subset(&vec![4, 3, 2, 2, 1]));

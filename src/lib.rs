@@ -22,31 +22,31 @@
 //! # let source = vec![1, 2, 3];
 //! let a = vec![1, 2, 3];
 //!
-//! a.fold_to(0, |r, x| r + x);             // 6
+//! a.fold(0, |r, x| r + x);                    // 6
 //!
 //! # let a = source.clone();
-//! a.map_to(|x| (x, x + 1)).to_map();      // HashMap::from([(1, 2), (2, 3), (3, 4)])
+//! a.map_ref(|&x| (x, x + 1)).to_map();        // HashMap::from([(1, 2), (2, 3), (3, 4)])
 //!
 //! # let a = source.clone();
-//! a.flat_map(|&x| [x, -x]).sorted();      // vec![-3, -2, -1, 1, 2, 3]
+//! a.flat_map(|x| [x, -x]).sorted();           // vec![-3, -2, -1, 1, 2, 3]
 //!
 //! # let a = source.clone();
-//! a.filter(|&x| x > 1).into_set();        // HashSet::from([2, 3])
+//! a.filter(|&x| x > 1).into_set();            // HashSet::from([2, 3])
 //!
 //! # let a = source.clone();
-//! a.group_by(|x| x % 2);                  // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
+//! a.group_by(|x| x % 2);                      // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 //!
 //! # let a = source.clone();
-//! a.delete(&1).add(2).unique();           // vec![2, 3]
+//! a.delete(&1).add(2).unique();               // vec![2, 3]
 //!
 //! # let a = source.clone();
-//! a.substitute_at(0, 4).to_list();        // LinkedList::from([4, 2, 3])
+//! a.substitute_at(0, 4).to_list();            // LinkedList::from([4, 2, 3])
 //!
 //! # let a = source.clone();
-//! a.position_multi(|&x| x % 2 == 1);      // vec![0, 2]
+//! a.position_multi(|&x| x % 2 == 1);          // vec![0, 2]
 //!
 //! # let a = source.clone();
-//! a.rev().into_iter().into_deque();       // VecDeque::from([3, 2, 1])
+//! a.rev().into_iter().into_deque();           // VecDeque::from([3, 2, 1])
 //! ```
 //!
 //!
@@ -88,27 +88,27 @@
 //! | [`fill_with`](CollectionTo::fill_with)                          |            *              |       |              *                |         *         |     Y     |
 //! | [`filter`](CollectionTo::filter)                                |            *              |       |              *                |         *         |     Y     |
 //! | [`filter_keys`](Map::filter_keys)                               |                           |       |                               |         *         |     Y     |
-//! | [`filter_map`](CollectionTo::filter_map)                        |            *              |       |              *                |         *         |     N     |
-//! | [`filter_map_to`](CollectionTo::filter_map_to)                  |            *              |       |              *                |         *         |     Y     |
+//! | [`filter_map`](CollectionTo::filter_map)                        |            *              |       |              *                |         *         |     Y     |
+//! | [`filter_map_ref`](CollectionTo::filter_map_ref)                |            *              |       |              *                |         *         |     N     |
 //! | [`filter_values`](Map::filter_values)                           |                           |       |                               |         *         |     Y     |
 //! | [`find`](Collection::find)                                      |            *              |   *   |              *                |         *         |     N     |
-//! | [`find_map`](Collection::find_map)                              |            *              |   *   |              *                |         *         |     N     |
-//! | [`find_map_to`](CollectionTo::find_map_to)                      |            *              |       |              *                |         *         |     Y     |
+//! | [`find_map`](CollectionTo::find_map)                            |            *              |       |              *                |         *         |     Y     |
+//! | [`find_map_ref`](Collection::find_map_ref)                      |            *              |   *   |              *                |         *         |     N     |
 //! | [`find_position`](Sequence::find_position)                      |            *              |   *   |                               |                   |     N     |
 //! | [`first`](List::first)                                          |            *              |   *   |                               |                   |     N     |
-//! | [`flat_map`](CollectionTo::flat_map)                            |            *              |       |              *                |         *         |     N     |
-//! | [`flat_map_to`](CollectionTo::flat_map_to)                      |            *              |       |              *                |         *         |     Y     |
+//! | [`flat_map`](CollectionTo::flat_map)                            |            *              |       |              *                |         *         |     Y     |
+//! | [`flat_map_ref`](CollectionTo::flat_map_ref)                    |            *              |       |              *                |         *         |     N     |
 //! | [`flat`](CollectionTo::flat)                                    |            *              |       |              *                |                   |     Y     |
-//! | [`fold`](Collection::fold)                                      |            *              |   *   |              *                |         *         |     N     |
-//! | [`fold_to`](CollectionTo::fold_to)                              |            *              |       |              *                |         *         |     Y     |
+//! | [`fold`](CollectionTo::fold)                                    |            *              |       |              *                |         *         |     Y     |
+//! | [`fold_ref`](Collection::fold_ref)                              |            *              |   *   |              *                |         *         |     N     |
 //! | [`for_each`](Collection::for_each)                              |            *              |   *   |              *                |         *         |     N     |
 //! | [`frequencies`](Sequence::frequencies)                          |            *              |   *   |                               |                   |     N     |
 //! | [`frequencies_by`](Sequence::frequencies_by)                    |            *              |   *   |                               |                   |     N     |
 //! | [`group_by`](CollectionTo::group_by)                            |            *              |       |              *                |                   |     Y     |
-//! | [`group_fold`](Collection::group_fold)                          |            *              |   *   |              *                |                   |     N     |
-//! | [`group_fold_to`](CollectionTo::group_fold_to)                  |            *              |       |              *                |                   |     Y     |
-//! | [`group_reduce`](Collection::group_reduce)                      |            *              |   *   |              *                |                   |     N     |
-//! | [`group_reduce_to`](CollectionTo::group_reduce_to)              |            *              |       |              *                |                   |     Y     |
+//! | [`group_fold`](CollectionTo::group_fold)                        |            *              |       |              *                |                   |     Y     |
+//! | [`group_fold_ref`](Collection::group_fold_ref)                  |            *              |   *   |              *                |                   |     N     |
+//! | [`group_reduce`](CollectionTo::group_reduce)                    |            *              |       |              *                |                   |     Y     |
+//! | [`group_reduce_ref`](Collection::group_reduce_ref)              |            *              |   *   |              *                |                   |     N     |
 //! | [`init`](SequenceTo::init)                                      |            *              |   *   |                               |                   |     Y     |
 //! | [`interleave`](SequenceTo::interleave)                          |            *              |       |                               |                   |     Y     |
 //! | [`interleave_exact`](SequenceTo::interleave_exact)              |            *              |       |                               |                   |     Y     |
@@ -126,8 +126,8 @@
 //! | [`joined`](Sequence::joined)                                    |            *              |       |                               |                   |     N     |
 //! | [`largest`](CollectionTo::largest)                              |            *              |       |              *                |                   |     Y     |
 //! | [`last`](List::last)                                            |            *              |       |                               |                   |     N     |
-//! | [`map`](CollectionTo::map)                                      |            *              |       |              *                |         *         |     N     |
-//! | [`map_to`](CollectionTo::map_to)                                |            *              |       |              *                |         *         |     Y     |
+//! | [`map`](CollectionTo::map)                                      |            *              |       |              *                |         *         |     Y     |
+//! | [`map_ref`](CollectionTo::map_ref)                              |            *              |       |              *                |         *         |     N     |
 //! | [`map_keys`](Map::map_keys)                                     |                           |       |                               |         *         |     Y     |
 //! | [`map_values`](Map::map_values)                                 |                           |       |                               |         *         |     Y     |
 //! | [`map_while`](SequenceTo::map_while)                            |            *              |       |                               |                   |     N     |
@@ -148,8 +148,8 @@
 //! | [`pad_right`](SequenceTo::pad_right)                            |            *              |       |                               |                   |     Y     |
 //! | [`pad_right_with`](SequenceTo::pad_right_with)                  |            *              |       |                               |                   |     Y     |
 //! | [`partition`](CollectionTo::partition)                          |            *              |       |              *                |         *         |     Y     |
-//! | [`partition_map`](CollectionTo::partition_map)                  |            *              |       |              *                |         *         |     N     |
-//! | [`partition_map_to`](CollectionTo::partition_map_to)            |            *              |       |              *                |         *         |     Y     |
+//! | [`partition_map`](CollectionTo::partition_map)                  |            *              |       |              *                |         *         |     Y     |
+//! | [`partition_map_ref`](CollectionTo::partition_map_ref)          |            *              |       |              *                |         *         |     N     |
 //! | [`position`](Sequence::position)                                |            *              |   *   |                               |                   |     N     |
 //! | [`position_multi`](Sequence::position_multi)                    |            *              |   *   |                               |                   |     N     |
 //! | [`position_of`](Sequence::position_of)                          |            *              |   *   |                               |                   |     N     |
@@ -159,16 +159,16 @@
 //! | [`product`](CollectionTo::product)                              |            *              |       |              *                |                   |     Y     |
 //! | [`product_keys`](Map::product_keys)                             |                           |       |                               |         *         |     Y     |
 //! | [`product_values`](Map::product_values)                         |                           |       |                               |         *         |     Y     |
-//! | [`reduce`](Collection::reduce)                                  |            *              |   *   |              *                |         *         |     N     |
-//! | [`reduce_to`](CollectionTo::reduce_to)                          |            *              |       |              *                |         *         |     Y     |
+//! | [`reduce`](CollectionTo::reduce)                                |            *              |       |              *                |         *         |     Y     |
+//! | [`reduce_ref`](Collection::reduce_ref)                          |            *              |   *   |              *                |         *         |     N     |
 //! | [`repeat`](List::repeat)                                        |            *              |       |                               |                   |           |
 //! | [`rev`](SequenceTo::rev)                                        |            *              |       |                               |                   |     Y     |
 //! | [`rfind`](Sequence::rfind)                                      |            *              |   *   |                               |                   |     N     |
-//! | [`rfold`](Sequence::rfold)                                      |            *              |   *   |                               |                   |     N     |
-//! | [`rfold_to`](SequenceTo::rfold_to)                              |            *              |       |                               |                   |     Y     |
+//! | [`rfold`](SequenceTo::rfold)                                    |            *              |       |                               |                   |     Y     |
+//! | [`rfold_ref`](Sequence::rfold_ref)                              |            *              |   *   |                               |                   |     N     |
 //! | [`rposition`](Sequence::rposition)                              |            *              |   *   |                               |                   |     N     |
-//! | [`scan`](SequenceTo::scan)                                      |            *              |       |                               |                   |     N     |
-//! | [`scan_to`](SequenceTo::scan_to)                                |            *              |       |                               |                   |     Y     |
+//! | [`scan`](SequenceTo::scan)                                      |            *              |       |                               |                   |     Y     |
+//! | [`scan_ref`](SequenceTo::scan_ref)                              |            *              |       |                               |                   |     N     |
 //! | [`skip`](SequenceTo::skip)                                      |            *              |   *   |                               |                   |     Y     |
 //! | [`skip_while`](SequenceTo::skip_while)                          |            *              |   *   |                               |                   |     Y     |
 //! | [`slice`](SequenceTo::slice)                                    |            *              |       |                               |                   |     Y     |

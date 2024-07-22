@@ -36,12 +36,12 @@ impl<Item> Collection<Item> for [Item] {
   }
 
   #[inline]
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+  fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
   #[inline]
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.iter().fold(initial_value, function)
   }
 
@@ -51,7 +51,7 @@ impl<Item> Collection<Item> for [Item] {
   }
 
   #[inline]
-  fn group_fold<K, B>(
+  fn group_fold_ref<K, B>(
     &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>
   where
@@ -62,7 +62,7 @@ impl<Item> Collection<Item> for [Item] {
   }
 
   #[inline]
-  fn group_reduce<K>(
+  fn group_reduce_ref<K>(
     &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
   ) -> HashMap<K, Item>
   where
@@ -112,7 +112,7 @@ impl<Item> Collection<Item> for [Item] {
   }
 
   #[inline]
-  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
+  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
     reduce(self.iter(), function)
   }
 
@@ -216,7 +216,7 @@ impl<Item> Sequence<Item> for [Item] {
   }
 
   #[inline]
-  fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+  fn rfold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.iter().rfold(initial_value, function)
   }
 

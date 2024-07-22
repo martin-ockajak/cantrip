@@ -36,12 +36,12 @@ impl<Item> Collection<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn find_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+  fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
   #[inline]
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.iter().fold(initial_value, function)
   }
 
@@ -51,7 +51,7 @@ impl<Item> Collection<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn group_fold<K, B>(
+  fn group_fold_ref<K, B>(
     &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>
   where
@@ -62,7 +62,7 @@ impl<Item> Collection<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn group_reduce<K>(
+  fn group_reduce_ref<K>(
     &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
   ) -> HashMap<K, Item>
   where
@@ -112,7 +112,7 @@ impl<Item> Collection<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn reduce(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
+  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
     reduce(self.iter(), function)
   }
 
@@ -165,7 +165,7 @@ impl<Item: Ord> CollectionTo<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
   {
@@ -173,7 +173,7 @@ impl<Item: Ord> CollectionTo<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>,
@@ -182,7 +182,7 @@ impl<Item: Ord> CollectionTo<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
   {
@@ -190,7 +190,7 @@ impl<Item: Ord> CollectionTo<Item> for BinaryHeap<Item> {
   }
 
   #[inline]
-  fn partition_map<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,
     Self::This<B>: Default + Extend<B>,

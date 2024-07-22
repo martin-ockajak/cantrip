@@ -103,20 +103,18 @@ pub(crate) fn test_collection_to<'a, C, D>(
   // filter_map
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_seq_equal(a.filter_map(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
-  assert_seq_equal(e.filter_map(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![]);
+  assert_seq_equal(a.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
+  assert_seq_equal(e.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![]);
 
-  // filter_map_to
+  // filter_map_ref
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_seq_equal(a.filter_map_to(|x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
-  assert_seq_equal(e.filter_map_to(|x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![]);
+  assert_seq_equal(a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
+  assert_seq_equal(e.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![]);
 
-  // find_map_to
-  let a = a_source.clone();
-  let e = e_source.clone();
-  assert_eq!(a.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
-  assert_eq!(e.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None }), None);
+  // find_map
+  assert_eq!(a.find_map(|x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
+  assert_eq!(e.find_map(|x| if x % 2 == 0 { Some(x) } else { None }), None);
 
   // flat
   let d = d_source.clone();
@@ -127,20 +125,18 @@ pub(crate) fn test_collection_to<'a, C, D>(
   // flat_map
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_seq_equal(a.flat_map(|&x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
-  assert_seq_equal(e.flat_map(|&x| vec![x, -x]), vec![]);
+  assert_seq_equal(a.flat_map(|x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
+  assert_seq_equal(e.flat_map(|x| vec![x, -x]), vec![]);
 
-  // flat_map_to
+  // flat_map_ref
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_seq_equal(a.flat_map_to(|x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
-  assert_seq_equal(e.flat_map_to(|x| vec![x, -x]), vec![]);
+  assert_seq_equal(a.flat_map_ref(|&x| vec![x, -x]), vec![1, -1, 2, -2, 3, -3]);
+  assert_seq_equal(e.flat_map_ref(|&x| vec![x, -x]), vec![]);
 
-  // fold_to
-  let a = a_source.clone();
-  let e = e_source.clone();
-  assert_eq!(a.fold_to(0, |acc, x| acc + x), 6);
-  assert_eq!(e.fold_to(0, |acc, x| acc + x), 0);
+  // fold
+  assert_eq!(a.fold(0, |acc, x| acc + x), 6);
+  assert_eq!(e.fold(0, |acc, x| acc + x), 0);
 
   // group_by
   let e = e_source.clone();
@@ -153,17 +149,17 @@ pub(crate) fn test_collection_to<'a, C, D>(
   }
   assert_map_vec_equivalent(e.group_by(|x| x % 2), HashMap::new());
 
-  // group_fold_to
+  // group_fold
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_map_equal(a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4)]));
-  assert_map_equal(e.group_fold_to(|x| x % 2, 0, |acc, x| acc + x), HashMap::new());
+  assert_map_equal(a.group_fold(|x| x % 2, 0, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4)]));
+  assert_map_equal(e.group_fold(|x| x % 2, 0, |acc, x| acc + x), HashMap::new());
 
-  // group_reduce_to
+  // group_reduce
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_eq!(a.group_reduce_to(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
-  assert_eq!(e.group_reduce_to(|x| x % 2, |acc, x| acc + x), HashMap::new());
+  assert_eq!(a.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
+  assert_eq!(e.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::new());
 
   // intersect
   let a = a_source.clone();
@@ -175,16 +171,6 @@ pub(crate) fn test_collection_to<'a, C, D>(
   }
   assert_seq_equal(e.intersect(&vec![1]), vec![]);
 
-  // map
-  let a = a_source.clone();
-  let e = e_source.clone();
-  assert_seq_equal(a.map(|&x| x + 1), vec![2, 3, 4]);
-  assert_seq_equal(e.map(|&x| x + 1), vec![]);
-
-  // map_to
-  assert_seq_equal(a.map(|x| x + 1), vec![2, 3, 4]);
-  assert_seq_equal(e.map(|x| x + 1), vec![]);
-
   // largest
   let a = a_source.clone();
   let e = e_source.clone();
@@ -193,9 +179,19 @@ pub(crate) fn test_collection_to<'a, C, D>(
   assert_seq_equal(a.largest(4), vec![3, 2, 1]);
   assert_seq_equal(e.largest(3), vec![]);
 
-  // partition
+  // map
   let a = a_source.clone();
   let e = e_source.clone();
+  assert_seq_equal(a.map(|x| x + 1), vec![2, 3, 4]);
+  assert_seq_equal(e.map(|x| x + 1), vec![]);
+
+  // map_ref
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_seq_equal(a.map_ref(|&x| x + 1), vec![2, 3, 4]);
+  assert_seq_equal(e.map_ref(|&x| x + 1), vec![]);
+
+  // partition
   let (a_even, a_odd) = a.partition(|n| n % 2 == 0);
   assert_seq_equal(a_even, vec![2]);
   assert_seq_equal(a_odd, vec![1, 3]);
@@ -206,26 +202,24 @@ pub(crate) fn test_collection_to<'a, C, D>(
   // partition_map
   let a = a_source.clone();
   let e = e_source.clone();
-  let (a_even, a_odd) = a.partition_map(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
+  let (a_even, a_odd) = a.partition_map(|n| if n % 2 == 0 { Ok(n + 3) } else { Err(n) });
   assert_seq_equal(a_even, vec![5]);
   assert_seq_equal(a_odd, vec![1, 3]);
-  let (e_even, e_odd) = e.partition_map(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
+  let (e_even, e_odd) = e.partition_map(|x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
   assert_seq_equal(e_even, vec![]);
   assert_seq_equal(e_odd, vec![]);
 
-  // partition_map_to
+  // partition_map_ref
   let a = a_source.clone();
   let e = e_source.clone();
-  let (a_even, a_odd) = a.partition_map_to(|n| if n % 2 == 0 { Ok(n + 3) } else { Err(n) });
+  let (a_even, a_odd) = a.partition_map_ref(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
   assert_seq_equal(a_even, vec![5]);
   assert_seq_equal(a_odd, vec![1, 3]);
-  let (e_even, e_odd) = e.partition_map_to(|x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
+  let (e_even, e_odd) = e.partition_map_ref(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
   assert_seq_equal(e_even, vec![]);
   assert_seq_equal(e_odd, vec![]);
 
   // powerset
-  let a = a_source.clone();
-  let e = e_source.clone();
   assert_vec_seq_equivalent(
     a.powerset(),
     vec![vec![], vec![1], vec![2], vec![3], vec![1, 2], vec![1, 3], vec![2, 3], vec![1, 2, 3]],
@@ -243,11 +237,11 @@ pub(crate) fn test_collection_to<'a, C, D>(
   }
   assert_eq!(e.product(), 1);
 
-  // reduce_to
+  // reduce
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_eq!(a.reduce_to(|acc, e| acc + e), Some(6));
-  assert_eq!(e.reduce_to(|acc, e| acc + e), None);
+  assert_eq!(a.reduce(|acc, e| acc + e), Some(6));
+  assert_eq!(e.reduce(|acc, e| acc + e), None);
 
   // smallest
   let a = a_source.clone();

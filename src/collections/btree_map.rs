@@ -70,7 +70,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,
   {
@@ -83,12 +83,12 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
+  fn find_map_ref<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
     self.iter().find_map(function)
   }
 
   #[inline]
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
     Self::This<L, W>: FromIterator<(L, W)>,
@@ -97,7 +97,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     self.iter().fold(initial_value, function)
   }
 
@@ -107,7 +107,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,
   {
@@ -156,7 +156,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn partition_map<L1, W1, L2, W2>(
+  fn partition_map_ref<L1, W1, L2, W2>(
     &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
   where
@@ -167,7 +167,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
+  fn reduce_ref(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)> {
     reduce_pairs(self.iterator(), function)
   }
 

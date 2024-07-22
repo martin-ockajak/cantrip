@@ -385,20 +385,20 @@ pub trait CollectionTo<Item> {
     self.into_iter().filter(predicate).collect()
   }
 
-  /// Creates a new collection by filtering and mapping this collection.
+  /// Creates a new collection by filters and maps this collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
   ///
   /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
-  /// concise. The example below shows how a `map().filter().map_to()` can be
-  /// shortened to a single call to `filter_map()`.
+  /// concise. The example below shows how a `filter().map()` can be shortened to a
+  /// single call to `filter_map`.
   ///
-  /// This is a non-consuming variant of [`filter_map_to()`].
+  /// This is a consuming variant of [`filter_map_ref()`].
   ///
   /// [`filter()`]: CollectionTo::filter
   /// [`map()`]: CollectionTo::map
-  /// [`filter_map_to()`]: CollectionTo::filter_map_to
+  /// [`filter_map_ref()`]: CollectionTo::filter_map_ref
   ///
   /// # Examples
   ///
@@ -410,7 +410,7 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.filter_map(|&x| if x % 2 == 0 { Some(x + 1) } else { None } ),
+  ///   a.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }),
   ///   vec![3]
   /// );
   /// ```
@@ -427,24 +427,29 @@ pub trait CollectionTo<Item> {
   ///   vec![3]
   /// );
   /// ```
-  fn filter_map<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  #[inline]
+  fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B>;
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
 
-  /// Creates a new collection by filters and maps this collection.
+  /// Creates a new collection by filtering and mapping this collection.
   ///
   /// The returned collection contains only the `value`s for which the supplied
   /// closure returns `Some(value)`.
   ///
-  /// `filter_map_to()` can be used to make chains of [`filter()`] and [`map_to()`] more
-  /// concise. The example below shows how a `map_to().filter().map()` can be
-  /// shortened to a single call to `filter_map_to`.
+  /// `filter_map_ref()` can be used to make chains of [`filter()`] and [`map_ref()`] more
+  /// concise. The example below shows how a `filter().map_ref()` can be shortened to a
+  /// single call to `filter_map()`.
   ///
-  /// This is a consuming variant of [`filter_map()`].
+  /// This is a non-consuming variant of [`filter_map()`].
   ///
   /// [`filter()`]: CollectionTo::filter
-  /// [`map_to()`]: CollectionTo::map_to
-  /// [`filter_map()`]: CollectionTo::filter_map
+  /// [`map_ref()`]: CollectionTo::map_ref
+  /// [`filter_map()`]: CollectionTo::filter_map_ref
   ///
   /// # Examples
   ///
@@ -456,12 +461,12 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.filter_map_to(|x| if x % 2 == 0 { Some(x + 1) } else { None } ),
+  ///   a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None } ),
   ///   vec![3]
   /// );
   /// ```
   ///
-  /// Here's the same example, but with [`filter()`] and [`map_to()`]:
+  /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -469,31 +474,26 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.filter(|&x| x % 2 == 0).map(|x| x + 1),
+  ///   a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1),
   ///   vec![3]
   /// );
   /// ```
-  #[inline]
-  fn filter_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
+  fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
-    Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().filter_map(function).collect()
-  }
+    Self::This<B>: FromIterator<B>;
 
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
-  /// `find_map_to()` can be used to make chains of [`find()`] and [`map()`] more concise.
+  /// `find_map()` can be used to make chains of [`find()`] and [`map()`] more concise.
   ///
-  /// `find_map_to(f)` is equivalent to `find().map_to()`.
+  /// `find_map(f)` is equivalent to `find().map()`.
   ///
-  /// This is a consuming variant of [`find_map()`].
+  /// This is a consuming variant of [`find_map_ref()`].
   ///
   /// [`find()`]: crate::Collection::find
-  /// [`map()`]: CollectionTo::map
-  /// [`find_map()`]: crate::Collection::find_map
+  /// [`map()`]: CollectionTo::map_ref
+  /// [`find_map()`]: crate::Collection::find_map_ref
   ///
   /// # Example
   ///
@@ -503,12 +503,12 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.find_map_to(|x| if x % 2 == 0 { Some(x) } else { None } ),
+  ///   a.find_map(|x| if x % 2 == 0 { Some(x) } else { None } ),
   ///   Some(2)
   /// );
   /// ```
   #[inline]
-  fn find_map_to<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
+  fn find_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
   where
     Self: IntoIterator<Item = Item>,
     Self: Sized,
@@ -542,7 +542,7 @@ pub trait CollectionTo<Item> {
   ///
   /// assert_eq!(
   ///   // Vec is iterable because it supports IntoIterator
-  ///   a.map(|&x| vec![x, -x]).flat(),
+  ///   a.map_ref(|&x| vec![x, -x]).flat(),
   ///   vec![1, -1, 2, -2, 3, -3]
   /// );
   /// ```
@@ -557,7 +557,7 @@ pub trait CollectionTo<Item> {
   ///
   /// assert_eq!(
   ///   // Vec is iterable because it supports IntoIterator
-  ///   a.flat_map(|&x| vec![x, -x]),
+  ///   a.flat_map_ref(|&x| vec![x, -x]),
   ///   vec![1, -1, 2, -2, 3, -3]
   /// );
   /// ```
@@ -597,7 +597,7 @@ pub trait CollectionTo<Item> {
   /// two-dimensional and not one-dimensional. To get a one-dimensional
   /// structure, you have to `flat()` again.
   ///
-  /// [`flat_map()`]: CollectionTo::flat_map
+  /// [`flat_map()`]: CollectionTo::flat_map_ref
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
@@ -617,18 +617,18 @@ pub trait CollectionTo<Item> {
   /// on its own.
   ///
   /// You can think of `flat_map(f)` as the semantic equivalent
-  /// of mapping, and then flatttening as in [`map(f)`][`.flat()`]`.
+  /// of mapping, and then flattening as in [`map(f)`][`.flat()`].
   ///
   /// Another way of thinking about `flat_map()`: [`map()`]'s closure returns
   /// one item for each element, and `flat_map()`'s closure returns an
   /// iterable value for each element.
   ///
-  /// This is a non-consuming variant of [`flat_map_to()`].
+  /// This is a consuming variant of [`flat_map_ref()`].
   ///
   /// [`map()`]: CollectionTo::map
   /// [`map(f)`]: CollectionTo::map
   /// [`.flat()`]: CollectionTo::flat
-  /// [`flat_map_to()`]: CollectionTo::flat_map_to
+  /// [`flat_map_ref()`]: CollectionTo::flat_map_ref
   ///
   /// # Example
   ///
@@ -639,34 +639,39 @@ pub trait CollectionTo<Item> {
   ///
   /// assert_eq!(
   ///   // Vec is iterable because it implements IntoIterator
-  ///   a.flat_map(|&x| vec![x, -x]),
+  ///   a.flat_map(|x| vec![x, -x]),
   ///   vec![1, -1, 2, -2, 3, -3]
   /// );
   /// ```
-  fn flat_map<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
+  #[inline]
+  fn flat_map<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
-    Self::This<B>: FromIterator<B>;
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().flat_map(function).collect()
+  }
 
   /// Creates a new collection by applying the given closure `function` to each element
   /// of this collection and flattens the nested collection.
   ///
-  /// The `flat_map_to()` method is very useful, but only when the closure
+  /// The `flat_map_ref()` method is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
-  /// an extra layer of indirection. `flat_map_to()` will remove this extra layer
+  /// an extra layer of indirection. `flat_map_ref()` will remove this extra layer
   /// on its own.
   ///
-  /// You can think of `flat_map_to(f)` as the semantic equivalent
-  /// of mapping, and then flattening as in [`map_to(f)`][`.flat()`].
+  /// You can think of `flat_map_ref(f)` as the semantic equivalent
+  /// of mapping, and then flatttening as in [`map_ref(f)`][`.flat()`]`.
   ///
-  /// Another way of thinking about `flat_map_to()`: [`map_to()`]'s closure returns
-  /// one item for each element, and `flat_map_to()`'s closure returns an
+  /// Another way of thinking about `flat_map_ref()`: [`map_ref()`]'s closure returns
+  /// one item for each element, and `flat_map_ref()`'s closure returns an
   /// iterable value for each element.
   ///
-  /// This is a consuming variant of [`flat_map()`].
+  /// This is a non-consuming variant of [`flat_map()`].
   ///
-  /// [`map_to()`]: CollectionTo::map
-  /// [`map_to(f)`]: CollectionTo::map
+  /// [`map_ref()`]: CollectionTo::map_ref
+  /// [`map_ref(f)`]: CollectionTo::map_ref
   /// [`.flat()`]: CollectionTo::flat
   /// [`flat_map()`]: CollectionTo::flat_map
   ///
@@ -679,31 +684,26 @@ pub trait CollectionTo<Item> {
   ///
   /// assert_eq!(
   ///   // Vec is iterable because it implements IntoIterator
-  ///   a.flat_map_to(|x| vec![x, -x]),
+  ///   a.flat_map_ref(|&x| vec![x, -x]),
   ///   vec![1, -1, 2, -2, 3, -3]
   /// );
   /// ```
-  #[inline]
-  fn flat_map_to<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
+  fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
-    Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().flat_map(function).collect()
-  }
+    Self::This<B>: FromIterator<B>;
 
   /// Folds every element into an accumulator by applying an operation,
   /// returning the final result.
   ///
-  /// `fold_to()` takes two arguments: an initial value, and a closure with two
+  /// `fold()` takes two arguments: an initial value, and a closure with two
   /// arguments: an 'accumulator', and an element. The closure returns the value that
   /// the accumulator should have for the next iteration.
   ///
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every element of this collection, `fold_to()`
+  /// After applying this closure to every element of this collection, `fold()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -711,19 +711,19 @@ pub trait CollectionTo<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a consuming variant of [`fold()`].
+  /// This is a consuming variant of [`fold_ref()`].
   ///
   /// Note: [`reduce()`] can be used to use the first element as the initial
   /// value, if the accumulator type and item type is the same.
   ///
-  /// Note: `fold_to()` combines elements in a *left-associative* fashion. For associative
+  /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *right-associative* version of `fold_to()`, see [`rfold_to()`].
+  /// For a *right-associative* version of `fold()`, see [`rfold()`].
   ///
-  /// [`fold()`]: crate::Collection::fold
-  /// [`reduce()`]: crate::Collection::reduce
-  /// [`rfold_to()`]: crate::SequenceTo::rfold_to
+  /// [`fold_ref()`]: crate::Collection::fold_ref
+  /// [`reduce()`]: CollectionTo::reduce
+  /// [`rfold()`]: crate::SequenceTo::rfold
   ///
   /// # Examples
   ///
@@ -736,7 +736,7 @@ pub trait CollectionTo<Item> {
   ///
   /// // the sum of all the elements of the array
   /// assert_eq!(
-  ///   a.fold_to(0, |acc, x| acc + x),
+  ///   a.fold(0, |acc, x| acc + x),
   ///   6
   /// );
   /// ```
@@ -752,7 +752,7 @@ pub trait CollectionTo<Item> {
   ///
   /// And so, our final result, `6`.
   ///
-  /// This example demonstrates the left-associative nature of `fold_to()`:
+  /// This example demonstrates the left-associative nature of `fold()`:
   /// it builds a string, starting with an initial value
   /// and continuing with each element from the front until the back:
   ///
@@ -764,7 +764,7 @@ pub trait CollectionTo<Item> {
   /// let zero = "0".to_string();
   ///
   /// assert_eq!(
-  ///   a.fold_to(zero, |acc, x| {
+  ///   a.fold(zero, |acc, x| {
   ///     format!("({acc} + {x})")
   ///   }),
   ///   "(((((0 + 1) + 2) + 3) + 4) + 5)"
@@ -772,7 +772,7 @@ pub trait CollectionTo<Item> {
   /// ```
   /// It's common for people who haven't used collections a lot to
   /// use a `for` loop with a list of things to build up a result. Those
-  /// can be turned into `fold_to()`s:
+  /// can be turned into `fold()`s:
   ///
   /// [`for`]: ../../book/ch03-05-control-flow.html#looping-through-a-collection-with-for
   ///
@@ -789,13 +789,13 @@ pub trait CollectionTo<Item> {
   /// }
   ///
   /// // fold:
-  /// let result2 = a.fold_to(0, |acc, x| acc + x);
+  /// let result2 = a.fold(0, |acc, x| acc + x);
   ///
   /// // they're the same
   /// assert_eq!(result, result2);
   /// ```
   #[inline]
-  fn fold_to<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
+  fn fold<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
     Self: IntoIterator<Item = Item> + Sized,
   {
@@ -839,9 +839,9 @@ pub trait CollectionTo<Item> {
   /// The folding operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a consuming variant of [`group_fold()`].
+  /// This is a consuming variant of [`group_fold_ref()`].
   ///
-  /// [`group_fold()`]: crate::Collection::group_fold
+  /// [`group_fold_ref()`]: crate::Collection::group_fold_ref
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -850,13 +850,13 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.group_fold_to(|x| x % 2, 0, |acc, x| acc + x),
+  ///   a.group_fold(|x| x % 2, 0, |acc, x| acc + x),
   ///   HashMap::from([
   ///     (0, 2),
   ///     (1, 4),
   /// ]));
   /// ```
-  fn group_fold_to<K, B>(
+  fn group_fold<K, B>(
     self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
   ) -> HashMap<K, B>
   where
@@ -885,9 +885,9 @@ pub trait CollectionTo<Item> {
   /// The reducing operation takes an accumulator and a closure and returns a new element.
   /// The closure returns the value that the accumulator should have for the next iteration.
   ///
-  /// This is a consuming variant of [`group_reduce()`].
+  /// This is a consuming variant of [`group_reduce_ref()`].
   ///
-  /// [`group_reduce()`]: crate::Collection::group_reduce
+  /// [`group_reduce_ref()`]: crate::Collection::group_reduce_ref
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -896,13 +896,13 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.group_reduce_to(|x| x % 2, |acc, x| acc + x),
+  ///   a.group_reduce(|x| x % 2, |acc, x| acc + x),
   ///   HashMap::from([
   ///     (0, 2),
   ///     (1, 4),
   /// ]));
   /// ```
-  fn group_reduce_to<K>(
+  fn group_reduce<K>(
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>
   where
@@ -972,93 +972,6 @@ pub trait CollectionTo<Item> {
       .collect()
   }
 
-  /// Creates a new collection by applying the given closure `function` to
-  /// each element in this collection.
-  ///
-  /// The closure `function` takes a reference to an element of type
-  /// `Item` and returns a value of type `R`.
-  /// The resulting other are collected into a new collection of the same type.
-  ///
-  /// This is a non-consuming variant of [`map_to()`].
-  ///
-  /// [`map_to()`]: CollectionTo::map_to
-  ///
-  /// # Arguments
-  ///
-  /// * `self` - the collection to apply the mapping to.
-  /// * `function` - the closure to apply to each element.
-  ///
-  /// # Returns
-  ///
-  /// A new collection of the same type, containing the mapped elements.
-  ///
-  /// # Safety
-  ///
-  /// The caller must ensure that the closure does not mutate any shared state while being executed.
-  /// The closure must not panic while being executed, as this will lead to undefined behavior.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(
-  ///   a.map(|&x| x + 1),
-  ///   vec![2, 3, 4]
-  /// );
-  /// ```
-  fn map<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>;
-
-  /// Creates a new collection by applying the given closure `function` to each element in
-  /// this collection.
-  ///
-  /// The closure `function` takes a reference to an element of type
-  /// `Item` and returns a value of type `R`.
-  /// The resulting other are collected into a new collection of the same type.
-  ///
-  /// This is a consuming variant of [`map()`].
-  ///
-  /// [`map()`]: CollectionTo::map
-  ///
-  /// # Arguments
-  ///
-  /// * `self` - the collection to apply the mapping to.
-  /// * `function` - the closure to apply to each element.
-  ///
-  /// # Returns
-  ///
-  /// A new collection of the same type, containing the mapped elements.
-  ///
-  /// # Safety
-  ///
-  /// The caller must ensure that the closure does not mutate any shared state while being executed.
-  /// The closure must not panic while being executed, as this will lead to undefined behavior.
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(
-  ///   a.map_to(|x| x + 1),
-  ///   vec![2, 3, 4]
-  /// );
-  /// ```
-  #[inline]
-  fn map_to<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().map(function).collect()
-  }
-
   /// Creates a new collection containing the n largest elements of
   /// this collection in descending order.
   ///
@@ -1094,6 +1007,93 @@ pub trait CollectionTo<Item> {
     result.into_iter().rev().collect()
   }
 
+  /// Creates a new collection by applying the given closure `function` to each element in
+  /// this collection.
+  ///
+  /// The closure `function` takes a reference to an element of type
+  /// `Item` and returns a value of type `R`.
+  /// The resulting other are collected into a new collection of the same type.
+  ///
+  /// This is a consuming variant of [`map_ref()`].
+  ///
+  /// [`map_ref()`]: CollectionTo::map_ref
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the collection to apply the mapping to.
+  /// * `function` - the closure to apply to each element.
+  ///
+  /// # Returns
+  ///
+  /// A new collection of the same type, containing the mapped elements.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.map(|x| x + 1),
+  ///   vec![2, 3, 4]
+  /// );
+  /// ```
+  #[inline]
+  fn map<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().map(function).collect()
+  }
+
+  /// Creates a new collection by applying the given closure `function` to
+  /// each element in this collection.
+  ///
+  /// The closure `function` takes a reference to an element of type
+  /// `Item` and returns a value of type `R`.
+  /// The resulting other are collected into a new collection of the same type.
+  ///
+  /// This is a non-consuming variant of [`map()`].
+  ///
+  /// [`map()`]: CollectionTo::map
+  ///
+  /// # Arguments
+  ///
+  /// * `self` - the collection to apply the mapping to.
+  /// * `function` - the closure to apply to each element.
+  ///
+  /// # Returns
+  ///
+  /// A new collection of the same type, containing the mapped elements.
+  ///
+  /// # Safety
+  ///
+  /// The caller must ensure that the closure does not mutate any shared state while being executed.
+  /// The closure must not panic while being executed, as this will lead to undefined behavior.
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.map_ref(|&x| x + 1),
+  ///   vec![2, 3, 4]
+  /// );
+  /// ```
+  fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
+
   /// Creates two new collections from this collection by applying
   /// specified predicate.
   ///
@@ -1127,36 +1127,9 @@ pub trait CollectionTo<Item> {
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
   /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
-  /// This is a non-consuming variant of [`partition_map_to()`].
-  ///
-  /// [`partition_map_to()`]: CollectionTo::partition_map_to
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// let (even, odd) = a.partition_map(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
-  ///
-  /// assert_eq!(even, vec![5]);
-  /// assert_eq!(odd, vec![1, 3]);
-  /// ```
-  fn partition_map<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
-  where
-    Self::This<A>: Default + Extend<A>,
-    Self::This<B>: Default + Extend<B>;
-
-  /// Creates two new collections with arbitrary element types from this collection
-  /// by applying specified function.
-  ///
-  /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
-  /// `partition_map_to()` returns a pair, all the `Ok` values contained, and all the `Err` values.
-  ///
   /// This is a consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map()`]: CollectionTo::partition_map
+  /// [`partition_map()`]: CollectionTo::partition_map_ref
   ///
   /// # Example
   ///
@@ -1165,12 +1138,12 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let (even, odd) = a.partition_map_to(|x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
+  /// let (even, odd) = a.partition_map(|x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
   ///
   /// assert_eq!(even, vec![5]);
   /// assert_eq!(odd, vec![1, 3]);
   /// ```
-  fn partition_map_to<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  fn partition_map<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<A>: Default + Extend<A>,
@@ -1186,6 +1159,33 @@ pub trait CollectionTo<Item> {
     }
     (result_left, result_right)
   }
+
+  /// Creates two new collections with arbitrary element types from this collection
+  /// by applying specified function.
+  ///
+  /// The function passed to `partition_map_ref()` can return `Ok`, or `Err`.
+  /// `partition_map_ref()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  ///
+  /// This is a non-consuming variant of [`partition_map()`].
+  ///
+  /// [`partition_map()`]: CollectionTo::partition_map
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let (even, odd) = a.partition_map_ref(|&x| if x % 2 == 0 { Ok(x + 3) } else { Err(x) });
+  ///
+  /// assert_eq!(even, vec![5]);
+  /// assert_eq!(odd, vec![1, 3]);
+  /// ```
+  fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
+  where
+    Self::This<A>: Default + Extend<A>,
+    Self::This<B>: Default + Extend<B>;
 
   /// Creates a new collection containing all sub-collections of this collection.
   ///
@@ -1260,14 +1260,14 @@ pub trait CollectionTo<Item> {
   /// result of the reduction.
   ///
   /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
-  /// For collections with at least one element, this is the same as [`fold_to()`]
+  /// For collections with at least one element, this is the same as [`fold()`]
   /// with the first element of this collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// This is a consuming variant of [`reduce()`].
+  /// This is a consuming variant of [`reduce_ref()`].
   ///
-  /// [`fold_to()`]: CollectionTo::fold_to
-  /// [`reduce()`]: crate::Collection::reduce
+  /// [`fold()`]: CollectionTo::fold
+  /// [`reduce_ref()`]: crate::Collection::reduce_ref
   ///
   /// # Example
   ///
@@ -1278,22 +1278,22 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.reduce_to(|acc, e| acc + e),
+  ///   a.reduce(|acc, e| acc + e),
   ///   Some(6)
   /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
-  /// let folded = a.fold_to(0, |acc, e| acc + e);
+  /// let folded = a.fold(0, |acc, e| acc + e);
   ///
   /// # let a = a_source.clone();
   /// assert_eq!(
-  ///   a.reduce_to(|acc, e| acc + e).unwrap(),
+  ///   a.reduce(|acc, e| acc + e).unwrap(),
   ///   folded
   /// );
   /// ```
   #[inline]
-  fn reduce_to(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
+  fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   where
     Self: IntoIterator<Item = Item> + Sized,
   {

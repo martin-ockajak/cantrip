@@ -623,17 +623,17 @@ pub trait Map<Key, Value> {
   /// Creates a new map by filtering and mapping the original map.
   ///
   /// The returned map contains only the `entries` for which the supplied
-  /// closure returns `Some(entry)`.
+  /// closure returns `Some(value)`.
   ///
   /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
-  /// concise. The example below shows how a `map().filter().map_to()` can be
+  /// concise. The example below shows how a `map().filter().map()` can be
   /// shortened to a single call to `filter_map()`.
   ///
-  /// This is a non-consuming variant of [`filter_map_to()`].
+  /// This is a consuming variant of [`filter_map_ref()`].
   ///
   /// [`filter()`]: Map::filter
-  /// [`map()`]: Map::map
-  /// [`filter_map_to()`]: Map::filter_map_to
+  /// [`map()`]: Map::map_ref
+  /// [`filter_map_ref()`]: Map::filter_map_ref
   ///
   /// # Examples
   ///
@@ -650,7 +650,7 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.filter_map(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }),
+  ///   a.filter_map(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }),
   ///   HashMap::from([
   ///     (1, 2),
   /// ]));
@@ -668,33 +668,35 @@ pub trait Map<Key, Value> {
   ///   (3, 3),
   /// ]);
   ///
-  /// let filter_mapped = a
-  ///   .map(|(&k, &v)| (k, if k < 2 { Some(v + 1) } else { None }))
-  ///   .filter(|(_, s)| s.is_some())
-  ///   .map(|(&k, v)| (k, v.clone().unwrap()));
-  ///
-  /// assert_eq!(filter_mapped, HashMap::from([
-  ///   (1, 2),
+  /// assert_eq!(
+  ///   a.filter(|(&k, _)| k < 2).map(|(k, v)| (k, v + 1)),
+  ///   HashMap::from([
+  ///     (1, 2),
   /// ]));
   /// ```
-  fn filter_map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  #[inline]
+  fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
 
   /// Creates a new map by filtering and mapping the original map.
   ///
   /// The returned map contains only the `entries` for which the supplied
-  /// closure returns `Some(value)`.
+  /// closure returns `Some(entry)`.
   ///
-  /// `filter_map_to()` can be used to make chains of [`filter()`] and [`map_to()`] more
-  /// concise. The example below shows how a `map_to().filter().map()` can be
-  /// shortened to a single call to `filter_map_to()`.
+  /// `filter_map_ref()` can be used to make chains of [`filter()`] and [`map_ref()`] more
+  /// concise. The example below shows how a `filter().map_ref()` can be
+  /// shortened to a single call to `filter_map()`.
   ///
-  /// This is a consuming variant of [`filter_map()`].
+  /// This is a non-consuming variant of [`filter_map_to()`].
   ///
   /// [`filter()`]: Map::filter
-  /// [`map_to()`]: Map::map_to
-  /// [`filter_map()`]: Map::filter_map
+  /// [`map_ref()`]: Map::map_ref
+  /// [`filter_map_to()`]: Map::filter_map
   ///
   /// # Examples
   ///
@@ -711,13 +713,13 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.filter_map_to(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }),
+  ///   a.filter_map_ref(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }),
   ///   HashMap::from([
   ///     (1, 2),
   /// ]));
   /// ```
   ///
-  /// Here's the same example, but with [`filter()`] and [`map_to()`]:
+  /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -729,23 +731,15 @@ pub trait Map<Key, Value> {
   ///   (3, 3),
   /// ]);
   ///
-  /// let filter_mapped = a
-  ///   .map_to(|(k, v)|(k, if k < 2 { Some(v + 1) } else { None }))
-  ///   .filter(|(_, s)| s.is_some())
-  ///   .map(|(&k, v)| (k, v.clone().unwrap()));
-  ///
-  /// assert_eq!(filter_mapped, HashMap::from([
-  ///   (1, 2),
+  /// assert_eq!(
+  ///   a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)),
+  ///   HashMap::from([
+  ///     (1, 2),
   /// ]));
   /// ```
-  #[inline]
-  fn filter_map_to<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.into_iter().filter_map(function).collect()
-  }
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Searches for an entry of this map that satisfies a predicate.
   ///
@@ -778,47 +772,15 @@ pub trait Map<Key, Value> {
   /// Applies function to the entries of this map and returns
   /// the first non-none result.
   ///
-  /// `find_map()` can be used to make chains of [`find()`] and [`map()`] more
+  /// `find_map()` can be used to make chains of [`find()`] and [`map_ref()`] more
   /// concise.
   ///
-  /// `find_map_to(f)` is equivalent to `find().map_to()`.
+  /// `find_map_ref(f)` is equivalent to `find().map_ref()`.
   ///
-  /// This is a non-consuming variant of [`find_map_to()`].
-  ///
-  /// [`find()`]: Map::find
-  /// [`map()`]: Map::map
-  /// [`find_map_to()`]: Map::find_map_to
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(
-  ///   a.find_map(|(&k, &v)| if k == 2 { Some(v) } else { None }),
-  ///   Some(2)
-  /// );
-  /// ```
-  fn find_map<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
-
-  /// Applies function to the entries of this map and returns
-  /// the first non-none result.
-  ///
-  /// `find_map_to()` can be used to make chains of [`find()`] and [`map_to()`] more concise.
-  ///
-  /// `find_map_to(f)` is equivalent to `find().map()`.
-  ///
-  /// This is a consuming variant of [`find_map()`].
+  /// This is a non-consuming variant of [`find_map()`].
   ///
   /// [`find()`]: Map::find
-  /// [`map_to()`]: Map::map
+  /// [`map_ref()`]: Map::map_ref
   /// [`find_map()`]: Map::find_map
   ///
   /// # Example
@@ -834,12 +796,44 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.find_map_to(|(k, v)| if k == 2 { Some(v) } else { None }),
+  ///   a.find_map_ref(|(&k, &v)| if k == 2 { Some(v) } else { None }),
+  ///   Some(2)
+  /// );
+  /// ```
+  fn find_map_ref<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
+
+  /// Applies function to the entries of this map and returns
+  /// the first non-none result.
+  ///
+  /// `find_map()` can be used to make chains of [`find()`] and [`map()`] more concise.
+  ///
+  /// `find_map(f)` is equivalent to `find().map()`.
+  ///
+  /// This is a consuming variant of [`find_map()`].
+  ///
+  /// [`find()`]: Map::find
+  /// [`map()`]: Map::map_ref
+  /// [`find_map()`]: Map::find_map_ref
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
+  /// ]);
+  ///
+  /// assert_eq!(
+  ///   a.find_map(|(k, v)| if k == 2 { Some(v) } else { None }),
   ///   Some(2)
   /// );
   /// ```
   #[inline]
-  fn find_map_to<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
+  fn find_map<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
   {
@@ -861,12 +855,12 @@ pub trait Map<Key, Value> {
   /// one item for each entry, and `flat_map()`'s closure returns an
   /// iterable value for each entry.
   ///
-  /// This is a non-consuming variant of [`flat_map_to()`].
+  /// This is a consuming variant of [`flat_map_ref()`].
   ///
-  /// [`map()`]: Map::map
-  /// [`map(f)`]: Map::map
+  /// [`map()`]: Map::map_ref
+  /// [`map(f)`]: Map::map_ref
   /// [`.flat()`]: crate::CollectionTo::flat
-  /// [`flat_map_to()`]: Map::flat_map_to
+  /// [`flat_map_ref()`]: Map::flat_map_ref
   ///
   /// # Example
   ///
@@ -882,7 +876,7 @@ pub trait Map<Key, Value> {
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// assert_eq!(
-  ///   a.flat_map(|(&k, &v)| vec![(-k, v), (k, v)]),
+  ///   a.flat_map(|(k, v)| vec![(-k, v), (k, v)]),
   ///   HashMap::from([
   ///     (-1, 1),
   ///     (-2, 2),
@@ -892,30 +886,35 @@ pub trait Map<Key, Value> {
   ///     (3, 3),
   /// ]));
   /// ```
-  fn flat_map<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
+  #[inline]
+  fn flat_map<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().flat_map(function).collect()
+  }
 
   /// Creates a new map by applying the given closure `function` to each entry
   /// of the original map and flattens the nested map.
   ///
-  /// The `flat_map_to()` method is very useful, but only when the closure
+  /// The `flat_map_ref()` method is very useful, but only when the closure
   /// argument produces values. If it produces an iterable value instead, there's
-  /// an extra layer of indirection. `flat_map_to()` will remove this extra layer
+  /// an extra layer of indirection. `flat_map_ref()` will remove this extra layer
   /// on its own.
   ///
-  /// You can think of `flat_map_to(f)` as the semantic equivalent
-  /// of mapping, and then flattening as in [`map_to(f)']['.flat()`].
+  /// You can think of `flat_map_ref(f)` as the semantic equivalent
+  /// of mapping, and then flattening as in [`map_ref(f)']['.flat()`].
   ///
-  /// Another way of thinking about `flat_map_to()`: [`map_to()`]'s closure returns
-  /// one item for each entry, and `flat_map_to()`'s closure returns an
+  /// Another way of thinking about `flat_map_ref()`: [`map_ref()`]'s closure returns
+  /// one item for each entry, and `flat_map_ref()`'s closure returns an
   /// iterable value for each entry.
   ///
-  /// This is a consuming variant of [`flat_map()`].
+  /// This is a non-consuming variant of [`flat_map()`].
   ///
-  /// [`map_to()`]: Map::map
-  /// [`map_to(f)`]: Map::map
+  /// [`map_ref()`]: Map::map_ref
+  /// [`map_ref(f)`]: Map::map_ref
   /// [`.flat()`]: crate::CollectionTo::flat
   /// [`flat_map()`]: Map::flat_map
   ///
@@ -933,7 +932,7 @@ pub trait Map<Key, Value> {
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// assert_eq!(
-  ///   a.flat_map_to(|(k, v)| vec![(-k, v), (k, v)]),
+  ///   a.flat_map_ref(|(&k, &v)| vec![(-k, v), (k, v)]),
   ///   HashMap::from([
   ///     (-1, 1),
   ///     (-2, 2),
@@ -943,15 +942,10 @@ pub trait Map<Key, Value> {
   ///     (3, 3),
   /// ]));
   /// ```
-  #[inline]
-  fn flat_map_to<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
+  fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.into_iter().flat_map(function).collect()
-  }
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Folds every entry into an accumulator by applying an operation,
   /// returning the final result.
@@ -963,70 +957,7 @@ pub trait Map<Key, Value> {
   /// The initial value is the value the accumulator will have on the first
   /// call.
   ///
-  /// After applying this closure to every entry of the map, `fold()`
-  /// returns the accumulator.
-  ///
-  /// This operation is sometimes called 'reduce' or 'inject'.
-  ///
-  /// Folding is useful whenever you have a map of something, and want
-  /// to produce a single value from it.
-  ///
-  /// This is a non-consuming variant of [`fold_to()`].
-  ///
-  /// Note: [`reduce()`] can be used to use the first entry as the initial
-  /// value, if the accumulator type and item type is the same.
-  ///
-  /// Note: `fold()` combines entries in a *left-associative* fashion. For associative
-  /// operators like `+`, the order the entries are combined in is not important, but for non-associative
-  /// operators like `-` the order will affect the final result.
-  ///
-  /// [`fold_to()`]: Map::fold_to
-  /// [`reduce()`]: Map::reduce
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// // the sum of all the elements of the array
-  /// assert_eq!(
-  ///   a.fold(0, |acc, (&k, &v)| acc + k + v),
-  ///   12
-  /// );
-  /// ```
-  ///
-  /// Let's walk through each step of the iteration here:
-  ///
-  /// | element | acc | k | k | result |
-  /// |---------|-----|---|---|--------|
-  /// |         | 0   |   |   |        |
-  /// | 1       | 0   | 1 | a | 2      |
-  /// | 2       | 2   | 2 | b | 5      |
-  /// | 3       | 5   | 3 | c | 9      |
-  ///
-  /// And so, our final result, `9`.
-  fn fold<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
-
-  /// Folds every entry into an accumulator by applying an operation,
-  /// returning the final result.
-  ///
-  /// `fold_to()` takes two arguments: an initial value, and a closure with two
-  /// arguments: an 'accumulator', and an entry. The closure returns the value that
-  /// the accumulator should have for the next iteration.
-  ///
-  /// The initial value is the value the accumulator will have on the first
-  /// call.
-  ///
-  /// After applying this closure to every entry of this map, `fold_to()`
+  /// After applying this closure to every entry of this map, `fold()`
   /// returns the accumulator.
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
@@ -1036,15 +967,15 @@ pub trait Map<Key, Value> {
   ///
   /// This is a consuming variant of [`fold()`].
   ///
-  /// Note: [`reduce_to()`] can be used to use the first entry as the initial
+  /// Note: [`reduce()`] can be used to use the first entry as the initial
   /// value, if the accumulator type and item type is the same.
   ///
-  /// Note: `fold_to()` combines entries in a *left-associative* fashion. For associative
+  /// Note: `fold()` combines entries in a *left-associative* fashion. For associative
   /// operators like `+`, the order the entries are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
   ///
-  /// [`fold()`]: Map::fold
-  /// [`reduce_to()`]: Map::reduce_to
+  /// [`fold()`]: Map::fold_ref
+  /// [`reduce()`]: Map::reduce_ref
   ///
   /// # Examples
   ///
@@ -1062,7 +993,7 @@ pub trait Map<Key, Value> {
   ///
   /// // the sum of all the elements of the array
   /// assert_eq!(
-  ///   a.fold_to(0, |acc, (k, v)| acc + k + v),
+  ///   a.fold(0, |acc, (k, v)| acc + k + v),
   ///   12
   /// );
   /// ```
@@ -1077,12 +1008,75 @@ pub trait Map<Key, Value> {
   /// | 3       | 5   | 3 | c | 9      |
   ///
   /// And so, our final result, `9`.
-  fn fold_to<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
+  fn fold<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
   {
     self.into_iter().fold(initial_value, function)
   }
+
+  /// Folds every entry into an accumulator by applying an operation,
+  /// returning the final result.
+  ///
+  /// `fold_ref()` takes two arguments: an initial value, and a closure with two
+  /// arguments: an 'accumulator', and an entry. The closure returns the value that
+  /// the accumulator should have for the next iteration.
+  ///
+  /// The initial value is the value the accumulator will have on the first
+  /// call.
+  ///
+  /// After applying this closure to every entry of the map, `fold_ref()`
+  /// returns the accumulator.
+  ///
+  /// This operation is sometimes called 'reduce' or 'inject'.
+  ///
+  /// Folding is useful whenever you have a map of something, and want
+  /// to produce a single value from it.
+  ///
+  /// This is a non-consuming variant of [`fold()`].
+  ///
+  /// Note: [`reduce_ref()`] can be used to use the first entry as the initial
+  /// value, if the accumulator type and item type is the same.
+  ///
+  /// Note: `fold_ref()` combines entries in a *left-associative* fashion. For associative
+  /// operators like `+`, the order the entries are combined in is not important, but for non-associative
+  /// operators like `-` the order will affect the final result.
+  ///
+  /// [`fold()`]: Map::fold
+  /// [`reduce_ref()`]: Map::reduce_ref
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
+  /// ]);
+  ///
+  /// // the sum of all the elements of the array
+  /// assert_eq!(
+  ///   a.fold_ref(0, |acc, (&k, &v)| acc + k + v),
+  ///   12
+  /// );
+  /// ```
+  ///
+  /// Let's walk through each step of the iteration here:
+  ///
+  /// | element | acc | k | k | result |
+  /// |---------|-----|---|---|--------|
+  /// |         | 0   |   |   |        |
+  /// | 1       | 0   | 1 | a | 2      |
+  /// | 2       | 2   | 2 | b | 5      |
+  /// | 3       | 5   | 3 | c | 9      |
+  ///
+  /// And so, our final result, `9`.
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
 
   /// Calls a closure on each entry of this map.
   ///
@@ -1205,9 +1199,9 @@ pub trait Map<Key, Value> {
   /// `(Key, Value)` and returns a value of type `(L, W)`.
   /// The resulting other are collected into a new map of the same type.
   ///
-  /// This is a consuming variant of [`map_to()`].
+  /// This is a consuming variant of [`map_ref()`].
   ///
-  /// [`map_to()`]: Map::map_to
+  /// [`map_ref()`]: Map::map_ref
   ///
   /// # Arguments
   ///
@@ -1236,16 +1230,21 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.map(|(&k, &v)| (k, k + v)),
+  ///   a.map(|(k, v)| (k, k + v)),
   ///   HashMap::from([
   ///     (1, 2),
   ///     (2, 4),
   ///     (3, 6),
   /// ]));
   /// ```
-  fn map<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
+  #[inline]
+  fn map<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().map(function).collect()
+  }
 
   /// Creates a new map by applying the given closure `function` to each entry in
   /// the original map.
@@ -1285,21 +1284,16 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.map_to(|(k, v)| (k, k + v)),
+  ///   a.map_ref(|(&k, &v)| (k, k + v)),
   ///   HashMap::from([
   ///     (1, 2),
   ///     (2, 4),
   ///     (3, 6),
   /// ]));
   /// ```
-  #[inline]
-  fn map_to<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
+  fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.into_iter().map(function).collect()
-  }
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Creates a new map by applying the given closure `function` to each key in
   /// the original map.
@@ -1699,9 +1693,9 @@ pub trait Map<Key, Value> {
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
   /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
   ///
-  /// This is a non-consuming variant of [`partition_map_to()`].
+  /// This is a consuming variant of [`partition_map_ref()`].
   ///
-  /// [`partition_map_to()`]: Map::partition_map_to
+  /// [`partition_map_ref()`]: Map::partition_map_ref
   ///
   /// # Example
   ///
@@ -1715,7 +1709,7 @@ pub trait Map<Key, Value> {
   ///   (3, 3),
   /// ]);
   ///
-  /// let (even, odd) = a.partition_map(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
+  /// let (even, odd) = a.partition_map(|(k, v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
   ///
   /// assert_eq!(even, HashMap::from([
   ///   (5, 2),
@@ -1726,45 +1720,6 @@ pub trait Map<Key, Value> {
   /// ]));
   /// ```
   fn partition_map<L1, W1, L2, W2>(
-    &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
-  ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
-  where
-    Self::This<L1, W1>: Default + Extend<(L1, W1)>,
-    Self::This<L2, W2>: Default + Extend<(L2, W2)>;
-
-  /// Creates two new maps with arbitrary entry types from the original map
-  /// by applying specified function.
-  ///
-  /// The function passed to `partition_map_to()` can return `Ok`, or `Err`.
-  /// `partition_map_to()` returns a pair, all the `Ok` values contained, and all the `Err` values.
-  ///
-  /// This is a consuming variant of [`partition_map()`].
-  ///
-  /// [`partition_map()`]: Map::partition_map
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// let (even, odd) = a.partition_map_to(|(k, v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
-  ///
-  /// assert_eq!(even, HashMap::from([
-  ///   (5, 2),
-  /// ]));
-  /// assert_eq!(odd, HashMap::from([
-  ///   (1, 1),
-  ///   (3, 3),
-  /// ]));
-  /// ```
-  fn partition_map_to<L1, W1, L2, W2>(
     self, mut function: impl FnMut((Key, Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
   where
@@ -1782,6 +1737,45 @@ pub trait Map<Key, Value> {
     }
     (result_left, result_right)
   }
+
+  /// Creates two new maps with arbitrary entry types from the original map
+  /// by applying specified function.
+  ///
+  /// The function passed to `partition_map_ref()` can return `Ok`, or `Err`.
+  /// `partition_map_ref()` returns a pair, all the `Ok` values contained, and all the `Err` values.
+  ///
+  /// This is a non-consuming variant of [`partition_map()`].
+  ///
+  /// [`partition_map()`]: Map::partition_map
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::HashMap;
+  ///
+  /// let a = HashMap::from([
+  ///   (1, 1),
+  ///   (2, 2),
+  ///   (3, 3),
+  /// ]);
+  ///
+  /// let (even, odd) = a.partition_map_ref(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
+  ///
+  /// assert_eq!(even, HashMap::from([
+  ///   (5, 2),
+  /// ]));
+  /// assert_eq!(odd, HashMap::from([
+  ///   (1, 1),
+  ///   (3, 3),
+  /// ]));
+  /// ```
+  fn partition_map_ref<L1, W1, L2, W2>(
+    &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
+  ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
+  where
+    Self::This<L1, W1>: Default + Extend<(L1, W1)>,
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>;
 
   /// Iterates over the entire map, multiplying all the keys
   ///
@@ -1874,10 +1868,10 @@ pub trait Map<Key, Value> {
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// This is a non-consuming variant of [`reduce_to()`].
+  /// This is a consuming variant of [`reduce_ref()`].
   ///
   /// [`fold()`]: Map::fold
-  /// [`reduce_to()`]: Map::reduce_to
+  /// [`reduce_ref()`]: Map::reduce_ref
   ///
   /// # Example
   ///
@@ -1897,20 +1891,29 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)),
+  ///   a.reduce(|(a, b), (k, v)| (a + k, b + v)),
   ///   Some((6, 6))
   /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// let folded = a.fold((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
+  /// # let a = a_source.clone();
+  /// let folded = a.fold((0, 0), |(a, b), (k, v)| (a + k, b + v));
   ///
   /// # let a = a_source.clone();
   /// assert_eq!(
-  ///   a.reduce(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(),
+  ///   a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap(),
   ///   folded
   /// );
   /// ```
-  fn reduce(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
+  fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
+    let mut iterator = self.into_iter();
+    iterator.next().and_then(|value1| {
+      iterator.next().map(|value2| iterator.fold(function(value1, value2), |(k, v), x| function((k, v), x)))
+    })
+  }
 
   /// Reduces the elements to a single one, by repeatedly applying a reducing
   /// operation.
@@ -1919,13 +1922,13 @@ pub trait Map<Key, Value> {
   /// result of the reduction.
   ///
   /// The reducing function is a closure with two arguments: an 'accumulator', and an element.
-  /// For collections with at least one element, this is the same as [`fold_to()`]
+  /// For collections with at least one element, this is the same as [`fold_ref()`]
   /// with the first element of the collection as the initial accumulator value, folding
   /// every subsequent element into it.
   ///
-  /// This is a consuming variant of [`reduce()`].
+  /// This is a non-consuming variant of [`reduce()`].
   ///
-  /// [`fold_to()`]: Map::fold_to
+  /// [`fold_ref()`]: Map::fold_ref
   /// [`reduce()`]: Map::reduce
   ///
   /// # Example
@@ -1946,29 +1949,20 @@ pub trait Map<Key, Value> {
   /// ]);
   ///
   /// assert_eq!(
-  ///   a.reduce_to(|(a, b), (k, v)| (a + k, b + v)),
+  ///   a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)),
   ///   Some((6, 6))
   /// );
   ///
   /// // Which is equivalent to doing it with `fold`:
-  /// # let a = a_source.clone();
-  /// let folded = a.fold_to((0, 0), |(a, b), (k, v)| (a + k, b + v));
+  /// let folded = a.fold_ref((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
   ///
   /// # let a = a_source.clone();
   /// assert_eq!(
-  ///   a.reduce_to(|(a, b), (k, v)| (a + k, b + v)).unwrap(),
+  ///   a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(),
   ///   folded
   /// );
   /// ```
-  fn reduce_to(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
-    let mut iterator = self.into_iter();
-    iterator.next().and_then(|value1| {
-      iterator.next().map(|value2| iterator.fold(function(value1, value2), |(k, v), x| function((k, v), x)))
-    })
-  }
+  fn reduce_ref(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
   /// Tests if all keys of this map can be found in another collection.
   ///

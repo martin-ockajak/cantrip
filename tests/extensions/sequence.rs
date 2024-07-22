@@ -84,9 +84,9 @@ where
   assert_eq!(a.rfind(|&x| x == 5), None);
   assert_eq!(e.rfind(|&x| x == 5), None);
 
-  // rfold
-  assert_eq!(a.rfold(0, |acc, x| acc + x), 6);
-  assert_eq!(e.rfold(0, |acc, x| acc + x), 0);
+  // rfold_ref
+  assert_eq!(a.rfold_ref(0, |acc, x| acc + x), 6);
+  assert_eq!(e.rfold_ref(0, |acc, x| acc + x), 0);
 
   // rposition
   assert_eq!(a.rposition(|&x| x % 2 == 1), Some(2));

@@ -387,7 +387,7 @@ pub trait Sequence<Item> {
   /// This is the reverse version of [`Iterator::fold()`]: it takes elements
   /// starting from the back of this sequence.
   ///
-  /// `rfold()` takes two arguments: an initial value, and a closure with two
+  /// `rfold_ref()` takes two arguments: an initial value, and a closure with two
   /// arguments: an 'accumulator', and an element. The closure returns the value that
   /// the accumulator should have for the next iteration.
   ///
@@ -402,15 +402,15 @@ pub trait Sequence<Item> {
   /// Folding is useful whenever you have a collection of something, and want
   /// to produce a single value from it.
   ///
-  /// This is a non-consuming variant of [`rfold_to()`].
+  /// This is a non-consuming variant of [`rfold()`].
   ///
-  /// Note: `rfold()` combines elements in a *right-associative* fashion. For associative
+  /// Note: `rfold_ref()` combines elements in a *right-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
   /// operators like `-` the order will affect the final result.
-  /// For a *left-associative* version of `rfold()`, see [`fold()`].
+  /// For a *left-associative* version of `rfold_ref()`, see [`fold_ref()`].
   ///
-  /// [`rfold_to()`]: crate::SequenceTo::rfold_to
-  /// [`fold()`]: crate::Collection::fold
+  /// [`rfold()`]: crate::SequenceTo::rfold
+  /// [`fold_ref()`]: crate::Collection::fold_ref
   ///
   /// # Examples
   ///
@@ -423,7 +423,7 @@ pub trait Sequence<Item> {
   ///
   /// // the sum of all the elements of a
   /// assert_eq!(
-  ///   a.rfold(0, |acc, x| acc + x),
+  ///   a.rfold_ref(0, |acc, x| acc + x),
   ///   6
   /// );
   /// ```
@@ -440,13 +440,13 @@ pub trait Sequence<Item> {
   /// let zero = "0".to_string();
   ///
   /// assert_eq!(
-  ///   a.rfold(zero, |acc, x| {
+  ///   a.rfold_ref(zero, |acc, x| {
   ///     format!("({x} + {acc})")
   ///   }),
   ///   "(1 + (2 + (3 + (4 + (5 + 0)))))"
   /// );
   /// ```
-  fn rfold<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+  fn rfold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
   /// Searches for an element in this sequence from the right, returning its index.
   ///

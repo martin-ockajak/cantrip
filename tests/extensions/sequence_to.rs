@@ -289,20 +289,14 @@ where
   // rfold
   let a = a_source.clone();
   let e = e_source.clone();
-  assert_eq!(a.rfold_to(0, |acc, x| acc + x), 6);
-  assert_eq!(e.rfold_to(0, |acc, x| acc + x), 0);
-
-  // rfold_to
-  let a = a_source.clone();
-  let e = e_source.clone();
-  assert_eq!(a.rfold_to(0, |acc, x| acc + x), 6);
-  assert_eq!(e.rfold_to(0, |acc, x| acc + x), 0);
+  assert_eq!(a.rfold(0, |acc, x| acc + x), 6);
+  assert_eq!(e.rfold(0, |acc, x| acc + x), 0);
 
   // scan
   let a = a_source.clone();
   let e = e_source.clone();
   assert_seq_equal(
-    a.scan(1, |state, &x| {
+    a.scan_ref(1, |state, x| {
       *state = *state * x;
       if *state > 2 {
         return None;
@@ -311,13 +305,13 @@ where
     }),
     vec![-1_i64, -2],
   );
-  assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
+  assert_seq_equal(e.scan(1, |_, x| Some(x)), vec![]);
 
-  // scan_to
+  // scan_ref
   let a = a_source.clone();
   let e = e_source.clone();
   assert_seq_equal(
-    a.scan(1, |state, x| {
+    a.scan_ref(1, |state, &x| {
       *state = *state * x;
       if *state > 2 {
         return None;
@@ -326,7 +320,7 @@ where
     }),
     vec![-1_i64, -2],
   );
-  assert_seq_equal(e.scan(1, |_, &x| Some(x)), vec![]);
+  assert_seq_equal(e.scan_ref(1, |_, &x| Some(x)), vec![]);
 
   // skip
   let a = a_source.clone();
