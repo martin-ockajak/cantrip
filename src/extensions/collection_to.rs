@@ -15,7 +15,7 @@ use crate::Iterable;
 /// - Consumes the collection and its elements
 /// - May create a new collection
 ///
-pub trait Collectible<Item> {
+pub trait CollectionTo<Item> {
   /// This collection type constructor
   type This<I>;
 
@@ -58,6 +58,124 @@ pub trait Collectible<Item> {
     self.into_iter().chain(elements).collect()
   }
 
+  /// Transforms this collection into specified collection type.
+  ///
+  /// `collect_to()` can take any collection, and turn it into a relevant
+  /// collection. This can be used in a variety of contexts.
+  ///
+  /// `collect_to()` can also create instances of types that are not typical
+  /// collections. For example, a [`String`] can be built from [`char`]s,
+  /// and a collection of [`Result<T, E>`][`Result`] items can be collected
+  /// into `Result<Collection<T>, E>`. See the examples below for more.
+  ///
+  /// Because `collect_to()` is so general, it can cause problems with type
+  /// inference. As such, `collect_to()` is one of the few times you'll see
+  /// the syntax affectionately known as the 'turbofish': `::<>`. This
+  /// helps the inference algorithm understand specifically which collection
+  /// you're trying to collect into.
+  ///
+  /// This is a consuming variant of [`collect()`].
+  ///
+  /// [`collect()`]: crate::Transform::collect
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::LinkedList;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let collected: LinkedList<i32> = a.collect_to();
+  ///
+  /// assert_eq!(collected, LinkedList::from([1, 2, 3]));
+  /// ```
+  ///
+  /// Note that we needed the `::LinkedList<i32>` on the left-hand side. This is because
+  /// we could collect into, for example, a [`VecDeque<T>`] instead:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::VecDeque;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// let collected: VecDeque<i32> = a.collect_to();
+  ///
+  /// assert_eq!(collected, VecDeque::from([1, 2, 3]));
+  /// ```
+  ///
+  /// Using the 'turbofish' instead of annotating `collected`:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::VecDeque;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.collect_to::<VecDeque<i32>>(), VecDeque::from([1, 2, 3]));
+  /// ```
+  ///
+  /// Because `collect_to()` only cares about what you're collecting into, you can
+  /// still use a partial type hint, `_`, with the turbofish:
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::VecDeque;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(a.collect_to::<VecDeque<_>>(), VecDeque::from([1, 2, 3]));
+  /// ```
+  ///
+  /// Using `collect_to()` to make a [`String`]:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec!['h', 'e', 'l', 'l', 'o'];
+  ///
+  /// let hello: String = a.collect_to();
+  ///
+  /// assert_eq!("hello", hello);
+  /// ```
+  ///
+  /// If you have a list of [`Result<T, E>`][`Result`]s, you can use `collect_to()` to
+  /// see if any of them failed:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![Ok(1), Err("nope"), Ok(3), Err("bad")];
+  ///
+  /// let result: Result<Vec<_>, &str> = a.collect_to();
+  ///
+  /// // gives us the first error
+  /// assert_eq!(Err("nope"), result);
+  ///
+  /// let b = vec![Ok(1), Ok(3)];
+  ///
+  /// let result: Result<Vec<_>, &str> = b.collect_to();
+  ///
+  /// // gives us the list of answers
+  /// assert_eq!(Ok(vec![1, 3]), result);
+  /// ```
+  ///
+  /// [`VecDeque<T>`]: ../../std/collections/struct.VecDeque.html
+  /// [`iter`]: Iterator::next
+  /// [`String`]: ../../std/string/struct.String.html
+  /// [`char`]: type@char
+  #[inline]
+  fn collect_to<B>(self) -> B
+  where
+    B: FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + Sized,
+  {
+    self.into_iter().collect()
+  }
+
   /// Creates a new collection containing combinations of specified size from the elements
   /// of this collection.
   ///
@@ -67,7 +185,7 @@ pub trait Collectible<Item> {
   ///
   /// The order of combination values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::Sequence::unique
+  /// [`unique()`]: crate::SequenceTo::unique
   ///
   /// # Example
   ///
@@ -278,9 +396,9 @@ pub trait Collectible<Item> {
   ///
   /// This is a non-consuming variant of [`filter_map_to()`].
   ///
-  /// [`filter()`]: Collectible::filter
-  /// [`map()`]: Collectible::map
-  /// [`filter_map_to()`]: Collectible::filter_map_to
+  /// [`filter()`]: CollectionTo::filter
+  /// [`map()`]: CollectionTo::map
+  /// [`filter_map_to()`]: CollectionTo::filter_map_to
   ///
   /// # Examples
   ///
@@ -324,9 +442,9 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`filter_map()`].
   ///
-  /// [`filter()`]: Collectible::filter
-  /// [`map_to()`]: Collectible::map_to
-  /// [`filter_map()`]: Collectible::filter_map
+  /// [`filter()`]: CollectionTo::filter
+  /// [`map_to()`]: CollectionTo::map_to
+  /// [`filter_map()`]: CollectionTo::filter_map
   ///
   /// # Examples
   ///
@@ -373,9 +491,9 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`find_map()`].
   ///
-  /// [`find()`]: crate::Traversable::find
-  /// [`map()`]: Collectible::map
-  /// [`find_map()`]: crate::Traversable::find_map
+  /// [`find()`]: crate::Collection::find
+  /// [`map()`]: CollectionTo::map
+  /// [`find_map()`]: crate::Collection::find_map
   ///
   /// # Example
   ///
@@ -479,7 +597,7 @@ pub trait Collectible<Item> {
   /// two-dimensional and not one-dimensional. To get a one-dimensional
   /// structure, you have to `flat()` again.
   ///
-  /// [`flat_map()`]: Collectible::flat_map
+  /// [`flat_map()`]: CollectionTo::flat_map
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
@@ -507,10 +625,10 @@ pub trait Collectible<Item> {
   ///
   /// This is a non-consuming variant of [`flat_map_to()`].
   ///
-  /// [`map()`]: Collectible::map
-  /// [`map(f)`]: Collectible::map
-  /// [`.flat()`]: Collectible::flat
-  /// [`flat_map_to()`]: Collectible::flat_map_to
+  /// [`map()`]: CollectionTo::map
+  /// [`map(f)`]: CollectionTo::map
+  /// [`.flat()`]: CollectionTo::flat
+  /// [`flat_map_to()`]: CollectionTo::flat_map_to
   ///
   /// # Example
   ///
@@ -547,10 +665,10 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`flat_map()`].
   ///
-  /// [`map_to()`]: Collectible::map
-  /// [`map_to(f)`]: Collectible::map
-  /// [`.flat()`]: Collectible::flat
-  /// [`flat_map()`]: Collectible::flat_map
+  /// [`map_to()`]: CollectionTo::map
+  /// [`map_to(f)`]: CollectionTo::map
+  /// [`.flat()`]: CollectionTo::flat
+  /// [`flat_map()`]: CollectionTo::flat_map
   ///
   /// # Example
   ///
@@ -603,9 +721,9 @@ pub trait Collectible<Item> {
   /// operators like `-` the order will affect the final result.
   /// For a *right-associative* version of `fold_to()`, see [`rfold_to()`].
   ///
-  /// [`fold()`]: crate::Traversable::fold
-  /// [`reduce()`]: crate::Traversable::reduce
-  /// [`rfold_to()`]: crate::Sequence::rfold_to
+  /// [`fold()`]: crate::Collection::fold
+  /// [`reduce()`]: crate::Collection::reduce
+  /// [`rfold_to()`]: crate::SequenceTo::rfold_to
   ///
   /// # Examples
   ///
@@ -723,7 +841,7 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`group_fold()`].
   ///
-  /// [`group_fold()`]: crate::Traversable::group_fold
+  /// [`group_fold()`]: crate::Collection::group_fold
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -769,7 +887,7 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`group_reduce()`].
   ///
-  /// [`group_reduce()`]: crate::Traversable::group_reduce
+  /// [`group_reduce()`]: crate::Collection::group_reduce
   ///
   /// ```
   /// use crate::cantrip::*;
@@ -810,7 +928,7 @@ pub trait Collectible<Item> {
   ///
   /// The order of retained values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::Sequence::unique
+  /// [`unique()`]: crate::SequenceTo::unique
   ///
   /// # Example
   ///
@@ -863,7 +981,7 @@ pub trait Collectible<Item> {
   ///
   /// This is a non-consuming variant of [`map_to()`].
   ///
-  /// [`map_to()`]: Collectible::map_to
+  /// [`map_to()`]: CollectionTo::map_to
   ///
   /// # Arguments
   ///
@@ -904,7 +1022,7 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`map()`].
   ///
-  /// [`map()`]: Collectible::map
+  /// [`map()`]: CollectionTo::map
   ///
   /// # Arguments
   ///
@@ -972,7 +1090,7 @@ pub trait Collectible<Item> {
         }
       }
     }
-    let result: Vec<Item> = unfold(|| heap.pop()).map(|x| x.0).collect();
+    let result = unfold(|| heap.pop()).map(|x| x.0).collect::<Vec<_>>();
     result.into_iter().rev().collect()
   }
 
@@ -1011,7 +1129,7 @@ pub trait Collectible<Item> {
   ///
   /// This is a non-consuming variant of [`partition_map_to()`].
   ///
-  /// [`partition_map_to()`]: Collectible::partition_map_to
+  /// [`partition_map_to()`]: CollectionTo::partition_map_to
   ///
   /// # Example
   ///
@@ -1038,7 +1156,7 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map()`]: Collectible::partition_map
+  /// [`partition_map()`]: CollectionTo::partition_map
   ///
   /// # Example
   ///
@@ -1069,15 +1187,15 @@ pub trait Collectible<Item> {
     (result_left, result_right)
   }
 
-  /// Creates a new collection containing all subcollections of this collection.
+  /// Creates a new collection containing all sub-collections of this collection.
   ///
   /// Sub-collections for sequences are generated based on element positions, not values.
-  /// Therefore, if a sequence contains duplicate elements, the resulting subcollections will too.
+  /// Therefore, if a sequence contains duplicate elements, the resulting sub-collections will too.
   /// To obtain combinations of unique elements for sequences, use [`unique()`]`.powerset()`.
   ///
-  /// The order of subcollection values is preserved for sequences.
+  /// The order of sub-collection values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::Sequence::unique
+  /// [`unique()`]: crate::SequenceTo::unique
   ///
   /// # Example
   ///
@@ -1148,8 +1266,8 @@ pub trait Collectible<Item> {
   ///
   /// This is a consuming variant of [`reduce()`].
   ///
-  /// [`fold_to()`]: Collectible::fold_to
-  /// [`reduce()`]: crate::Traversable::reduce
+  /// [`fold_to()`]: CollectionTo::fold_to
+  /// [`reduce()`]: crate::Collection::reduce
   ///
   /// # Example
   ///
@@ -1214,7 +1332,7 @@ pub trait Collectible<Item> {
         }
       }
     }
-    let result: Vec<Item> = unfold(|| heap.pop()).collect();
+    let result = unfold(|| heap.pop()).collect::<Vec<_>>();
     result.into_iter().rev().collect()
   }
 

@@ -1,11 +1,12 @@
-use crate::extensions::*;
-use crate::Iterable;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
 
-impl<Item> Traversable<Item> for Vec<Item> {
+use crate::extensions::*;
+use crate::Iterable;
+
+impl<Item> Collection<Item> for Vec<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
@@ -132,7 +133,7 @@ impl<Item> Traversable<Item> for Vec<Item> {
   }
 }
 
-impl<Item> Collectible<Item> for Vec<Item> {
+impl<Item> CollectionTo<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
@@ -245,7 +246,7 @@ impl<Item> Collectible<Item> for Vec<Item> {
   }
 }
 
-impl<Item> Ordered<Item> for Vec<Item> {
+impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
   where
@@ -339,7 +340,7 @@ impl<Item> Ordered<Item> for Vec<Item> {
   }
 }
 
-impl<Item> Sequence<Item> for Vec<Item> {
+impl<Item> SequenceTo<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]

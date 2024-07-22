@@ -1,8 +1,8 @@
-use std::collections::HashMap;
+use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 
 use cantrip::Map;
 
-use crate::extensions::util::{assert_map_equal, TestCollection, TestMap};
+use crate::extensions::util::{assert_map_equal, assert_set_equal, TestCollection, TestMap};
 
 pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
@@ -39,7 +39,17 @@ where
   assert!(!a.any(|(&k, _)| k > 5));
   assert!(!e.any(|(&k, _)| k > 0));
 
+  // collect
+  assert_eq!(a.collect::<BTreeSet<(i64, i64)>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
+  assert_eq!(e.collect::<BTreeSet<(i64, i64)>>(), BTreeSet::new());
+
+  // collect_to
+  assert_eq!(a.collect_to::<BTreeSet<(i64, i64)>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
+  assert_eq!(e.collect_to::<BTreeSet<(i64, i64)>>(), BTreeSet::new());
+
   // count_by
+  let a = a_source.clone();
+  let e = e_source.clone();
   assert_eq!(a.count_by(|(&k, &v)| k == 2 && v == 2), 1);
   assert_eq!(a.count_by(|(&k, _)| k == 5), 0);
   assert_eq!(e.count_by(|(&k, _)| k == 5), 0);
@@ -165,6 +175,12 @@ where
   let e = e_source.clone();
   assert_map_equal(a.intersect(&vec![(4, 4), (2, 2), (3, 4), (4, 5)]), HashMap::from([(2, 2)]));
   assert_map_equal(e.intersect(&vec![(1, 1)]), HashMap::new());
+
+  // into_vec
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_set_equal(a.into_vec(), vec![(1, 1), (2, 2), (3, 3)]);
+  assert_eq!(e.into_vec(), vec![]);
 
   // map
   let a = a_source.clone();
@@ -318,6 +334,69 @@ where
   let e = e_source.clone();
   assert_eq!(a.sum_values(), 6);
   assert_eq!(e.sum_values(), 0);
+
+  // to_bmap
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(a.to_bmap(), BTreeMap::from([(1, 1), (2, 2), (3, 3)]));
+  assert_eq!(e.to_bmap(), BTreeMap::new());
+
+  // to_bset
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(a.to_bset(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
+  assert_eq!(e.to_bset(), BTreeSet::new());
+
+  // to_deque
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_set_equal(a.to_deque(), vec![(1, 1), (2, 2), (3, 3)]);
+  assert_eq!(e.to_deque(), VecDeque::new());
+
+  // to_heap
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(
+    a.to_heap().into_iter().collect::<HashSet<_>>(),
+    BinaryHeap::from([(1, 1), (2, 2), (3, 3)]).into_iter().collect()
+  );
+  assert_eq!(e.to_heap().into_iter().collect::<HashSet<_>>(), BinaryHeap::from([]).into_iter().collect());
+
+  // to_keys
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_set_equal(a.to_keys(), vec![1, 2, 3]);
+  assert_set_equal(e.to_keys(), vec![]);
+
+  // to_list
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_set_equal(a.to_list(), vec![(1, 1), (2, 2), (3, 3)]);
+  assert_eq!(e.to_list(), LinkedList::new());
+
+  // to_map
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(a.to_map(), HashMap::from([(1, 1), (2, 2), (3, 3)]));
+  assert_eq!(e.to_map(), HashMap::new());
+
+  // to_set
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_eq!(a.to_set(), HashSet::from([(1, 1), (2, 2), (3, 3)]));
+  assert_eq!(e.to_set(), HashSet::new());
+
+  // to_values
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_set_equal(a.to_values(), vec![1, 2, 3]);
+  assert_set_equal(e.to_values(), vec![]);
+
+  // to_vec
+  let a = a_source.clone();
+  let e = e_source.clone();
+  assert_set_equal(a.to_vec(), vec![(1, 1), (2, 2), (3, 3)]);
+  assert_eq!(e.to_vec(), vec![]);
 
   // unit
   assert_map_equal(HashMap::unit(1, 1), HashMap::from([(1, 1)]));

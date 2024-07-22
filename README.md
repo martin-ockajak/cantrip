@@ -24,165 +24,189 @@ use cantrip::*;
 
 let a = vec![1, 2, 3];
 
-a.fold(0, |r, &x| r + x);        // 6
+a.fold_to(0, |r, x| r + x);             // 6
 
-a.filter(|&x| x > 1);            // vec![2, 3]
+a.map_to(|x| (x, x + 1)).to_map();      // HashMap::from([(1, 2), (2, 3), (3, 4)])
 
-a.map(|x| x + 1);                // vec![2, 3, 4]
+a.flat_map(|&x| [x, -x]).sorted();      // vec![-3, -2, -1, 1, 2, 3]
 
-a.add(1).unique();               // vec![1, 2, 3]
+a.filter(|&x| x > 1).into_set();        // HashSet::from([2, 3])
 
-a.delete_at(0).tail();           // vec![3]
+a.group_by(|x| x % 2);                  // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 
-a.interleave(vec![4, 5, 6]);     // vec![(1, 4, 2, 5, 3, 6)]
+a.delete(&1).add(2).unique();           // vec![2, 3]
 
-a.group_by(|x| x % 2);           // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
+a.substitute_at(0, 4).to_list();        // LinkedList::from([4, 2, 3])
+
+a.position_multi(|&x| x % 2 == 1);      // vec![0, 2]
+
+a.rev().into_iter().into_deque();       // VecDeque::from([3, 2, 1])
 ```
 
 
 ## Methods
 
-| Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap |
-|-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|
-| [add](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.add)                                       |            *              |       |              *                |         *         |
-| [add_at](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.add_at)                                    |            *              |       |                               |                   |
-| [add_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.add_at_multi)                        |            *              |       |                               |                   |
-| [add_multi](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.add_multi)                           |            *              |       |              *                |         *         |
-| [all](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.all)                                       |            *              |   *   |              *                |         *         |
-| [any](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.any)                                       |            *              |   *   |              *                |         *         |
-| [cartesian_product](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.cartesian_product)              |            *              |       |                               |                   |
-| [chunked](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.chunked)                                  |            *              |       |                               |                   |
-| [chunked_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.chunked_by)                            |            *              |       |                               |                   |
-| [chunked_exact](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.chunked_exact)                      |            *              |       |                               |                   |
-| [combinations](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.combinations)                     |            *              |       |              *                |                   |
-| [combinations_multi](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.combinations_multi)            |            *              |       |                               |                   |
-| [coalesce](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.coalesce)                                |            *              |       |                               |                   |
-| [common_prefix_length](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.common_prefix_length)         |            *              |   *   |                               |                   |
-| [common_suffix_length](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.common_suffix_length)         |            *              |   *   |                               |                   |
-| [count_by](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.count_by)                             |            *              |   *   |              *                |         *         |
-| [count_unique](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.count_unique)                         |            *              |   *   |                               |         *         |
-| [delete](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.delete)                                 |            *              |       |              *                |         *         |
-| [delete_at](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.delete_at)                              |            *              |       |                               |                   |
-| [delete_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.delete_at_multi)                  |            *              |       |                               |                   |
-| [delete_multi](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.delete_multi)                     |            *              |       |              *                |         *         |
-| [divide](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.divide)                                    |            *              |       |                               |                   |
-| [divide_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.divide_by)                              |            *              |       |                               |                   |
-| [disjoint](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.disjoint)                             |            *              |   *   |              *                |         *         |
-| [duplicates](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.duplicates)                            |            *              |       |                               |                   |
-| [duplicates_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.duplicates_by)                      |            *              |       |                               |                   |
-| [enumerate](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.enumerate)                              |            *              |       |                               |                   |
-| [equivalent](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.equivalent)                             |            *              |   *   |                               |                   |
-| [fill](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.fill)                                        |            *              |       |                               |                   |
-| [fill_with](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.fill_with)                           |            *              |       |              *                |         *         |
-| [filter](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.filter)                                 |            *              |       |              *                |         *         |
-| [filter_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.filter_keys)                               |                           |       |                               |         *         |
-| [filter_map](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.filter_map)                         |            *              |       |              *                |         *         |
-| [filter_map_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.filter_map_to)                   |            *              |       |              *                |         *         |
-| [filter_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.filter_values)                           |                           |       |                               |         *         |
-| [find](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.find)                                     |            *              |   *   |              *                |         *         |
-| [find_map](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.find_map)                             |            *              |   *   |              *                |         *         |
-| [find_map_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.find_map_to)                       |            *              |       |              *                |         *         |
-| [find_position](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.find_position)                       |            *              |   *   |                               |                   |
-| [first](https://docs.rs/cantrip/latest/cantrip/trait.List.html#method.first)                                          |            *              |   *   |                               |                   |
-| [flat_map](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.flat_map)                             |            *              |       |              *                |         *         |
-| [flat_map_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.flat_map_to)                       |            *              |       |              *                |         *         |
-| [flat](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.flat)                                     |            *              |       |              *                |                   |
-| [fold](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.fold)                                     |            *              |   *   |              *                |         *         |
-| [fold_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.fold_to)                               |            *              |       |              *                |         *         |
-| [for_each](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.for_each)                             |            *              |   *   |              *                |         *         |
-| [frequencies](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.frequencies)                           |            *              |   *   |                               |                   |
-| [frequencies_by](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.frequencies_by)                     |            *              |   *   |                               |                   |
-| [group_by](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.group_by)                             |            *              |       |              *                |                   |
-| [group_fold](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.group_fold)                         |            *              |   *   |              *                |                   |
-| [group_fold_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.group_fold_to)                   |            *              |       |              *                |                   |
-| [group_reduce](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.group_reduce)                     |            *              |   *   |              *                |                   |
-| [group_reduce_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.group_reduce_to)               |            *              |       |              *                |                   |
-| [init](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.init)                                        |            *              |   *   |                               |                   |
-| [interleave](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.interleave)                            |            *              |       |                               |                   |
-| [interleave_exact](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.interleave_exact)                |            *              |       |                               |                   |
-| [intersect](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.intersect)                           |            *              |       |              *                |         *         |
-| [intersperse](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.intersperse)                          |            *              |       |                               |                   |
-| [intersperse_with](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.intersperse_with)                |            *              |       |                               |                   |
-| [joined](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.joined)                                     |            *              |   *   |                               |                   |
-| [largest](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.largest)                               |            *              |       |              *                |                   |
-| [last](https://docs.rs/cantrip/latest/cantrip/trait.List.html#method.last)                                            |            *              |   *   |                               |                   |
-| [map](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.map)                                       |            *              |       |              *                |         *         |
-| [map_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.map_to)                                 |            *              |       |              *                |         *         |
-| [map_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.map_keys)                                     |                           |       |                               |         *         |
-| [map_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.map_values)                                 |                           |       |                               |         *         |
-| [map_while](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.map_while)                              |            *              |       |                               |                   |
-| [max_by](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.max_by)                                 |            *              |   *   |              *                |         *         |
-| [max_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.max_by_key)                         |            *              |   *   |              *                |         *         |
-| [max_of](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.max_of)                                 |            *              |   *   |              *                |         *         |
-| [merge](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.merge)                                      |            *              |       |                               |                   |
-| [merge_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.merge_by)                                |            *              |       |                               |                   |
-| [min_by](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.min_by)                                 |            *              |   *   |              *                |         *         |
-| [min_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.min_by_key)                         |            *              |   *   |              *                |         *         |
-| [min_of](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.min_of)                                 |            *              |   *   |              *                |         *         |
-| [minmax_by](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.minmax_by)                           |            *              |   *   |              *                |         *         |
-| [minmax_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.minmax_by_key)                   |            *              |   *   |              *                |         *         |
-| [minmax_of](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.minmax_of)                           |            *              |   *   |              *                |         *         |
-| [move_at](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.move_at)                                  |            *              |       |                               |                   |
-| [pad_left](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.pad_left)                                |            *              |       |                               |                   |
-| [pad_left_with](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.pad_left_with)                      |            *              |       |                               |                   |
-| [pad_right](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.pad_right)                              |            *              |       |                               |                   |
-| [pad_right_with](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.pad_right_with)                    |            *              |       |                               |                   |
-| [partition](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.partition)                           |            *              |       |              *                |         *         |
-| [partition_map](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.partition_map)                   |            *              |       |              *                |         *         |
-| [partition_map_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.partition_map_to)             |            *              |       |              *                |         *         |
-| [position](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.position)                                 |            *              |   *   |                               |                   |
-| [position_multi](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.position_multi)                     |            *              |   *   |                               |                   |
-| [position_of](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.position_of)                           |            *              |   *   |                               |                   |
-| [position_of_multi](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.position_of_multi)               |            *              |   *   |                               |                   |
-| [position_sequence](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.position_sequence)               |            *              |   *   |                               |                   |
-| [powerset](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.powerset)                             |            *              |       |              *                |                   |
-| [product](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.product)                               |            *              |       |              *                |                   |
-| [product_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.product_keys)                             |                           |       |                               |         *         |
-| [product_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.product_values)                         |                           |       |                               |         *         |
-| [reduce](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.reduce)                                 |            *              |   *   |              *                |         *         |
-| [reduce_to](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.reduce_to)                           |            *              |       |              *                |         *         |
-| [repeat](https://docs.rs/cantrip/latest/cantrip/trait.List.html#method.repeat)                                        |            *              |       |                               |                   |
-| [rev](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.rev)                                          |            *              |       |                               |                   |
-| [rfind](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.rfind)                                       |            *              |   *   |                               |                   |
-| [rfold](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.rfold)                                       |            *              |   *   |                               |                   |
-| [rfold_to](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.rfold_to)                                |            *              |       |                               |                   |
-| [rposition](https://docs.rs/cantrip/latest/cantrip/trait.Ordered.html#method.rposition)                               |            *              |   *   |                               |                   |
-| [scan](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.scan)                                        |            *              |       |                               |                   |
-| [scan_to](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.scan_to)                                  |            *              |       |                               |                   |
-| [skip](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.skip)                                        |            *              |   *   |                               |                   |
-| [skip_while](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.skip_while)                            |            *              |   *   |                               |                   |
-| [slice](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.slice)                                      |            *              |       |                               |                   |
-| [smallest](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.smallest)                             |            *              |       |              *                |                   |
-| [sorted](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted)                                    |            *              |       |                               |                   |
-| [sorted_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted_by)                              |            *              |       |                               |                   |
-| [sorted_by_cached_key](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted_by_cached_key)        |            *              |       |                               |                   |
-| [sorted_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted_by_key)                      |            *              |       |                               |                   |
-| [sorted_unstable](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted_unstable)                  |            *              |       |                               |                   |
-| [sorted_unstable_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted_unstable_by)            |            *              |       |                               |                   |
-| [sorted_unstable_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.sorted_unstable_by_key)    |            *              |       |                               |                   |
-| [step_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.step_by)                                  |            *              |       |                               |                   |
-| [subset](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.subset)                                 |            *              |   *   |              *                |         *         |
-| [substitute](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.substitute)                         |            *              |       |              *                |         *         |
-| [substitute_at](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.substitute_at)                      |            *              |       |                               |                   |
-| [substitute_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.substitute_at_multi)          |            *              |       |                               |                   |
-| [substitute_multi](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.substitute_multi)             |            *              |       |              *                |         *         |
-| [superset](https://docs.rs/cantrip/latest/cantrip/trait.Traversable.html#method.superset)                             |            *              |   *   |              *                |         *         |
-| [sum](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.sum)                                       |            *              |       |              *                |                   |
-| [sum_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.sum_keys)                                     |                           |       |                               |         *         |
-| [sum_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.sum_values)                                 |                           |       |                               |         *         |
-| [swap_at](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.swap_at)                                  |            *              |       |                               |                   |
-| [tail](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.tail)                                        |            *              |   *   |                               |                   |
-| [take](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.take)                                        |            *              |   *   |                               |                   |
-| [take_while](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.take_while)                            |            *              |   *   |                               |                   |
-| [unique](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.unique)                                    |            *              |       |                               |                   |
-| [unique_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.unique_by)                              |            *              |       |                               |                   |
-| [unit](https://docs.rs/cantrip/latest/cantrip/trait.Collectible.html#method.unit)                                     |            *              |       |              *                |         *         |
-| [unzip](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.unzip)                                      |            *              |       |                               |                   |
-| [variations](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.variations)                            |            *              |       |                               |                   |
-| [windowed](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.windowed)                                |            *              |       |                               |                   |
-| [windowed_circular](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.windowed_circular)              |            *              |       |                               |                   |
-| [zip](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.zip)                                          |            *              |       |                               |                   |
-| [zip_padded](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#method.zip_padded)                            |            *              |       |                               |                   |
+| Method / Collection type                                        | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
+|-----------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+| [add](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.add)                                      |            *              |       |              *                |         *         |     Y     |
+| [add_at](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.add_at)                                  |            *              |       |                               |                   |     Y     |
+| [add_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.add_at_multi)                      |            *              |       |                               |                   |     Y     |
+| [add_multi](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.add_multi)                          |            *              |       |              *                |         *         |     Y     |
+| [all](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.all)                                        |            *              |   *   |              *                |         *         |     N     |
+| [any](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.any)                                        |            *              |   *   |              *                |         *         |     N     |
+| [cartesian_product](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.cartesian_product)            |            *              |       |                               |                   |     N     |
+| [chunked](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.chunked)                                |            *              |       |                               |                   |     Y     |
+| [chunked_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.chunked_by)                          |            *              |       |                               |                   |     Y     |
+| [chunked_exact](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.chunked_exact)                    |            *              |       |                               |                   |     Y     |
+| [combinations](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#tymethod.combinations)                    |            *              |       |              *                |                   |     N     |
+| [combinations_multi](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.combinations_multi)          |            *              |       |                               |                   |     N     |
+| [coalesce](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.coalesce)                              |            *              |       |                               |                   |     Y     |
+| [collect](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.collect)                                 |            *              |   *   |              *                |         *         |     N     |
+| [collect_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.collect_to)                        |            *              |   *   |              *                |         *         |     Y     |
+| [common_prefix_length](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.common_prefix_length)        |            *              |   *   |                               |                   |     N     |
+| [common_suffix_length](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.common_suffix_length)        |            *              |   *   |                               |                   |     N     |
+| [count_by](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.count_by)                              |            *              |   *   |              *                |         *         |     N     |
+| [count_unique](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.count_unique)                        |            *              |   *   |                               |         *         |     N     |
+| [delete](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.delete)                                |            *              |       |              *                |         *         |     Y     |
+| [delete_at](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.delete_at)                            |            *              |       |                               |                   |     Y     |
+| [delete_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.delete_at_multi)                |            *              |       |                               |                   |     Y     |
+| [delete_multi](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.delete_multi)                    |            *              |       |              *                |         *         |     Y     |
+| [divide](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.divide)                                  |            *              |       |                               |                   |     Y     |
+| [divide_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.divide_by)                            |            *              |       |                               |                   |     Y     |
+| [disjoint](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.disjoint)                              |            *              |   *   |              *                |         *         |     N     |
+| [duplicates](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.duplicates)                          |            *              |       |                               |                   |     Y     |
+| [duplicates_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.duplicates_by)                    |            *              |       |                               |                   |     Y     |
+| [enumerate](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.enumerate)                            |            *              |       |                               |                   |     Y     |
+| [equivalent](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.equivalent)                            |            *              |   *   |                               |                   |     N     |
+| [fill](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.fill)                                      |            *              |       |                               |                   |     Y     |
+| [fill_with](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.fill_with)                          |            *              |       |              *                |         *         |     Y     |
+| [filter](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.filter)                                |            *              |       |              *                |         *         |     Y     |
+| [filter_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.filter_keys)                               |                           |       |                               |         *         |     Y     |
+| [filter_map](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#tymethod.filter_map)                        |            *              |       |              *                |         *         |     N     |
+| [filter_map_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.filter_map_to)                  |            *              |       |              *                |         *         |     Y     |
+| [filter_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.filter_values)                           |                           |       |                               |         *         |     Y     |
+| [find](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.find)                                      |            *              |   *   |              *                |         *         |     N     |
+| [find_map](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.find_map)                              |            *              |   *   |              *                |         *         |     N     |
+| [find_map_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.find_map_to)                      |            *              |       |              *                |         *         |     Y     |
+| [find_position](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.find_position)                      |            *              |   *   |                               |                   |     N     |
+| [first](https://docs.rs/cantrip/latest/cantrip/trait.List.html#tymethod.first)                                          |            *              |   *   |                               |                   |     N     |
+| [flat_map](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#tymethod.flat_map)                            |            *              |       |              *                |         *         |     N     |
+| [flat_map_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.flat_map_to)                      |            *              |       |              *                |         *         |     Y     |
+| [flat](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.flat)                                    |            *              |       |              *                |                   |     Y     |
+| [fold](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.fold)                                      |            *              |   *   |              *                |         *         |     N     |
+| [fold_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.fold_to)                              |            *              |       |              *                |         *         |     Y     |
+| [for_each](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.for_each)                              |            *              |   *   |              *                |         *         |     N     |
+| [frequencies](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.frequencies)                          |            *              |   *   |                               |                   |     N     |
+| [frequencies_by](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.frequencies_by)                    |            *              |   *   |                               |                   |     N     |
+| [group_by](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.group_by)                            |            *              |       |              *                |                   |     Y     |
+| [group_fold](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.group_fold)                          |            *              |   *   |              *                |                   |     N     |
+| [group_fold_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.group_fold_to)                  |            *              |       |              *                |                   |     Y     |
+| [group_reduce](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.group_reduce)                      |            *              |   *   |              *                |                   |     N     |
+| [group_reduce_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.group_reduce_to)              |            *              |       |              *                |                   |     Y     |
+| [init](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.init)                                      |            *              |   *   |                               |                   |     Y     |
+| [interleave](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.interleave)                          |            *              |       |                               |                   |     Y     |
+| [interleave_exact](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.interleave_exact)              |            *              |       |                               |                   |     Y     |
+| [intersect](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.intersect)                          |            *              |       |              *                |         *         |     Y     |
+| [intersperse](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.intersperse)                        |            *              |       |                               |                   |     Y     |
+| [intersperse_with](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.intersperse_with)              |            *              |       |                               |                   |     Y     |
+| [into_bmap](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_bmap)                           |            *              |       |              *                |         *         |     Y     |
+| [into_bset](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_bset)                           |            *              |       |              *                |         *         |     Y     |
+| [into_heap](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_heap)                           |            *              |       |              *                |         *         |     Y     |
+| [into_list](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_list)                           |            *              |       |              *                |         *         |     Y     |
+| [into_map](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_map)                             |            *              |       |              *                |         *         |     Y     |
+| [into_set](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_set)                             |            *              |       |              *                |         *         |     Y     |
+| [into_vec](https://docs.rs/cantrip/latest/cantrip/trait.TransformVec.html#method.into_vec)                            |            *              |   *   |              *                |         *         |     Y     |
+| [into_deque](https://docs.rs/cantrip/latest/cantrip/trait.TransformTo.html#method.into_deque)                         |            *              |       |              *                |         *         |     Y     |
+| [joined](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.joined)                                    |            *              |       |                               |                   |     N     |
+| [largest](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.largest)                              |            *              |       |              *                |                   |     Y     |
+| [last](https://docs.rs/cantrip/latest/cantrip/trait.List.html#tymethod.last)                                            |            *              |       |                               |                   |     N     |
+| [map](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#tymethod.map)                                      |            *              |       |              *                |         *         |     N     |
+| [map_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.map_to)                                |            *              |       |              *                |         *         |     Y     |
+| [map_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.map_keys)                                     |                           |       |                               |         *         |     Y     |
+| [map_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.map_values)                                 |                           |       |                               |         *         |     Y     |
+| [map_while](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.map_while)                            |            *              |       |                               |                   |     N     |
+| [max_by](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.max_by)                                  |            *              |   *   |              *                |         *         |     N     |
+| [max_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.max_by_key)                          |            *              |   *   |              *                |         *         |     N     |
+| [max_of](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.max_of)                                  |            *              |   *   |              *                |         *         |     N     |
+| [merge](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.merge)                                    |            *              |       |                               |                   |     Y     |
+| [merge_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.merge_by)                              |            *              |       |                               |                   |     Y     |
+| [min_by](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.min_by)                                  |            *              |   *   |              *                |         *         |     N     |
+| [min_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.min_by_key)                          |            *              |   *   |              *                |         *         |     N     |
+| [min_of](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.min_of)                                  |            *              |   *   |              *                |         *         |     N     |
+| [minmax_by](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.minmax_by)                            |            *              |   *   |              *                |         *         |     N     |
+| [minmax_by_key](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.minmax_by_key)                    |            *              |   *   |              *                |         *         |     N     |
+| [minmax_of](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.minmax_of)                            |            *              |   *   |              *                |         *         |     N     |
+| [move_at](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.move_at)                                |            *              |       |                               |                   |     Y     |
+| [pad_left](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.pad_left)                              |            *              |       |                               |                   |     Y     |
+| [pad_left_with](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.pad_left_with)                    |            *              |       |                               |                   |     Y     |
+| [pad_right](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.pad_right)                            |            *              |       |                               |                   |     Y     |
+| [pad_right_with](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.pad_right_with)                  |            *              |       |                               |                   |     Y     |
+| [partition](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.partition)                          |            *              |       |              *                |         *         |     Y     |
+| [partition_map](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#tymethod.partition_map)                  |            *              |       |              *                |         *         |     N     |
+| [partition_map_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.partition_map_to)            |            *              |       |              *                |         *         |     Y     |
+| [position](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.position)                                |            *              |   *   |                               |                   |     N     |
+| [position_multi](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.position_multi)                    |            *              |   *   |                               |                   |     N     |
+| [position_of](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.position_of)                          |            *              |   *   |                               |                   |     N     |
+| [position_of_multi](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.position_of_multi)              |            *              |   *   |                               |                   |     N     |
+| [position_sequence](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.position_sequence)              |            *              |   *   |                               |                   |     N     |
+| [powerset](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#tymethod.powerset)                            |            *              |       |              *                |                   |     N     |
+| [product](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.product)                              |            *              |       |              *                |                   |     Y     |
+| [product_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.product_keys)                             |                           |       |                               |         *         |     Y     |
+| [product_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.product_values)                         |                           |       |                               |         *         |     Y     |
+| [reduce](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.reduce)                                  |            *              |   *   |              *                |         *         |     N     |
+| [reduce_to](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.reduce_to)                          |            *              |       |              *                |         *         |     Y     |
+| [repeat](https://docs.rs/cantrip/latest/cantrip/trait.List::repeat)                                        |            *              |       |                               |                   |           |
+| [rev](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.rev)                                        |            *              |       |                               |                   |     Y     |
+| [rfind](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.rfind)                                      |            *              |   *   |                               |                   |     N     |
+| [rfold](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.rfold)                                      |            *              |   *   |                               |                   |     N     |
+| [rfold_to](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.rfold_to)                              |            *              |       |                               |                   |     Y     |
+| [rposition](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.rposition)                              |            *              |   *   |                               |                   |     N     |
+| [scan](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.scan)                                      |            *              |       |                               |                   |     N     |
+| [scan_to](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.scan_to)                                |            *              |       |                               |                   |     Y     |
+| [skip](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.skip)                                      |            *              |   *   |                               |                   |     Y     |
+| [skip_while](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.skip_while)                          |            *              |   *   |                               |                   |     Y     |
+| [slice](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.slice)                                    |            *              |       |                               |                   |     Y     |
+| [smallest](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.smallest)                            |            *              |       |              *                |                   |     Y     |
+| [sorted](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted)                                  |            *              |       |                               |                   |     Y     |
+| [sorted_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_by)                            |            *              |       |                               |                   |     Y     |
+| [sorted_by_cached_key](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_by_cached_key)      |            *              |       |                               |                   |     Y     |
+| [sorted_by_key](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_by_key)                    |            *              |       |                               |                   |     Y     |
+| [sorted_unstable](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_unstable)                |            *              |       |                               |                   |     Y     |
+| [sorted_unstable_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_unstable_by)          |            *              |       |                               |                   |     Y     |
+| [sorted_unstable_by_key](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_unstable_by_key)  |            *              |       |                               |                   |     Y     |
+| [step_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.step_by)                                |            *              |       |                               |                   |     Y     |
+| [subset](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.subset)                                  |            *              |   *   |              *                |         *         |     N     |
+| [substitute](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.substitute)                        |            *              |       |              *                |         *         |     Y     |
+| [substitute_at](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.substitute_at)                    |            *              |       |                               |                   |     Y     |
+| [substitute_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.substitute_at_multi)        |            *              |       |                               |                   |     Y     |
+| [substitute_multi](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.substitute_multi)            |            *              |       |              *                |         *         |     Y     |
+| [superset](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.superset)                              |            *              |   *   |              *                |         *         |     N     |
+| [sum](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.sum)                                      |            *              |       |              *                |                   |     Y     |
+| [sum_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.sum_keys)                                     |                           |       |                               |         *         |     Y     |
+| [sum_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#method.sum_values)                                 |                           |       |                               |         *         |     Y     |
+| [swap_at](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.swap_at)                                |            *              |       |                               |                   |     Y     |
+| [tail](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.tail)                                      |            *              |   *   |                               |                   |     Y     |
+| [take](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.take)                                      |            *              |   *   |                               |                   |     Y     |
+| [take_while](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.take_while)                          |            *              |   *   |                               |                   |     Y     |
+| [unique](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.unique)                                  |            *              |       |                               |                   |     Y     |
+| [unique_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.unique_by)                            |            *              |       |                               |                   |     Y     |
+| [unit](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.unit)                                    |            *              |       |              *                |         *         |     Y     |
+| [unzip](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.unzip)                                    |            *              |       |                               |                   |     Y     |
+| [to_bmap](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_bmap)                                 |            *              |   *   |              *                |         *         |     N     |
+| [to_bset](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_bset)                                 |            *              |   *   |              *                |         *         |     N     |
+| [to_heap](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_heap)                                 |            *              |   *   |              *                |         *         |     N     |
+| [to_keys](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#tymethod.to_keys)                                       |                           |       |                               |         *         |     N     |
+| [to_list](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_list)                                 |            *              |   *   |              *                |         *         |     N     |
+| [to_map](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_map)                                   |            *              |   *   |              *                |         *         |     N     |
+| [to_set](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_set)                                   |            *              |   *   |              *                |         *         |     N     |
+| [to_values](https://docs.rs/cantrip/latest/cantrip/trait.Map.html#tymethod.to_values)                                   |                           |       |                               |         *         |     N     |
+| [to_vec](https://docs.rs/cantrip/latest/cantrip/trait.TransformVec.html#tymethod.to_vec)                                |            *              |   *   |              *                |         *         |     N     |
+| [to_deque](https://docs.rs/cantrip/latest/cantrip/trait.Transform.html#tymethod.to_deque)                               |            *              |   *   |              *                |         *         |     N     |
+| [variations](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.variations)                          |            *              |       |                               |                   |     N     |
+| [windowed](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.windowed)                              |            *              |       |                               |                   |     N     |
+| [windowed_circular](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#tymethod.windowed_circular)            |            *              |       |                               |                   |     N     |
+| [zip](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.zip)                                        |            *              |       |                               |                   |     Y     |
+| [zip_padded](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.zip_padded)                          |            *              |       |                               |                   |     Y     |
 
 
 ## Inspired by

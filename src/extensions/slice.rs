@@ -127,3 +127,12 @@ pub trait Slice<Item> {
   /// ```
   fn take_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 }
+
+#[inline]
+pub(crate) fn collect<'a, Item, B>(iterator: impl Iterator<Item = &'a Item>) -> B
+where
+  Item: Clone + 'a,
+  B: FromIterator<Item>,
+{
+  iterator.cloned().collect()
+}

@@ -1,18 +1,20 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet, LinkedList};
 
-use cantrip::Collectible;
+use cantrip::CollectionTo;
 
-use crate::extensions::util::{assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent, TestCollectible, TestCollection};
+use crate::extensions::util::{
+  assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent,
+  TestCollectible, TestCollection,
+};
 
-pub(crate) fn test_collectible<'a, C, D>(sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C)
-where
+pub(crate) fn test_collection_to<'a, C, D>(
+  sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C,
+) where
   C: TestCollectible<'a, i64>,
   C::This<i64>: TestCollection<i64>,
-  D: Collectible<Vec<i64>> + TestCollection<Vec<i64>> + IntoIterator<Item = Vec<i64>>,
+  D: CollectionTo<Vec<i64>> + TestCollection<Vec<i64>> + IntoIterator<Item = Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
 {
-  let _unused = d_source;
-
   // add
   let a = a_source.clone();
   let e = e_source.clone();
@@ -32,6 +34,16 @@ where
     assert_set_equal(a.add_multi(vec![3, 4]), vec![1, 2, 3, 4]);
   }
   assert_seq_equal(e.add(1), vec![1]);
+
+  // collect_to
+  let a = a_source.clone();
+  let e = e_source.clone();
+  if sequence {
+    assert_eq!(a.collect_to::<LinkedList<i64>>(), LinkedList::from([1, 2, 3]));
+  } else {
+    assert_eq!(a.collect_to::<HashSet<i64>>(), HashSet::from([1, 2, 3]));
+  }
+  assert_eq!(e.collect_to::<LinkedList<i64>>(), LinkedList::new());
 
   // combinations
   let a = a_source.clone();

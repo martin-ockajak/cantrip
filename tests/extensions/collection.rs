@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use cantrip::{Iterable, Traversable};
+use cantrip::{Iterable, Collection};
 
-pub(crate) fn test_traversable<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
+pub(crate) fn test_collection<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
 where
-  C: Traversable<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
+  C: Collection<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
 {
   // all
   assert!(a.all(|&x| x > 0));
@@ -35,8 +35,8 @@ where
   assert_eq!(e.find(|&x| x == 5), None);
 
   // find_map
-  assert_eq!(a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } ), Some(2));
-  assert_eq!(e.find_map(|&x| if x % 2 == 0 { Some(x) } else { None } ), None);
+  assert_eq!(a.find_map(|&x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
+  assert_eq!(e.find_map(|&x| if x % 2 == 0 { Some(x) } else { None }), None);
 
   // fold
   assert_eq!(a.fold(0, |acc, x| acc + x), 6);
@@ -50,17 +50,11 @@ where
   assert_eq!(acc, 6);
 
   // group_fold
-  assert_eq!(a.group_fold(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([
-    (0, 2),
-    (1, 4),
-  ]));
+  assert_eq!(a.group_fold(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   assert_eq!(e.group_fold(|x| x % 2, 0, |acc, &x| acc + x), HashMap::new());
 
   // group_reduce
-  assert_eq!(a.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::from([
-    (0, 2),
-    (1, 4),
-  ]));
+  assert_eq!(a.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   assert_eq!(e.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::new());
 
   // max_by

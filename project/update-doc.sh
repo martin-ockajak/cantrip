@@ -7,7 +7,14 @@ cd ${SCRIPT_DIR}/..
 
 grep '^\[!' README.md >README.md.tmp
 echo >>README.md.tmp
-sed -n '/^pub.*/q;p' src/lib.rs | grep -v '# let' | grep -v '^#!' | sed 's/^\/\/! \?//' | sed 's/\[`/[/' | sed 's/`\](/](https:\/\/docs.rs\/cantrip\/latest\/cantrip\/trait./' | sed 's/::/.html#method./' | sed 's/\.html#method\.from/::from/' | sed 's/\.html#method\.\*/::*/' >>README.md.tmp
+sed -n '/^pub.*/q;p' src/lib.rs \
+  | grep -v '^#!' \
+  | grep -v '# let' \
+  | sed 's/^\/\/! \?//' \
+  | sed 's/\[`\(.*\)`\](/[\1](https:\/\/docs.rs\/cantrip\/latest\/cantrip\/trait./' \
+  | sed 's/::\(.*\)Y     |/.html#method.\1Y     |/' \
+  | sed 's/::\(.*\)N     |/.html#tymethod.\1N     |/' \
+  >>README.md.tmp
 echo -e "\n" >>README.md.tmp
 sed -n '/## Inspired by/,$ p' README.md >>README.md.tmp
 mv -f README.md.tmp README.md

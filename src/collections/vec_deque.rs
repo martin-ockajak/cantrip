@@ -1,12 +1,12 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, VecDeque};
+use std::collections::{BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::extensions::*;
 use crate::Iterable;
 
-impl<Item> Traversable<Item> for VecDeque<Item> {
+impl<Item> Collection<Item> for VecDeque<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
@@ -133,7 +133,7 @@ impl<Item> Traversable<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> Collectible<Item> for VecDeque<Item> {
+impl<Item> CollectionTo<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
@@ -246,7 +246,7 @@ impl<Item> Collectible<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> Ordered<Item> for VecDeque<Item> {
+impl<Item> Sequence<Item> for VecDeque<Item> {
   #[inline]
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
   where
@@ -340,7 +340,7 @@ impl<Item> Ordered<Item> for VecDeque<Item> {
   }
 }
 
-impl<Item> Sequence<Item> for VecDeque<Item> {
+impl<Item> SequenceTo<Item> for VecDeque<Item> {
   type This<I> = VecDeque<I>;
 
   #[inline]
@@ -522,5 +522,66 @@ impl<Item> List<Item> for VecDeque<Item> {
     Item: Clone,
   {
     repeat(self.iter(), n)
+  }
+}
+
+impl<Item> Transform<Item> for VecDeque<Item> {
+  #[inline]
+  fn collect<B>(&self) -> B
+  where
+    Item: Clone,
+    B: FromIterator<Item>
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_bset(&self) -> BTreeSet<Item>
+  where
+    Item: Ord + Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_deque(&self) -> VecDeque<Item>
+  where
+    Item: Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_heap(&self) -> BinaryHeap<Item>
+  where
+    Item: Ord + Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_list(&self) -> LinkedList<Item>
+  where
+    Item: Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_set(&self) -> HashSet<Item>
+  where
+    Item: Eq + Hash + Clone,
+  {
+    self.iter().cloned().collect()
+  }
+}
+
+impl<Item> TransformVec<Item> for VecDeque<Item> {
+  #[inline]
+  fn to_vec(&self) -> Vec<Item>
+  where
+    Item: Clone,
+  {
+    self.iter().cloned().collect()
   }
 }

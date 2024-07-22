@@ -1,11 +1,12 @@
 use std::cmp::Ordering;
-use std::collections::{HashMap, HashSet, LinkedList};
+use std::collections::{BinaryHeap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
 use std::hash::Hash;
 
+use crate::extensions::transform::Transform;
 use crate::extensions::*;
 use crate::Iterable;
 
-impl<Item> Traversable<Item> for HashSet<Item> {
+impl<Item> Collection<Item> for HashSet<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     all(self.iter(), predicate)
@@ -132,7 +133,7 @@ impl<Item> Traversable<Item> for HashSet<Item> {
   }
 }
 
-impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
+impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
   #[inline]
@@ -257,5 +258,66 @@ impl<Item: Eq + Hash> Collectible<Item> for HashSet<Item> {
       let _unused = self.insert(replacement);
     }
     self
+  }
+}
+
+impl<Item> Transform<Item> for HashSet<Item> {
+  #[inline]
+  fn collect<B>(&self) -> B
+  where
+    Item: Clone,
+    B: FromIterator<Item>
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_bset(&self) -> BTreeSet<Item>
+  where
+    Item: Ord + Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_deque(&self) -> VecDeque<Item>
+  where
+    Item: Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_heap(&self) -> BinaryHeap<Item>
+  where
+    Item: Ord + Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_list(&self) -> LinkedList<Item>
+  where
+    Item: Clone,
+  {
+    self.iter().cloned().collect()
+  }
+
+  #[inline]
+  fn to_set(&self) -> HashSet<Item>
+  where
+    Item: Eq + Hash + Clone,
+  {
+    self.iter().cloned().collect()
+  }
+}
+
+impl<Item> TransformVec<Item> for HashSet<Item> {
+  #[inline]
+  fn to_vec(&self) -> Vec<Item>
+  where
+    Item: Clone,
+  {
+    self.iter().cloned().collect()
   }
 }

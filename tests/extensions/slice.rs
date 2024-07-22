@@ -1,7 +1,6 @@
 use cantrip::Slice;
 
-pub(crate) fn test_slice(a: &[i64], b: &[i64], e: &[i64])
-{
+pub(crate) fn test_slice(a: &[i64], b: &[i64], e: &[i64]) {
   // init
   assert_eq!(a.init(), [1, 2]);
   assert_eq!(b.init(), [1, 2, 2]);

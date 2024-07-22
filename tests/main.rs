@@ -11,18 +11,21 @@ fn collectibles() {
   let a_hash_set = HashSet::from([1_i64, 2, 3]);
   let b_hash_set = HashSet::from([1_i64, 2, 2, 3]);
   let d_hash_set = HashSet::from([vec![1, 2], vec![3]]);
+  let g_hash_set = HashSet::from([(1_i64, 1_i64), (2, 2), (3, 3)]);
   let e_hash_set = HashSet::<i64>::new();
   let a_btree_set = BTreeSet::from_iter(a_hash_set.clone());
   let b_btree_set = BTreeSet::from_iter(b_hash_set.clone());
   let d_btree_set = BTreeSet::from_iter(d_hash_set.clone());
+  let g_btree_set = BTreeSet::from_iter(g_hash_set.clone());
   let e_btree_set = BTreeSet::from_iter(e_hash_set.clone());
   let a_binary_heap = BinaryHeap::from_iter(a_hash_set.clone());
   let b_binary_heap = BinaryHeap::from_iter(b_hash_set.clone());
   let d_binary_heap = BinaryHeap::from_iter(d_hash_set.clone());
+  let g_binary_heap = BinaryHeap::from_iter(g_hash_set.clone());
   let e_binary_heap = BinaryHeap::from_iter(e_hash_set.clone());
-  test_set_traits(&a_hash_set, &b_hash_set, &d_hash_set, &e_hash_set);
-  test_set_traits(&a_btree_set, &b_btree_set, &d_btree_set, &e_btree_set);
-  test_set_traits(&a_binary_heap, &b_binary_heap, &d_binary_heap, &e_binary_heap);
+  test_set_traits(&a_hash_set, &b_hash_set, &d_hash_set, &g_hash_set, &e_hash_set);
+  test_set_traits(&a_btree_set, &b_btree_set, &d_btree_set, &g_btree_set, &e_btree_set);
+  test_set_traits(&a_binary_heap, &b_binary_heap, &d_binary_heap, &g_binary_heap, &e_binary_heap);
 }
 
 #[test]
@@ -31,7 +34,7 @@ fn sequences() {
   let b_vec = vec![1_i64, 2, 2, 3];
   let c_vec = vec![3_i64, 2, 1];
   let d_vec = vec![vec![1_i64, 2], vec![3]];
-  let g_vec = vec![(1_i64, 2), (3, 4), (5, 6)];
+  let g_vec = vec![(1_i64, 1), (2, 2), (3, 3)];
   let e_vec = Vec::<i64>::new();
   let a_vec_deque = VecDeque::from_iter(a_vec.clone());
   let b_vec_deque = VecDeque::from_iter(b_vec.clone());
