@@ -1,6 +1,6 @@
 [package]
 name = "cantrip"
-version = "0.3.2"
+version = "0.3.3"
 edition = "2021"
 description = "Practical extension methods for standard Rust collections"
 authors = ["Martin Ockajak"]
