@@ -532,7 +532,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -569,7 +569,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -600,7 +600,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -634,7 +634,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -678,7 +678,7 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -697,7 +697,7 @@ pub trait Map<Key, Value> {
   /// Here's the same example, but with [`filter()`] and [`map()`]:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -741,7 +741,7 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -760,7 +760,7 @@ pub trait Map<Key, Value> {
   /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -903,7 +903,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -959,7 +959,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -1130,7 +1130,7 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = HashMap::from([
@@ -1166,7 +1166,7 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashSet;
   /// use std::collections::HashMap;
   ///

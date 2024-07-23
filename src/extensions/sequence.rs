@@ -193,7 +193,7 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
@@ -223,7 +223,7 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
@@ -258,7 +258,7 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
@@ -294,7 +294,7 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
@@ -339,7 +339,7 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///

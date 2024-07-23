@@ -325,7 +325,7 @@ pub trait CollectionInto<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -340,7 +340,7 @@ pub trait CollectionInto<Item> {
   /// situation, where the type of the closure is a double reference:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![&1, &2, &3];
   ///
@@ -355,7 +355,7 @@ pub trait CollectionInto<Item> {
   /// one:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![&1, &2, &3];
   ///
@@ -369,7 +369,7 @@ pub trait CollectionInto<Item> {
   /// or both:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![&0, &1, &2];
   ///
@@ -405,7 +405,7 @@ pub trait CollectionInto<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -420,7 +420,7 @@ pub trait CollectionInto<Item> {
   /// situation, where the type of the closure is a double reference:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![&1, &2, &3];
   ///
@@ -435,7 +435,7 @@ pub trait CollectionInto<Item> {
   /// one:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![&1, &2, &3];
   ///
@@ -449,7 +449,7 @@ pub trait CollectionInto<Item> {
   /// or both:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![&0, &1, &2];
   ///
@@ -485,7 +485,7 @@ pub trait CollectionInto<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -498,7 +498,7 @@ pub trait CollectionInto<Item> {
   /// Here's the same example, but with [`filter()`] and [`map()`]:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -536,7 +536,7 @@ pub trait CollectionInto<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -549,7 +549,7 @@ pub trait CollectionInto<Item> {
   /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -606,7 +606,7 @@ pub trait CollectionInto<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![vec![1, 2], vec![3]];
   ///
@@ -616,7 +616,7 @@ pub trait CollectionInto<Item> {
   /// Mapping and then flattening:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -631,7 +631,7 @@ pub trait CollectionInto<Item> {
   /// in this case since it conveys intent more clearly:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -645,7 +645,7 @@ pub trait CollectionInto<Item> {
   /// Flattening works on any `IntoIterator` type, including `Option` and `Result`:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let options = vec![Some(123), Some(321), None, Some(231)];
   /// let results = vec![Ok(123), Ok(321), Err(456), Ok(231)];
@@ -658,7 +658,7 @@ pub trait CollectionInto<Item> {
   /// Flattening only removes one level of nesting at a time:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let d3 = vec![vec![vec![1, 2], vec![3, 4]], vec![vec![5, 6], vec![7, 8]]];
   ///
@@ -713,7 +713,7 @@ pub trait CollectionInto<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -758,7 +758,7 @@ pub trait CollectionInto<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -888,7 +888,7 @@ pub trait CollectionInto<Item> {
   /// The discriminator function takes a reference to an element and returns a group key.
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
@@ -924,7 +924,7 @@ pub trait CollectionInto<Item> {
   /// [`group_fold_ref()`]: crate::Collection::group_fold_ref
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
@@ -970,7 +970,7 @@ pub trait CollectionInto<Item> {
   /// [`group_reduce_ref()`]: crate::Collection::group_reduce_ref
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
@@ -1013,7 +1013,7 @@ pub trait CollectionInto<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashSet;
   ///
   /// let a = vec![1, 2, 2, 3];
@@ -1352,7 +1352,7 @@ pub trait CollectionInto<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];

@@ -1056,7 +1056,7 @@ pub trait SequenceInto<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -1247,7 +1247,7 @@ pub trait SequenceInto<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];

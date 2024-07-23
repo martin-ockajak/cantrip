@@ -30,7 +30,7 @@ pub trait Slice<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = [1, 2, 3];
   ///

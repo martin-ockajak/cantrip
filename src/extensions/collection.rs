@@ -278,7 +278,7 @@ pub trait Collection<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -312,7 +312,7 @@ pub trait Collection<Item> {
   /// [`group_fold()`]: crate::CollectionInto::group_fold
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
@@ -343,7 +343,7 @@ pub trait Collection<Item> {
   /// [`group_reduce()`]: crate::CollectionInto::group_reduce
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
   /// let a = vec![1, 2, 3];
@@ -611,7 +611,7 @@ pub trait Collection<Item> {
   /// # Example
   ///
   /// ```
-  /// use crate::cantrip::*;
+  /// use cantrip::*;
   ///
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
