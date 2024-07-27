@@ -277,7 +277,7 @@ a.rev().into_iter().into_deque();           // VecDeque::from([3, 2, 1])
 
 ### Requirements
 
-- [Rust](https://www.rust-lang.org) 1.79+
+- [Rust](https://www.rust-lang.org) 1.80+
 
 ### Setup
 
