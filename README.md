@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
-- [Overview](#overview)
+- [Features](#features)
 - [Examples](#examples)
 - [Methods](#methods)
   - [Searching](#searching)

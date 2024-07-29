@@ -5,7 +5,7 @@ set -eo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null && pwd)"
 cd ${SCRIPT_DIR}/..
 
-sed -n '/## Overview/q;p' README.md >README.md.tmp
+sed -n '/^Practical/q;p' README.md >README.md.tmp
 sed -n '/^pub.*/q;p' src/lib.rs \
   | grep -v '^#!' \
   | grep -v '# let' \
