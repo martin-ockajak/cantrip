@@ -34,7 +34,7 @@
 //! a.fold(0, |r, x| r + x);                    // 6
 //!
 //! # let a = source.clone();
-//! a.map_ref(|&x| (x, x + 1)).to_map();        // HashMap::from([(1, 2), (2, 3), (3, 4)])
+//! a.map_ref(|&x| (x, x)).into_map();          // HashMap::from([(1, 1), (2, 2), (3, 3)])
 //!
 //! # let a = source.clone();
 //! a.flat_map(|x| [x, -x]).sorted();           // vec![-3, -2, -1, 1, 2, 3]
@@ -49,7 +49,7 @@
 //! a.delete(&1).add(2).unique();               // vec![2, 3]
 //!
 //! # let a = source.clone();
-//! a.substitute_at(0, 4).into_list();          // LinkedList::from([4, 2, 3])
+//! a.substitute_at(0, 4).to_list();            // LinkedList::from([4, 2, 3])
 //!
 //! # let a = source.clone();
 //! a.position_multi(|&x| x % 2 == 1);          // vec![0, 2]
