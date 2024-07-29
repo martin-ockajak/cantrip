@@ -45,7 +45,7 @@ a.group_by(|x| x % 2);                      // HashMap::from([(0, vec![2]), (1, 
 
 a.delete(&1).add(2).unique();               // vec![2, 3]
 
-a.substitute_at(0, 4).to_list();            // LinkedList::from([4, 2, 3])
+a.substitute_at(0, 4).into_list();          // LinkedList::from([4, 2, 3])
 
 a.position_multi(|&x| x % 2 == 1);          // vec![0, 2]
 
