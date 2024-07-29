@@ -7,6 +7,27 @@ Practical extension methods for Rust standard library collections.
 
 Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 
+## Table of Contents
+
+- [Features](#features)
+- [Examples](#examples)
+- [Methods](#methods)
+  - [Searching](#searching)
+  - [Modifying](#modifying)
+  - [Filtering](#filtering)
+  - [Inspecting](#inspecting)
+  - [Aggregating](#aggregating)
+  - [Selecting](#selecting)
+  - [Partitioning](#partitioning)
+  - [Merging](#merging)
+  - [Sorting](#sorting)
+  - [Converting](#converting)
+  - [Miscellaneous](#miscellaneous)
+- [Inspired by](#inspired-by)
+- [Build](#build)
+- [Contributing](#contributing)
+- [License](#license)
+
 
 ## Features
 
