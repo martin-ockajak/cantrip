@@ -5,13 +5,23 @@
 //! Enables direct functional-style collection manipulation without the usual iterator boilerplate.
 //!
 //!
-//! ## Features
+//! ## Overview
 //!
 //! - Equivalents of standard iterator methods are added to standard library collections
 //! - Additional utility methods commonly found in collection libraries are also included
-//! - Transformation methods return a new collection instance instead of returning an iterator
+//! - Methods which modify a collection return a new collection instance instead of an iterator
 //! - All methods treat collection instances as immutable although some may consume them
 //! - Performance is near optimal and overhead is limited to new collection creation
+//!
+//!
+//! ## Functionality
+//!
+//! - [Searching](#searching) - [Modifying](#modifying) - [Filtering](#filtering) -
+//! [Mapping](#mapping) - [Inspecting](#inspecting) - [Aggregating](#aggregating)
+//!
+//! - [Selecting](#selecting) - [Converting](#converting) - [Partitioning](#partitioning) -
+//! [Merging](#merging) - [Sorting](#sorting) - [Miscellaneous](#miscellaneous)
+//!
 //!
 //! ## Examples
 //!
@@ -50,13 +60,6 @@
 //!
 //!
 //! ## Methods
-//!
-//! [Searching](#searching) - [Modifying](#modifying) - [Filtering](#filtering) -
-//! [Mapping](#mapping) - [Inspecting](#inspecting) - [Aggregating](#aggregating)
-//!
-//! [Selecting](#selecting) - [Converting](#converting) - [Partitioning](#partitioning) -
-//! [Merging](#merging) - [Sorting](#sorting) - [Miscellaneous](#miscellaneous)
-//!
 //!
 //! ### Searching
 //!
