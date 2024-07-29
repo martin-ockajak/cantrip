@@ -17,10 +17,10 @@
 //! ## Functionality
 //!
 //! - [Searching](#searching) - [Modifying](#modifying) - [Filtering](#filtering) -
-//! [Mapping](#mapping) - [Inspecting](#inspecting) - [Aggregating](#aggregating)
+//!   [Mapping](#mapping) - [Inspecting](#inspecting) - [Aggregating](#aggregating)
 //!
 //! - [Selecting](#selecting) - [Converting](#converting) - [Partitioning](#partitioning) -
-//! [Merging](#merging) - [Sorting](#sorting) - [Miscellaneous](#miscellaneous)
+//!   [Merging](#merging) - [Sorting](#sorting) - [Miscellaneous](#miscellaneous)
 //!
 //!
 //! ## Examples
