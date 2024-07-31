@@ -133,7 +133,7 @@ impl<Item> Collection<Item> for Vec<Item> {
   }
 }
 
-impl<Item> CollectionInto<Item> for Vec<Item> {
+impl<Item> CollectionTo<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]
@@ -221,6 +221,15 @@ impl<Item> CollectionInto<Item> for Vec<Item> {
     Self::This<B>: FromIterator<B>,
   {
     self.iter().map(function).collect()
+  }
+
+  #[inline]
+  fn partitions(&self) -> Vec<Vec<Self>>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    partitions(self.iter())
   }
 
   #[inline]
@@ -348,7 +357,7 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 }
 
-impl<Item> SequenceInto<Item> for Vec<Item> {
+impl<Item> SequenceTo<Item> for Vec<Item> {
   type This<I> = Vec<I>;
 
   #[inline]

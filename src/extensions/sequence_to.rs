@@ -13,7 +13,7 @@ use crate::core::unfold::unfold;
 /// - May consume the sequence and its elements
 /// - May create a new sequence
 ///
-pub trait SequenceInto<Item> {
+pub trait SequenceTo<Item> {
   /// This sequence type constructor
   type This<I>;
 
@@ -78,7 +78,7 @@ pub trait SequenceInto<Item> {
   ///
   /// The order or tuple values is preserved.
   ///
-  /// [`unique()`]: SequenceInto::unique
+  /// [`unique()`]: SequenceTo::unique
   ///
   /// # Example
   ///
@@ -114,7 +114,7 @@ pub trait SequenceInto<Item> {
   /// See [`chunked_exact()`] for a variant of this function that returns chunks of
   /// always exactly `chunk_size` elements.
   ///
-  /// [`chunked_exact()`]: SequenceInto::chunked_exact
+  /// [`chunked_exact()`]: SequenceTo::chunked_exact
   ///
   /// # Panics
   ///
@@ -137,7 +137,7 @@ pub trait SequenceInto<Item> {
   #[inline]
   fn chunked(self, size: usize) -> Vec<Self>
   where
-    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     chunked(self, size, false)
   }
@@ -169,7 +169,7 @@ pub trait SequenceInto<Item> {
   /// ```
   fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Vec<Self>
   where
-    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let mut chunk_empty = true;
@@ -211,7 +211,7 @@ pub trait SequenceInto<Item> {
   ///
   /// See [`chunked()`] for a variant of this function that also returns the remainder as a smaller chunk.
   ///
-  /// [`chunked()`]: SequenceInto::chunked
+  /// [`chunked()`]: SequenceTo::chunked
   ///
   /// # Panics
   ///
@@ -234,7 +234,7 @@ pub trait SequenceInto<Item> {
   #[inline]
   fn chunked_exact(self, size: usize) -> Vec<Self>
   where
-    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     chunked(self, size, true)
   }
@@ -298,7 +298,7 @@ pub trait SequenceInto<Item> {
   ///
   /// The order or combination values is preserved.
   ///
-  /// [`unique()`]: SequenceInto::unique
+  /// [`unique()`]: SequenceTo::unique
   ///
   /// # Example
   ///
@@ -318,7 +318,7 @@ pub trait SequenceInto<Item> {
   ///   vec![1, 3, 3], vec![2, 2, 2], vec![2, 2, 3], vec![2, 3, 3], vec![3, 3, 3],
   /// ]);
   ///
-  /// assert_eq!(e.combinations_multi(2), Vec::<Vec<i32>>::new());
+  /// assert_eq!(e.combinations_multi(1), Vec::<Vec<i32>>::new());
   /// ```
   fn combinations_multi(&self, k: usize) -> Vec<Self>
   where
@@ -424,7 +424,7 @@ pub trait SequenceInto<Item> {
   fn divide(self, separator: &Item) -> Vec<Self>
   where
     Item: PartialEq,
-    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     self.divide_by(|x| x == separator)
   }
@@ -477,7 +477,7 @@ pub trait SequenceInto<Item> {
   #[inline]
   fn divide_by(self, mut separator: impl FnMut(&Item) -> bool) -> Vec<Self>
   where
-    Self: FromIterator<Item> + IntoIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut iterator = self.into_iter();
     let mut empty = false;
@@ -598,7 +598,7 @@ pub trait SequenceInto<Item> {
   /// [`usize::MAX`] elements either produces the wrong result or panics. If
   /// debug assertions are enabled, a panic is guaranteed.
   ///
-  /// [`zip()`]: SequenceInto::zip
+  /// [`zip()`]: SequenceTo::zip
   ///
   /// # Example
   ///
@@ -737,7 +737,7 @@ pub trait SequenceInto<Item> {
   /// In case `separator` does not implement [`Clone`] or needs to be
   /// computed every time, use [`intersperse_with`].
   ///
-  /// [`intersperse_with`]: SequenceInto::intersperse_with
+  /// [`intersperse_with`]: SequenceTo::intersperse_with
   ///
   /// # Examples
   ///
@@ -1099,7 +1099,7 @@ pub trait SequenceInto<Item> {
   /// For a *left-associative* version of `rfold()`, see [`fold()`].
   ///
   /// [`rfold_ref()`]: crate::Sequence::rfold_ref
-  /// [`fold()`]: crate::CollectionInto::fold
+  /// [`fold()`]: crate::CollectionTo::fold
   ///
   /// # Examples
   ///
@@ -1160,8 +1160,8 @@ pub trait SequenceInto<Item> {
   ///
   /// This is a consuming variant of [`scan()`].
   ///
-  /// [`fold()`]: crate::CollectionInto::fold
-  /// [`scan()`]: SequenceInto::scan_ref
+  /// [`fold()`]: crate::CollectionTo::fold
+  /// [`scan()`]: SequenceTo::scan_ref
   ///
   /// # Example
   ///
@@ -1210,7 +1210,7 @@ pub trait SequenceInto<Item> {
   /// This is a non-consuming variant of [`scan()`].
   ///
   /// [`fold_ref()`]: crate::Collection::fold_ref
-  /// [`scan()`]: SequenceInto::scan
+  /// [`scan()`]: SequenceTo::scan
   ///
   /// # Example
   ///
@@ -1333,7 +1333,7 @@ pub trait SequenceInto<Item> {
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable()`](SequenceInto::sorted_unstable).
+  /// See [`sorted_unstable()`](SequenceTo::sorted_unstable).
   ///
   /// # Current implementation
   ///
@@ -1392,7 +1392,7 @@ pub trait SequenceInto<Item> {
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable_by()`](SequenceInto::sorted_unstable_by).
+  /// See [`sorted_unstable_by()`](SequenceTo::sorted_unstable_by).
   ///
   /// # Current implementation
   ///
@@ -1437,7 +1437,7 @@ pub trait SequenceInto<Item> {
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For simple key functions (e.g., functions that are property accesses or
-  /// basic operations), [`sorted_by_key()`](SequenceInto::sorted_by_key) is likely to be
+  /// basic operations), [`sorted_by_key()`](SequenceTo::sorted_by_key) is likely to be
   /// faster.
   ///
   /// # Current implementation
@@ -1481,12 +1481,12 @@ pub trait SequenceInto<Item> {
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For expensive key functions (e.g. functions that are not simple property accesses or
-  /// basic operations), [`sorted_by_cached_key()`](SequenceInto::sorted_by_cached_key) is likely to be
+  /// basic operations), [`sorted_by_cached_key()`](SequenceTo::sorted_by_cached_key) is likely to be
   /// significantly faster, as it does not recompute element keys.
   ///
   /// When applicable, unstable sorting is preferred because it is generally faster than stable
   /// sorting, and it doesn't allocate auxiliary memory.
-  /// See [`sorted_unstable_by_key()`](SequenceInto::sorted_unstable_by_key).
+  /// See [`sorted_unstable_by_key()`](SequenceTo::sorted_unstable_by_key).
   ///
   /// # Current implementation
   ///
@@ -1635,7 +1635,7 @@ pub trait SequenceInto<Item> {
   /// randomization to avoid degenerate cases, but with a fixed seed to always provide
   /// deterministic behavior.
   ///
-  /// Due to its key calling strategy, [`sorted_unstable_by_key()`](SequenceInto::sorted_unstable_by_key)
+  /// Due to its key calling strategy, [`sorted_unstable_by_key()`](SequenceTo::sorted_unstable_by_key)
   /// is likely to be slower than [`sorted_by_cached_key()`](Sequence::.sorted_by_cached_key) in
   /// cases where the key function is expensive.
   ///
@@ -1931,7 +1931,7 @@ pub trait SequenceInto<Item> {
   ///
   /// This function is, in some sense, the opposite of [`zip()`].
   ///
-  /// [`zip()`]: SequenceInto::zip
+  /// [`zip()`]: SequenceTo::zip
   ///
   /// # Example
   ///
@@ -1958,7 +1958,7 @@ pub trait SequenceInto<Item> {
   /// Creates a new sequence containing variations of specified size
   /// from the elements of this sequence.
   ///
-  /// Specifying size is equal to this sequence length produces all permutations of this sequence.
+  /// Specifying size is equal to the length of this sequence produces all permutations of this sequence.
   ///
   /// Variations are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting variations will too.
@@ -1966,7 +1966,7 @@ pub trait SequenceInto<Item> {
   ///
   /// The order or variation values is preserved.
   ///
-  /// [`unique()`]: SequenceInto::unique
+  /// [`unique()`]: SequenceTo::unique
   ///
   /// # Example
   ///
@@ -1986,7 +1986,7 @@ pub trait SequenceInto<Item> {
   ///   vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1],
   /// ]);
   ///
-  /// assert_eq!(e.variations(2), Vec::<Vec<i32>>::new());
+  /// assert_eq!(e.variations(1), Vec::<Vec<i32>>::new());
   /// ```
   fn variations(&self, k: usize) -> Vec<Self>
   where
@@ -2074,7 +2074,7 @@ pub trait SequenceInto<Item> {
   ///
   /// To 'undo' the result of zipping up two sequences, see [`unzip()`].
   ///
-  /// [`unzip()`]: SequenceInto::unzip
+  /// [`unzip()`]: SequenceTo::unzip
   ///
   /// # Example
   ///
@@ -2114,7 +2114,7 @@ pub trait SequenceInto<Item> {
   ///
   /// To 'undo' the result of zipping up two sequences, see [`unzip()`].
   ///
-  /// [`unzip()`]: SequenceInto::unzip
+  /// [`unzip()`]: SequenceTo::unzip
   ///
   /// # Example
   ///

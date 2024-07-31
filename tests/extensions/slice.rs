@@ -1,31 +1,31 @@
 use cantrip::Slice;
 
 pub(crate) fn test_slice(a: &[i64], b: &[i64], e: &[i64]) {
-  // init
-  assert_eq!(a.init(), [1, 2]);
-  assert_eq!(b.init(), [1, 2, 2]);
-  assert_eq!(e.init(), []);
+  // init_ref
+  assert_eq!(a.init_ref(), [1, 2]);
+  assert_eq!(b.init_ref(), [1, 2, 2]);
+  assert_eq!(e.init_ref(), []);
 
-  // skip
-  assert_eq!(a.skip(2), [3]);
-  assert_eq!(b.skip(2), [2, 3]);
-  assert_eq!(e.skip(2), []);
+  // skip_ref
+  assert_eq!(a.skip_ref(2), [3]);
+  assert_eq!(b.skip_ref(2), [2, 3]);
+  assert_eq!(e.skip_ref(2), []);
 
-  // skip_while
-  assert_eq!(a.skip_while(|&x| x < 3), [3]);
-  assert_eq!(e.skip_while(|&x| x < 3), []);
+  // skip_while_ref
+  assert_eq!(a.skip_while_ref(|&x| x < 3), [3]);
+  assert_eq!(e.skip_while_ref(|&x| x < 3), []);
 
-  // tail
-  assert_eq!(a.tail(), [2, 3]);
-  assert_eq!(b.tail(), [2, 2, 3]);
-  assert_eq!(e.tail(), []);
+  // tail_ref
+  assert_eq!(a.tail_ref(), [2, 3]);
+  assert_eq!(b.tail_ref(), [2, 2, 3]);
+  assert_eq!(e.tail_ref(), []);
 
-  // take
-  assert_eq!(a.take(2), [1, 2]);
-  assert_eq!(a.take(5), [1, 2, 3]);
-  assert_eq!(e.take(2), []);
+  // take_ref
+  assert_eq!(a.take_ref(2), [1, 2]);
+  assert_eq!(a.take_ref(5), [1, 2, 3]);
+  assert_eq!(e.take_ref(2), []);
 
-  // take_while
-  assert_eq!(a.take_while(|&x| x < 3), [1, 2]);
-  assert_eq!(e.take_while(|&x| x < 3), []);
+  // take_while_ref
+  assert_eq!(a.take_while_ref(|&x| x < 3), [1, 2]);
+  assert_eq!(e.take_while_ref(|&x| x < 3), []);
 }

@@ -1,5 +1,5 @@
 use std::cmp::{min, Ordering};
-use std::collections::{BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
 
@@ -228,17 +228,17 @@ impl<Item> Sequence<Item> for [Item] {
 
 impl<Item> Slice<Item> for [Item] {
   #[inline]
-  fn init(&self) -> &Self {
+  fn init_ref(&self) -> &Self {
     &self[0..self.len().saturating_sub(1)]
   }
 
   #[inline]
-  fn skip(&self, n: usize) -> &Self {
+  fn skip_ref(&self, n: usize) -> &Self {
     &self[min(n, self.len())..self.len()]
   }
 
   #[inline]
-  fn skip_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
+  fn skip_while_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[min(index, self.len())..self.len()],
       None => &self[0..0],
@@ -246,71 +246,20 @@ impl<Item> Slice<Item> for [Item] {
   }
 
   #[inline]
-  fn tail(&self) -> &Self {
+  fn tail_ref(&self) -> &Self {
     &self[min(1, self.len())..self.len()]
   }
 
   #[inline]
-  fn take(&self, n: usize) -> &Self {
+  fn take_ref(&self, n: usize) -> &Self {
     &self[0..min(n, self.len())]
   }
 
   #[inline]
-  fn take_while(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
+  fn take_while_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> &Self {
     match self.iter().position(|x| !predicate(x)) {
       Some(index) => &self[0..min(index, self.len())],
       None => self,
     }
-  }
-}
-
-impl<Item> Transform<Item> for [Item] {
-  #[inline]
-  fn collect<B>(&self) -> B
-  where
-    Item: Clone,
-    B: FromIterator<Item>,
-  {
-    collect(self.iter())
-  }
-
-  #[inline]
-  fn to_bset(&self) -> BTreeSet<Item>
-  where
-    Item: Ord + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_deque(&self) -> VecDeque<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_heap(&self) -> BinaryHeap<Item>
-  where
-    Item: Ord + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_list(&self) -> LinkedList<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_set(&self) -> HashSet<Item>
-  where
-    Item: Eq + Hash + Clone,
-  {
-    self.iter().cloned().collect()
   }
 }

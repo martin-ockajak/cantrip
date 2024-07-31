@@ -20,7 +20,7 @@ pub trait Sequence<Item> {
   /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
-  ///
+  //
   /// assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
   /// assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
   ///
@@ -157,7 +157,7 @@ pub trait Sequence<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// let a = [1, 2, 3];
+  /// let a = vec![1, 2, 3];
   /// let e = Vec::<i32>::new();
   ///
   /// assert_eq!(a.joined(", "), "1, 2, 3");
@@ -409,7 +409,7 @@ pub trait Sequence<Item> {
   /// operators like `-` the order will affect the final result.
   /// For a *left-associative* version of `rfold_ref()`, see [`fold_ref()`].
   ///
-  /// [`rfold()`]: crate::SequenceInto::rfold
+  /// [`rfold()`]: crate::SequenceTo::rfold
   /// [`fold_ref()`]: crate::Collection::fold_ref
   ///
   /// # Examples

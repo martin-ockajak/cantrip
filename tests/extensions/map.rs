@@ -1,12 +1,12 @@
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 
-use cantrip::Map;
+use cantrip::{Convert, Map};
 
 use crate::extensions::util::{assert_map_equal, assert_set_equal, TestCollection, TestMap};
 
 pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
-  C: TestMap<'a, i64, i64>,
+  C: TestMap<'a, i64, i64> + Convert<(i64, i64)>,
   C::This<i64, i64>: TestCollection<(i64, i64)>,
 {
   // add
@@ -42,10 +42,6 @@ where
   // collect
   assert_eq!(a.collect::<BTreeSet<(i64, i64)>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
   assert_eq!(e.collect::<BTreeSet<(i64, i64)>>(), BTreeSet::new());
-
-  // collect_to
-  assert_eq!(a.collect_to::<BTreeSet<(i64, i64)>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
-  assert_eq!(e.collect_to::<BTreeSet<(i64, i64)>>(), BTreeSet::new());
 
   // count_by
   let a = a_source.clone();
@@ -169,12 +165,6 @@ where
   let e = e_source.clone();
   assert_map_equal(a.intersect(&vec![(4, 4), (2, 2), (3, 4), (4, 5)]), HashMap::from([(2, 2)]));
   assert_map_equal(e.intersect(&vec![(1, 1)]), HashMap::new());
-
-  // into_vec
-  let a = a_source.clone();
-  let e = e_source.clone();
-  assert_set_equal(a.into_vec(), vec![(1, 1), (2, 2), (3, 3)]);
-  assert_eq!(e.into_vec(), vec![]);
 
   // map
   let a = a_source.clone();
@@ -300,6 +290,7 @@ where
   assert_map_equal(a.substitute(&3, 4, 4), HashMap::from([(1, 1), (2, 2), (4, 4)]));
   assert_map_equal(e.substitute(&3, 4, 4), HashMap::new());
 
+  // substitute_multi
   let a = a_source.clone();
   let e = e_source.clone();
   assert_map_equal(a.substitute_multi(&vec![2, 3], vec![(4, 4), (5, 5)]), HashMap::from([(1, 1), (4, 4), (5, 5)]));

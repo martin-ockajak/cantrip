@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::BTreeMap;
 use std::hash::Hash;
 
 use crate::extensions::*;
@@ -36,16 +36,6 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   #[inline]
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
     self.iter().any(predicate)
-  }
-
-  #[inline]
-  fn collect<B>(&self) -> B
-  where
-    Key: Clone,
-    Value: Clone,
-    B: FromIterator<(Key, Value)>,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
   }
 
   #[inline]
@@ -197,42 +187,6 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn to_bmap(self) -> BTreeMap<Key, Value>
-  where
-    Key: Ord + Clone,
-    Value: Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
-  fn to_bset(self) -> BTreeSet<(Key, Value)>
-  where
-    Key: Ord + Clone,
-    Value: Ord + Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
-  fn to_deque(self) -> VecDeque<(Key, Value)>
-  where
-    Key: Clone,
-    Value: Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
-  fn to_heap(self) -> BinaryHeap<(Key, Value)>
-  where
-    Key: Ord + Clone,
-    Value: Ord + Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
   fn to_keys(&self) -> Vec<Key>
   where
     Key: Clone,
@@ -241,46 +195,10 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn to_list(self) -> LinkedList<(Key, Value)>
-  where
-    Key: Clone,
-    Value: Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
-  fn to_map(self) -> HashMap<Key, Value>
-  where
-    Key: Eq + Hash + Clone,
-    Value: Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
-  fn to_set(self) -> HashSet<(Key, Value)>
-  where
-    Key: Eq + Hash + Clone,
-    Value: Eq + Hash + Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
   fn to_values(&self) -> Vec<Value>
   where
     Value: Clone,
   {
     self.values().cloned().collect()
-  }
-
-  #[inline]
-  fn to_vec(self) -> Vec<(Key, Value)>
-  where
-    Key: Clone,
-    Value: Clone,
-  {
-    self.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
   }
 }

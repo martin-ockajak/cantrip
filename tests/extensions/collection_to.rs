@@ -1,18 +1,17 @@
 use std::collections::{HashMap, HashSet, LinkedList};
 
-use cantrip::CollectionInto;
+use cantrip::CollectionTo;
 
 use crate::extensions::util::{
   assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent,
   TestCollectible, TestCollection,
 };
 
-pub(crate) fn test_collection_into<'a, C, D>(
-  sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C,
-) where
+pub(crate) fn test_collection_to<'a, C, D>(sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C)
+where
   C: TestCollectible<'a, i64>,
   C::This<i64>: TestCollection<i64>,
-  D: CollectionInto<Vec<i64>> + TestCollection<Vec<i64>> + IntoIterator<Item = Vec<i64>>,
+  D: CollectionTo<Vec<i64>> + TestCollection<Vec<i64>> + IntoIterator<Item = Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
 {
   // add
@@ -35,15 +34,15 @@ pub(crate) fn test_collection_into<'a, C, D>(
   }
   assert_seq_equal(e.add(1), vec![1]);
 
-  // collect_to
+  // collect
   let a = a_source.clone();
   let e = e_source.clone();
   if sequence {
-    assert_eq!(a.collect_to::<LinkedList<i64>>(), LinkedList::from([1, 2, 3]));
+    assert_eq!(a.collect::<LinkedList<i64>>(), LinkedList::from([1, 2, 3]));
   } else {
-    assert_eq!(a.collect_to::<HashSet<i64>>(), HashSet::from([1, 2, 3]));
+    assert_eq!(a.collect::<HashSet<i64>>(), HashSet::from([1, 2, 3]));
   }
-  assert_eq!(e.collect_to::<LinkedList<i64>>(), LinkedList::new());
+  assert_eq!(e.collect::<LinkedList<i64>>(), LinkedList::new());
 
   // combinations
   let a = a_source.clone();
@@ -53,7 +52,7 @@ pub(crate) fn test_collection_into<'a, C, D>(
   assert_vec_seq_equivalent(a.combinations(2), vec![vec![1, 2], vec![1, 3], vec![2, 3]]);
   assert_vec_seq_equivalent(a.combinations(3), vec![vec![1, 2, 3]]);
   assert_vec_seq_equivalent(a.combinations(4), vec![]);
-  assert_vec_seq_equivalent(e.combinations(2), vec![]);
+  assert_vec_seq_equivalent(e.combinations(1), vec![]);
 
   // delete
   let a = a_source.clone();
@@ -204,6 +203,25 @@ pub(crate) fn test_collection_into<'a, C, D>(
   let (e_even, e_odd) = e.partition(|n| n % 2 == 0);
   assert_seq_equal(e_even, vec![]);
   assert_seq_equal(e_odd, vec![]);
+
+  // partitions
+  let a = a_source.clone();
+  let e = e_source.clone();
+  if sequence {
+    let expected_partitions = vec![
+      vec![vec![1, 2, 3]],
+      vec![vec![1, 2], vec![3]],
+      vec![vec![1, 3], vec![2]],
+      vec![vec![1], vec![2, 3]],
+      vec![vec![1], vec![2], vec![3]],
+    ];
+    for (partition, expected) in a.partitions().into_iter().zip(expected_partitions) {
+      assert_vec_seq_equivalent(partition, expected);
+    }
+  } else {
+    assert_eq!(a.partitions().map(|x| x.len()).sum(), 10);
+  }
+  assert!(e.partitions().is_empty());
 
   // partition_map
   let a = a_source.clone();

@@ -1,5 +1,5 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -178,11 +178,6 @@ pub trait Map<Key, Value> {
   /// helps the inference algorithm understand specifically which collection
   /// you're trying to collect into.
   ///
-  /// This is a non-consuming variant of [`collect_to()`].
-  ///
-  /// [`collect_to()`]: Map::collect_to
-  ///
-  ///
   /// # Examples
   ///
   /// Basic usage:
@@ -252,98 +247,8 @@ pub trait Map<Key, Value> {
   /// ```
   ///
   /// [`BTreeSet<T>`]: ../../std/collections/struct.BTreeSet.html
-  fn collect<B>(&self) -> B
-  where
-    Key: Clone,
-    Value: Clone,
-    B: FromIterator<(Key, Value)>;
-
-  /// Transforms this map into specified collection type.
-  ///
-  /// `collect_to()` can take any map, and turn it into a relevant
-  /// collection. This can be used in a variety of contexts.
-  ///
-  /// Because `collect_to()` is so general, it can cause problems with type
-  /// inference. As such, `collect_to()` is one of the few times you'll see
-  /// the syntax affectionately known as the 'turbofish': `::<>`. This
-  /// helps the inference algorithm understand specifically which collection
-  /// you're trying to collect_to into.
-  ///
-  /// This is a consuming variant of [`collect()`].
-  ///
-  /// [`collect()`]: Map::collect
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{HashMap, HashSet};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// let collect_toed: HashSet<(i32, i32)> = a.collect_to();
-  ///
-  /// assert_eq!(collect_toed, HashSet::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  ///
-  /// Note that we needed the `::HashSet<i32>` on the left-hand side. This is because
-  /// we could collect_to into, for example, a [`BTreeSet<T>`] instead:
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeSet, HashMap};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// let collect_toed: BTreeSet<(i32, i32)> = a.collect_to();
-  ///
-  /// assert_eq!(collect_toed, BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  ///
-  /// Using the 'turbofish' instead of annotating `collect_toed`:
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeSet, HashMap};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.collect_to::<BTreeSet<(i32, i32)>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  ///
-  /// Because `collect_to()` only cares about what you're collecting into, you can
-  /// still use a partial type hint, `_`, with the turbofish:
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeSet, HashMap};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.collect_to::<BTreeSet<_>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  ///
-  /// [`BTreeSet<T>`]: ../../std/collections/struct.BTreeSet.html
   #[inline]
-  fn collect_to<B>(self) -> B
+  fn collect<B>(self) -> B
   where
     B: FromIterator<(Key, Value)>,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -897,7 +802,7 @@ pub trait Map<Key, Value> {
   ///
   /// [`map()`]: Map::map_ref
   /// [`map(f)`]: Map::map_ref
-  /// [`.flat()`]: crate::CollectionInto::flat
+  /// [`.flat()`]: crate::CollectionTo::flat
   /// [`flat_map_ref()`]: Map::flat_map_ref
   ///
   /// # Example
@@ -953,7 +858,7 @@ pub trait Map<Key, Value> {
   ///
   /// [`map_ref()`]: Map::map_ref
   /// [`map_ref(f)`]: Map::map_ref
-  /// [`.flat()`]: crate::CollectionInto::flat
+  /// [`.flat()`]: crate::CollectionTo::flat
   /// [`flat_map()`]: Map::flat_map
   ///
   /// # Example
@@ -1198,36 +1103,6 @@ pub trait Map<Key, Value> {
   {
     let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(entries.iterator().map(|(k, v)| (k, v)));
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
-  }
-
-  /// Creates a new vector from the elements of this map.
-  ///
-  /// This is an equivalent of [`Iterator::collect`].
-  ///
-  /// This is a consuming variant of [`to_vec()`].
-  ///
-  /// [`to_vec()`]: Map::to_vec
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::BTreeMap;
-  ///
-  /// let a = BTreeMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.into_vec(), vec![(1, 1), (2, 2), (3, 3)]);
-  /// ```
-  #[inline]
-  fn into_vec(self) -> Vec<(Key, Value)>
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
-    self.into_iter().collect()
   }
 
   /// Creates a new map by applying the given closure `function` to each entry in
@@ -2220,125 +2095,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
-  /// Creates a new ordered map from the elements of this collection.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_bmap()`].
-  ///
-  /// [`into_bmap()`]: crate::TransformInto::into_bmap
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeMap, HashMap};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_bmap(), BTreeMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3)
-  /// ]));
-  /// ```
-  fn to_bmap(self) -> BTreeMap<Key, Value>
-  where
-    Key: Ord + Clone,
-    Value: Clone;
-
-  /// Creates a new ordered set from the elements of this map.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_bset()`].
-  ///
-  /// [`into_bset()`]: crate::TransformInto::into_bset
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeSet, HashMap};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_bset(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  fn to_bset(self) -> BTreeSet<(Key, Value)>
-  where
-    Key: Ord + Clone,
-    Value: Ord + Clone;
-
-  /// Creates a new double-ended queue from the elements of this map.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_deque()`].
-  ///
-  /// [`into_deque()`]: crate::TransformInto::into_deque
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeMap, VecDeque};
-  ///
-  /// let a = BTreeMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_deque(), VecDeque::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  fn to_deque(self) -> VecDeque<(Key, Value)>
-  where
-    Key: Clone,
-    Value: Clone;
-
-  /// Creates a new priority queue from the elements of this map.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_heap()`].
-  ///
-  /// [`into_heap()`]: crate::TransformInto::into_heap
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{HashMap, HashSet};
-  /// use std::collections::BinaryHeap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(
-  ///   a.to_heap().to_set(),
-  ///   BinaryHeap::from([(1, 1), (2, 2), (3, 3)]).to_set()
-  /// );
-  /// ```
-  fn to_heap(self) -> BinaryHeap<(Key, Value)>
-  where
-    Key: Ord + Clone,
-    Value: Ord + Clone;
-
   /// Creates a new vector from the keys of this map in arbitrary order.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`] for map keys.
   ///
   /// # Example
   ///
@@ -2357,91 +2114,6 @@ pub trait Map<Key, Value> {
   fn to_keys(&self) -> Vec<Key>
   where
     Key: Clone;
-
-  /// Creates a new doubly-linked list from the elements of this map.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_list()`].
-  ///
-  /// [`into_list()`]: crate::TransformInto::into_list
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{BTreeMap, LinkedList};
-  ///
-  /// let a = BTreeMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_list(), LinkedList::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  fn to_list(self) -> LinkedList<(Key, Value)>
-  where
-    Key: Clone,
-    Value: Clone;
-
-  /// Creates a new hash map from the elements of this collection.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_map()`].
-  ///
-  /// [`into_map()`]: crate::TransformInto::into_map
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashMap;
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_map(), HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3)
-  /// ]));
-  /// ```
-  fn to_map(self) -> HashMap<Key, Value>
-  where
-    Key: Eq + Hash + Clone,
-    Value: Clone;
-
-  /// Creates a new ordered set from the elements of this map.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_set()`].
-  ///
-  /// [`into_set()`]: crate::TransformInto::into_set
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::{HashSet, HashMap};
-  ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_set(), HashSet::from([(1, 1), (2, 2), (3, 3)]));
-  /// ```
-  fn to_set(self) -> HashSet<(Key, Value)>
-  where
-    Key: Eq + Hash + Clone,
-    Value: Eq + Hash + Clone;
 
   /// Creates a new vector from the values of this map in arbitrary order.
   ///
@@ -2463,33 +2135,6 @@ pub trait Map<Key, Value> {
   /// ```
   fn to_values(&self) -> Vec<Value>
   where
-    Value: Clone;
-
-  /// Creates a new vector from the elements of this map.
-  ///
-  /// This is a non-consuming equivalent of [`Iterator::collect`].
-  ///
-  /// This is a non-consuming variant of [`into_bmap()`].
-  ///
-  /// [`into_bmap()`]: crate::TransformVec::into_vec
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use cantrip::*;
-  /// use std::collections::BTreeMap;
-  ///
-  /// let a = BTreeMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  ///
-  /// assert_eq!(a.to_vec(), vec![(1, 1), (2, 2), (3, 3)]);
-  /// ```
-  fn to_vec(self) -> Vec<(Key, Value)>
-  where
-    Key: Clone,
     Value: Clone;
 
   /// Creates a new map containing a single element.

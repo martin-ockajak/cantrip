@@ -1,8 +1,7 @@
 use std::cmp::Ordering;
-use std::collections::{BinaryHeap, BTreeSet, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 
-use crate::extensions::transform::Transform;
 use crate::extensions::*;
 use crate::Iterable;
 
@@ -133,7 +132,7 @@ impl<Item> Collection<Item> for HashSet<Item> {
   }
 }
 
-impl<Item: Eq + Hash> CollectionInto<Item> for HashSet<Item> {
+impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 
   #[inline]
@@ -220,6 +219,15 @@ impl<Item: Eq + Hash> CollectionInto<Item> for HashSet<Item> {
   }
 
   #[inline]
+  fn partitions(&self) -> Vec<Vec<Self>>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    partitions(self.iter())
+  }
+
+  #[inline]
   fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,
@@ -266,66 +274,5 @@ impl<Item: Eq + Hash> CollectionInto<Item> for HashSet<Item> {
       let _unused = self.insert(replacement);
     }
     self
-  }
-}
-
-impl<Item> Transform<Item> for HashSet<Item> {
-  #[inline]
-  fn collect<B>(&self) -> B
-  where
-    Item: Clone,
-    B: FromIterator<Item>
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_bset(&self) -> BTreeSet<Item>
-  where
-    Item: Ord + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_deque(&self) -> VecDeque<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_heap(&self) -> BinaryHeap<Item>
-  where
-    Item: Ord + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_list(&self) -> LinkedList<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_set(&self) -> HashSet<Item>
-  where
-    Item: Eq + Hash + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-}
-
-impl<Item> TransformVec<Item> for HashSet<Item> {
-  #[inline]
-  fn to_vec(&self) -> Vec<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
   }
 }

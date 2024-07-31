@@ -1,7 +1,6 @@
 #![deny(warnings)]
 #![allow(unused_crate_dependencies)]
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
-
 use crate::extensions::traits::*;
 
 mod extensions;

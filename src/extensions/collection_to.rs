@@ -1,5 +1,5 @@
 use std::cmp::Reverse;
-use std::collections::{BinaryHeap, HashMap, LinkedList};
+use std::collections::{BinaryHeap, HashMap, LinkedList, VecDeque};
 use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
@@ -15,7 +15,7 @@ use crate::Iterable;
 /// - Consumes the collection and its elements
 /// - May create a new collection
 ///
-pub trait CollectionInto<Item> {
+pub trait CollectionTo<Item> {
   /// This collection type constructor
   type This<I>;
 
@@ -60,23 +60,19 @@ pub trait CollectionInto<Item> {
 
   /// Transforms this collection into specified collection type.
   ///
-  /// `collect_to()` can take any collection, and turn it into a relevant
+  /// `collect()` can take any collection, and turn it into a relevant
   /// collection. This can be used in a variety of contexts.
   ///
-  /// `collect_to()` can also create instances of types that are not typical
+  /// `collect()` can also create instances of types that are not typical
   /// collections. For example, a [`String`] can be built from [`char`]s,
   /// and a collection of [`Result<T, E>`][`Result`] items can be collected
   /// into `Result<Collection<T>, E>`. See the examples below for more.
   ///
-  /// Because `collect_to()` is so general, it can cause problems with type
-  /// inference. As such, `collect_to()` is one of the few times you'll see
+  /// Because `collect()` is so general, it can cause problems with type
+  /// inference. As such, `collect()` is one of the few times you'll see
   /// the syntax affectionately known as the 'turbofish': `::<>`. This
   /// helps the inference algorithm understand specifically which collection
   /// you're trying to collect into.
-  ///
-  /// This is a consuming variant of [`collect()`].
-  ///
-  /// [`collect()`]: crate::Transform::collect
   ///
   /// # Examples
   ///
@@ -88,7 +84,7 @@ pub trait CollectionInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let collected: LinkedList<i32> = a.collect_to();
+  /// let collected: LinkedList<i32> = a.collect();
   ///
   /// assert_eq!(collected, LinkedList::from([1, 2, 3]));
   /// ```
@@ -102,7 +98,7 @@ pub trait CollectionInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// let collected: VecDeque<i32> = a.collect_to();
+  /// let collected: VecDeque<i32> = a.collect();
   ///
   /// assert_eq!(collected, VecDeque::from([1, 2, 3]));
   /// ```
@@ -115,10 +111,10 @@ pub trait CollectionInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.collect_to::<VecDeque<i32>>(), VecDeque::from([1, 2, 3]));
+  /// assert_eq!(a.collect::<VecDeque<i32>>(), VecDeque::from([1, 2, 3]));
   /// ```
   ///
-  /// Because `collect_to()` only cares about what you're collecting into, you can
+  /// Because `collect()` only cares about what you're collecting into, you can
   /// still use a partial type hint, `_`, with the turbofish:
   ///
   /// ```
@@ -127,22 +123,22 @@ pub trait CollectionInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.collect_to::<VecDeque<_>>(), VecDeque::from([1, 2, 3]));
+  /// assert_eq!(a.collect::<VecDeque<_>>(), VecDeque::from([1, 2, 3]));
   /// ```
   ///
-  /// Using `collect_to()` to make a [`String`]:
+  /// Using `collect()` to make a [`String`]:
   ///
   /// ```
   /// use cantrip::*;
   ///
   /// let a = vec!['h', 'e', 'l', 'l', 'o'];
   ///
-  /// let hello: String = a.collect_to();
+  /// let hello: String = a.collect();
   ///
   /// assert_eq!("hello", hello);
   /// ```
   ///
-  /// If you have a list of [`Result<T, E>`][`Result`]s, you can use `collect_to()` to
+  /// If you have a list of [`Result<T, E>`][`Result`]s, you can use `collect()` to
   /// see if any of them failed:
   ///
   /// ```
@@ -150,14 +146,14 @@ pub trait CollectionInto<Item> {
   ///
   /// let a = vec![Ok(1), Err("nope"), Ok(3), Err("bad")];
   ///
-  /// let result: Result<Vec<_>, &str> = a.collect_to();
+  /// let result: Result<Vec<_>, &str> = a.collect();
   ///
   /// // gives us the first error
   /// assert_eq!(Err("nope"), result);
   ///
   /// let b = vec![Ok(1), Ok(3)];
   ///
-  /// let result: Result<Vec<_>, &str> = b.collect_to();
+  /// let result: Result<Vec<_>, &str> = b.collect();
   ///
   /// // gives us the list of answers
   /// assert_eq!(Ok(vec![1, 3]), result);
@@ -168,7 +164,7 @@ pub trait CollectionInto<Item> {
   /// [`String`]: ../../std/string/struct.String.html
   /// [`char`]: type@char
   #[inline]
-  fn collect_to<B>(self) -> B
+  fn collect<B>(self) -> B
   where
     B: FromIterator<Item>,
     Self: IntoIterator<Item = Item> + Sized,
@@ -185,7 +181,7 @@ pub trait CollectionInto<Item> {
   ///
   /// The order of combination values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::SequenceInto::unique
+  /// [`unique()`]: crate::SequenceTo::unique
   ///
   /// # Example
   ///
@@ -201,7 +197,7 @@ pub trait CollectionInto<Item> {
   /// assert_eq!(a.combinations(3), vec![vec![1, 2, 3]]);
   ///
   /// assert_eq!(a.combinations(4), Vec::<Vec<i32>>::new());
-  /// assert_eq!(e.combinations(2), Vec::<Vec<i32>>::new());
+  /// assert_eq!(e.combinations(1), Vec::<Vec<i32>>::new());
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
   where
@@ -271,8 +267,7 @@ pub trait CollectionInto<Item> {
   fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
-    Self: IntoIterator<Item = Item>,
-    Self: FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut deleted: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
@@ -318,7 +313,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a non-consuming variant of [`filter_ref()`].
   ///
-  /// [`filter_ref()`]: CollectionInto::filter_ref
+  /// [`filter_ref()`]: CollectionTo::filter_ref
   ///
   /// # Examples
   ///
@@ -389,6 +384,103 @@ pub trait CollectionInto<Item> {
     self.into_iter().filter(predicate).collect()
   }
 
+  /// Creates a new collection by filters and maps this collection.
+  ///
+  /// The returned collection contains only the `value`s for which the supplied
+  /// closure returns `Some(value)`.
+  ///
+  /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
+  /// concise. The example below shows how a `filter().map()` can be shortened to a
+  /// single call to `filter_map`.
+  ///
+  /// This is a consuming variant of [`filter_map_ref()`].
+  ///
+  /// [`filter()`]: CollectionTo::filter
+  /// [`map()`]: CollectionTo::map
+  /// [`filter_map_ref()`]: CollectionTo::filter_map_ref
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }),
+  ///   vec![3]
+  /// );
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter()`] and [`map()`]:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.filter(|&x| x % 2 == 0).map(|x| x + 1),
+  ///   vec![3]
+  /// );
+  /// ```
+  #[inline]
+  fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
+
+  /// Creates a new collection by filtering and mapping this collection.
+  ///
+  /// The returned collection contains only the `value`s for which the supplied
+  /// closure returns `Some(value)`.
+  ///
+  /// `filter_map_ref()` can be used to make chains of [`filter()`] and [`map_ref()`] more
+  /// concise. The example below shows how a `filter().map_ref()` can be shortened to a
+  /// single call to `filter_map()`.
+  ///
+  /// This is a non-consuming variant of [`filter_map()`].
+  ///
+  /// [`filter()`]: CollectionTo::filter
+  /// [`map_ref()`]: CollectionTo::map_ref
+  /// [`filter_map()`]: CollectionTo::filter_map_ref
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None } ),
+  ///   vec![3]
+  /// );
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  ///
+  /// assert_eq!(
+  ///   a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1),
+  ///   vec![3]
+  /// );
+  /// ```
+  fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>;
+
   /// Creates a new collection by filtering this collection using a
   /// closure to determine if an element should be retained.
   ///
@@ -398,7 +490,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a non-consuming variant of [`filter()`].
   ///
-  /// [`filter()`]: CollectionInto::filter
+  /// [`filter()`]: CollectionTo::filter
   ///
   /// # Examples
   ///
@@ -465,103 +557,6 @@ pub trait CollectionInto<Item> {
   where
     Item: Clone;
 
-  /// Creates a new collection by filters and maps this collection.
-  ///
-  /// The returned collection contains only the `value`s for which the supplied
-  /// closure returns `Some(value)`.
-  ///
-  /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
-  /// concise. The example below shows how a `filter().map()` can be shortened to a
-  /// single call to `filter_map`.
-  ///
-  /// This is a consuming variant of [`filter_map_ref()`].
-  ///
-  /// [`filter()`]: CollectionInto::filter
-  /// [`map()`]: CollectionInto::map
-  /// [`filter_map_ref()`]: CollectionInto::filter_map_ref
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(
-  ///   a.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }),
-  ///   vec![3]
-  /// );
-  /// ```
-  ///
-  /// Here's the same example, but with [`filter()`] and [`map()`]:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(
-  ///   a.filter(|&x| x % 2 == 0).map(|x| x + 1),
-  ///   vec![3]
-  /// );
-  /// ```
-  #[inline]
-  fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.into_iter().filter_map(function).collect()
-  }
-
-  /// Creates a new collection by filtering and mapping this collection.
-  ///
-  /// The returned collection contains only the `value`s for which the supplied
-  /// closure returns `Some(value)`.
-  ///
-  /// `filter_map_ref()` can be used to make chains of [`filter()`] and [`map_ref()`] more
-  /// concise. The example below shows how a `filter().map_ref()` can be shortened to a
-  /// single call to `filter_map()`.
-  ///
-  /// This is a non-consuming variant of [`filter_map()`].
-  ///
-  /// [`filter()`]: CollectionInto::filter
-  /// [`map_ref()`]: CollectionInto::map_ref
-  /// [`filter_map()`]: CollectionInto::filter_map_ref
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(
-  ///   a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None } ),
-  ///   vec![3]
-  /// );
-  /// ```
-  ///
-  /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
-  ///
-  /// ```
-  /// use cantrip::*;
-  ///
-  /// let a = vec![1, 2, 3];
-  ///
-  /// assert_eq!(
-  ///   a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1),
-  ///   vec![3]
-  /// );
-  /// ```
-  fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>;
-
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
   ///
@@ -572,7 +567,7 @@ pub trait CollectionInto<Item> {
   /// This is a consuming variant of [`find_map_ref()`].
   ///
   /// [`find()`]: crate::Collection::find
-  /// [`map()`]: CollectionInto::map_ref
+  /// [`map()`]: CollectionTo::map_ref
   /// [`find_map_ref()`]: crate::Collection::find_map_ref
   ///
   /// # Example
@@ -590,8 +585,7 @@ pub trait CollectionInto<Item> {
   #[inline]
   fn find_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
   where
-    Self: IntoIterator<Item = Item>,
-    Self: Sized,
+    Self: IntoIterator<Item = Item> + Sized,
   {
     self.into_iter().find_map(function)
   }
@@ -677,7 +671,7 @@ pub trait CollectionInto<Item> {
   /// two-dimensional and not one-dimensional. To get a one-dimensional
   /// structure, you have to `flat()` again.
   ///
-  /// [`flat_map()`]: CollectionInto::flat_map_ref
+  /// [`flat_map()`]: CollectionTo::flat_map_ref
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
@@ -705,10 +699,10 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a consuming variant of [`flat_map_ref()`].
   ///
-  /// [`map()`]: CollectionInto::map
-  /// [`map(f)`]: CollectionInto::map
-  /// [`.flat()`]: CollectionInto::flat
-  /// [`flat_map_ref()`]: CollectionInto::flat_map_ref
+  /// [`map()`]: CollectionTo::map
+  /// [`map(f)`]: CollectionTo::map
+  /// [`.flat()`]: CollectionTo::flat
+  /// [`flat_map_ref()`]: CollectionTo::flat_map_ref
   ///
   /// # Example
   ///
@@ -750,10 +744,10 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a non-consuming variant of [`flat_map()`].
   ///
-  /// [`map_ref()`]: CollectionInto::map_ref
-  /// [`map_ref(f)`]: CollectionInto::map_ref
-  /// [`.flat()`]: CollectionInto::flat
-  /// [`flat_map()`]: CollectionInto::flat_map
+  /// [`map_ref()`]: CollectionTo::map_ref
+  /// [`map_ref(f)`]: CollectionTo::map_ref
+  /// [`.flat()`]: CollectionTo::flat
+  /// [`flat_map()`]: CollectionTo::flat_map
   ///
   /// # Example
   ///
@@ -802,8 +796,8 @@ pub trait CollectionInto<Item> {
   /// For a *right-associative* version of `fold()`, see [`rfold()`].
   ///
   /// [`fold_ref()`]: crate::Collection::fold_ref
-  /// [`reduce()`]: CollectionInto::reduce
-  /// [`rfold()`]: crate::SequenceInto::rfold
+  /// [`reduce()`]: CollectionTo::reduce
+  /// [`rfold()`]: crate::SequenceTo::rfold
   ///
   /// # Examples
   ///
@@ -1008,7 +1002,7 @@ pub trait CollectionInto<Item> {
   ///
   /// The order of retained values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::SequenceInto::unique
+  /// [`unique()`]: crate::SequenceTo::unique
   ///
   /// # Example
   ///
@@ -1034,8 +1028,7 @@ pub trait CollectionInto<Item> {
   fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
-    Self: IntoIterator<Item = Item>,
-    Self: FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
     let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
@@ -1096,7 +1089,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a consuming variant of [`map_ref()`].
   ///
-  /// [`map_ref()`]: CollectionInto::map_ref
+  /// [`map_ref()`]: CollectionTo::map_ref
   ///
   /// # Arguments
   ///
@@ -1142,7 +1135,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a non-consuming variant of [`map()`].
   ///
-  /// [`map()`]: CollectionInto::map
+  /// [`map()`]: CollectionTo::map
   ///
   /// # Arguments
   ///
@@ -1201,6 +1194,39 @@ pub trait CollectionInto<Item> {
     self.into_iter().partition(predicate)
   }
 
+  /// Creates a new collection containing all partitions of this collection.
+  ///
+  /// Partitions for sequences are generated based on element positions, not values.
+  /// Therefore, if a sequence contains duplicate elements, the resulting partitionss will too.
+  /// To obtain partitions of unique elements for sequences, use [`unique()`]`.partitions()`.
+  ///
+  /// The order of partition values is preserved for sequences.
+  ///
+  /// [`unique()`]: crate::SequenceTo::unique
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  ///
+  /// let a = vec![1, 2, 3];
+  /// let e = Vec::<i32>::new();
+  ///
+  /// assert_eq!(a.partitions(), vec![
+  ///   vec![vec![1, 2, 3]],
+  ///   vec![vec![1, 2], vec![3]],
+  ///   vec![vec![1, 3], vec![2]],
+  ///   vec![vec![1], vec![2, 3]],
+  ///   vec![vec![1], vec![2], vec![3]],
+  /// ]);
+  ///
+  /// assert_eq!(e.partitions(), Vec::<Vec<Vec<i32>>>::new());
+  /// ```
+  fn partitions(&self) -> Vec<Vec<Self>>
+  where
+    Item: Clone,
+    Self: Sized;
+
   /// Creates two new collections with arbitrary element types from this collection
   /// by applying specified function.
   ///
@@ -1209,7 +1235,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map()`]: CollectionInto::partition_map_ref
+  /// [`partition_map()`]: CollectionTo::partition_map_ref
   ///
   /// # Example
   ///
@@ -1248,7 +1274,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a non-consuming variant of [`partition_map()`].
   ///
-  /// [`partition_map()`]: CollectionInto::partition_map
+  /// [`partition_map()`]: CollectionTo::partition_map
   ///
   /// # Example
   ///
@@ -1275,7 +1301,7 @@ pub trait CollectionInto<Item> {
   ///
   /// The order of sub-collection values is preserved for sequences.
   ///
-  /// [`unique()`]: crate::SequenceInto::unique
+  /// [`unique()`]: crate::SequenceTo::unique
   ///
   /// # Example
   ///
@@ -1346,7 +1372,7 @@ pub trait CollectionInto<Item> {
   ///
   /// This is a consuming variant of [`reduce_ref()`].
   ///
-  /// [`fold()`]: CollectionInto::fold
+  /// [`fold()`]: CollectionTo::fold
   /// [`reduce_ref()`]: crate::Collection::reduce_ref
   ///
   /// # Example
@@ -1590,6 +1616,35 @@ pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right
     }
   }
   (result_left, result_right)
+}
+
+#[inline]
+pub(crate) fn partitions<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
+  iterator: impl Iterator<Item = &'a Item>,
+) -> Vec<Vec<Collection>> {
+  let values = Vec::from_iter(iterator);
+  if values.is_empty() {
+    return vec![];
+  }
+  let size = values.len() as i64;
+  let mut result = Vec::new();
+  let mut stack = VecDeque::<(i64, Vec<Vec<i64>>)>::with_capacity(values.len());
+  stack.push_back((0, vec![]));
+
+  while let Some((current_index, mut partition)) = stack.pop_back() {
+    if current_index == size {
+      result.push(partition.iter().map(|tuple| collect_by_index(&values, tuple)).collect());
+      continue;
+    }
+    for index in 0..partition.len() {
+      let mut new_partition = partition.clone();
+      new_partition[index].push(current_index);
+      stack.push_front((current_index + 1, new_partition));
+    }
+    partition.push([current_index].to_vec());
+    stack.push_front((current_index + 1, partition));
+  }
+  result
 }
 
 pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(

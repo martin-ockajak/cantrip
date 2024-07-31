@@ -34,13 +34,13 @@
 //! a.fold(0, |r, x| r + x);                    // 6
 //!
 //! # let a = source.clone();
-//! a.map_ref(|&x| (x, x)).into_map();          // HashMap::from([(1, 1), (2, 2), (3, 3)])
+//! a.map_ref(|&x| (x, x)).to_map();            // HashMap::from([(1, 1), (2, 2), (3, 3)])
 //!
 //! # let a = source.clone();
 //! a.flat_map(|x| [x, -x]).sorted();           // vec![-3, -2, -1, 1, 2, 3]
 //!
 //! # let a = source.clone();
-//! a.filter(|&x| x > 1).into_set();            // HashSet::from([2, 3])
+//! a.filter(|&x| x > 1).to_set();              // HashSet::from([2, 3])
 //!
 //! # let a = source.clone();
 //! a.group_by(|x| x % 2);                      // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
@@ -55,7 +55,7 @@
 //! a.position_multi(|&x| x % 2 == 1);          // vec![0, 2]
 //!
 //! # let a = source.clone();
-//! a.rev().into_iter().into_deque();           // VecDeque::from([3, 2, 1])
+//! a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 //! ```
 //!
 //!
@@ -66,7 +66,7 @@
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 //! | [`find`](Collection::find)                                        |            *              |   *   |              *                |         *         |     N     |
-//! | [`find_map`](CollectionInto::find_map)                            |            *              |       |              *                |         *         |     Y     |
+//! | [`find_map`](CollectionTo::find_map)                              |            *              |       |              *                |         *         |     Y     |
 //! | [`find_map_ref`](Collection::find_map_ref)                        |            *              |   *   |              *                |         *         |     N     |
 //! | [`find_position`](Sequence::find_position)                        |            *              |   *   |                               |                   |     N     |
 //! | [`first`](List::first)                                            |            *              |   *   |                               |                   |     N     |
@@ -92,66 +92,73 @@
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`add`](CollectionInto::add)                                      |            *              |       |              *                |         *         |     Y     |
-//! | [`add_at`](SequenceInto::add_at)                                  |            *              |       |                               |                   |     Y     |
-//! | [`add_at_multi`](SequenceInto::add_at_multi)                      |            *              |       |                               |                   |     Y     |
-//! | [`add_multi`](CollectionInto::add_multi)                          |            *              |       |              *                |         *         |     Y     |
-//! | [`delete`](CollectionInto::delete)                                |            *              |       |              *                |         *         |     Y     |
-//! | [`delete_at`](SequenceInto::delete_at)                            |            *              |       |                               |                   |     Y     |
-//! | [`delete_at_multi`](SequenceInto::delete_at_multi)                |            *              |       |                               |                   |     Y     |
-//! | [`delete_multi`](CollectionInto::delete_multi)                    |            *              |       |              *                |         *         |     Y     |
-//! | [`move_at`](SequenceInto::move_at)                                |            *              |       |                               |                   |     Y     |
-//! | [`pad_left`](SequenceInto::pad_left)                              |            *              |       |                               |                   |     Y     |
-//! | [`pad_left_with`](SequenceInto::pad_left_with)                    |            *              |       |                               |                   |     Y     |
-//! | [`pad_right`](SequenceInto::pad_right)                            |            *              |       |                               |                   |     Y     |
-//! | [`pad_right_with`](SequenceInto::pad_right_with)                  |            *              |       |                               |                   |     Y     |
-//! | [`rev`](SequenceInto::rev)                                        |            *              |       |                               |                   |     Y     |
-//! | [`substitute`](CollectionInto::substitute)                        |            *              |       |              *                |         *         |     Y     |
-//! | [`substitute_at`](SequenceInto::substitute_at)                    |            *              |       |                               |                   |     Y     |
-//! | [`substitute_at_multi`](SequenceInto::substitute_at_multi)        |            *              |       |                               |                   |     Y     |
-//! | [`substitute_multi`](CollectionInto::substitute_multi)            |            *              |       |              *                |         *         |     Y     |
-//! | [`swap_at`](SequenceInto::swap_at)                                |            *              |       |                               |                   |     Y     |
+//! | [`add`](CollectionTo::add)                                        |            *              |       |              *                |         *         |     Y     |
+//! | [`add_at`](SequenceTo::add_at)                                    |            *              |       |                               |                   |     Y     |
+//! | [`add_at_multi`](SequenceTo::add_at_multi)                        |            *              |       |                               |                   |     Y     |
+//! | [`add_multi`](CollectionTo::add_multi)                            |            *              |       |              *                |         *         |     Y     |
+//! | [`delete`](CollectionTo::delete)                                  |            *              |       |              *                |         *         |     Y     |
+//! | [`delete_at`](SequenceTo::delete_at)                              |            *              |       |                               |                   |     Y     |
+//! | [`delete_at_multi`](SequenceTo::delete_at_multi)                  |            *              |       |                               |                   |     Y     |
+//! | [`delete_multi`](CollectionTo::delete_multi)                      |            *              |       |              *                |         *         |     Y     |
+//! | [`move_at`](SequenceTo::move_at)                                  |            *              |       |                               |                   |     Y     |
+//! | [`pad_left`](SequenceTo::pad_left)                                |            *              |       |                               |                   |     Y     |
+//! | [`pad_left_with`](SequenceTo::pad_left_with)                      |            *              |       |                               |                   |     Y     |
+//! | [`pad_right`](SequenceTo::pad_right)                              |            *              |       |                               |                   |     Y     |
+//! | [`pad_right_with`](SequenceTo::pad_right_with)                    |            *              |       |                               |                   |     Y     |
+//! | [`rev`](SequenceTo::rev)                                          |            *              |       |                               |                   |     Y     |
+//! | [`substitute`](CollectionTo::substitute)                          |            *              |       |              *                |         *         |     Y     |
+//! | [`substitute_at`](SequenceTo::substitute_at)                      |            *              |       |                               |                   |     Y     |
+//! | [`substitute_at_multi`](SequenceTo::substitute_at_multi)          |            *              |       |                               |                   |     Y     |
+//! | [`substitute_multi`](CollectionTo::substitute_multi)              |            *              |       |              *                |         *         |     Y     |
+//! | [`swap_at`](SequenceTo::swap_at)                                  |            *              |       |                               |                   |     Y     |
 //!
 //! ### Filtering
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`duplicates`](SequenceInto::duplicates)                          |            *              |       |                               |                   |     Y     |
-//! | [`duplicates_by`](SequenceInto::duplicates_by)                    |            *              |       |                               |                   |     Y     |
-//! | [`filter`](CollectionInto::filter)                                |            *              |       |              *                |         *         |     Y     |
+//! | [`duplicates`](SequenceTo::duplicates)                            |            *              |       |                               |                   |     Y     |
+//! | [`duplicates_by`](SequenceTo::duplicates_by)                      |            *              |       |                               |                   |     Y     |
+//! | [`filter`](CollectionTo::filter)                                  |            *              |       |              *                |         *         |     Y     |
 //! | [`filter_keys`](Map::filter_keys)                                 |                           |       |                               |         *         |     Y     |
-//! | [`filter_map`](CollectionInto::filter_map)                        |            *              |       |              *                |         *         |     Y     |
-//! | [`filter_map_ref`](CollectionInto::filter_map_ref)                |            *              |       |              *                |         *         |     N     |
-//! | [`filter_ref`](CollectionInto::filter_ref)                        |            *              |       |              *                |         *         |     N     |
+//! | [`filter_map`](CollectionTo::filter_map)                          |            *              |       |              *                |         *         |     Y     |
+//! | [`filter_map_ref`](CollectionTo::filter_map_ref)                  |            *              |       |              *                |         *         |     N     |
+//! | [`filter_ref`](CollectionTo::filter_ref)                          |            *              |       |              *                |         *         |     N     |
 //! | [`filter_values`](Map::filter_values)                             |                           |       |                               |         *         |     Y     |
-//! | [`init`](SequenceInto::init)                                      |            *              |   *   |                               |                   |     Y     |
-//! | [`largest`](CollectionInto::largest)                              |            *              |       |              *                |                   |     Y     |
-//! | [`slice`](SequenceInto::slice)                                    |            *              |       |                               |                   |     Y     |
-//! | [`smallest`](CollectionInto::smallest)                            |            *              |       |              *                |                   |     Y     |
-//! | [`skip`](SequenceInto::skip)                                      |            *              |   *   |                               |                   |     Y     |
-//! | [`skip_while`](SequenceInto::skip_while)                          |            *              |   *   |                               |                   |     Y     |
-//! | [`step_by`](SequenceInto::step_by)                                |            *              |       |                               |                   |     Y     |
-//! | [`take`](SequenceInto::take)                                      |            *              |   *   |                               |                   |     Y     |
-//! | [`take_while`](SequenceInto::take_while)                          |            *              |   *   |                               |                   |     Y     |
-//! | [`unique`](SequenceInto::unique)                                  |            *              |       |                               |                   |     Y     |
-//! | [`unique_by`](SequenceInto::unique_by)                            |            *              |       |                               |                   |     Y     |
-//! | [`tail`](SequenceInto::tail)                                      |            *              |   *   |                               |                   |     Y     |
+//! | [`init`](SequenceTo::init)                                        |            *              |       |                               |                   |     Y     |
+//! | [`init_ref`](Slice::init_ref)                                     |                           |   *   |                               |                   |     Y     |
+//! | [`intersect`](CollectionTo::intersect)                            |            *              |       |              *                |         *         |     Y     |
+//! | [`largest`](CollectionTo::largest)                                |            *              |       |              *                |                   |     Y     |
+//! | [`slice`](SequenceTo::slice)                                      |            *              |       |                               |                   |     Y     |
+//! | [`smallest`](CollectionTo::smallest)                              |            *              |       |              *                |                   |     Y     |
+//! | [`skip`](SequenceTo::skip)                                        |            *              |       |                               |                   |     Y     |
+//! | [`skip_while`](SequenceTo::skip_while)                            |            *              |       |                               |                   |     Y     |
+//! | [`skip_ref`](Slice::skip_ref)                                     |                           |   *   |                               |                   |     Y     |
+//! | [`skip_while_ref`](Slice::skip_while_ref)                         |                           |   *   |                               |                   |     Y     |
+//! | [`step_by`](SequenceTo::step_by)                                  |            *              |       |                               |                   |     Y     |
+//! | [`take`](SequenceTo::take)                                        |            *              |       |                               |                   |     Y     |
+//! | [`take_while`](SequenceTo::take_while)                            |            *              |       |                               |                   |     Y     |
+//! | [`take_ref`](Slice::take_ref)                                     |                           |   *   |                               |                   |     Y     |
+//! | [`take_while_ref`](Slice::take_while_ref)                         |                           |   *   |                               |                   |     Y     |
+//! | [`unique`](SequenceTo::unique)                                    |            *              |       |                               |                   |     Y     |
+//! | [`unique_by`](SequenceTo::unique_by)                              |            *              |       |                               |                   |     Y     |
+//! | [`tail`](SequenceTo::tail)                                        |            *              |       |                               |                   |     Y     |
+//! | [`tail_ref`](Slice::tail_ref)                                     |                           |   *   |                               |                   |     N     |
 //!
 //! ### Mapping
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`coalesce`](SequenceInto::coalesce)                              |            *              |       |                               |                   |     Y     |
-//! | [`enumerate`](SequenceInto::enumerate)                            |            *              |       |                               |                   |     Y     |
-//! | [`flat_map`](CollectionInto::flat_map)                            |            *              |       |              *                |         *         |     Y     |
-//! | [`flat_map_ref`](CollectionInto::flat_map_ref)                    |            *              |       |              *                |         *         |     N     |
-//! | [`map`](CollectionInto::map)                                      |            *              |       |              *                |         *         |     Y     |
-//! | [`map_ref`](CollectionInto::map_ref)                              |            *              |       |              *                |         *         |     N     |
+//! | [`coalesce`](SequenceTo::coalesce)                                |            *              |       |                               |                   |     Y     |
+//! | [`enumerate`](SequenceTo::enumerate)                              |            *              |       |                               |                   |     Y     |
+//! | [`flat_map`](CollectionTo::flat_map)                              |            *              |       |              *                |         *         |     Y     |
+//! | [`flat_map_ref`](CollectionTo::flat_map_ref)                      |            *              |       |              *                |         *         |     N     |
+//! | [`map`](CollectionTo::map)                                        |            *              |       |              *                |         *         |     Y     |
+//! | [`map_ref`](CollectionTo::map_ref)                                |            *              |       |              *                |         *         |     N     |
 //! | [`map_keys`](Map::map_keys)                                       |                           |       |                               |         *         |     Y     |
 //! | [`map_values`](Map::map_values)                                   |                           |       |                               |         *         |     Y     |
-//! | [`map_while`](SequenceInto::map_while)                            |            *              |       |                               |                   |     N     |
-//! | [`scan`](SequenceInto::scan)                                      |            *              |       |                               |                   |     Y     |
-//! | [`scan_ref`](SequenceInto::scan_ref)                              |            *              |       |                               |                   |     N     |
+//! | [`map_while`](SequenceTo::map_while)                              |            *              |       |                               |                   |     N     |
+//! | [`scan`](SequenceTo::scan)                                        |            *              |       |                               |                   |     Y     |
+//! | [`scan_ref`](SequenceTo::scan_ref)                                |            *              |       |                               |                   |     N     |
 //!
 //! ### Inspecting
 //!
@@ -167,7 +174,6 @@
 //! | [`equivalent`](Sequence::equivalent)                              |            *              |   *   |                               |                   |     N     |
 //! | [`frequencies`](Sequence::frequencies)                            |            *              |   *   |                               |                   |     N     |
 //! | [`frequencies_by`](Sequence::frequencies_by)                      |            *              |   *   |                               |                   |     N     |
-//! | [`intersect`](CollectionInto::intersect)                          |            *              |       |              *                |         *         |     Y     |
 //! | [`subset`](Collection::subset)                                    |            *              |   *   |              *                |         *         |     N     |
 //! | [`superset`](Collection::superset)                                |            *              |   *   |              *                |         *         |     N     |
 //!
@@ -175,20 +181,20 @@
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`fold`](CollectionInto::fold)                                    |            *              |       |              *                |         *         |     Y     |
+//! | [`fold`](CollectionTo::fold)                                      |            *              |       |              *                |         *         |     Y     |
 //! | [`fold_ref`](Collection::fold_ref)                                |            *              |   *   |              *                |         *         |     N     |
-//! | [`group_fold`](CollectionInto::group_fold)                        |            *              |       |              *                |                   |     Y     |
+//! | [`group_fold`](CollectionTo::group_fold)                          |            *              |       |              *                |                   |     Y     |
 //! | [`group_fold_ref`](Collection::group_fold_ref)                    |            *              |   *   |              *                |                   |     N     |
-//! | [`group_reduce`](CollectionInto::group_reduce)                    |            *              |       |              *                |                   |     Y     |
+//! | [`group_reduce`](CollectionTo::group_reduce)                      |            *              |       |              *                |                   |     Y     |
 //! | [`group_reduce_ref`](Collection::group_reduce_ref)                |            *              |   *   |              *                |                   |     N     |
-//! | [`product`](CollectionInto::product)                              |            *              |       |              *                |                   |     Y     |
+//! | [`product`](CollectionTo::product)                                |            *              |       |              *                |                   |     Y     |
 //! | [`product_keys`](Map::product_keys)                               |                           |       |                               |         *         |     Y     |
 //! | [`product_values`](Map::product_values)                           |                           |       |                               |         *         |     Y     |
-//! | [`reduce`](CollectionInto::reduce)                                |            *              |       |              *                |         *         |     Y     |
+//! | [`reduce`](CollectionTo::reduce)                                  |            *              |       |              *                |         *         |     Y     |
 //! | [`reduce_ref`](Collection::reduce_ref)                            |            *              |   *   |              *                |         *         |     N     |
-//! | [`rfold`](SequenceInto::rfold)                                    |            *              |       |                               |                   |     Y     |
+//! | [`rfold`](SequenceTo::rfold)                                      |            *              |       |                               |                   |     Y     |
 //! | [`rfold_ref`](Sequence::rfold_ref)                                |            *              |   *   |                               |                   |     N     |
-//! | [`sum`](CollectionInto::sum)                                      |            *              |       |              *                |                   |     Y     |
+//! | [`sum`](CollectionTo::sum)                                        |            *              |       |              *                |                   |     Y     |
 //! | [`sum_keys`](Map::sum_keys)                                       |                           |       |                               |         *         |     Y     |
 //! | [`sum_values`](Map::sum_values)                                   |                           |       |                               |         *         |     Y     |
 //!
@@ -196,90 +202,82 @@
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`chunked`](SequenceInto::chunked)                                |            *              |       |                               |                   |     Y     |
-//! | [`chunked_by`](SequenceInto::chunked_by)                          |            *              |       |                               |                   |     Y     |
-//! | [`chunked_exact`](SequenceInto::chunked_exact)                    |            *              |       |                               |                   |     Y     |
-//! | [`cartesian_product`](SequenceInto::cartesian_product)            |            *              |       |                               |                   |     N     |
-//! | [`combinations`](CollectionInto::combinations)                    |            *              |       |              *                |                   |     N     |
-//! | [`combinations_multi`](SequenceInto::combinations_multi)          |            *              |       |                               |                   |     N     |
-//! | [`powerset`](CollectionInto::powerset)                            |            *              |       |              *                |                   |     N     |
-//! | [`variations`](SequenceInto::variations)                          |            *              |       |                               |                   |     N     |
-//! | [`windowed`](SequenceInto::windowed)                              |            *              |       |                               |                   |     N     |
-//! | [`windowed_circular`](SequenceInto::windowed_circular)            |            *              |       |                               |                   |     N     |
+//! | [`chunked`](SequenceTo::chunked)                                  |            *              |       |                               |                   |     Y     |
+//! | [`chunked_by`](SequenceTo::chunked_by)                            |            *              |       |                               |                   |     Y     |
+//! | [`chunked_exact`](SequenceTo::chunked_exact)                      |            *              |       |                               |                   |     Y     |
+//! | [`cartesian_product`](SequenceTo::cartesian_product)              |            *              |       |                               |                   |     N     |
+//! | [`combinations`](CollectionTo::combinations)                      |            *              |       |              *                |                   |     N     |
+//! | [`combinations_multi`](SequenceTo::combinations_multi)            |            *              |       |                               |                   |     N     |
+//! | [`powerset`](CollectionTo::powerset)                              |            *              |       |              *                |                   |     N     |
+//! | [`variations`](SequenceTo::variations)                            |            *              |       |                               |                   |     N     |
+//! | [`windowed`](SequenceTo::windowed)                                |            *              |       |                               |                   |     N     |
+//! | [`windowed_circular`](SequenceTo::windowed_circular)              |            *              |       |                               |                   |     N     |
 //!
 //! ### Partitioning
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`divide`](SequenceInto::divide)                                  |            *              |       |                               |                   |     Y     |
-//! | [`divide_by`](SequenceInto::divide_by)                            |            *              |       |                               |                   |     Y     |
-//! | [`group_by`](CollectionInto::group_by)                            |            *              |       |              *                |                   |     Y     |
-//! | [`partition`](CollectionInto::partition)                          |            *              |       |              *                |         *         |     Y     |
-//! | [`partition_map`](CollectionInto::partition_map)                  |            *              |       |              *                |         *         |     Y     |
-//! | [`partition_map_ref`](CollectionInto::partition_map_ref)          |            *              |       |              *                |         *         |     N     |
-//! | [`unzip`](SequenceInto::unzip)                                    |            *              |       |                               |                   |     Y     |
+//! | [`divide`](SequenceTo::divide)                                    |            *              |       |                               |                   |     Y     |
+//! | [`divide_by`](SequenceTo::divide_by)                              |            *              |       |                               |                   |     Y     |
+//! | [`group_by`](CollectionTo::group_by)                              |            *              |       |              *                |                   |     Y     |
+//! | [`partition`](CollectionTo::partition)                            |            *              |       |              *                |         *         |     Y     |
+//! | [`partitions`](CollectionTo::partitions)                          |            *              |       |              *                |                   |     N     |
+//! | [`partition_map`](CollectionTo::partition_map)                    |            *              |       |              *                |         *         |     Y     |
+//! | [`partition_map_ref`](CollectionTo::partition_map_ref)            |            *              |       |              *                |         *         |     N     |
+//! | [`unzip`](SequenceTo::unzip)                                      |            *              |       |                               |                   |     Y     |
 //!
 //! ### Merging
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`flat`](CollectionInto::flat)                                    |            *              |       |              *                |                   |     Y     |
-//! | [`interleave`](SequenceInto::interleave)                          |            *              |       |                               |                   |     Y     |
-//! | [`interleave_exact`](SequenceInto::interleave_exact)              |            *              |       |                               |                   |     Y     |
-//! | [`intersperse`](SequenceInto::intersperse)                        |            *              |       |                               |                   |     Y     |
-//! | [`intersperse_with`](SequenceInto::intersperse_with)              |            *              |       |                               |                   |     Y     |
+//! | [`flat`](CollectionTo::flat)                                      |            *              |       |              *                |                   |     Y     |
+//! | [`interleave`](SequenceTo::interleave)                            |            *              |       |                               |                   |     Y     |
+//! | [`interleave_exact`](SequenceTo::interleave_exact)                |            *              |       |                               |                   |     Y     |
+//! | [`intersperse`](SequenceTo::intersperse)                          |            *              |       |                               |                   |     Y     |
+//! | [`intersperse_with`](SequenceTo::intersperse_with)                |            *              |       |                               |                   |     Y     |
 //! | [`joined`](Sequence::joined)                                      |            *              |       |                               |                   |     N     |
-//! | [`merge`](SequenceInto::merge)                                    |            *              |       |                               |                   |     Y     |
-//! | [`merge_by`](SequenceInto::merge_by)                              |            *              |       |                               |                   |     Y     |
-//! | [`zip`](SequenceInto::zip)                                        |            *              |       |                               |                   |     Y     |
-//! | [`zip_padded`](SequenceInto::zip_padded)                          |            *              |       |                               |                   |     Y     |
+//! | [`merge`](SequenceTo::merge)                                      |            *              |       |                               |                   |     Y     |
+//! | [`merge_by`](SequenceTo::merge_by)                                |            *              |       |                               |                   |     Y     |
+//! | [`zip`](SequenceTo::zip)                                          |            *              |       |                               |                   |     Y     |
+//! | [`zip_padded`](SequenceTo::zip_padded)                            |            *              |       |                               |                   |     Y     |
 //!
 //! ### Sorting
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`sorted`](SequenceInto::sorted)                                  |            *              |       |                               |                   |     Y     |
-//! | [`sorted_by`](SequenceInto::sorted_by)                            |            *              |       |                               |                   |     Y     |
-//! | [`sorted_by_cached_key`](SequenceInto::sorted_by_cached_key)      |            *              |       |                               |                   |     Y     |
-//! | [`sorted_by_key`](SequenceInto::sorted_by_key)                    |            *              |       |                               |                   |     Y     |
-//! | [`sorted_unstable`](SequenceInto::sorted_unstable)                |            *              |       |                               |                   |     Y     |
-//! | [`sorted_unstable_by`](SequenceInto::sorted_unstable_by)          |            *              |       |                               |                   |     Y     |
-//! | [`sorted_unstable_by_key`](SequenceInto::sorted_unstable_by_key)  |            *              |       |                               |                   |     Y     |
+//! | [`sorted`](SequenceTo::sorted)                                    |            *              |       |                               |                   |     Y     |
+//! | [`sorted_by`](SequenceTo::sorted_by)                              |            *              |       |                               |                   |     Y     |
+//! | [`sorted_by_cached_key`](SequenceTo::sorted_by_cached_key)        |            *              |       |                               |                   |     Y     |
+//! | [`sorted_by_key`](SequenceTo::sorted_by_key)                      |            *              |       |                               |                   |     Y     |
+//! | [`sorted_unstable`](SequenceTo::sorted_unstable)                  |            *              |       |                               |                   |     Y     |
+//! | [`sorted_unstable_by`](SequenceTo::sorted_unstable_by)            |            *              |       |                               |                   |     Y     |
+//! | [`sorted_unstable_by_key`](SequenceTo::sorted_unstable_by_key)    |            *              |       |                               |                   |     Y     |
 //!
 //! ### Converting
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`collect`](Transform::collect)                                   |            *              |   *   |              *                |         *         |     N     |
-//! | [`collect_to`](CollectionInto::collect_to)                        |            *              |   *   |              *                |         *         |     Y     |
-//! | [`into_bmap`](TransformInto::into_bmap)                           |            *              |       |              *                |         *         |     Y     |
-//! | [`into_bset`](TransformInto::into_bset)                           |            *              |       |              *                |         *         |     Y     |
-//! | [`into_heap`](TransformInto::into_heap)                           |            *              |       |              *                |         *         |     Y     |
-//! | [`into_list`](TransformInto::into_list)                           |            *              |       |              *                |         *         |     Y     |
-//! | [`into_map`](TransformInto::into_map)                             |            *              |       |              *                |         *         |     Y     |
-//! | [`into_set`](TransformInto::into_set)                             |            *              |       |              *                |         *         |     Y     |
-//! | [`into_vec`](TransformVec::into_vec)                              |            *              |   *   |              *                |         *         |     Y     |
-//! | [`into_deque`](TransformInto::into_deque)                         |            *              |       |              *                |         *         |     Y     |
-//! | [`to_bmap`](Transform::to_bmap)                                   |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_bset`](Transform::to_bset)                                   |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_heap`](Transform::to_heap)                                   |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_keys`](Map::to_keys)                                         |                           |       |                               |         *         |     N     |
-//! | [`to_list`](Transform::to_list)                                   |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_map`](Transform::to_map)                                     |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_set`](Transform::to_set)                                     |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_values`](Map::to_values)                                     |                           |       |                               |         *         |     N     |
-//! | [`to_vec`](TransformVec::to_vec)                                  |            *              |   *   |              *                |         *         |     N     |
-//! | [`to_deque`](Transform::to_deque)                                 |            *              |   *   |              *                |         *         |     N     |
+//! | [`collect`](CollectionTo::collect)                                |            *              |       |              *                |         *         |     Y     |
+//! | [`to_bmap`](Convert::to_bmap)                                     |            *              |       |              *                |         *         |     Y     |
+//! | [`to_bset`](Convert::to_bset)                                     |            *              |       |              *                |         *         |     Y     |
+//! | [`to_heap`](Convert::to_heap)                                     |            *              |       |              *                |         *         |     Y     |
+//! | [`to_keys`](Map::to_keys)                                         |                           |       |                               |         *         |     Y     |
+//! | [`to_list`](Convert::to_list)                                     |            *              |       |              *                |         *         |     Y     |
+//! | [`to_map`](Convert::to_map)                                       |            *              |       |              *                |         *         |     Y     |
+//! | [`to_set`](Convert::to_set)                                       |            *              |       |              *                |         *         |     Y     |
+//! | [`to_values`](Map::to_values)                                     |                           |       |                               |         *         |     Y     |
+//! | [`to_vec`](Convert::to_vec)                                       |            *              |       |              *                |         *         |     Y     |
+//! | [`to_deque`](Convert::to_deque)                                   |            *              |       |              *                |         *         |     Y     |
 //!
 //! ### Miscellaneous
 //!
 //! | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
 //! |-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
-//! | [`fill`](SequenceInto::fill)                                      |            *              |       |                               |                   |     Y     |
-//! | [`fill_with`](CollectionInto::fill_with)                          |            *              |       |              *                |         *         |     Y     |
+//! | [`fill`](SequenceTo::fill)                                        |            *              |       |                               |                   |     Y     |
+//! | [`fill_with`](CollectionTo::fill_with)                            |            *              |       |              *                |         *         |     Y     |
 //! | [`for_each`](Collection::for_each)                                |            *              |   *   |              *                |         *         |     N     |
 //! | [`repeat`](List::repeat)                                          |            *              |       |                               |                   |           |
-//! | [`unit`](CollectionInto::unit)                                    |            *              |       |              *                |         *         |     Y     |
+//! | [`unit`](CollectionTo::unit)                                      |            *              |       |              *                |         *         |     Y     |
 pub(crate) mod collections;
 pub(crate) mod core;
 pub(crate) mod extensions;

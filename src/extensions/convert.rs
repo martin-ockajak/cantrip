@@ -1,22 +1,17 @@
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 use std::hash::Hash;
 
-/// Consuming transform operations.
+/// Conversion operations.
 ///
 /// Methods have the following properties:
 ///
-/// - Requires collection elements to implement [`Clone`]
 /// - Consumes the collection or its elements
 /// - Creates a new collection
 ///
-pub trait TransformInto<Item> {
+pub trait Convert<Item> {
   /// Creates a new ordered map from the elements of this collection.
   ///
   /// This is an equivalent of [`Iterator::collect`].
-  ///
-  /// This is a consuming variant of [`to_bmap()`].
-  ///
-  /// [`to_bmap()`]: crate::Transform::to_bmap
   ///
   /// # Example
   ///
@@ -26,14 +21,14 @@ pub trait TransformInto<Item> {
   ///
   /// let a = vec![(1, 1), (2, 2), (3, 3)];
   ///
-  /// assert_eq!(a.into_bmap(), BTreeMap::from([
+  /// assert_eq!(a.to_bmap(), BTreeMap::from([
   ///   (1, 1),
   ///   (2, 2),
   ///   (3, 3)
   /// ]));
   /// ```
   #[inline]
-  fn into_bmap<K, V>(self) -> BTreeMap<K, V>
+  fn to_bmap<K, V>(self) -> BTreeMap<K, V>
   where
     K: Ord,
     Self: IntoIterator<Item = (K, V)> + Sized,
@@ -45,10 +40,6 @@ pub trait TransformInto<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// This is a consuming variant of [`to_bset()`].
-  ///
-  /// [`to_bset()`]: crate::Transform::to_bset
-  ///
   /// # Example
   ///
   /// ```
@@ -57,10 +48,10 @@ pub trait TransformInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.into_bset(), BTreeSet::from([1, 2, 3]));
+  /// assert_eq!(a.to_bset(), BTreeSet::from([1, 2, 3]));
   /// ```
   #[inline]
-  fn into_bset(self) -> BTreeSet<Item>
+  fn to_bset(self) -> BTreeSet<Item>
   where
     Item: Ord,
     Self: IntoIterator<Item = Item> + Sized,
@@ -72,10 +63,6 @@ pub trait TransformInto<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// This is a consuming variant of [`to_deque()`].
-  ///
-  /// [`to_deque()`]: crate::Transform::to_deque
-  ///
   /// # Example
   ///
   /// ```
@@ -84,10 +71,10 @@ pub trait TransformInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.into_deque(), VecDeque::from([1, 2, 3]));
+  /// assert_eq!(a.to_deque(), VecDeque::from([1, 2, 3]));
   /// ```
   #[inline]
-  fn into_deque(self) -> VecDeque<Item>
+  fn to_deque(self) -> VecDeque<Item>
   where
     Self: IntoIterator<Item = Item> + Sized,
   {
@@ -98,9 +85,7 @@ pub trait TransformInto<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// This is a consuming variant of [`to_heap()`].
-  ///
-  /// [`to_heap()`]: crate::Transform::to_heap
+  /// [`to_heap()`]: crate::Convert::to_heap
   ///
   /// # Example
   ///
@@ -111,12 +96,12 @@ pub trait TransformInto<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// assert_eq!(
-  ///   a.into_heap().into_iter().collect::<HashSet<_>>(),
+  ///   a.to_heap().into_iter().collect::<HashSet<_>>(),
   ///   BinaryHeap::from([1, 2, 3]).into_iter().collect()
   /// );
   /// ```
   #[inline]
-  fn into_heap(self) -> BinaryHeap<Item>
+  fn to_heap(self) -> BinaryHeap<Item>
   where
     Item: Ord,
     Self: IntoIterator<Item = Item> + Sized,
@@ -128,10 +113,6 @@ pub trait TransformInto<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// This is a consuming variant of [`to_list()`].
-  ///
-  /// [`to_list()`]: crate::Transform::to_list
-  ///
   /// # Example
   ///
   /// ```
@@ -140,10 +121,10 @@ pub trait TransformInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.into_list(), LinkedList::from([1, 2, 3]));
+  /// assert_eq!(a.to_list(), LinkedList::from([1, 2, 3]));
   /// ```
   #[inline]
-  fn into_list(self) -> LinkedList<Item>
+  fn to_list(self) -> LinkedList<Item>
   where
     Self: IntoIterator<Item = Item> + Sized,
   {
@@ -154,10 +135,6 @@ pub trait TransformInto<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// This is a consuming variant of [`to_map()`].
-  ///
-  /// [`to_map()`]: crate::Transform::to_map
-  ///
   /// # Example
   ///
   /// ```
@@ -166,14 +143,14 @@ pub trait TransformInto<Item> {
   ///
   /// let a = vec![(1, 1), (2, 2), (3, 3)];
   ///
-  /// assert_eq!(a.into_map(), HashMap::from([
+  /// assert_eq!(a.to_map(), HashMap::from([
   ///   (1, 1),
   ///   (2, 2),
   ///   (3, 3)
   /// ]));
   /// ```
   #[inline]
-  fn into_map<K, V>(self) -> HashMap<K, V>
+  fn to_map<K, V>(self) -> HashMap<K, V>
   where
     K: Eq + Hash,
     Self: IntoIterator<Item = (K, V)> + Sized,
@@ -185,9 +162,7 @@ pub trait TransformInto<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// This is a consuming variant of [`to_set()`].
-  ///
-  /// [`to_set()`]: crate::Transform::to_set
+  /// [`to_set()`]: crate::Convert::to_set
   ///
   /// # Example
   ///
@@ -197,16 +172,38 @@ pub trait TransformInto<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(a.into_set(), HashSet::from([1, 2, 3]));
+  /// assert_eq!(a.to_set(), HashSet::from([1, 2, 3]));
   /// ```
   #[inline]
-  fn into_set(self) -> HashSet<Item>
+  fn to_set(self) -> HashSet<Item>
   where
     Item: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized,
   {
     self.into_iter().collect()
   }
+
+  /// Creates a new vector from the elements of this collection.
+  ///
+  /// This is an equivalent of [`Iterator::collect`].
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use cantrip::*;
+  /// use std::collections::LinkedList;
+  ///
+  /// let a = LinkedList::from([1, 2, 3]);
+  ///
+  /// assert_eq!(a.to_vec(), vec![1, 2, 3]);
+  /// ```
+  #[inline]
+  fn to_vec(self) -> Vec<Item>
+  where
+    Self: IntoIterator<Item = Item> + Sized,
+  {
+    self.into_iter().collect()
+  }
 }
 
-impl<Item, I> TransformInto<Item> for I where I: IntoIterator<Item = Item> {}
+impl<Item, I> Convert<Item> for I where I: IntoIterator<Item = Item> {}

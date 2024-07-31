@@ -1,11 +1,10 @@
 use std::cmp::Ordering;
-use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
+use std::collections::{BTreeMap, BTreeSet, HashMap, LinkedList};
 use std::fmt::Display;
 use std::hash::Hash;
 use std::iter;
 
 use crate::core::unfold::unfold;
-use crate::extensions::transform::Transform;
 use crate::extensions::*;
 use crate::Iterable;
 
@@ -136,7 +135,7 @@ impl<Item> Collection<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> CollectionInto<Item> for LinkedList<Item> {
+impl<Item> CollectionTo<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
   #[inline]
@@ -198,6 +197,15 @@ impl<Item> CollectionInto<Item> for LinkedList<Item> {
     Self::This<B>: FromIterator<B>,
   {
     self.iter().map(function).collect()
+  }
+
+  #[inline]
+  fn partitions(&self) -> Vec<Vec<Self>>
+  where
+    Item: Clone,
+    Self: Sized,
+  {
+    partitions(self.iter())
   }
 
   #[inline]
@@ -313,7 +321,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 }
 
-impl<Item> SequenceInto<Item> for LinkedList<Item> {
+impl<Item> SequenceTo<Item> for LinkedList<Item> {
   type This<I> = LinkedList<I>;
 
   #[inline]
@@ -576,66 +584,5 @@ impl<Item> List<Item> for LinkedList<Item> {
     Item: Clone,
   {
     repeat(self.iter(), n)
-  }
-}
-
-impl<Item> Transform<Item> for LinkedList<Item> {
-  #[inline]
-  fn collect<B>(&self) -> B
-  where
-    Item: Clone,
-    B: FromIterator<Item>,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_bset(&self) -> BTreeSet<Item>
-  where
-    Item: Ord + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_deque(&self) -> VecDeque<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_heap(&self) -> BinaryHeap<Item>
-  where
-    Item: Ord + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_list(&self) -> LinkedList<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
-  }
-
-  #[inline]
-  fn to_set(&self) -> HashSet<Item>
-  where
-    Item: Eq + Hash + Clone,
-  {
-    self.iter().cloned().collect()
-  }
-}
-
-impl<Item> TransformVec<Item> for LinkedList<Item> {
-  #[inline]
-  fn to_vec(&self) -> Vec<Item>
-  where
-    Item: Clone,
-  {
-    self.iter().cloned().collect()
   }
 }

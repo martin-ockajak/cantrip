@@ -1,20 +1,20 @@
 use std::panic;
 use std::panic::UnwindSafe;
 
-use cantrip::SequenceInto;
+use cantrip::SequenceTo;
 
 use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, TestCollectible, TestCollection, TestSequence};
 
 #[allow(box_pointers)]
-pub(crate) fn test_sequence_into<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
+pub(crate) fn test_sequence_to<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: TestSequence<'a, i64, I> + UnwindSafe,
-  <C as SequenceInto<i64>>::This<i64>: TestCollection<i64>,
-  <C as SequenceInto<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
-  <C as SequenceInto<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
-  G: SequenceInto<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
-  <G as SequenceInto<(i64, i64)>>::This<i64>: TestCollection<i64>,
+  <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
+  <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
+  <C as SequenceTo<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
+  G: SequenceTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
+  <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
   for<'c> &'c C: UnwindSafe,
 {
   // add_at
@@ -116,7 +116,7 @@ where
       vec![3, 3, 3],
     ],
   );
-  assert_vec_seq_equal(e.combinations_multi(2), vec![]);
+  assert_vec_seq_equal(e.combinations_multi(1), vec![]);
 
   // delete_at
   let a = a_source.clone();
@@ -482,7 +482,7 @@ where
     a.variations(3),
     vec![vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1]],
   );
-  assert_vec_seq_equal(e.variations(2), vec![]);
+  assert_vec_seq_equal(e.variations(1), vec![]);
 
   // windowed
   let a = a_source.clone();

@@ -16,9 +16,9 @@ pub trait Slice<Item> {
   ///
   /// let mut a = [1, 2, 3];
   ///
-  /// assert_eq!(a.init(), [1, 2]);
+  /// assert_eq!(a.init_ref(), [1, 2]);
   /// ```
-  fn init(&self) -> &Self;
+  fn init_ref(&self) -> &Self;
 
   /// Creates a new slice that skips the first `n` elements from the original slice.
   ///
@@ -34,13 +34,13 @@ pub trait Slice<Item> {
   ///
   /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.skip(2), [3]);
+  /// assert_eq!(a.skip_ref(2), [3]);
   /// ```
-  fn skip(&self, n: usize) -> &Self;
+  fn skip_ref(&self, n: usize) -> &Self;
 
   /// Creates a new slice without initial elements based on a predicate.
   ///
-  /// [`skip`]: Slice::skip
+  /// [`skip`]: Slice::skip_ref
   ///
   /// `skip_while()` takes a closure as an argument. It will call this
   /// closure on each element of this slice, and ignore elements
@@ -56,9 +56,9 @@ pub trait Slice<Item> {
   ///
   /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.skip_while(|&x| x < 3), [3]);
+  /// assert_eq!(a.skip_while_ref(|&x| x < 3), [3]);
   /// ```
-  fn skip_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
+  fn skip_while_ref(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 
   /// Creates a new slice from the original slice without the first element.
   ///
@@ -69,9 +69,9 @@ pub trait Slice<Item> {
   ///
   /// let mut a = [1, 2, 3];
   ///
-  /// assert_eq!(a.tail(), [2, 3]);
+  /// assert_eq!(a.tail_ref(), [2, 3]);
   /// ```
-  fn tail(&self) -> &Self;
+  fn tail_ref(&self) -> &Self;
 
   /// Creates a new slice that yields the first `n` elements, or fewer
   /// if the original slice has fewer than `n` elements.
@@ -91,7 +91,7 @@ pub trait Slice<Item> {
   ///
   /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.take(2), [1, 2]);
+  /// assert_eq!(a.take_ref(2), [1, 2]);
   /// ```
   ///
   /// If less than `n` elements are available,
@@ -102,10 +102,10 @@ pub trait Slice<Item> {
   ///
   /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.take(2), [1, 2]);
-  /// assert_eq!(a.take(5), [1, 2, 3]);
+  /// assert_eq!(a.take_ref(2), [1, 2]);
+  /// assert_eq!(a.take_ref(5), [1, 2, 3]);
   /// ```
-  fn take(&self, n: usize) -> &Self;
+  fn take_ref(&self, n: usize) -> &Self;
 
   /// Creates a new slice without trailing elements based on a predicate.
   ///
@@ -123,16 +123,7 @@ pub trait Slice<Item> {
   ///
   /// let a = [1, 2, 3];
   ///
-  /// assert_eq!(a.take_while(|&x| x < 3), [1, 2]);
+  /// assert_eq!(a.take_while_ref(|&x| x < 3), [1, 2]);
   /// ```
-  fn take_while(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
-}
-
-#[inline]
-pub(crate) fn collect<'a, Item, B>(iterator: impl Iterator<Item = &'a Item>) -> B
-where
-  Item: Clone + 'a,
-  B: FromIterator<Item>,
-{
-  iterator.cloned().collect()
+  fn take_while_ref(&self, predicate: impl FnMut(&Item) -> bool) -> &Self;
 }
