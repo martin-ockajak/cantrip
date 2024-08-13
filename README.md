@@ -58,7 +58,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Searching
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [find](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.find)                                        |            *              |   *   |              *                |         *         |     N     |
 | [find_map](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.find_map)                              |            *              |       |              *                |         *         |     Y     |
 | [find_map_ref](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.find_map_ref)                        |            *              |   *   |              *                |         *         |     N     |
@@ -85,7 +85,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Modifying
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [add](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.add)                                        |            *              |       |              *                |         *         |     Y     |
 | [add_at](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.add_at)                                    |            *              |       |                               |                   |     Y     |
 | [add_at_multi](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.add_at_multi)                        |            *              |       |                               |                   |     Y     |
@@ -109,7 +109,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Filtering
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [duplicates](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.duplicates)                            |            *              |       |                               |                   |     Y     |
 | [duplicates_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.duplicates_by)                      |            *              |       |                               |                   |     Y     |
 | [filter](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.filter)                                  |            *              |       |              *                |         *         |     Y     |
@@ -141,7 +141,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Mapping
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [coalesce](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.coalesce)                                |            *              |       |                               |                   |     Y     |
 | [enumerate](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.enumerate)                              |            *              |       |                               |                   |     Y     |
 | [flat_map](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.flat_map)                              |            *              |       |              *                |         *         |     Y     |
@@ -157,7 +157,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Inspecting
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [all](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.all)                                          |            *              |   *   |              *                |         *         |     N     |
 | [any](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.any)                                          |            *              |   *   |              *                |         *         |     N     |
 | [common_prefix_length](https://docs.rs/cantrip/latest/cantrip/trait.Sequence.html#tymethod.common_prefix_length)          |            *              |   *   |                               |                   |     N     |
@@ -174,7 +174,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Aggregating
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [fold](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.fold)                                      |            *              |       |              *                |         *         |     Y     |
 | [fold_ref](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.fold_ref)                                |            *              |   *   |              *                |         *         |     N     |
 | [group_fold](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.group_fold)                          |            *              |       |              *                |                   |     Y     |
@@ -195,7 +195,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Selecting
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [chunked](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.chunked)                                  |            *              |       |                               |                   |     Y     |
 | [chunked_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.chunked_by)                            |            *              |       |                               |                   |     Y     |
 | [chunked_exact](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.chunked_exact)                      |            *              |       |                               |                   |     Y     |
@@ -210,7 +210,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Partitioning
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [divide](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.divide)                                    |            *              |       |                               |                   |     Y     |
 | [divide_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.divide_by)                              |            *              |       |                               |                   |     Y     |
 | [group_by](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.group_by)                              |            *              |       |              *                |                   |     Y     |
@@ -223,7 +223,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Merging
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [flat](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.flat)                                      |            *              |       |              *                |                   |     Y     |
 | [interleave](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.interleave)                            |            *              |       |                               |                   |     Y     |
 | [interleave_exact](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.interleave_exact)                |            *              |       |                               |                   |     Y     |
@@ -238,7 +238,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Sorting
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [sorted](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted)                                    |            *              |       |                               |                   |     Y     |
 | [sorted_by](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_by)                              |            *              |       |                               |                   |     Y     |
 | [sorted_by_cached_key](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.sorted_by_cached_key)        |            *              |       |                               |                   |     Y     |
@@ -250,7 +250,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Converting
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [collect](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.collect)                                |            *              |       |              *                |         *         |     Y     |
 | [to_bmap](https://docs.rs/cantrip/latest/cantrip/trait.Convert.html#method.to_bmap)                                     |            *              |       |              *                |         *         |     Y     |
 | [to_bset](https://docs.rs/cantrip/latest/cantrip/trait.Convert.html#method.to_bset)                                     |            *              |       |              *                |         *         |     Y     |
@@ -266,7 +266,7 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 ### Miscellaneous
 
 | Method / Collection type                                          | Vec, VecDeque, LinkedList | Slice | HashSet, BTreeSet, BinaryHeap | HashMap, BTreeMap | Consuming |
-|-------------------------------------------------------------------|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
+|:-----------------------------------------------------------------:|:-------------------------:|:-----:|:-----------------------------:|:-----------------:|:---------:|
 | [fill](https://docs.rs/cantrip/latest/cantrip/trait.SequenceTo.html#method.fill)                                        |            *              |       |                               |                   |     Y     |
 | [fill_with](https://docs.rs/cantrip/latest/cantrip/trait.CollectionTo.html#method.fill_with)                            |            *              |       |              *                |         *         |     Y     |
 | [for_each](https://docs.rs/cantrip/latest/cantrip/trait.Collection.html#tymethod.for_each)                                |            *              |   *   |              *                |         *         |     N     |
