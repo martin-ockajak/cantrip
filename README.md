@@ -3,9 +3,10 @@
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
-Practical extension methods for Rust standard library collections.
+A Swiss Army knife for for Rust standard library collections.
 
-Enables direct functional-style collection manipulation without the usual iterator boilerplate.
+Enable direct functional-style collection manipulation without the usual
+iterator boilerplate and provides various utility operations.
 
 
 ## Overview
