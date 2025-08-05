@@ -290,24 +290,18 @@ a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
 
 ### Requirements
 
-- [Rust](https://www.rust-lang.org) 1.80+
-
-### Setup
-
-```shell
-cargo install cargo-make
-```
+- [Rust](https://www.rust-lang.org) 1.85+
 
 ### Test
 
 ```shell
-makers build
+cargo test
 ```
 
 ### Benchmark
 
 ```shell
-makers bench
+cargo bench
 ```
 
 
