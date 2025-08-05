@@ -1,7 +1,9 @@
 #![allow(missing_docs)]
 #![allow(unused_results)]
+
 use cantrip::*;
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
+use std::hint::black_box;
 
 static SMALL_COLLECTION_SIZE: usize = 5;
 static LARGE_COLLECTION_SIZE: usize = 50;
@@ -113,7 +115,7 @@ fn combinations_input() -> Vec<i64> {
 }
 
 criterion_group!(
-  benches, cartesian_product, combinations, combinations_multi, delete_at_multi, intersect, joined, powerset, substitute_multi,
-  variations, windowed, windowed_circular,
+  benches, cartesian_product, combinations, combinations_multi, delete_at_multi, intersect, joined, powerset,
+  substitute_multi, variations, windowed, windowed_circular,
 );
 criterion_main!(benches);

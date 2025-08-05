@@ -14,7 +14,7 @@ keywords = ["collection", "functional", "immutable", "group-by", "map"]
 maintenance = { status = "actively-developed" }
 
 [dev-dependencies]
-criterion = "0.5.1"
+criterion = "0.7.0"
 
 [[bench]]
 name = "benchmark"
