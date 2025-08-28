@@ -1391,7 +1391,9 @@ pub trait CollectionTo<Item> {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
-      if let Some(mut top) = heap.peek_mut() && item < *top {
+      if let Some(mut top) = heap.peek_mut()
+        && item < *top
+      {
         *top = item;
       }
     }
