@@ -27,6 +27,10 @@ retest:
 bench:
   cargo bench
 
+# Format sources.
+format:
+  cargo fmt
+
 # Publish the crate to crates.io.
 publish:
   @echo "Checking for and installing 'cargo-release'..."
