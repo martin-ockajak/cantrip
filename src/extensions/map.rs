@@ -39,7 +39,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
-  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
 
@@ -69,7 +71,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn add_multi(self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
-  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     self.into_iter().chain(entries).collect()
   }
 
@@ -205,7 +209,8 @@ pub trait Map<Key, Value> {
   fn collect<B>(self) -> B
   where
     B: FromIterator<(Key, Value)>,
-    Self: IntoIterator<Item = (Key, Value)> + Sized, {
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().collect()
   }
 
@@ -250,7 +255,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.count_unique(), 0);
   /// ```
   fn count_unique(&self) -> usize
-  where Value: Eq + Hash;
+  where
+    Value: Eq + Hash;
 
   /// Creates a new map from the original map without
   /// the entry specified by a key.
@@ -272,7 +278,8 @@ pub trait Map<Key, Value> {
   fn delete(self, key: &Key) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
@@ -297,7 +304,8 @@ pub trait Map<Key, Value> {
   fn delete_multi<'a>(self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     let removed: HashSet<&Key> = HashSet::from_iter(keys.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
@@ -321,7 +329,8 @@ pub trait Map<Key, Value> {
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
   fn disjoint<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where Key: Eq + Hash + 'a;
+  where
+    Key: Eq + Hash + 'a;
 
   /// Creates a new map containing a result of a function
   /// specified number of times.
@@ -342,7 +351,8 @@ pub trait Map<Key, Value> {
   where
     Key: Clone,
     Value: Clone,
-    Self: FromIterator<(Key, Value)>, {
+    Self: FromIterator<(Key, Value)>,
+  {
     iter::repeat(value()).take(size).collect()
   }
 
@@ -369,7 +379,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn filter(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
-  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
@@ -419,7 +431,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn filter_keys(self, mut predicate: impl FnMut(&Key) -> bool) -> Self
-  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
@@ -443,7 +457,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn filter_values(self, mut predicate: impl FnMut(&Value) -> bool) -> Self
-  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
@@ -494,7 +510,8 @@ pub trait Map<Key, Value> {
   fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>, {
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
     self.into_iter().filter_map(function).collect()
   }
 
@@ -542,7 +559,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)), HashMap::from([(1, 2),]));
   /// ```
   fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where Self::This<L, W>: FromIterator<(L, W)>;
+  where
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Searches for an entry of this map that satisfies a predicate.
   ///
@@ -622,7 +640,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn find_map<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
-  where Self: IntoIterator<Item = (Key, Value)> + Sized {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().find_map(function)
   }
 
@@ -668,7 +688,8 @@ pub trait Map<Key, Value> {
   where
     R: IntoIterator<Item = (L, W)>,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>, {
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
     self.into_iter().flat_map(function).collect()
   }
 
@@ -770,7 +791,9 @@ pub trait Map<Key, Value> {
   ///
   /// And so, our final result, `9`.
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
-  where Self: IntoIterator<Item = (Key, Value)> + Sized {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().fold(initial_value, function)
   }
 
@@ -901,7 +924,8 @@ pub trait Map<Key, Value> {
   where
     Key: Eq + Hash + 'a,
     Value: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(entries.iterator().map(|(k, v)| (k, v)));
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
@@ -946,7 +970,8 @@ pub trait Map<Key, Value> {
   fn map<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>, {
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
     self.into_iter().map(function).collect()
   }
 
@@ -987,7 +1012,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.map_ref(|(&k, &v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6),]));
   /// ```
   fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-  where Self::This<L, W>: FromIterator<(L, W)>;
+  where
+    Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Creates a new map by applying the given closure `function` to each key in
   /// the original map.
@@ -1026,7 +1052,8 @@ pub trait Map<Key, Value> {
   where
     L: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, Value>: FromIterator<(L, Value)>, {
+    Self::This<L, Value>: FromIterator<(L, Value)>,
+  {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
@@ -1066,7 +1093,8 @@ pub trait Map<Key, Value> {
   fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<Key, W>: FromIterator<(Key, W)>, {
+    Self::This<Key, W>: FromIterator<(Key, W)>,
+  {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 
@@ -1113,7 +1141,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.max_by_key(|(k, _)| -k), None);
   /// ```
   fn max_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
-  where K: Ord;
+  where
+    K: Ord;
 
   /// Returns the maximum entry of this map.
   ///
@@ -1138,7 +1167,8 @@ pub trait Map<Key, Value> {
   fn max_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
-    Value: Ord, {
+    Value: Ord,
+  {
     self.max_by(|x, y| x.cmp(&y))
   }
 
@@ -1185,7 +1215,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.min_by_key(|(k, _)| -k), None);
   /// ```
   fn min_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
-  where K: Ord;
+  where
+    K: Ord;
 
   /// Returns the minimum entry of this map.
   ///
@@ -1210,7 +1241,8 @@ pub trait Map<Key, Value> {
   fn min_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
-    Value: Ord, {
+    Value: Ord,
+  {
     self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
   }
 
@@ -1261,7 +1293,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.minmax_by_key(|(k, _)| -k), None);
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
-  where K: Ord;
+  where
+    K: Ord;
 
   /// Return the minimum and maximum entry of this map.
   ///
@@ -1287,7 +1320,8 @@ pub trait Map<Key, Value> {
   fn minmax_of(&self) -> Option<((&Key, &Value), (&Key, &Value))>
   where
     Key: Ord,
-    Value: Ord, {
+    Value: Ord,
+  {
     self.minmax_by(|(x1, x2), (y1, y2)| (x1, x2).cmp(&(y1, y2)))
   }
 
@@ -1314,7 +1348,9 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
-  where Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)> {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)>,
+  {
     self.into_iter().partition(|(k, v)| predicate((k, v)))
   }
 
@@ -1348,7 +1384,8 @@ pub trait Map<Key, Value> {
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<L1, W1>: Default + Extend<(L1, W1)>,
-    Self::This<L2, W2>: Default + Extend<(L2, W2)>, {
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>,
+  {
     let mut result_left: Self::This<L1, W1> = Self::This::default();
     let mut result_right: Self::This<L2, W2> = Self::This::default();
     for item in self.into_iter() {
@@ -1423,7 +1460,8 @@ pub trait Map<Key, Value> {
   fn product_keys(self) -> Key
   where
     Key: Product,
-    Self: IntoIterator<Item = (Key, Value)> + Sized, {
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().map(|(k, _)| k).product()
   }
 
@@ -1458,7 +1496,8 @@ pub trait Map<Key, Value> {
   fn product_values(self) -> Value
   where
     Value: Product,
-    Self: IntoIterator<Item = (Key, Value)> + Sized, {
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().map(|(_, v)| v).product()
   }
 
@@ -1502,7 +1541,9 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap(), folded);
   /// ```
   fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
-  where Self: IntoIterator<Item = (Key, Value)> + Sized {
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     let mut iterator = self.into_iter();
     iterator.next().and_then(|value1| {
       iterator.next().map(|value2| iterator.fold(function(value1, value2), |(k, v), x| function((k, v), x)))
@@ -1570,7 +1611,8 @@ pub trait Map<Key, Value> {
   /// assert!(!a.subset(&vec![]));
   /// ```
   fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where Key: Eq + Hash + 'a;
+  where
+    Key: Eq + Hash + 'a;
 
   /// Creates a new map from the original map by replacing the specified key
   /// and its value with a different entry.
@@ -1590,7 +1632,8 @@ pub trait Map<Key, Value> {
   fn substitute(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     let mut replaced = Some((replacement_key, replacement_value));
     self
       .into_iter()
@@ -1621,7 +1664,8 @@ pub trait Map<Key, Value> {
   ) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
+  {
     let keys_iterator = keys.iterator();
     let mut replaced = HashMap::<&Key, LinkedList<(Key, Value)>>::with_capacity(keys_iterator.size_hint().0);
     for (item, replacement) in keys_iterator.zip(replacements.into_iter()) {
@@ -1658,7 +1702,8 @@ pub trait Map<Key, Value> {
   /// assert!(!e.superset(&vec![1]));
   /// ```
   fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where Key: Eq + Hash + 'a;
+  where
+    Key: Eq + Hash + 'a;
 
   /// Sums keys of this map.
   ///
@@ -1693,7 +1738,8 @@ pub trait Map<Key, Value> {
   fn sum_keys(self) -> Key
   where
     Key: Sum,
-    Self: IntoIterator<Item = (Key, Value)> + Sized, {
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().map(|(k, _)| k).sum()
   }
 
@@ -1730,7 +1776,8 @@ pub trait Map<Key, Value> {
   fn sum_values(self) -> Value
   where
     Value: Sum,
-    Self: IntoIterator<Item = (Key, Value)> + Sized, {
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+  {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
@@ -1748,7 +1795,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.to_keys().to_set(), vec![1, 2, 3].to_set());
   /// ```
   fn to_keys(&self) -> Vec<Key>
-  where Key: Clone;
+  where
+    Key: Clone;
 
   /// Creates a new vector from the values of this map in arbitrary order.
   ///
@@ -1766,7 +1814,8 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.to_values().to_set(), vec![1, 2, 3].to_set());
   /// ```
   fn to_values(&self) -> Vec<Value>
-  where Value: Clone;
+  where
+    Value: Clone;
 
   /// Creates a new map containing a single element.
   ///
@@ -1783,7 +1832,9 @@ pub trait Map<Key, Value> {
   /// ]));
   #[inline]
   fn unit(key: Key, value: Value) -> Self
-  where Self: FromIterator<(Key, Value)> {
+  where
+    Self: FromIterator<(Key, Value)>,
+  {
     iter::once((key, value)).collect()
   }
 }
@@ -1818,7 +1869,8 @@ pub(crate) fn partition_map_pairs<'a, K: 'a, V: 'a, L1, W1, L2, W2, Left, Right>
 ) -> (Left, Right)
 where
   Left: Default + Extend<(L1, W1)>,
-  Right: Default + Extend<(L2, W2)>, {
+  Right: Default + Extend<(L2, W2)>,
+{
   let mut result_left = Left::default();
   let mut result_right = Right::default();
   for item in iterator {

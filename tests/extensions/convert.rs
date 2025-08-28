@@ -7,7 +7,8 @@ use crate::extensions::util::{TestCollection, assert_set_equal};
 pub(crate) fn test_convert<'a, C, G>(sequence: bool, a_source: &C, g_source: &G, e_source: &C)
 where
   C: Convert<i64> + TestCollection<i64> + IntoIterator<Item = i64> + 'a,
-  G: Convert<(i64, i64)> + TestCollection<(i64, i64)> + IntoIterator<Item = (i64, i64)> + 'a, {
+  G: Convert<(i64, i64)> + TestCollection<(i64, i64)> + IntoIterator<Item = (i64, i64)> + 'a,
+{
   // to_bmap
   let g = g_source.clone();
   let e = g_source.clone().into_iter().filter(|_| false).collect::<G>();

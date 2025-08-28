@@ -24,7 +24,8 @@ where
   D::This<i64>: TestCollection<i64>,
   G: SequenceTo<(i64, i64)> + CollectionTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
-  for<'c> &'c C: UnwindSafe, {
+  for<'c> &'c C: UnwindSafe,
+{
   test_collection(true, a, b, e);
   test_collection_to(true, a, b, d, e);
   test_sequence(a, b, e);
@@ -36,7 +37,8 @@ where
 pub(crate) fn test_map_traits<'a, C>(a: &C, b: &C, e: &C)
 where
   C: TestMap<'a, i64, i64> + Convert<(i64, i64)>,
-  <C as Map<i64, i64>>::This<i64, i64>: TestCollection<(i64, i64)>, {
+  <C as Map<i64, i64>>::This<i64, i64>: TestCollection<(i64, i64)>,
+{
   test_map(a, b, e);
 }
 
@@ -46,7 +48,8 @@ where
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  G: TestCollectible<'a, (i64, i64)>, {
+  G: TestCollectible<'a, (i64, i64)>,
+{
   test_collection(false, a, b, e);
   test_collection_to(false, a, b, d, e);
   test_convert(false, a, g, e);
@@ -64,7 +67,8 @@ where
   D::This<i64>: TestCollection<i64>,
   G: SequenceTo<(i64, i64)> + CollectionTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
-  for<'c> &'c C: UnwindSafe, {
+  for<'c> &'c C: UnwindSafe,
+{
   test_collection(true, a, b, e);
   test_collection_to(true, a, b, d, e);
   test_sequence(a, b, e);

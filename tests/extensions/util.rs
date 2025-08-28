@@ -88,7 +88,9 @@ pub(crate) trait TestCollection<T>: FromIterator<T> + Default + Extend<T> + Clon
 
 pub(crate) trait TestCollectible<'a, T: 'a>:
   CollectionTo<T> + TestCollection<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T>
-where Self: 'a {
+where
+  Self: 'a,
+{
 }
 
 pub(crate) trait TestSequence<'a, T: 'a, I>:
@@ -101,7 +103,8 @@ pub(crate) trait TestSequence<'a, T: 'a, I>:
   + Iterable<Item<'a> = &'a T>
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  Self: 'a, {
+  Self: 'a,
+{
 }
 
 pub(crate) trait TestMap<'a, K: 'a, V: 'a>:
@@ -114,12 +117,17 @@ pub(crate) trait TestMap<'a, K: 'a, V: 'a>:
   + Debug
   + IntoIterator<Item = (K, V)>
   + Iterable<Item<'a> = (&'a K, &'a V)>
-where Self: 'a {
+where
+  Self: 'a,
+{
 }
 
 impl<T, C> TestCollection<T> for C where C: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
 
-impl<'a, T: 'a, C> TestCollectible<'a, T> for C where C: TestCollection<T> + CollectionTo<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> + 'a {}
+impl<'a, T: 'a, C> TestCollectible<'a, T> for C where
+  C: TestCollection<T> + CollectionTo<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> + 'a
+{
+}
 
 impl<'a, T: 'a, C, I> TestSequence<'a, T, I> for C
 where
@@ -135,7 +143,8 @@ where
 {
 }
 
-impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C where C: Map<K, V>
+impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C where
+  C: Map<K, V>
     + FromIterator<(K, V)>
     + Default
     + Extend<(K, V)>

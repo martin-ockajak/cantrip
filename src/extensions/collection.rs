@@ -104,7 +104,8 @@ pub trait Collection<Item> {
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a;
+  where
+    Item: Eq + Hash + 'a;
 
   /// Searches for an element of this collection that satisfies a predicate.
   ///
@@ -384,7 +385,8 @@ pub trait Collection<Item> {
   /// assert_eq!(e.max_by_key(|x| -x), None);
   /// ```
   fn max_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where K: Ord;
+  where
+    K: Ord;
 
   /// Returns the maximum element of this collection.
   ///
@@ -414,7 +416,9 @@ pub trait Collection<Item> {
   /// ```
   #[inline]
   fn max_of(&self) -> Option<&Item>
-  where Item: Ord {
+  where
+    Item: Ord,
+  {
     self.max_by(Ord::cmp)
   }
 
@@ -457,7 +461,8 @@ pub trait Collection<Item> {
   /// assert_eq!(e.min_by_key(|x| -x), None);
   /// ```
   fn min_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where K: Ord;
+  where
+    K: Ord;
 
   /// Returns the minimum element of this collection.
   ///
@@ -489,7 +494,9 @@ pub trait Collection<Item> {
   /// ```
   #[inline]
   fn min_of(&self) -> Option<&Item>
-  where Item: Ord {
+  where
+    Item: Ord,
+  {
     self.min_by(Ord::cmp)
   }
 
@@ -532,7 +539,8 @@ pub trait Collection<Item> {
   /// assert_eq!(e.minmax_by_key(|x| -x), None);
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
-  where K: Ord;
+  where
+    K: Ord;
 
   /// Return the minimum and maximum element of this collection.
   ///
@@ -553,7 +561,9 @@ pub trait Collection<Item> {
   /// ```
   #[inline]
   fn minmax_of(&self) -> Option<(&Item, &Item)>
-  where Item: Ord {
+  where
+    Item: Ord,
+  {
     self.minmax_by(Ord::cmp)
   }
 
@@ -616,7 +626,8 @@ pub trait Collection<Item> {
   /// assert!(!a.subset(&vec![3, 4]));
   /// ```
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a;
+  where
+    Item: Eq + Hash + 'a;
 
   /// Tests if this collection contains all elements of another collection
   /// at least as many times as their appear in the other collection.
@@ -644,7 +655,8 @@ pub trait Collection<Item> {
   /// assert!(!e.superset(&vec![1]));
   /// ```
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a;
+  where
+    Item: Eq + Hash + 'a;
 }
 
 #[inline]

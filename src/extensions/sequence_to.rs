@@ -139,7 +139,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn chunked(self, size: usize) -> Vec<Self>
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     chunked(self, size, false)
   }
 
@@ -169,7 +171,9 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(e.chunked_by(|_, _| true), Vec::<Vec<i32>>::new());
   /// ```
   fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Vec<Self>
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let mut chunk_empty = true;
     let mut last = iterator.next();
@@ -232,7 +236,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn chunked_exact(self, size: usize) -> Vec<Self>
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     chunked(self, size, true)
   }
 
@@ -257,7 +263,9 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(coalesced, vec![4, 1, 4, 3]);
   /// ```
   fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let mut last = iterator.next();
     unfold(|| {
@@ -379,7 +387,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let positions = BTreeSet::from_iter(indices);
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
@@ -428,7 +438,8 @@ pub trait SequenceTo<Item> {
   fn divide(self, separator: &Item) -> Vec<Self>
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.divide_by(|x| x == separator)
   }
 
@@ -470,7 +481,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn divide_by(self, mut separator: impl FnMut(&Item) -> bool) -> Vec<Self>
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let mut empty = false;
     unfold(|| {
@@ -510,7 +523,8 @@ pub trait SequenceTo<Item> {
   fn duplicates(self) -> Self
   where
     Item: Eq + Hash,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let iterator = self.into_iter();
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     let mut duplicated = HashSet::with_capacity(iterator.size_hint().0);
@@ -547,7 +561,8 @@ pub trait SequenceTo<Item> {
   fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let mut occurred = HashMap::<K, Option<Item>>::with_capacity(iterator.size_hint().0);
     let mut stored: Option<Item> = None;
@@ -602,7 +617,8 @@ pub trait SequenceTo<Item> {
   fn enumerate(self) -> Self::This<(usize, Item)>
   where
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<(usize, Item)>: FromIterator<(usize, Item)>, {
+    Self::This<(usize, Item)>: FromIterator<(usize, Item)>,
+  {
     self.into_iter().enumerate().collect()
   }
 
@@ -621,7 +637,8 @@ pub trait SequenceTo<Item> {
   fn fill(element: Item, size: usize) -> Self
   where
     Item: Clone,
-    Self: FromIterator<Item>, {
+    Self: FromIterator<Item>,
+  {
     iter::repeat(element).take(size).collect()
   }
 
@@ -667,7 +684,9 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.interleave(vec![]), vec![1, 2, 3]);
   /// ```
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator_left = self.into_iter();
     let mut iterator_right = elements.into_iter();
     let mut left = true;
@@ -709,7 +728,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn interleave_exact(self, elements: impl IntoIterator<Item = Item>) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.into_iter().zip(elements).flat_map(|(item1, item2)| iter::once(item1).chain(iter::once(item2))).collect()
   }
 
@@ -741,7 +762,8 @@ pub trait SequenceTo<Item> {
   fn intersperse(self, interval: usize, element: Item) -> Self
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.intersperse_with(interval, || element.clone())
   }
 
@@ -772,7 +794,8 @@ pub trait SequenceTo<Item> {
   fn intersperse_with(self, interval: usize, mut to_value: impl FnMut() -> Item) -> Self
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
     let mut index = 0_usize;
@@ -844,7 +867,8 @@ pub trait SequenceTo<Item> {
   fn merge(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.merge_by(elements, |l, r| l.cmp(r))
   }
 
@@ -858,10 +882,10 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.merge_by(vec![0, 4, 5], |l, r| l.cmp(r)), vec![0, 1, 2, 3, 4, 5]);
   /// ```
-  fn merge_by(
-    self, elements: impl IntoIterator<Item = Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering,
-  ) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  fn merge_by(self, elements: impl IntoIterator<Item = Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let mut elements_iterator = elements.into_iter();
     let mut last_left = iterator.next();
@@ -935,7 +959,8 @@ pub trait SequenceTo<Item> {
   where
     Item: Clone,
     I: ExactSizeIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
     self.pad_left_with(size, |_| element.clone())
   }
 
@@ -956,7 +981,8 @@ pub trait SequenceTo<Item> {
   where
     Item: Clone,
     I: ExactSizeIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
     let mut index = 0_usize;
@@ -984,7 +1010,8 @@ pub trait SequenceTo<Item> {
   fn pad_right(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.pad_right_with(size, |_| element.clone())
   }
 
@@ -1003,7 +1030,8 @@ pub trait SequenceTo<Item> {
   fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut iterator = self.into_iter();
     let mut index = 0_usize;
     unfold(|| {
@@ -1029,7 +1057,8 @@ pub trait SequenceTo<Item> {
   fn rev<I>(self) -> Self
   where
     I: DoubleEndedIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
     self.into_iter().rev().collect()
   }
 
@@ -1096,7 +1125,8 @@ pub trait SequenceTo<Item> {
   fn rfold<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
     I: DoubleEndedIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + Sized, {
+    Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
+  {
     self.into_iter().rfold(initial_value, function)
   }
 
@@ -1144,7 +1174,8 @@ pub trait SequenceTo<Item> {
   fn scan<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>, {
+    Self::This<B>: FromIterator<B>,
+  {
     self.into_iter().scan(initial_state, function).collect()
   }
 
@@ -1189,7 +1220,8 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(scan, vec![-1, -2]);
   /// ```
   fn scan_ref<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where Self::This<B>: FromIterator<B>;
+  where
+    Self::This<B>: FromIterator<B>;
 
   /// Creates a new sequence that skips the first `n` elements from this sequence.
   ///
@@ -1212,7 +1244,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn skip(self, n: usize) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.into_iter().skip(n).collect()
   }
 
@@ -1238,7 +1272,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.into_iter().skip_while(predicate).collect()
   }
 
@@ -1264,7 +1300,8 @@ pub trait SequenceTo<Item> {
   fn slice<I>(self, start_index: usize, end_index: usize) -> Self
   where
     I: ExactSizeIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+  {
     let iterator = self.into_iter();
     let size = iterator.len();
     if start_index > size {
@@ -1307,7 +1344,8 @@ pub trait SequenceTo<Item> {
   fn sorted(self) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort();
     result.into_iter().collect()
@@ -1360,7 +1398,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_by(compare);
     result.into_iter().collect()
@@ -1404,7 +1444,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn sorted_by_cached_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_by_cached_key(to_key);
     result.into_iter().collect()
@@ -1444,7 +1486,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn sorted_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_by_key(to_key);
     result.into_iter().collect()
@@ -1481,7 +1525,8 @@ pub trait SequenceTo<Item> {
   fn sorted_unstable(self) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable();
     result.into_iter().collect()
@@ -1535,7 +1580,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by(compare);
     result.into_iter().collect()
@@ -1573,7 +1620,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn sorted_unstable_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by_key(to_key);
     result.into_iter().collect()
@@ -1605,7 +1654,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn step_by(self, step: usize) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.into_iter().step_by(step).collect()
   }
 
@@ -1736,7 +1787,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn take(self, n: usize) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.into_iter().take(n).collect()
   }
 
@@ -1760,7 +1813,9 @@ pub trait SequenceTo<Item> {
   /// ```
   #[inline]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.into_iter().take_while(predicate).collect()
   }
 
@@ -1782,7 +1837,8 @@ pub trait SequenceTo<Item> {
   fn unique(self) -> Self
   where
     Item: Eq + Hash + Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let iterator = self.into_iter();
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     iterator
@@ -1816,7 +1872,8 @@ pub trait SequenceTo<Item> {
   fn unique_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let iterator = self.into_iter();
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     iterator
@@ -1858,7 +1915,8 @@ pub trait SequenceTo<Item> {
   where
     Self: IntoIterator<Item = (A, B)> + Sized,
     Self::This<A>: Default + Extend<A>,
-    Self::This<B>: Default + Extend<B>, {
+    Self::This<B>: Default + Extend<B>,
+  {
     self.into_iter().unzip()
   }
 
@@ -2011,7 +2069,8 @@ pub trait SequenceTo<Item> {
   fn zip<T>(self, elements: impl IntoIterator<Item = T>) -> Self::This<(Item, T)>
   where
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<(Item, T)>: FromIterator<(Item, T)>, {
+    Self::This<(Item, T)>: FromIterator<(Item, T)>,
+  {
     self.into_iter().zip(elements).collect()
   }
 
@@ -2096,12 +2155,15 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
 pub(crate) fn collect_by_index<Item, Result>(values: &[&Item], indices: &[i64]) -> Result
 where
   Item: Clone,
-  Result: FromIterator<Item>, {
+  Result: FromIterator<Item>,
+{
   Result::from_iter(indices.iter().map(|index| values[*index as usize].clone()))
 }
 
 pub(crate) fn chunked<Item, Collection>(collection: Collection, size: usize, exact: bool) -> Vec<Collection>
-where Collection: FromIterator<Item> + IntoIterator<Item = Item> {
+where
+  Collection: FromIterator<Item> + IntoIterator<Item = Item>,
+{
   assert_ne!(size, 0, "chunk size must be non-zero");
   let mut iterator = collection.into_iter();
   unfold(|| {

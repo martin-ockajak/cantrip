@@ -55,7 +55,8 @@ pub trait List<Item> {
   /// assert_eq!(a.repeat(0), LinkedList::new());
   /// ```
   fn repeat(self, n: usize) -> Self
-  where Item: Clone;
+  where
+    Item: Clone;
 }
 
 pub(crate) fn repeat<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(

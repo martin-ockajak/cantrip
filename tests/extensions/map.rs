@@ -7,7 +7,8 @@ use crate::extensions::util::{TestCollection, TestMap, assert_map_equal, assert_
 pub(crate) fn test_map<'a, C>(a_source: &C, b_source: &C, e_source: &C)
 where
   C: TestMap<'a, i64, i64> + Convert<(i64, i64)>,
-  C::This<i64, i64>: TestCollection<(i64, i64)>, {
+  C::This<i64, i64>: TestCollection<(i64, i64)>,
+{
   // add
   let a = a_source.clone();
   let e = e_source.clone();

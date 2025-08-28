@@ -24,7 +24,9 @@ impl<Item> Collection<Item> for Vec<Item> {
 
   #[inline]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a {
+  where
+    Item: Eq + Hash + 'a,
+  {
     disjoint(self.iter(), elements)
   }
 
@@ -54,7 +56,8 @@ impl<Item> Collection<Item> for Vec<Item> {
   ) -> HashMap<K, B>
   where
     K: Eq + Hash,
-    B: Clone, {
+    B: Clone,
+  {
     group_fold(self.iter(), to_key, initial_value, function)
   }
 
@@ -64,7 +67,8 @@ impl<Item> Collection<Item> for Vec<Item> {
   ) -> HashMap<K, Item>
   where
     K: Eq + Hash,
-    Item: Clone, {
+    Item: Clone,
+  {
     group_reduce(self.iter(), to_key, function)
   }
 
@@ -75,7 +79,9 @@ impl<Item> Collection<Item> for Vec<Item> {
 
   #[inline]
   fn max_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where K: Ord {
+  where
+    K: Ord,
+  {
     self.iter().max_by_key(|&x| to_key(x))
   }
 
@@ -86,7 +92,9 @@ impl<Item> Collection<Item> for Vec<Item> {
 
   #[inline]
   fn min_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where K: Ord {
+  where
+    K: Ord,
+  {
     self.iter().min_by_key(|&x| to_key(x))
   }
 
@@ -97,7 +105,9 @@ impl<Item> Collection<Item> for Vec<Item> {
 
   #[inline]
   fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
-  where K: Ord {
+  where
+    K: Ord,
+  {
     minmax_by_key(self.iter(), to_key)
   }
 
@@ -108,13 +118,17 @@ impl<Item> Collection<Item> for Vec<Item> {
 
   #[inline]
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a {
+  where
+    Item: Eq + Hash + 'a,
+  {
     subset(self.iter(), elements)
   }
 
   #[inline]
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a {
+  where
+    Item: Eq + Hash + 'a,
+  {
     superset(self.iter(), elements)
   }
 }
@@ -124,14 +138,18 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
 
   #[inline]
   fn add(mut self, element: Item) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self.push(element);
     self
   }
 
   #[inline]
   fn add_multi(mut self, elements: impl IntoIterator<Item = Item>) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     elements.into_iter().for_each(|x| {
       self.push(x);
     });
@@ -140,7 +158,9 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
 
   #[inline]
   fn combinations(&self, k: usize) -> Vec<Self>
-  where Item: Clone {
+  where
+    Item: Clone,
+  {
     combinations(self.iter(), k)
   }
 
@@ -148,7 +168,8 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn delete(mut self, element: &Item) -> Self
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     if let Some(index) = self.iter().position(|x| x == element) {
       let _unused = self.remove(index);
     }
@@ -159,7 +180,8 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn delete_multi<'a>(mut self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
-    Self: FromIterator<Item>, {
+    Self: FromIterator<Item>,
+  {
     for element in elements.iterator() {
       if let Some(index) = self.iter().position(|x| x == element) {
         let _unused = self.remove(index);
@@ -170,7 +192,9 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
 
   #[inline]
   fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where Self::This<B>: FromIterator<B> {
+  where
+    Self::This<B>: FromIterator<B>,
+  {
     self.iter().filter_map(function).collect()
   }
 
@@ -178,19 +202,24 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
-    Self::This<B>: FromIterator<B>, {
+    Self::This<B>: FromIterator<B>,
+  {
     self.iter().flat_map(function).collect()
   }
 
   #[inline]
   fn filter_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> Self
-  where Item: Clone {
+  where
+    Item: Clone,
+  {
     self.iter().filter(|&x| predicate(x)).cloned().collect()
   }
 
   #[inline]
   fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where Self::This<B>: FromIterator<B> {
+  where
+    Self::This<B>: FromIterator<B>,
+  {
     self.iter().map(function).collect()
   }
 
@@ -198,7 +227,8 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn partitions(&self) -> Vec<Vec<Self>>
   where
     Item: Clone,
-    Self: Sized, {
+    Self: Sized,
+  {
     partitions(self.iter())
   }
 
@@ -206,7 +236,8 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,
-    Self::This<B>: Default + Extend<B>, {
+    Self::This<B>: Default + Extend<B>,
+  {
     partition_map(self.iter(), function)
   }
 
@@ -214,7 +245,8 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn powerset(&self) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized, {
+    Self: Sized,
+  {
     powerset(self.iter())
   }
 
@@ -222,7 +254,8 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   fn substitute(mut self, element: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     if let Some(index) = self.iter().position(|x| x == element) {
       self[index] = replacement;
     }
@@ -233,29 +266,34 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
 impl<Item> Sequence<Item> for Vec<Item> {
   #[inline]
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where Item: PartialEq + 'a {
+  where
+    Item: PartialEq + 'a,
+  {
     common_prefix_length(self.iter(), elements)
   }
 
   #[inline]
-  fn common_suffix_length<'a, I>(
-    &'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>,
-  ) -> usize
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
-    Item: PartialEq + 'a, {
+    Item: PartialEq + 'a,
+  {
     common_suffix_length(self.iter().rev(), elements)
   }
 
   #[inline]
   fn count_unique(&self) -> usize
-  where Item: Eq + Hash {
+  where
+    Item: Eq + Hash,
+  {
     count_unique(self.iter())
   }
 
   #[inline]
   fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where Item: Eq + Hash + 'a {
+  where
+    Item: Eq + Hash + 'a,
+  {
     equivalent(self.iter(), iterable)
   }
 
@@ -266,7 +304,9 @@ impl<Item> Sequence<Item> for Vec<Item> {
 
   #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
-  where Item: Eq + Hash + 'a {
+  where
+    Item: Eq + Hash + 'a,
+  {
     frequencies(self.iter())
   }
 
@@ -277,7 +317,9 @@ impl<Item> Sequence<Item> for Vec<Item> {
 
   #[inline]
   fn joined(&self, separator: &str) -> String
-  where Item: Display {
+  where
+    Item: Display,
+  {
     joined(self.iter(), separator)
   }
 
@@ -293,7 +335,9 @@ impl<Item> Sequence<Item> for Vec<Item> {
 
   #[inline]
   fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
-  where Item: PartialEq + 'a {
+  where
+    Item: PartialEq + 'a,
+  {
     position_sequence(self.iter(), elements)
   }
 
@@ -342,7 +386,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized, {
+    Self: Sized,
+  {
     cartesian_product(self.iter(), k)
   }
 
@@ -350,7 +395,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn combinations_multi(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized, {
+    Self: Sized,
+  {
     combinations_multi(self.iter(), k)
   }
 
@@ -401,7 +447,9 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
 
   #[inline]
   fn scan_ref<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where Self::This<B>: FromIterator<B> {
+  where
+    Self::This<B>: FromIterator<B>,
+  {
     self.iter().scan(initial_state, function).collect()
   }
 
@@ -409,7 +457,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn sorted(self) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort();
     result
@@ -417,7 +466,9 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
 
   #[inline]
   fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_by(compare);
     result
@@ -427,7 +478,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn sorted_unstable(self) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable();
     result
@@ -435,7 +487,9 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
 
   #[inline]
   fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     let mut result = self.into_iter().collect::<Vec<Item>>();
     result.sort_unstable_by(compare);
     result
@@ -443,7 +497,9 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
 
   #[inline]
   fn substitute_at(mut self, index: usize, replacement: Item) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     self[index] = replacement;
     self
   }
@@ -452,7 +508,9 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn substitute_at_multi(
     mut self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
-  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
+  where
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     for (index, replacement) in indices.into_iter().zip(replacements) {
       self[index] = replacement;
     }
@@ -477,7 +535,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn variations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized, {
+    Self: Sized,
+  {
     variations(self.iter(), k)
   }
 
@@ -485,7 +544,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     windowed(self.iter(), size, step)
   }
 
@@ -493,7 +553,8 @@ impl<Item> SequenceTo<Item> for Vec<Item> {
   fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
     windowed_circular(self.iter(), size, step)
   }
 }

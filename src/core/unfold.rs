@@ -1,5 +1,7 @@
 pub(crate) fn unfold<A, F>(function: F) -> Unfold<F>
-where F: FnMut() -> Option<A> {
+where
+  F: FnMut() -> Option<A>,
+{
   Unfold { function }
 }
 
@@ -8,7 +10,8 @@ pub(crate) struct Unfold<F> {
 }
 
 impl<A, F> Iterator for Unfold<F>
-where F: FnMut() -> Option<A>
+where
+  F: FnMut() -> Option<A>,
 {
   type Item = A;
 
