@@ -639,7 +639,7 @@ pub trait SequenceTo<Item> {
     Item: Clone,
     Self: FromIterator<Item>,
   {
-    iter::repeat(element).take(size).collect()
+    iter::repeat_n(element, size).collect()
   }
 
   /// Creates a new sequence from this sequence without
@@ -2131,7 +2131,7 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
+  let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat_n(0, k)));
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
@@ -2188,7 +2188,7 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
 ) -> Vec<Collection> {
   let values = Vec::from_iter(iterator);
   let size = values.len();
-  let mut multi_combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat(0).take(k)));
+  let mut multi_combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat_n(0, k)));
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
@@ -2214,8 +2214,7 @@ pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   let values = Vec::from_iter(iterator);
   let size = values.len();
   let mut variation = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
-  let mut used_indices =
-    Vec::from_iter(iter::repeat(true).take(k).chain(iter::repeat(false).take(size.saturating_sub(k))));
+  let mut used_indices = Vec::from_iter(iter::repeat_n(true, k).chain(iter::repeat_n(false, size.saturating_sub(k))));
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {

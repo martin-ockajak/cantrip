@@ -353,7 +353,7 @@ pub trait Map<Key, Value> {
     Value: Clone,
     Self: FromIterator<(Key, Value)>,
   {
-    iter::repeat(value()).take(size).collect()
+    iter::repeat_n(value(), size).collect()
   }
 
   /// Creates a new map by filtering the original map using a

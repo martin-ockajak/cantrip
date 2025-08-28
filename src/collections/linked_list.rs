@@ -381,11 +381,10 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   #[inline]
   fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self {
     let size = self.len();
-    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices.into_iter().map(|index| {
+    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices.into_iter().inspect(|&index| {
       if index >= size {
         panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
       };
-      index
     }));
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }

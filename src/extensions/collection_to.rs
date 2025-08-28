@@ -304,7 +304,7 @@ pub trait CollectionTo<Item> {
     Item: Clone,
     Self: FromIterator<Item>,
   {
-    iter::repeat(element()).take(size).collect()
+    iter::repeat_n(element(), size).collect()
   }
 
   /// Creates a new collection by filtering this collection using a
