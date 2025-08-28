@@ -416,10 +416,10 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
     if source_index <= target_index {
       let mut source_item = None;
       unfold(|| {
-        if index == source_index {
-          if let Some(value) = iterator.next() {
-            source_item = Some(value);
-          }
+        if index == source_index
+          && let Some(value) = iterator.next()
+        {
+          source_item = Some(value);
         }
         let new_item = if index == target_index { source_item.take() } else { iterator.next() };
         index += 1;

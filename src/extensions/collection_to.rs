@@ -276,11 +276,11 @@ pub trait CollectionTo<Item> {
     self
       .into_iter()
       .filter(|x| {
-        if let Some(count) = deleted.get_mut(x) {
-          if *count > 0 {
-            *count -= 1;
-            return false;
-          }
+        if let Some(count) = deleted.get_mut(x)
+          && *count > 0
+        {
+          *count -= 1;
+          return false;
         }
         true
       })
@@ -1001,11 +1001,11 @@ pub trait CollectionTo<Item> {
     self
       .into_iter()
       .flat_map(|item| {
-        if let Some(count) = retained.get_mut(&item) {
-          if *count > 0 {
-            *count -= 1;
-            return Some(item);
-          }
+        if let Some(count) = retained.get_mut(&item)
+          && *count > 0
+        {
+          *count -= 1;
+          return Some(item);
         }
         None
       })
@@ -1037,10 +1037,10 @@ pub trait CollectionTo<Item> {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().map(|x| Reverse(x)).take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
-      if let Some(mut top) = heap.peek_mut() {
-        if item > top.0 {
-          *top = Reverse(item);
-        }
+      if let Some(mut top) = heap.peek_mut()
+        && item > top.0
+      {
+        *top = Reverse(item);
       }
     }
     let result = unfold(|| heap.pop()).map(|x| x.0).collect::<Vec<_>>();
@@ -1391,10 +1391,8 @@ pub trait CollectionTo<Item> {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
-      if let Some(mut top) = heap.peek_mut() {
-        if item < *top {
-          *top = item;
-        }
+      if let Some(mut top) = heap.peek_mut() && item < *top {
+        *top = item;
       }
     }
     let result = unfold(|| heap.pop()).collect::<Vec<_>>();

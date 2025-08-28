@@ -180,15 +180,13 @@ pub trait SequenceTo<Item> {
     unfold(|| {
       let mut chunk_done = false;
       let chunk = unfold(|| {
-        if !chunk_done {
-          if let Some(previous) = last.take() {
-            if let Some(current) = iterator.next() {
-              chunk_done = split(&previous, &current);
-              last = Some(current);
-            }
-            chunk_empty = false;
-            return Some(previous);
-          };
+        if !chunk_done && let Some(previous) = last.take() {
+          if let Some(current) = iterator.next() {
+            chunk_done = split(&previous, &current);
+            last = Some(current);
+          }
+          chunk_empty = false;
+          return Some(previous);
         };
         None
       })
@@ -2169,11 +2167,11 @@ where
   unfold(|| {
     let mut chunk_size = 0;
     let chunk = unfold(|| {
-      if chunk_size < size {
-        if let Some(item) = iterator.next() {
-          chunk_size += 1;
-          return Some(item);
-        }
+      if chunk_size < size
+        && let Some(item) = iterator.next()
+      {
+        chunk_size += 1;
+        return Some(item);
       }
       None
     })

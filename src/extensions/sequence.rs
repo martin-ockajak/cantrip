@@ -514,12 +514,12 @@ pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
     remaining += 1;
   }
   for item in iterator {
-    if let Some(count) = excluded.get_mut(item) {
-      if *count > 0 {
-        *count -= 1;
-        remaining = remaining.saturating_sub(1);
-        continue;
-      }
+    if let Some(count) = excluded.get_mut(item)
+      && *count > 0
+    {
+      *count -= 1;
+      remaining = remaining.saturating_sub(1);
+      continue;
     }
     return false;
   }
