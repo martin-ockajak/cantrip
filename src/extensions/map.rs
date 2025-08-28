@@ -13,7 +13,6 @@ use crate::Iterable;
 /// - Requires the collection to represent a map
 /// - May consume the map and its entries
 /// - May create a new map
-///
 pub trait Map<Key, Value> {
   /// This map type constructor
   type This<K, V>;
@@ -23,38 +22,24 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// # let a_source = HashMap::from([
   /// #  (1, 1),
   /// #  (2, 2),
   /// #  (3, 3),
   /// # ]);
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// assert_eq!(a.add(4, 4), HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  ///   (4, 4),
-  /// ]));
+  /// assert_eq!(a.add(4, 4), HashMap::from([(1, 1), (2, 2), (3, 3), (4, 4),]));
   /// # let a = a_source.clone();
-  /// assert_eq!(a.add(1, 4), HashMap::from([
-  ///   (1, 4),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]));
+  /// assert_eq!(a.add(1, 4), HashMap::from([(1, 4), (2, 2), (3, 3),]));
   /// ```
   #[inline]
   fn add(self, key: Key, value: Value) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     self.into_iter().chain(iter::once((key, value))).collect()
   }
 
@@ -64,40 +49,27 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// # let a_source = HashMap::from([
   /// #  (1, 1),
   /// #  (2, 2),
   /// #  (3, 3),
   /// # ]);
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// assert_eq!(a.add_multi(vec![(4, 4), (5, 5)]), HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  ///   (4, 4),
-  ///   (5, 5),
-  /// ]));
+  /// assert_eq!(
+  ///   a.add_multi(vec![(4, 4), (5, 5)]),
+  ///   HashMap::from([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5),])
+  /// );
   /// # let a = a_source.clone();
-  /// assert_eq!(a.add_multi(vec![(1, 4), (5, 5)]), HashMap::from([
-  ///   (1, 4),
-  ///   (2, 2),
-  ///   (3, 3),
-  ///   (5, 5),
-  /// ]));
+  /// assert_eq!(a.add_multi(vec![(1, 4), (5, 5)]), HashMap::from([(1, 4), (2, 2), (3, 3), (5, 5),]));
   /// ```
   #[inline]
   fn add_multi(self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     self.into_iter().chain(entries).collect()
   }
 
@@ -117,14 +89,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert!(a.all(|(&k, &v)| k > 0 && v > 0));
@@ -150,14 +119,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert!(a.any(|(&k, &v)| k > 0 && v > 1));
@@ -183,14 +149,11 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::{HashMap, HashSet};
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// let collected: HashSet<(i32, i32)> = a.collect();
   ///
@@ -201,14 +164,11 @@ pub trait Map<Key, Value> {
   /// we could collect into, for example, a [`BTreeSet<T>`] instead:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::{BTreeSet, HashMap};
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// let collected: BTreeSet<(i32, i32)> = a.collect();
   ///
@@ -218,14 +178,11 @@ pub trait Map<Key, Value> {
   /// Using the 'turbofish' instead of annotating `collected`:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::{BTreeSet, HashMap};
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(a.collect::<BTreeSet<(i32, i32)>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
   /// ```
@@ -234,14 +191,11 @@ pub trait Map<Key, Value> {
   /// still use a partial type hint, `_`, with the turbofish:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::{BTreeSet, HashMap};
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(a.collect::<BTreeSet<_>>(), BTreeSet::from([(1, 1), (2, 2), (3, 3)]));
   /// ```
@@ -251,8 +205,7 @@ pub trait Map<Key, Value> {
   fn collect<B>(self) -> B
   where
     B: FromIterator<(Key, Value)>,
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + Sized, {
     self.into_iter().collect()
   }
 
@@ -265,14 +218,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(a.count_by(|(&k, &v)| k == 2 && v == 2), 1);
   /// assert_eq!(a.count_by(|(&k, _)| k == 5), 0);
@@ -286,19 +236,12 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
-  /// let b = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 1),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  /// let b = HashMap::from([(1, 1), (2, 2), (3, 1)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.count_unique(), 3);
@@ -307,8 +250,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.count_unique(), 0);
   /// ```
   fn count_unique(&self) -> usize
-  where
-    Value: Eq + Hash;
+  where Value: Eq + Hash;
 
   /// Creates a new map from the original map without
   /// the entry specified by a key.
@@ -316,29 +258,21 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
-  ///
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
-  /// assert_eq!(a.delete(&2), HashMap::from([
-  ///   (1, 1),
-  ///   (3, 3),
-  /// ]));
+  /// assert_eq!(a.delete(&2), HashMap::from([(1, 1), (3, 3),]));
   /// assert_eq!(e.delete(&2), HashMap::new());
   /// ```
   #[inline]
   fn delete(self, key: &Key) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
   }
 
@@ -348,19 +282,14 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e: HashMap<i32, i32> = HashMap::new();
   ///
-  /// assert_eq!(a.delete_multi(&vec![1, 3]), HashMap::from([
-  ///   (2, 2),
-  /// ]));
+  /// assert_eq!(a.delete_multi(&vec![1, 3]), HashMap::from([(2, 2),]));
   ///
   /// assert_eq!(e.delete_multi(&vec![1]), HashMap::new());
   /// ```
@@ -368,8 +297,7 @@ pub trait Map<Key, Value> {
   fn delete_multi<'a>(self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     let removed: HashSet<&Key> = HashSet::from_iter(keys.iterator());
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
@@ -381,14 +309,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert!(a.disjoint(&vec![4, 5]));
   /// assert!(a.disjoint(&vec![]));
@@ -396,8 +321,7 @@ pub trait Map<Key, Value> {
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
   fn disjoint<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where
-    Key: Eq + Hash + 'a;
+  where Key: Eq + Hash + 'a;
 
   /// Creates a new map containing a result of a function
   /// specified number of times.
@@ -405,12 +329,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// assert_eq!(HashMap::fill_with(|| (1, 1), 1), HashMap::from([
-  ///   (1, 1),
-  /// ]));
+  /// use cantrip::*;
+  ///
+  /// assert_eq!(HashMap::fill_with(|| (1, 1), 1), HashMap::from([(1, 1),]));
   ///
   /// assert_eq!(HashMap::fill_with(|| (1, 1), 0), HashMap::new());
   /// ```
@@ -419,8 +342,7 @@ pub trait Map<Key, Value> {
   where
     Key: Clone,
     Value: Clone,
-    Self: FromIterator<(Key, Value)>,
-  {
+    Self: FromIterator<(Key, Value)>, {
     iter::repeat(value()).take(size).collect()
   }
 
@@ -437,27 +359,17 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.filter(|(&k, &v)| k != 2 && v != 2),
-  ///   HashMap::from([
-  ///     (1, 1),
-  ///     (3, 3),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter(|(&k, &v)| k != 2 && v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
   fn filter(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
@@ -474,21 +386,13 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.filter_ref(|(&k, &v)| k != 2 && v != 2),
-  ///   HashMap::from([
-  ///     (1, 1),
-  ///     (3, 3),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter_ref(|(&k, &v)| k != 2 && v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   fn filter_ref(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
@@ -505,27 +409,17 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.filter_keys(|&k| k != 2),
-  ///   HashMap::from([
-  ///     (1, 1),
-  ///     (3, 3),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter_keys(|&k| k != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
   fn filter_keys(self, mut predicate: impl FnMut(&Key) -> bool) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     self.into_iter().filter(|(k, _)| predicate(k)).collect()
   }
 
@@ -539,27 +433,17 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.filter_values(|&v| v != 2),
-  ///   HashMap::from([
-  ///     (1, 1),
-  ///     (3, 3),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter_values(|&v| v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
   fn filter_values(self, mut predicate: impl FnMut(&Value) -> bool) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
@@ -583,46 +467,34 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(
   ///   a.filter_map(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }),
-  ///   HashMap::from([
-  ///     (1, 2),
-  /// ]));
+  ///   HashMap::from([(1, 2),])
+  /// );
   /// ```
   ///
   /// Here's the same example, but with [`filter()`] and [`map()`]:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.filter(|(&k, _)| k < 2).map(|(k, v)| (k, v + 1)),
-  ///   HashMap::from([
-  ///     (1, 2),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter(|(&k, _)| k < 2).map(|(k, v)| (k, v + 1)), HashMap::from([(1, 2),]));
   /// ```
   #[inline]
   fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
+    Self::This<L, W>: FromIterator<(L, W)>, {
     self.into_iter().filter_map(function).collect()
   }
 
@@ -646,43 +518,31 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(
   ///   a.filter_map_ref(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }),
-  ///   HashMap::from([
-  ///     (1, 2),
-  /// ]));
+  ///   HashMap::from([(1, 2),])
+  /// );
   /// ```
   ///
   /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)),
-  ///   HashMap::from([
-  ///     (1, 2),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)), HashMap::from([(1, 2),]));
   /// ```
   fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>;
+  where Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Searches for an entry of this map that satisfies a predicate.
   ///
@@ -697,14 +557,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(a.find(|(&k, &v)| k == 2 && v == 2), Some((&2, &2)));
   ///
@@ -729,19 +586,13 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.find_map_ref(|(&k, &v)| if k == 2 { Some(v) } else { None }),
-  ///   Some(2)
-  /// );
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.find_map_ref(|(&k, &v)| if k == 2 { Some(v) } else { None }), Some(2));
   /// ```
   fn find_map_ref<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
 
@@ -761,25 +612,17 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.find_map(|(k, v)| if k == 2 { Some(v) } else { None }),
-  ///   Some(2)
-  /// );
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.find_map(|(k, v)| if k == 2 { Some(v) } else { None }), Some(2));
   /// ```
   #[inline]
   fn find_map<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + Sized {
     self.into_iter().find_map(function)
   }
 
@@ -808,34 +651,24 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// assert_eq!(
   ///   a.flat_map(|(k, v)| vec![(-k, v), (k, v)]),
-  ///   HashMap::from([
-  ///     (-1, 1),
-  ///     (-2, 2),
-  ///     (-3, 3),
-  ///     (1, 1),
-  ///     (2, 2),
-  ///     (3, 3),
-  /// ]));
+  ///   HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3),])
+  /// );
   /// ```
   #[inline]
   fn flat_map<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
+    Self::This<L, W>: FromIterator<(L, W)>, {
     self.into_iter().flat_map(function).collect()
   }
 
@@ -864,26 +697,17 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// // Vec is iterable because it implements IntoIterator
   /// assert_eq!(
   ///   a.flat_map_ref(|(&k, &v)| vec![(-k, v), (k, v)]),
-  ///   HashMap::from([
-  ///     (-1, 1),
-  ///     (-2, 2),
-  ///     (-3, 3),
-  ///     (1, 1),
-  ///     (2, 2),
-  ///     (3, 3),
-  /// ]));
+  ///   HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3),])
+  /// );
   /// ```
   fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
@@ -925,20 +749,14 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// // the sum of all the elements of the array
-  /// assert_eq!(
-  ///   a.fold(0, |acc, (k, v)| acc + k + v),
-  ///   12
-  /// );
+  /// assert_eq!(a.fold(0, |acc, (k, v)| acc + k + v), 12);
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -952,9 +770,7 @@ pub trait Map<Key, Value> {
   ///
   /// And so, our final result, `9`.
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + Sized {
     self.into_iter().fold(initial_value, function)
   }
 
@@ -993,20 +809,14 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// // the sum of all the elements of the array
-  /// assert_eq!(
-  ///   a.fold_ref(0, |acc, (&k, &v)| acc + k + v),
-  ///   12
-  /// );
+  /// assert_eq!(a.fold_ref(0, |acc, (&k, &v)| acc + k + v), 12);
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -1035,14 +845,11 @@ pub trait Map<Key, Value> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// let mut acc = 0;
   ///
@@ -1055,10 +862,11 @@ pub trait Map<Key, Value> {
   /// might be preferable to keep a functional style with longer maps:
   ///
   /// ```
-  /// (0..5).flat_map(|x| x * 100 .. x * 110)
-  ///       .enumerate()
-  ///       .filter(|&(i, x)| (i + x) % 3 == 0)
-  ///       .for_each(|(i, x)| println!("{i}:{x}"));
+  /// (0..5)
+  ///   .flat_map(|x| x * 100..x * 110)
+  ///   .enumerate()
+  ///   .filter(|&(i, x)| (i + x) % 3 == 0)
+  ///   .for_each(|(i, x)| println!("{i}:{x}"));
   /// ```
   fn for_each(&self, function: impl FnMut((&Key, &Value)));
 
@@ -1071,22 +879,16 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
-  /// use std::collections::HashSet;
-  /// use std::collections::HashMap;
+  /// use std::collections::{HashMap, HashSet};
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// let intersection = a.intersect(&vec![(4, 4), (2, 2), (3, 4), (4, 5)]);
   ///
-  /// assert_eq!(intersection, HashMap::from([
-  ///   (2, 2),
-  /// ]));
+  /// assert_eq!(intersection, HashMap::from([(2, 2),]));
   /// assert_eq!(e.intersect(&vec![(1, 1)]), HashMap::new());
   ///
   /// // Print 2 2.
@@ -1099,8 +901,7 @@ pub trait Map<Key, Value> {
   where
     Key: Eq + Hash + 'a,
     Value: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(entries.iterator().map(|(k, v)| (k, v)));
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
@@ -1133,29 +934,19 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.map(|(k, v)| (k, k + v)),
-  ///   HashMap::from([
-  ///     (1, 2),
-  ///     (2, 4),
-  ///     (3, 6),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.map(|(k, v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6),]));
   /// ```
   #[inline]
   fn map<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
+    Self::This<L, W>: FromIterator<(L, W)>, {
     self.into_iter().map(function).collect()
   }
 
@@ -1187,26 +978,16 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.map_ref(|(&k, &v)| (k, k + v)),
-  ///   HashMap::from([
-  ///     (1, 2),
-  ///     (2, 4),
-  ///     (3, 6),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.map_ref(|(&k, &v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6),]));
   /// ```
   fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>;
+  where Self::This<L, W>: FromIterator<(L, W)>;
 
   /// Creates a new map by applying the given closure `function` to each key in
   /// the original map.
@@ -1232,30 +1013,20 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.map_keys(|&k| k + 1),
-  ///   HashMap::from([
-  ///     (2, 1),
-  ///     (3, 2),
-  ///     (4, 3),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.map_keys(|&k| k + 1), HashMap::from([(2, 1), (3, 2), (4, 3),]));
   /// ```
   #[inline]
   fn map_keys<L>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
   where
     L: Eq + Hash,
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, Value>: FromIterator<(L, Value)>,
-  {
+    Self::This<L, Value>: FromIterator<(L, Value)>, {
     self.into_iter().map(|(k, v)| (function(&k), v)).collect()
   }
 
@@ -1283,29 +1054,19 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.map_values(|&v| v + 1),
-  ///   HashMap::from([
-  ///     (1, 2),
-  ///     (2, 3),
-  ///     (3, 4),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.map_values(|&v| v + 1), HashMap::from([(1, 2), (2, 3), (3, 4),]));
   /// ```
   #[inline]
   fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<Key, W>: FromIterator<(Key, W)>,
-  {
+    Self::This<Key, W>: FromIterator<(Key, W)>, {
     self.into_iter().map(|(k, v)| (k, function(&v))).collect()
   }
 
@@ -1318,14 +1079,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.max_by(|x, y| x.0.cmp(y.0)), Some((&3, &3)));
@@ -1343,14 +1101,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.max_by_key(|(k, _)| -k), Some((&1, &1)));
@@ -1358,8 +1113,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.max_by_key(|(k, _)| -k), None);
   /// ```
   fn max_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
-  where
-    K: Ord;
+  where K: Ord;
 
   /// Returns the maximum entry of this map.
   ///
@@ -1369,14 +1123,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.max_of(), Some((&3, &3)));
@@ -1387,8 +1138,7 @@ pub trait Map<Key, Value> {
   fn max_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
-    Value: Ord,
-  {
+    Value: Ord, {
     self.max_by(|x, y| x.cmp(&y))
   }
 
@@ -1401,14 +1151,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.min_by(|x, y| x.0.cmp(y.0)), Some((&1, &1)));
@@ -1426,14 +1173,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.min_by_key(|(k, _)| -k), Some((&3, &3)));
@@ -1441,8 +1185,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.min_by_key(|(k, _)| -k), None);
   /// ```
   fn min_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
-  where
-    K: Ord;
+  where K: Ord;
 
   /// Returns the minimum entry of this map.
   ///
@@ -1452,14 +1195,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.min_of(), Some((&1, &1)));
@@ -1470,8 +1210,7 @@ pub trait Map<Key, Value> {
   fn min_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
-    Value: Ord,
-  {
+    Value: Ord, {
     self.min_by(|(k1, v1), (k2, v2)| (k1, v1).cmp(&(k2, v2)))
   }
 
@@ -1485,14 +1224,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.minmax_by(|x, y| x.0.cmp(y.0)), Some(((&1, &1), (&3, &3))));
@@ -1513,14 +1249,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.minmax_by_key(|(k, _)| -k), Some(((&3, &3), (&1, &1))));
@@ -1528,8 +1261,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.minmax_by_key(|(k, _)| -k), None);
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
-  where
-    K: Ord;
+  where K: Ord;
 
   /// Return the minimum and maximum entry of this map.
   ///
@@ -1540,14 +1272,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.minmax_of(), Some(((&1, &1), (&3, &3))));
@@ -1558,8 +1287,7 @@ pub trait Map<Key, Value> {
   fn minmax_of(&self) -> Option<((&Key, &Value), (&Key, &Value))>
   where
     Key: Ord,
-    Value: Ord,
-  {
+    Value: Ord, {
     self.minmax_by(|(x1, x2), (y1, y2)| (x1, x2).cmp(&(y1, y2)))
   }
 
@@ -1573,30 +1301,20 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// let (even, odd) = a.partition(|(&k, _)| k % 2 == 0);
   ///
-  /// assert_eq!(even, HashMap::from([
-  ///   (2, 2),
-  /// ]));
-  /// assert_eq!(odd, HashMap::from([
-  ///   (1, 1),
-  ///   (3, 3),
-  /// ]));
+  /// assert_eq!(even, HashMap::from([(2, 2),]));
+  /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)> {
     self.into_iter().partition(|(k, v)| predicate((k, v)))
   }
 
@@ -1613,24 +1331,16 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// let (even, odd) = a.partition_map(|(k, v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
   ///
-  /// assert_eq!(even, HashMap::from([
-  ///   (5, 2),
-  /// ]));
-  /// assert_eq!(odd, HashMap::from([
-  ///   (1, 1),
-  ///   (3, 3),
-  /// ]));
+  /// assert_eq!(even, HashMap::from([(5, 2),]));
+  /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
   fn partition_map<L1, W1, L2, W2>(
     self, mut function: impl FnMut((Key, Value)) -> Result<(L1, W1), (L2, W2)>,
@@ -1638,8 +1348,7 @@ pub trait Map<Key, Value> {
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
     Self::This<L1, W1>: Default + Extend<(L1, W1)>,
-    Self::This<L2, W2>: Default + Extend<(L2, W2)>,
-  {
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>, {
     let mut result_left: Self::This<L1, W1> = Self::This::default();
     let mut result_right: Self::This<L2, W2> = Self::This::default();
     for item in self.into_iter() {
@@ -1664,24 +1373,17 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// let (even, odd) = a.partition_map_ref(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// assert_eq!(even, HashMap::from([
-  ///   (5, 2),
-  /// ]));
-  /// assert_eq!(odd, HashMap::from([
-  ///   (1, 1),
-  ///   (3, 3),
-  /// ]));
+  /// let (even, odd) =
+  ///   a.partition_map_ref(|(&k, &v)| if k % 2 == 0 { Ok((k + 3, v)) } else { Err((k, v)) });
+  ///
+  /// assert_eq!(even, HashMap::from([(5, 2),]));
+  /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
   fn partition_map_ref<L1, W1, L2, W2>(
     &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
@@ -1707,15 +1409,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
-  ///
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.product_keys(), 6);
@@ -1725,8 +1423,7 @@ pub trait Map<Key, Value> {
   fn product_keys(self) -> Key
   where
     Key: Product,
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + Sized, {
     self.into_iter().map(|(k, _)| k).product()
   }
 
@@ -1747,15 +1444,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
-  ///
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.product_values(), 6);
@@ -1765,8 +1458,7 @@ pub trait Map<Key, Value> {
   fn product_values(self) -> Value
   where
     Value: Product,
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + Sized, {
     self.into_iter().map(|(_, v)| v).product()
   }
 
@@ -1789,39 +1481,28 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// # let a_source = HashMap::from([
   /// #   (1, 1),
   /// #   (2, 2),
   /// #   (3, 3),
   /// # ]);
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// assert_eq!(
-  ///   a.reduce(|(a, b), (k, v)| (a + k, b + v)),
-  ///   Some((6, 6))
-  /// );
+  /// assert_eq!(a.reduce(|(a, b), (k, v)| (a + k, b + v)), Some((6, 6)));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold((0, 0), |(a, b), (k, v)| (a + k, b + v));
   ///
   /// # let a = a_source.clone();
-  /// assert_eq!(
-  ///   a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap(),
-  ///   folded
-  /// );
+  /// assert_eq!(a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap(), folded);
   /// ```
   fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + Sized {
     let mut iterator = self.into_iter();
     iterator.next().and_then(|value1| {
       iterator.next().map(|value2| iterator.fold(function(value1, value2), |(k, v), x| function((k, v), x)))
@@ -1847,33 +1528,24 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// # let a_source = HashMap::from([
   /// #   (1, 1),
   /// #   (2, 2),
   /// #   (3, 3),
   /// # ]);
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// assert_eq!(
-  ///   a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)),
-  ///   Some((6, 6))
-  /// );
+  /// assert_eq!(a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)), Some((6, 6)));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// let folded = a.fold_ref((0, 0), |(a, b), (&k, &v)| (a + k, b + v));
   ///
   /// # let a = a_source.clone();
-  /// assert_eq!(
-  ///   a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(),
-  ///   folded
-  /// );
+  /// assert_eq!(a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(), folded);
   /// ```
   fn reduce_ref(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
 
@@ -1884,14 +1556,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert!(a.subset(&vec![4, 3, 2, 2, 1]));
@@ -1901,8 +1570,7 @@ pub trait Map<Key, Value> {
   /// assert!(!a.subset(&vec![]));
   /// ```
   fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where
-    Key: Eq + Hash + 'a;
+  where Key: Eq + Hash + 'a;
 
   /// Creates a new map from the original map by replacing the specified key
   /// and its value with a different entry.
@@ -1910,29 +1578,19 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   a.substitute(&3, 4, 4),
-  ///   HashMap::from([
-  ///     (1, 1),
-  ///     (2, 2),
-  ///     (4, 4),
-  /// ]));
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.substitute(&3, 4, 4), HashMap::from([(1, 1), (2, 2), (4, 4),]));
   /// ```
   #[inline]
   fn substitute(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     let mut replaced = Some((replacement_key, replacement_value));
     self
       .into_iter()
@@ -1946,22 +1604,16 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(
   ///   a.substitute_multi(&vec![2, 3], vec![(4, 4), (5, 5)]),
-  ///   HashMap::from([
-  ///     (1, 1),
-  ///     (4, 4),
-  ///     (5, 5),
-  /// ]));
+  ///   HashMap::from([(1, 1), (4, 4), (5, 5),])
+  /// );
   /// ```
   #[inline]
   fn substitute_multi<'a>(
@@ -1969,8 +1621,7 @@ pub trait Map<Key, Value> {
   ) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     let keys_iterator = keys.iterator();
     let mut replaced = HashMap::<&Key, LinkedList<(Key, Value)>>::with_capacity(keys_iterator.size_hint().0);
     for (item, replacement) in keys_iterator.zip(replacements.into_iter()) {
@@ -1991,14 +1642,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert!(a.superset(&vec![3, 1]));
@@ -2010,8 +1658,7 @@ pub trait Map<Key, Value> {
   /// assert!(!e.superset(&vec![1]));
   /// ```
   fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where
-    Key: Eq + Hash + 'a;
+  where Key: Eq + Hash + 'a;
 
   /// Sums keys of this map.
   ///
@@ -2032,14 +1679,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.sum_keys(), 6);
@@ -2049,8 +1693,7 @@ pub trait Map<Key, Value> {
   fn sum_keys(self) -> Key
   where
     Key: Sum,
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + Sized, {
     self.into_iter().map(|(k, _)| k).sum()
   }
 
@@ -2073,14 +1716,11 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   /// let e = HashMap::<i32, i32>::new();
   ///
   /// assert_eq!(a.sum_values(), 6);
@@ -2090,8 +1730,7 @@ pub trait Map<Key, Value> {
   fn sum_values(self) -> Value
   where
     Value: Sum,
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + Sized, {
     self.into_iter().map(|(_, v)| v).sum()
   }
 
@@ -2100,20 +1739,16 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(a.to_keys().to_set(), vec![1, 2, 3].to_set());
   /// ```
   fn to_keys(&self) -> Vec<Key>
-  where
-    Key: Clone;
+  where Key: Clone;
 
   /// Creates a new vector from the values of this map in arbitrary order.
   ///
@@ -2122,20 +1757,16 @@ pub trait Map<Key, Value> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
   ///
-  /// let a = HashMap::from([
-  ///   (1, 1),
-  ///   (2, 2),
-  ///   (3, 3),
-  /// ]);
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
   /// assert_eq!(a.to_values().to_set(), vec![1, 2, 3].to_set());
   /// ```
   fn to_values(&self) -> Vec<Value>
-  where
-    Value: Clone;
+  where Value: Clone;
 
   /// Creates a new map containing a single element.
   ///
@@ -2152,9 +1783,7 @@ pub trait Map<Key, Value> {
   /// ]));
   #[inline]
   fn unit(key: Key, value: Value) -> Self
-  where
-    Self: FromIterator<(Key, Value)>,
-  {
+  where Self: FromIterator<(Key, Value)> {
     iter::once((key, value)).collect()
   }
 }
@@ -2189,8 +1818,7 @@ pub(crate) fn partition_map_pairs<'a, K: 'a, V: 'a, L1, W1, L2, W2, Left, Right>
 ) -> (Left, Right)
 where
   Left: Default + Extend<(L1, W1)>,
-  Right: Default + Extend<(L2, W2)>,
-{
+  Right: Default + Extend<(L2, W2)>, {
   let mut result_left = Left::default();
   let mut result_right = Right::default();
   for item in iterator {

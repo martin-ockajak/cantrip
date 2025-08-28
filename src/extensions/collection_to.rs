@@ -4,9 +4,9 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
+use crate::Iterable;
 use crate::core::unfold::unfold;
 use crate::extensions::{collect_by_index, frequencies};
-use crate::Iterable;
 
 /// Consuming collection operations.
 ///
@@ -14,7 +14,6 @@ use crate::Iterable;
 ///
 /// - Consumes the collection and its elements
 /// - May create a new collection
-///
 pub trait CollectionTo<Item> {
   /// This collection type constructor
   type This<I>;
@@ -32,9 +31,7 @@ pub trait CollectionTo<Item> {
   /// ```
   #[inline]
   fn add(self, element: Item) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
     self.into_iter().chain(iter::once(element)).collect()
   }
 
@@ -52,9 +49,7 @@ pub trait CollectionTo<Item> {
   /// ```
   #[inline]
   fn add_multi(self, elements: impl IntoIterator<Item = Item>) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
     self.into_iter().chain(elements).collect()
   }
 
@@ -79,8 +74,9 @@ pub trait CollectionTo<Item> {
   /// Basic usage:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::LinkedList;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -93,8 +89,9 @@ pub trait CollectionTo<Item> {
   /// we could collect into, for example, a [`VecDeque<T>`] instead:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::VecDeque;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -106,8 +103,9 @@ pub trait CollectionTo<Item> {
   /// Using the 'turbofish' instead of annotating `collected`:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::VecDeque;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -118,8 +116,9 @@ pub trait CollectionTo<Item> {
   /// still use a partial type hint, `_`, with the turbofish:
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::VecDeque;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
@@ -167,8 +166,7 @@ pub trait CollectionTo<Item> {
   fn collect<B>(self) -> B
   where
     B: FromIterator<Item>,
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+    Self: IntoIterator<Item = Item> + Sized, {
     self.into_iter().collect()
   }
 
@@ -228,8 +226,7 @@ pub trait CollectionTo<Item> {
   fn delete(self, element: &Item) -> Self
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let mut removed = false;
     self
       .into_iter()
@@ -267,8 +264,7 @@ pub trait CollectionTo<Item> {
   fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let mut deleted: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
       .into_iter()
@@ -299,8 +295,7 @@ pub trait CollectionTo<Item> {
   fn fill_with(mut element: impl FnMut() -> Item, size: usize) -> Self
   where
     Item: Clone,
-    Self: FromIterator<Item>,
-  {
+    Self: FromIterator<Item>, {
     iter::repeat(element()).take(size).collect()
   }
 
@@ -324,10 +319,7 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.filter(|&x| x > 1),
-  ///   vec![2, 3]
-  /// );
+  /// assert_eq!(a.filter(|&x| x > 1), vec![2, 3]);
   /// ```
   ///
   /// Because the closure passed to `filter()` takes a reference, and some
@@ -378,9 +370,7 @@ pub trait CollectionTo<Item> {
   /// of these layers.
   #[inline]
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
-  where
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+  where Self: IntoIterator<Item = Item> + FromIterator<Item> {
     self.into_iter().filter(predicate).collect()
   }
 
@@ -408,10 +398,7 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }),
-  ///   vec![3]
-  /// );
+  /// assert_eq!(a.filter_map(|x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
   /// ```
   ///
   /// Here's the same example, but with [`filter()`] and [`map()`]:
@@ -421,17 +408,13 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.filter(|&x| x % 2 == 0).map(|x| x + 1),
-  ///   vec![3]
-  /// );
+  /// assert_eq!(a.filter(|&x| x % 2 == 0).map(|x| x + 1), vec![3]);
   /// ```
   #[inline]
   fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
+    Self::This<B>: FromIterator<B>, {
     self.into_iter().filter_map(function).collect()
   }
 
@@ -459,10 +442,7 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None } ),
-  ///   vec![3]
-  /// );
+  /// assert_eq!(a.filter_map_ref(|&x| if x % 2 == 0 { Some(x + 1) } else { None }), vec![3]);
   /// ```
   ///
   /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
@@ -472,14 +452,10 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1),
-  ///   vec![3]
-  /// );
+  /// assert_eq!(a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1), vec![3]);
   /// ```
   fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>;
+  where Self::This<B>: FromIterator<B>;
 
   /// Creates a new collection by filtering this collection using a
   /// closure to determine if an element should be retained.
@@ -501,10 +477,7 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.filter_ref(|&x| x > 1),
-  ///   vec![2, 3]
-  /// );
+  /// assert_eq!(a.filter_ref(|&x| x > 1), vec![2, 3]);
   /// ```
   ///
   /// Because the closure passed to `filter()` takes a reference, and some
@@ -554,8 +527,7 @@ pub trait CollectionTo<Item> {
   ///
   /// of these layers.
   fn filter_ref(&self, predicate: impl FnMut(&Item) -> bool) -> Self
-  where
-    Item: Clone;
+  where Item: Clone;
 
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
@@ -577,16 +549,11 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.find_map(|x| if x % 2 == 0 { Some(x) } else { None } ),
-  ///   Some(2)
-  /// );
+  /// assert_eq!(a.find_map(|x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   /// ```
   #[inline]
   fn find_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+  where Self: IntoIterator<Item = Item> + Sized {
     self.into_iter().find_map(function)
   }
 
@@ -677,8 +644,7 @@ pub trait CollectionTo<Item> {
   where
     Item: IntoIterator<Item = B>,
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
+    Self::This<B>: FromIterator<B>, {
     self.into_iter().flatten().collect()
   }
 
@@ -722,8 +688,7 @@ pub trait CollectionTo<Item> {
   where
     R: IntoIterator<Item = B>,
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
+    Self::This<B>: FromIterator<B>, {
     self.into_iter().flat_map(function).collect()
   }
 
@@ -809,10 +774,7 @@ pub trait CollectionTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of the array
-  /// assert_eq!(
-  ///   a.fold(0, |acc, x| acc + x),
-  ///   6
-  /// );
+  /// assert_eq!(a.fold(0, |acc, x| acc + x), 6);
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -838,9 +800,7 @@ pub trait CollectionTo<Item> {
   /// let zero = "0".to_string();
   ///
   /// assert_eq!(
-  ///   a.fold(zero, |acc, x| {
-  ///     format!("({acc} + {x})")
-  ///   }),
+  ///   a.fold(zero, |acc, x| { format!("({acc} + {x})") }),
   ///   "(((((0 + 1) + 2) + 3) + 4) + 5)"
   /// );
   /// ```
@@ -870,9 +830,7 @@ pub trait CollectionTo<Item> {
   /// ```
   #[inline]
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+  where Self: IntoIterator<Item = Item> + Sized {
     self.into_iter().fold(initial_value, function)
   }
 
@@ -882,22 +840,18 @@ pub trait CollectionTo<Item> {
   /// The discriminator function takes a reference to an element and returns a group key.
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.group_by(|x| x % 2), HashMap::from([
-  ///     (0, vec![2]),
-  ///     (1, vec![1, 3])
-  /// ]));
+  /// assert_eq!(a.group_by(|x| x % 2), HashMap::from([(0, vec![2]), (1, vec![1, 3])]));
   /// ```
   fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     K: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Default + Extend<Item>,
-  {
+    Self: IntoIterator<Item = Item> + Default + Extend<Item>, {
     let iterator = self.into_iter();
     let mut result = HashMap::<K, Self>::with_capacity(iterator.size_hint().0);
     for item in iterator {
@@ -918,17 +872,13 @@ pub trait CollectionTo<Item> {
   /// [`group_fold_ref()`]: crate::Collection::group_fold_ref
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.group_fold(|x| x % 2, 0, |acc, x| acc + x),
-  ///   HashMap::from([
-  ///     (0, 2),
-  ///     (1, 4),
-  /// ]));
+  /// assert_eq!(a.group_fold(|x| x % 2, 0, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
   fn group_fold<K, B>(
     self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
@@ -936,8 +886,7 @@ pub trait CollectionTo<Item> {
   where
     K: Eq + Hash,
     B: Clone,
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+    Self: IntoIterator<Item = Item> + Sized, {
     let iterator = self.into_iter();
     let mut result = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
@@ -964,25 +913,20 @@ pub trait CollectionTo<Item> {
   /// [`group_reduce_ref()`]: crate::Collection::group_reduce_ref
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.group_reduce(|x| x % 2, |acc, x| acc + x),
-  ///   HashMap::from([
-  ///     (0, 2),
-  ///     (1, 4),
-  /// ]));
+  /// assert_eq!(a.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
   fn group_reduce<K>(
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>
   where
     K: Eq + Hash,
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+    Self: IntoIterator<Item = Item> + Sized, {
     let iterator = self.into_iter();
     let mut result = HashMap::with_capacity(iterator.size_hint().0);
     for item in iterator {
@@ -1007,8 +951,9 @@ pub trait CollectionTo<Item> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashSet;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   /// let e = Vec::<i32>::new();
@@ -1028,8 +973,7 @@ pub trait CollectionTo<Item> {
   fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
       .into_iter()
@@ -1065,8 +1009,7 @@ pub trait CollectionTo<Item> {
   fn largest(self, n: usize) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().map(|x| Reverse(x)).take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
@@ -1112,17 +1055,13 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.map(|x| x + 1),
-  ///   vec![2, 3, 4]
-  /// );
+  /// assert_eq!(a.map(|x| x + 1), vec![2, 3, 4]);
   /// ```
   #[inline]
   fn map<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
-    Self::This<B>: FromIterator<B>,
-  {
+    Self::This<B>: FromIterator<B>, {
     self.into_iter().map(function).collect()
   }
 
@@ -1158,14 +1097,10 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.map_ref(|&x| x + 1),
-  ///   vec![2, 3, 4]
-  /// );
+  /// assert_eq!(a.map_ref(|&x| x + 1), vec![2, 3, 4]);
   /// ```
   fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>;
+  where Self::This<B>: FromIterator<B>;
 
   /// Creates two new collections from this collection by applying
   /// specified predicate.
@@ -1188,9 +1123,7 @@ pub trait CollectionTo<Item> {
   /// ```
   #[inline]
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
-  where
-    Self: Default + Extend<Item> + IntoIterator<Item = Item>,
-  {
+  where Self: Default + Extend<Item> + IntoIterator<Item = Item> {
     self.into_iter().partition(predicate)
   }
 
@@ -1253,8 +1186,7 @@ pub trait CollectionTo<Item> {
   where
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<A>: Default + Extend<A>,
-    Self::This<B>: Default + Extend<B>,
-  {
+    Self::This<B>: Default + Extend<B>, {
     let mut result_left: Self::This<A> = Self::This::default();
     let mut result_right: Self::This<B> = Self::This::default();
     for item in self.into_iter() {
@@ -1313,10 +1245,14 @@ pub trait CollectionTo<Item> {
   ///
   /// assert_eq!(a.powerset(), vec![
   ///   vec![],
-  ///   vec![1], vec![2], vec![3],
-  ///   vec![1, 2], vec![1, 3], vec![2, 3],
-  ///   vec![1, 2, 3]]
-  /// );
+  ///   vec![1],
+  ///   vec![2],
+  ///   vec![3],
+  ///   vec![1, 2],
+  ///   vec![1, 3],
+  ///   vec![2, 3],
+  ///   vec![1, 2, 3]
+  /// ]);
   /// assert_eq!(e.powerset(), vec![vec![]]);
   /// ```
   fn powerset(&self) -> Vec<Self>
@@ -1354,8 +1290,7 @@ pub trait CollectionTo<Item> {
   fn product(self) -> Item
   where
     Item: Product,
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+    Self: IntoIterator<Item = Item> + Sized, {
     self.into_iter().product()
   }
 
@@ -1383,26 +1318,18 @@ pub trait CollectionTo<Item> {
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.reduce(|acc, e| acc + e),
-  ///   Some(6)
-  /// );
+  /// assert_eq!(a.reduce(|acc, e| acc + e), Some(6));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold(0, |acc, e| acc + e);
   ///
   /// # let a = a_source.clone();
-  /// assert_eq!(
-  ///   a.reduce(|acc, e| acc + e).unwrap(),
-  ///   folded
-  /// );
+  /// assert_eq!(a.reduce(|acc, e| acc + e).unwrap(), folded);
   /// ```
   #[inline]
   fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
-  where
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+  where Self: IntoIterator<Item = Item> + Sized {
     let mut iterator = self.into_iter();
     iterator.next().map(|result| iterator.fold(result, function))
   }
@@ -1427,8 +1354,7 @@ pub trait CollectionTo<Item> {
   fn smallest(self, n: usize) -> Self
   where
     Item: Ord,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().take(n).collect::<BinaryHeap<_>>();
     for item in iterator {
@@ -1466,8 +1392,7 @@ pub trait CollectionTo<Item> {
   fn substitute(self, element: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let mut replaced = Some(replacement);
     self.into_iter().map(|item| if &item == element { replaced.take().unwrap_or(item) } else { item }).collect()
   }
@@ -1502,8 +1427,7 @@ pub trait CollectionTo<Item> {
   ) -> Self
   where
     Item: Eq + Hash + 'a,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
+    Self: IntoIterator<Item = Item> + FromIterator<Item>, {
     let elements_iterator = elements.iterator();
     let mut replaced = HashMap::<&Item, LinkedList<Item>>::with_capacity(elements_iterator.size_hint().0);
     for (item, replacement) in elements_iterator.zip(replacements.into_iter()) {
@@ -1547,8 +1471,7 @@ pub trait CollectionTo<Item> {
   fn sum(self) -> Item
   where
     Item: Sum,
-    Self: IntoIterator<Item = Item> + Sized,
-  {
+    Self: IntoIterator<Item = Item> + Sized, {
     self.into_iter().sum()
   }
 
@@ -1562,9 +1485,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(Vec::unit(1), vec![1]);
   #[inline]
   fn unit(element: Item) -> Self
-  where
-    Self: FromIterator<Item>,
-  {
+  where Self: FromIterator<Item> {
     iter::once(element).collect()
   }
 }
@@ -1580,8 +1501,7 @@ pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>
 pub(crate) fn compute_combinations<'a, Item, Collection>(values: &[&Item], k: usize) -> Vec<Collection>
 where
   Item: Clone + 'a,
-  Collection: FromIterator<Item>,
-{
+  Collection: FromIterator<Item>, {
   let size = values.len();
   let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
   let mut current_slot = (size + 1).saturating_sub(k);

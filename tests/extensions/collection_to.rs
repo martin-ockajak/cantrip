@@ -3,8 +3,8 @@ use std::collections::{HashMap, HashSet, LinkedList};
 use cantrip::CollectionTo;
 
 use crate::extensions::util::{
-  assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal, assert_vec_seq_equivalent,
-  TestCollectible, TestCollection,
+  TestCollectible, TestCollection, assert_map_equal, assert_map_vec_equivalent, assert_seq_equal, assert_set_equal,
+  assert_vec_seq_equivalent,
 };
 
 pub(crate) fn test_collection_to<'a, C, D>(sequence: bool, a_source: &C, b_source: &C, d_source: &D, e_source: &C)
@@ -12,8 +12,7 @@ where
   C: TestCollectible<'a, i64>,
   C::This<i64>: TestCollection<i64>,
   D: CollectionTo<Vec<i64>> + TestCollection<Vec<i64>> + IntoIterator<Item = Vec<i64>>,
-  D::This<i64>: TestCollection<i64>,
-{
+  D::This<i64>: TestCollection<i64>, {
   // add
   let a = a_source.clone();
   let e = e_source.clone();
@@ -208,13 +207,12 @@ where
   let a = a_source.clone();
   let e = e_source.clone();
   if sequence {
-    let expected_partitions = vec![
-      vec![vec![1, 2, 3]],
-      vec![vec![1, 2], vec![3]],
-      vec![vec![1, 3], vec![2]],
-      vec![vec![1], vec![2, 3]],
-      vec![vec![1], vec![2], vec![3]],
-    ];
+    let expected_partitions =
+      vec![vec![vec![1, 2, 3]], vec![vec![1, 2], vec![3]], vec![vec![1, 3], vec![2]], vec![vec![1], vec![2, 3]], vec![
+        vec![1],
+        vec![2],
+        vec![3],
+      ]];
     for (partition, expected) in a.partitions().into_iter().zip(expected_partitions) {
       assert_vec_seq_equivalent(partition, expected);
     }
@@ -244,10 +242,16 @@ where
   assert_seq_equal(e_odd, vec![]);
 
   // powerset
-  assert_vec_seq_equivalent(
-    a.powerset(),
-    vec![vec![], vec![1], vec![2], vec![3], vec![1, 2], vec![1, 3], vec![2, 3], vec![1, 2, 3]],
-  );
+  assert_vec_seq_equivalent(a.powerset(), vec![
+    vec![],
+    vec![1],
+    vec![2],
+    vec![3],
+    vec![1, 2],
+    vec![1, 3],
+    vec![2, 3],
+    vec![1, 2, 3],
+  ]);
   assert_vec_seq_equivalent(e.powerset(), vec![vec![]]);
 
   // product

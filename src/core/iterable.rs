@@ -39,25 +39,18 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 /// use crate::cantrip::*;
 ///
 /// fn collect_as_strings<'a, T>(collection: &'a impl Iterable<Item<'a> = &'a T>) -> Vec<String>
-/// where
-///   T: IntoIterator + 'a + std::fmt::Debug,
-/// {
-///   collection
-///     .iterator()
-///     .map(|item| format!("{item:?}"))
-///     .collect()
+/// where T: IntoIterator + 'a + std::fmt::Debug {
+///   collection.iterator().map(|item| format!("{item:?}")).collect()
 /// }
 /// ```
 pub trait Iterable {
   /// The type of the elements being iterated over.
   type Item<'collection>
-  where
-    Self: 'collection;
+  where Self: 'collection;
 
   /// Which kind of iterator are we turning this into?
   type Iterator<'collection>: Iterator<Item = Self::Item<'collection>>
-  where
-    Self: 'collection;
+  where Self: 'collection;
 
   /// Creates an iterator from a value.
   ///
@@ -95,13 +88,12 @@ impl<'c, T> Iterator for OptionIterator<'c, T> {
 }
 
 impl<Item> Iterable for Option<Item> {
-  type Item<'c> = &'c Item
-  where
-    Item: 'c;
-
-  type Iterator<'c> = OptionIterator<'c, Item>
-  where
-    Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = OptionIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -124,12 +116,13 @@ impl<'c, T> Iterator for ResultIterator<'c, T> {
 }
 
 impl<Item, E> Iterable for Result<Item, E> {
-  type Item<'c> = &'c Item
+  type Item<'c>
+    = &'c Item
   where
     E: 'c,
     Item: 'c;
-
-  type Iterator<'c> = ResultIterator<'c, Item>
+  type Iterator<'c>
+    = ResultIterator<'c, Item>
   where
     E: 'c,
     Item: 'c;
@@ -141,13 +134,12 @@ impl<Item, E> Iterable for Result<Item, E> {
 }
 
 impl<Item> Iterable for [Item] {
-  type Item<'c> = &'c Item
-  where
-    Item: 'c;
-
-  type Iterator<'c> = SliceIterator<'c, Item>
-  where
-    Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = SliceIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -177,13 +169,12 @@ impl<'c, T> DoubleEndedIterator for SliceIterator<'c, T> {
 }
 
 impl<Item> Iterable for Vec<Item> {
-  type Item<'c> = &'c Item
-  where
-      Item: 'c;
-
-  type Iterator<'c> = SliceIterator<'c, Item>
-  where
-      Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = SliceIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -213,13 +204,12 @@ impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
 }
 
 impl<Item> Iterable for LinkedList<Item> {
-  type Item<'c> = &'c Item
-  where
-      Item: 'c;
-
-  type Iterator<'c> = LinkedListIterator<'c, Item>
-  where
-      Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = LinkedListIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -249,13 +239,12 @@ impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
 }
 
 impl<Item> Iterable for VecDeque<Item> {
-  type Item<'c> = &'c Item
-    where
-      Item: 'c;
-
-  type Iterator<'c> = VecDequeIterator<'c, Item>
-    where
-      Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = VecDequeIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -278,13 +267,12 @@ impl<'c, T> Iterator for HashSetIterator<'c, T> {
 }
 
 impl<Item> Iterable for HashSet<Item> {
-  type Item<'c> = &'c Item
-    where
-      Item: 'c;
-
-  type Iterator<'c> = HashSetIterator<'c, Item>
-    where
-      Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = HashSetIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -307,13 +295,12 @@ impl<'c, T> Iterator for BTreeSetIterator<'c, T> {
 }
 
 impl<Item> Iterable for BTreeSet<Item> {
-  type Item<'c> = &'c Item
-    where
-      Item: 'c;
-
-  type Iterator<'c> = BTreeSetIterator<'c, Item>
-    where
-      Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = BTreeSetIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -336,13 +323,12 @@ impl<'c, T> Iterator for BinaryHeapIterator<'c, T> {
 }
 
 impl<Item> Iterable for BinaryHeap<Item> {
-  type Item<'c> = &'c Item
-    where
-      Item: 'c;
-
-  type Iterator<'c> = BinaryHeapIterator<'c, Item>
-    where
-      Item: 'c;
+  type Item<'c>
+    = &'c Item
+  where Item: 'c;
+  type Iterator<'c>
+    = BinaryHeapIterator<'c, Item>
+  where Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -365,15 +351,16 @@ impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
 }
 
 impl<Key, Value> Iterable for HashMap<Key, Value> {
-  type Item<'c> = (&'c Key, &'c Value)
-    where
-      Key: 'c,
-      Value: 'c;
-
-  type Iterator<'c> = HashMapIterator<'c, Key, Value>
-    where
-      Key: 'c,
-      Value: 'c;
+  type Item<'c>
+    = (&'c Key, &'c Value)
+  where
+    Key: 'c,
+    Value: 'c;
+  type Iterator<'c>
+    = HashMapIterator<'c, Key, Value>
+  where
+    Key: 'c,
+    Value: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
@@ -396,15 +383,16 @@ impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
 }
 
 impl<Key, Value> Iterable for BTreeMap<Key, Value> {
-  type Item<'c> = (&'c Key, &'c Value)
-    where
-      Key: 'c,
-      Value: 'c;
-
-  type Iterator<'c> = BTreeMapIterator<'c, Key, Value>
-    where
-      Key: 'c,
-      Value: 'c;
+  type Item<'c>
+    = (&'c Key, &'c Value)
+  where
+    Key: 'c,
+    Value: 'c;
+  type Iterator<'c>
+    = BTreeMapIterator<'c, Key, Value>
+  where
+    Key: 'c,
+    Value: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {

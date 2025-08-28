@@ -5,7 +5,6 @@
 /// - Requires the collection to represent a slice
 /// - Does not consume the collection or its elements
 /// - Does not create a new collection
-///
 pub trait Slice<Item> {
   /// Creates a new slice from this slice without the last element.
   ///

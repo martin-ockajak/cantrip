@@ -1,9 +1,10 @@
 #![allow(missing_docs)]
 #![allow(unused_results)]
 
+use std::hint::black_box;
+
 use cantrip::*;
 use criterion::{Criterion, criterion_group, criterion_main};
-use std::hint::black_box;
 
 static SMALL_COLLECTION_SIZE: usize = 5;
 static LARGE_COLLECTION_SIZE: usize = 50;

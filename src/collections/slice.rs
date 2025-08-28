@@ -1,10 +1,10 @@
-use std::cmp::{min, Ordering};
+use std::cmp::{Ordering, min};
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
 
-use crate::extensions::*;
 use crate::Iterable;
+use crate::extensions::*;
 
 impl<Item> Collection<Item> for [Item] {
   #[inline]
@@ -24,9 +24,7 @@ impl<Item> Collection<Item> for [Item] {
 
   #[inline]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
+  where Item: Eq + Hash + 'a {
     disjoint(self.iter(), elements)
   }
 
@@ -56,8 +54,7 @@ impl<Item> Collection<Item> for [Item] {
   ) -> HashMap<K, B>
   where
     K: Eq + Hash,
-    B: Clone,
-  {
+    B: Clone, {
     group_fold(self.iter(), to_key, initial_value, function)
   }
 
@@ -67,8 +64,7 @@ impl<Item> Collection<Item> for [Item] {
   ) -> HashMap<K, Item>
   where
     K: Eq + Hash,
-    Item: Clone,
-  {
+    Item: Clone, {
     group_reduce(self.iter(), to_key, function)
   }
 
@@ -79,9 +75,7 @@ impl<Item> Collection<Item> for [Item] {
 
   #[inline]
   fn max_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where
-    K: Ord,
-  {
+  where K: Ord {
     self.iter().max_by_key(|&x| to_key(x))
   }
 
@@ -92,9 +86,7 @@ impl<Item> Collection<Item> for [Item] {
 
   #[inline]
   fn min_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where
-    K: Ord,
-  {
+  where K: Ord {
     self.iter().min_by_key(|&x| to_key(x))
   }
 
@@ -105,9 +97,7 @@ impl<Item> Collection<Item> for [Item] {
 
   #[inline]
   fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
-  where
-    K: Ord,
-  {
+  where K: Ord {
     minmax_by_key(self.iter(), to_key)
   }
 
@@ -118,17 +108,13 @@ impl<Item> Collection<Item> for [Item] {
 
   #[inline]
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
+  where Item: Eq + Hash + 'a {
     subset(self.iter(), elements)
   }
 
   #[inline]
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
+  where Item: Eq + Hash + 'a {
     superset(self.iter(), elements)
   }
 }
@@ -136,33 +122,29 @@ impl<Item> Collection<Item> for [Item] {
 impl<Item> Sequence<Item> for [Item] {
   #[inline]
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where
-    Item: PartialEq + 'a,
-  {
+  where Item: PartialEq + 'a {
     common_prefix_length(self.iter(), elements)
   }
+
   #[inline]
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  fn common_suffix_length<'a, I>(
+    &'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>,
+  ) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
-    Item: PartialEq + 'a,
-  {
+    Item: PartialEq + 'a, {
     common_suffix_length(self.iter().rev(), elements)
   }
 
   #[inline]
   fn count_unique(&self) -> usize
-  where
-    Item: Eq + Hash,
-  {
+  where Item: Eq + Hash {
     count_unique(self.iter())
   }
 
   #[inline]
   fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
+  where Item: Eq + Hash + 'a {
     equivalent(self.iter(), iterable)
   }
 
@@ -173,9 +155,7 @@ impl<Item> Sequence<Item> for [Item] {
 
   #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
-  where
-    Item: Eq + Hash + 'a,
-  {
+  where Item: Eq + Hash + 'a {
     frequencies(self.iter())
   }
 
@@ -186,9 +166,7 @@ impl<Item> Sequence<Item> for [Item] {
 
   #[inline]
   fn joined(&self, separator: &str) -> String
-  where
-    Item: Display,
-  {
+  where Item: Display {
     joined(self.iter(), separator)
   }
 
@@ -204,9 +182,7 @@ impl<Item> Sequence<Item> for [Item] {
 
   #[inline]
   fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
-  where
-    Item: PartialEq + 'a,
-  {
+  where Item: PartialEq + 'a {
     position_sequence(self.iter(), elements)
   }
 

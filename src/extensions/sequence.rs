@@ -1,6 +1,5 @@
 use std::collections::{HashMap, HashSet};
-use std::fmt::Display;
-use std::fmt::Write;
+use std::fmt::{Display, Write};
 use std::hash::Hash;
 
 use crate::Iterable;
@@ -10,7 +9,6 @@ use crate::Iterable;
 /// Methods have the following properties:
 ///
 /// - Requires the collection to represent an ordered collection
-///
 pub trait Sequence<Item> {
   /// Computes the length of the longest common prefix shared by this sequence and another collection.
   ///
@@ -27,8 +25,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.common_prefix_length(&vec![]), 0);
   /// ```
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
-  where
-    Item: PartialEq + 'a;
+  where Item: PartialEq + 'a;
 
   /// Computes the length of the longest common suffix shared by this sequence and another collection.
   ///
@@ -66,8 +63,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(e.count_unique(), 0);
   /// ```
   fn count_unique(&self) -> usize
-  where
-    Item: Eq + Hash;
+  where Item: Eq + Hash;
 
   /// Tests if this sequence contains all elements of another collection exactly
   /// as many times as their appear in the other collection and vice versa.
@@ -86,8 +82,7 @@ pub trait Sequence<Item> {
   /// assert!(!a.equivalent(&vec![]));
   /// ```
   fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a;
+  where Item: Eq + Hash + 'a;
 
   /// Find the position and value of the first element in this sequence satisfying a predicate.
   ///
@@ -109,22 +104,16 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.frequencies(),
-  ///   HashMap::from([
-  ///     (&1, 1),
-  ///     (&2, 2),
-  ///     (&3, 1),
-  /// ]));
+  /// assert_eq!(a.frequencies(), HashMap::from([(&1, 1), (&2, 2), (&3, 1),]));
   /// ```
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
-  where
-    Item: Eq + Hash + 'a;
+  where Item: Eq + Hash + 'a;
 
   /// Compute number of occurrences of each group of elements in this sequence according to
   /// specified discriminator function.
@@ -134,17 +123,13 @@ pub trait Sequence<Item> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.frequencies_by(|x| x % 2),
-  ///   HashMap::from([
-  ///     (0, 2),
-  ///     (1, 2),
-  /// ]));
+  /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([(0, 2), (1, 2),]));
   /// ```
   fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize>;
 
@@ -164,8 +149,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(e.joined(", "), "");
   /// ```
   fn joined(&self, separator: &str) -> String
-  where
-    Item: Display;
+  where Item: Display;
 
   /// Searches for an element in this sequence, returning its index.
   ///
@@ -268,9 +252,7 @@ pub trait Sequence<Item> {
   /// ```
   #[inline]
   fn position_of(&self, element: &Item) -> Option<usize>
-  where
-    Item: PartialEq,
-  {
+  where Item: PartialEq {
     self.position(|x| x == element)
   }
 
@@ -304,9 +286,7 @@ pub trait Sequence<Item> {
   /// ```
   #[inline]
   fn position_of_multi(&self, element: &Item) -> Vec<usize>
-  where
-    Item: PartialEq,
-  {
+  where Item: PartialEq {
     self.position_multi(|x| x == element)
   }
 
@@ -349,8 +329,7 @@ pub trait Sequence<Item> {
   /// assert_eq!(a.position_sequence(&vec![1, 3]), None);
   /// ```
   fn position_sequence<'a>(&'a self, sequence: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
-  where
-    Item: PartialEq + 'a;
+  where Item: PartialEq + 'a;
 
   /// Searches for an element of this sequence that satisfies a predicate, starting from the back.
   ///
@@ -422,10 +401,7 @@ pub trait Sequence<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of a
-  /// assert_eq!(
-  ///   a.rfold_ref(0, |acc, x| acc + x),
-  ///   6
-  /// );
+  /// assert_eq!(a.rfold_ref(0, |acc, x| acc + x), 6);
   /// ```
   ///
   /// This example demonstrates the right-associative nature of `rfold()`:
@@ -440,9 +416,7 @@ pub trait Sequence<Item> {
   /// let zero = "0".to_string();
   ///
   /// assert_eq!(
-  ///   a.rfold_ref(zero, |acc, x| {
-  ///     format!("({x} + {acc})")
-  ///   }),
+  ///   a.rfold_ref(zero, |acc, x| { format!("({x} + {acc})") }),
   ///   "(1 + (2 + (3 + (4 + (5 + 0)))))"
   /// );
   /// ```

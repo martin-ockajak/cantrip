@@ -2,26 +2,22 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::extensions::*;
 use crate::Iterable;
+use crate::extensions::*;
 
 impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
 
   #[inline]
   fn add(mut self, key: Key, value: Value) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     let _unused = self.insert(key, value);
     self
   }
 
   #[inline]
   fn add_multi(mut self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
-  where
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+  where Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)> {
     for (k, v) in entries {
       let _unused = self.insert(k, v);
     }
@@ -45,9 +41,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn count_unique(&self) -> usize
-  where
-    Value: Eq + Hash,
-  {
+  where Value: Eq + Hash {
     count_unique(self.values())
   }
 
@@ -55,8 +49,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   fn delete(mut self, key: &Key) -> Self
   where
     Key: PartialEq,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     let _unused = self.remove(key);
     self
   }
@@ -65,8 +58,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   fn delete_multi<'a>(mut self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
-    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
-  {
+    Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>, {
     for key in keys.iterator() {
       let _unused = self.remove(key);
     }
@@ -75,17 +67,13 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where
-    Key: Eq + Hash + 'a,
-  {
+  where Key: Eq + Hash + 'a {
     disjoint(self.keys(), elements)
   }
 
   #[inline]
   fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
+  where Self::This<L, W>: FromIterator<(L, W)> {
     self.iter().filter_map(function).collect()
   }
 
@@ -93,8 +81,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   fn filter_ref(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
     Key: Clone,
-    Value: Clone,
-  {
+    Value: Clone, {
     self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
   }
 
@@ -112,8 +99,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     R: IntoIterator<Item = (L, W)>,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
+    Self::This<L, W>: FromIterator<(L, W)>, {
     self.iter().flat_map(function).collect()
   }
 
@@ -129,9 +115,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
+  where Self::This<L, W>: FromIterator<(L, W)> {
     self.iter().map(function).collect()
   }
 
@@ -142,9 +126,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn max_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
-  where
-    K: Ord,
-  {
+  where K: Ord {
     self.iter().max_by_key(|&x| to_key(x))
   }
 
@@ -155,9 +137,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn min_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
-  where
-    K: Ord,
-  {
+  where K: Ord {
     self.iter().min_by_key(|&x| to_key(x))
   }
 
@@ -170,9 +150,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
-  where
-    K: Ord,
-  {
+  where K: Ord {
     minmax_by_key_pairs(self.iter(), to_key)
   }
 
@@ -182,8 +160,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
   where
     Self::This<L1, W1>: Default + Extend<(L1, W1)>,
-    Self::This<L2, W2>: Default + Extend<(L2, W2)>,
-  {
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>, {
     partition_map_pairs(self.iter(), function)
   }
 
@@ -194,33 +171,25 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where
-    Key: Eq + Hash + 'a,
-  {
+  where Key: Eq + Hash + 'a {
     subset(self.keys(), elements)
   }
 
   #[inline]
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
-  where
-    Key: Eq + Hash + 'a,
-  {
+  where Key: Eq + Hash + 'a {
     superset(self.keys(), elements)
   }
 
   #[inline]
   fn to_keys(&self) -> Vec<Key>
-  where
-    Key: Clone,
-  {
+  where Key: Clone {
     self.keys().cloned().collect()
   }
 
   #[inline]
   fn to_values(&self) -> Vec<Value>
-  where
-    Value: Clone,
-  {
+  where Value: Clone {
     self.values().cloned().collect()
   }
 }

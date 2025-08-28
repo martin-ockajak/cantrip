@@ -7,15 +7,15 @@ use crate::core::unfold::unfold;
 /// - Requires the collection to represent a list
 /// - Does not consume the list or its elements
 /// - Does not create a new list
-///
 pub trait List<Item> {
   /// Returns the first element of this sequence, or `None` if it is empty.
   ///
   /// # Examples
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::LinkedList;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = LinkedList::from([1, 2, 3]);
   ///
@@ -28,8 +28,9 @@ pub trait List<Item> {
   /// # Examples
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::LinkedList;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = LinkedList::from([1, 2, 3]);
   ///
@@ -42,8 +43,9 @@ pub trait List<Item> {
   /// # Example
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::LinkedList;
+  ///
+  /// use cantrip::*;
   ///
   /// # let a_source = LinkedList::from([1, 2, 3]);
   /// let a = LinkedList::from([1, 2, 3]);
@@ -53,8 +55,7 @@ pub trait List<Item> {
   /// assert_eq!(a.repeat(0), LinkedList::new());
   /// ```
   fn repeat(self, n: usize) -> Self
-  where
-    Item: Clone;
+  where Item: Clone;
 }
 
 pub(crate) fn repeat<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(

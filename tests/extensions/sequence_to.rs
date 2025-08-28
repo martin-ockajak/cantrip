@@ -3,9 +3,8 @@ use std::panic::UnwindSafe;
 
 use cantrip::SequenceTo;
 
-use crate::extensions::util::{assert_seq_equal, assert_vec_seq_equal, TestCollectible, TestCollection, TestSequence};
+use crate::extensions::util::{TestCollectible, TestCollection, TestSequence, assert_seq_equal, assert_vec_seq_equal};
 
-#[allow(box_pointers)]
 pub(crate) fn test_sequence_to<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
@@ -15,8 +14,7 @@ where
   <C as SequenceTo<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
   G: SequenceTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
-  for<'c> &'c C: UnwindSafe,
-{
+  for<'c> &'c C: UnwindSafe, {
   // add_at
   let a = a_source.clone();
   let e = e_source.clone();
@@ -46,10 +44,17 @@ where
   let e = e_source.clone();
   assert_vec_seq_equal(a.cartesian_product(0), vec![vec![]]);
   assert_vec_seq_equal(a.cartesian_product(1), vec![vec![1], vec![2], vec![3]]);
-  assert_vec_seq_equal(
-    a.cartesian_product(2),
-    vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 1], vec![2, 2], vec![2, 3], vec![3, 1], vec![3, 2], vec![3, 3]],
-  );
+  assert_vec_seq_equal(a.cartesian_product(2), vec![
+    vec![1, 1],
+    vec![1, 2],
+    vec![1, 3],
+    vec![2, 1],
+    vec![2, 2],
+    vec![2, 3],
+    vec![3, 1],
+    vec![3, 2],
+    vec![3, 3],
+  ]);
   assert_vec_seq_equal(e.cartesian_product(2), vec![]);
 
   // chunked
@@ -97,25 +102,26 @@ where
   let e = e_source.clone();
   assert_vec_seq_equal(a.combinations_multi(0), vec![vec![]]);
   assert_vec_seq_equal(a.combinations_multi(1), vec![vec![1], vec![2], vec![3]]);
-  assert_vec_seq_equal(
-    a.combinations_multi(2),
-    vec![vec![1, 1], vec![1, 2], vec![1, 3], vec![2, 2], vec![2, 3], vec![3, 3]],
-  );
-  assert_vec_seq_equal(
-    a.combinations_multi(3),
-    vec![
-      vec![1, 1, 1],
-      vec![1, 1, 2],
-      vec![1, 1, 3],
-      vec![1, 2, 2],
-      vec![1, 2, 3],
-      vec![1, 3, 3],
-      vec![2, 2, 2],
-      vec![2, 2, 3],
-      vec![2, 3, 3],
-      vec![3, 3, 3],
-    ],
-  );
+  assert_vec_seq_equal(a.combinations_multi(2), vec![
+    vec![1, 1],
+    vec![1, 2],
+    vec![1, 3],
+    vec![2, 2],
+    vec![2, 3],
+    vec![3, 3],
+  ]);
+  assert_vec_seq_equal(a.combinations_multi(3), vec![
+    vec![1, 1, 1],
+    vec![1, 1, 2],
+    vec![1, 1, 3],
+    vec![1, 2, 2],
+    vec![1, 2, 3],
+    vec![1, 3, 3],
+    vec![2, 2, 2],
+    vec![2, 2, 3],
+    vec![2, 3, 3],
+    vec![3, 3, 3],
+  ]);
   assert_vec_seq_equal(e.combinations_multi(1), vec![]);
 
   // delete_at
@@ -478,10 +484,14 @@ where
   assert_vec_seq_equal(a.variations(0), vec![vec![]]);
   assert_vec_seq_equal(a.variations(1), vec![vec![1], vec![2], vec![3]]);
   assert_vec_seq_equal(a.variations(2), vec![vec![1, 2], vec![1, 3], vec![2, 1], vec![2, 3], vec![3, 1], vec![3, 2]]);
-  assert_vec_seq_equal(
-    a.variations(3),
-    vec![vec![1, 2, 3], vec![1, 3, 2], vec![2, 1, 3], vec![2, 3, 1], vec![3, 1, 2], vec![3, 2, 1]],
-  );
+  assert_vec_seq_equal(a.variations(3), vec![
+    vec![1, 2, 3],
+    vec![1, 3, 2],
+    vec![2, 1, 3],
+    vec![2, 3, 1],
+    vec![3, 1, 2],
+    vec![3, 2, 1],
+  ]);
   assert_vec_seq_equal(e.variations(1), vec![]);
 
   // windowed

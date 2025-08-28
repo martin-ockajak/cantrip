@@ -10,7 +10,6 @@ use crate::Iterable;
 ///
 /// - Does not consume the collection or its elements
 /// - Does not create a new collection
-///
 pub trait Collection<Item> {
   /// Tests if every element of the collection matches a predicate.
   ///
@@ -105,8 +104,7 @@ pub trait Collection<Item> {
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a;
+  where Item: Eq + Hash + 'a;
 
   /// Searches for an element of this collection that satisfies a predicate.
   ///
@@ -155,10 +153,7 @@ pub trait Collection<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None } ),
-  ///   Some(2)
-  /// );
+  /// assert_eq!(a.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   /// ```
   fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
 
@@ -204,10 +199,7 @@ pub trait Collection<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// // the sum of all the elements of the array
-  /// assert_eq!(
-  ///   a.fold_ref(0, |acc, x| acc + x),
-  ///   6
-  /// );
+  /// assert_eq!(a.fold_ref(0, |acc, x| acc + x), 6);
   /// ```
   ///
   /// Let's walk through each step of the iteration here:
@@ -232,9 +224,7 @@ pub trait Collection<Item> {
   ///
   /// let zero = "0".to_string();
   ///
-  /// let folded = a.fold_ref(zero, |acc, &x| {
-  ///   format!("({acc} + {x})")
-  /// });
+  /// let folded = a.fold_ref(zero, |acc, &x| format!("({acc} + {x})"));
   ///
   /// assert_eq!(folded, "(((0 + 1) + 2) + 3)");
   /// ```
@@ -293,10 +283,11 @@ pub trait Collection<Item> {
   /// might be preferable to keep a functional style with longer collections:
   ///
   /// ```
-  /// (0..5).flat_map(|x| x * 100 .. x * 110)
-  ///       .enumerate()
-  ///       .filter(|&(i, x)| (i + x) % 3 == 0)
-  ///       .for_each(|(i, x)| println!("{i}:{x}"));
+  /// (0..5)
+  ///   .flat_map(|x| x * 100..x * 110)
+  ///   .enumerate()
+  ///   .filter(|&(i, x)| (i + x) % 3 == 0)
+  ///   .for_each(|(i, x)| println!("{i}:{x}"));
   /// ```
   fn for_each(&self, function: impl FnMut(&Item));
 
@@ -312,17 +303,13 @@ pub trait Collection<Item> {
   /// [`group_fold()`]: crate::CollectionTo::group_fold
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x),
-  ///   HashMap::from([
-  ///     (0, 2),
-  ///     (1, 4),
-  /// ]));
+  /// assert_eq!(a.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
   fn group_fold_ref<K, B>(
     &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
@@ -343,17 +330,13 @@ pub trait Collection<Item> {
   /// [`group_reduce()`]: crate::CollectionTo::group_reduce
   ///
   /// ```
-  /// use cantrip::*;
   /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.group_reduce_ref(|x| x % 2, |acc, x| acc + x),
-  ///   HashMap::from([
-  ///     (0, 2),
-  ///     (1, 4),
-  /// ]));
+  /// assert_eq!(a.group_reduce_ref(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
   fn group_reduce_ref<K>(
     &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
@@ -401,8 +384,7 @@ pub trait Collection<Item> {
   /// assert_eq!(e.max_by_key(|x| -x), None);
   /// ```
   fn max_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where
-    K: Ord;
+  where K: Ord;
 
   /// Returns the maximum element of this collection.
   ///
@@ -414,12 +396,7 @@ pub trait Collection<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///     vec![2.4, f32::NAN, 1.3]
-  ///         .reduce(f32::max)
-  ///         .unwrap(),
-  ///     2.4
-  /// );
+  /// assert_eq!(vec![2.4, f32::NAN, 1.3].reduce(f32::max).unwrap(), 2.4);
   /// ```
   /// [`reduce()`]: crate::CollectionTo::reduce
   ///
@@ -437,9 +414,7 @@ pub trait Collection<Item> {
   /// ```
   #[inline]
   fn max_of(&self) -> Option<&Item>
-  where
-    Item: Ord,
-  {
+  where Item: Ord {
     self.max_by(Ord::cmp)
   }
 
@@ -482,8 +457,7 @@ pub trait Collection<Item> {
   /// assert_eq!(e.min_by_key(|x| -x), None);
   /// ```
   fn min_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where
-    K: Ord;
+  where K: Ord;
 
   /// Returns the minimum element of this collection.
   ///
@@ -498,12 +472,7 @@ pub trait Collection<Item> {
   /// ```
   /// use cantrip::*;
   ///
-  /// assert_eq!(
-  ///   vec![2.4, f32::NAN, 1.3]
-  ///     .reduce(f32::min)
-  ///     .unwrap(),
-  ///   1.3
-  /// );
+  /// assert_eq!(vec![2.4, f32::NAN, 1.3].reduce(f32::min).unwrap(), 1.3);
   /// ```
   ///
   /// # Example
@@ -520,9 +489,7 @@ pub trait Collection<Item> {
   /// ```
   #[inline]
   fn min_of(&self) -> Option<&Item>
-  where
-    Item: Ord,
-  {
+  where Item: Ord {
     self.min_by(Ord::cmp)
   }
 
@@ -565,8 +532,7 @@ pub trait Collection<Item> {
   /// assert_eq!(e.minmax_by_key(|x| -x), None);
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
-  where
-    K: Ord;
+  where K: Ord;
 
   /// Return the minimum and maximum element of this collection.
   ///
@@ -587,9 +553,7 @@ pub trait Collection<Item> {
   /// ```
   #[inline]
   fn minmax_of(&self) -> Option<(&Item, &Item)>
-  where
-    Item: Ord,
-  {
+  where Item: Ord {
     self.minmax_by(Ord::cmp)
   }
 
@@ -616,19 +580,13 @@ pub trait Collection<Item> {
   /// # let a_source = vec![1, 2, 3];
   /// let a = vec![1, 2, 3];
   ///
-  /// assert_eq!(
-  ///   a.reduce_ref(|&acc, &e| acc + e),
-  ///   Some(6)
-  /// );
+  /// assert_eq!(a.reduce_ref(|&acc, &e| acc + e), Some(6));
   ///
   /// // Which is equivalent to doing it with `fold`:
   /// # let a = a_source.clone();
   /// let folded = a.fold_ref(0, |acc, &e| acc + e);
   ///
-  /// assert_eq!(
-  ///   a.reduce_ref(|&acc, &e| acc + e).unwrap(),
-  ///   folded
-  /// );
+  /// assert_eq!(a.reduce_ref(|&acc, &e| acc + e).unwrap(), folded);
   /// ```
   fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 
@@ -658,8 +616,7 @@ pub trait Collection<Item> {
   /// assert!(!a.subset(&vec![3, 4]));
   /// ```
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a;
+  where Item: Eq + Hash + 'a;
 
   /// Tests if this collection contains all elements of another collection
   /// at least as many times as their appear in the other collection.
@@ -687,8 +644,7 @@ pub trait Collection<Item> {
   /// assert!(!e.superset(&vec![1]));
   /// ```
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a;
+  where Item: Eq + Hash + 'a;
 }
 
 #[inline]

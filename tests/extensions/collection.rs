@@ -1,12 +1,10 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use cantrip::{Iterable, Collection};
+use cantrip::{Collection, Iterable};
 
 pub(crate) fn test_collection<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
-where
-  C: Collection<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
-{
+where C: Collection<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a {
   // all
   assert!(a.all(|&x| x > 0));
   assert!(e.all(|&x| x > 0));
