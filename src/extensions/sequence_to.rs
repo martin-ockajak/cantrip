@@ -801,7 +801,7 @@ pub trait SequenceTo<Item> {
     unfold(|| {
       stored.take().or_else(|| {
         iterator.next().map(|item| {
-          let new_item = if index % interval == 0 && index != 0 {
+          let new_item = if index != 0 && index.is_multiple_of(interval) {
             stored = Some(item);
             to_value()
           } else {
