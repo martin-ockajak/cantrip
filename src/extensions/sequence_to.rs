@@ -5,6 +5,8 @@ use std::iter;
 
 use crate::core::unfold::unfold;
 
+pub(crate) const MAX_SIZE: usize = usize::MAX / 2 - 1;
+
 /// Sequence operations.
 ///
 /// Methods have the following properties:
@@ -2161,6 +2163,7 @@ pub trait SequenceTo<Item> {
 pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
+  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
   let values = iterator.collect::<Vec<_>>();
   let size = values.len();
   let mut product = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
@@ -2221,6 +2224,7 @@ where
 pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
+  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
   let values = iterator.collect::<Vec<_>>();
   let size = values.len();
   let mut multi_combination = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
@@ -2249,6 +2253,7 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
 pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
+  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
   let values = iterator.collect::<Vec<_>>();
   let size = values.len();
   let mut variation = iter::once(i64::MIN).chain(0..(k as i64)).collect::<Vec<_>>();

@@ -6,7 +6,7 @@ use std::iter::{Product, Sum};
 
 use crate::Iterable;
 use crate::core::unfold::unfold;
-use crate::extensions::{collect_by_index, frequencies};
+use crate::extensions::{MAX_SIZE, collect_by_index, frequencies};
 
 /// Consuming collection operations.
 ///
@@ -1537,6 +1537,7 @@ pub trait CollectionTo<Item> {
 pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
+  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
   let values = iterator.collect::<Vec<_>>();
   compute_combinations(&values, k)
 }
@@ -1589,6 +1590,8 @@ pub(crate) fn partitions<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> Vec<Vec<Collection>> {
   let values = iterator.collect::<Vec<_>>();
+  let length = values.len();
+  assert!(length <= MAX_SIZE, "len (is {length:?}) should be <= {MAX_SIZE:?})");
   if values.is_empty() {
     return vec![];
   }
@@ -1617,6 +1620,8 @@ pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> Vec<Collection> {
   let values = iterator.collect::<Vec<_>>();
+  let length = values.len();
+  assert!(length <= MAX_SIZE, "len (is {length:?}) should be <= {MAX_SIZE:?})");
   let sizes = 1..=values.len();
   iter::once(iter::empty().collect())
     .chain(sizes.flat_map(|size| compute_combinations::<Item, Collection>(&values, size)))
