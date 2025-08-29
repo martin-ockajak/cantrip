@@ -8,7 +8,7 @@ use std::hash::Hash;
 /// - Consumes the collection or its elements
 /// - Creates a new collection
 pub trait Convert<Item> {
-  /// Creates a new ordered map from the elements of this collection.
+  /// Creates a new, ordered map from the elements of this collection.
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
@@ -32,7 +32,7 @@ pub trait Convert<Item> {
     self.into_iter().collect()
   }
 
-  /// Creates a new ordered set from the elements of this collection.
+  /// Creates a new, ordered set from the elements of this collection.
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
@@ -83,7 +83,7 @@ pub trait Convert<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// [`to_heap()`]: crate::Convert::to_heap
+  /// [`to_heap()`]: Convert::to_heap
   ///
   /// # Example
   ///
@@ -108,7 +108,7 @@ pub trait Convert<Item> {
     self.into_iter().collect()
   }
 
-  /// Creates a new doubly-linked list from the elements of this collection.
+  /// Creates a new doubly linked list from the elements of this collection.
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
@@ -159,7 +159,7 @@ pub trait Convert<Item> {
   ///
   /// This is an equivalent of [`Iterator::collect`].
   ///
-  /// [`to_set()`]: crate::Convert::to_set
+  /// [`to_set()`]: Convert::to_set
   ///
   /// # Example
   ///

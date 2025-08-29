@@ -16,7 +16,7 @@
 //! - Existing standard library collections are extended with equivalents of iterator methods
 //! - Additional utility methods commonly found in collection libraries are also included
 //! - Methods which modify a collection return a new collection instead of an iterator
-//! - All methods treat collection instances as immutable although some consume them
+//! - All methods treat collection instances as immutable, although some consume them
 //! - Standard library method naming conventions are followed as closely as possible
 //! - Performance is near optimal with overhead limited to new collection creation
 //!

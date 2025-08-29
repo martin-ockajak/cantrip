@@ -16,10 +16,10 @@ pub trait SequenceTo<Item> {
   /// This sequence type constructor
   type This<I>;
 
-  /// Creates a new sequence by inserting an element into specified index
+  /// Creates a new sequence by inserting an element into the specified index
   /// in this sequence.
   ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
+  /// If the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Panics
   ///
@@ -46,9 +46,9 @@ pub trait SequenceTo<Item> {
   fn add_at(self, index: usize, element: Item) -> Self;
 
   /// Creates a new sequence by inserting all elements of another collection
-  /// into specified index in this sequence.
+  /// into the specified index in this sequence.
   ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
+  /// If the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -70,7 +70,7 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn add_at_multi(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self;
 
-  /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
+  /// Creates a new sequence containing tuples for k-fold cartesian product of specified size
   /// from the elements of this sequence.
   ///
   /// Members are generated based on element positions, not values.
@@ -110,8 +110,8 @@ pub trait SequenceTo<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new sequence by splitting this sequence elements
-  /// into non-overlapping sub-sequences of specified `size`.
+  /// Creates a new sequence by splitting elements of this sequence
+  /// into non-overlapping subsequences of specified `size`.
   ///
   /// The chunks are sequences and do not overlap. If `size` does not divide
   /// the length of the slice, then the last chunk will not have length `size`.
@@ -148,7 +148,7 @@ pub trait SequenceTo<Item> {
   }
 
   /// Creates a new sequence by splitting this sequence into non-overlapping
-  /// sub-sequences according to specified separator predicate.
+  /// subsequences according to the specified separator predicate.
   ///
   /// The `split` predicate is called for every pair of consecutive elements,
   /// meaning that it is called on `slice[0]` and `slice[1]`,
@@ -203,8 +203,8 @@ pub trait SequenceTo<Item> {
     .collect()
   }
 
-  /// Creates a new sequence by splitting this sequence elements
-  /// into non-overlapping sub-sequences of specified `size`.
+  /// Creates a new sequence by splitting elements of this sequence
+  /// into non-overlapping subsequences of specified `size`.
   ///
   /// The chunks are sequences and do not overlap. If `size` does not divide
   /// the length of the slice, then the last up to `size-1` elements will be omitted.
@@ -243,7 +243,7 @@ pub trait SequenceTo<Item> {
   }
 
   /// Creates a new sequence by using the compression closure to
-  /// optionally merge together consecutive elements of this sequence.
+  /// optionally merge consecutive elements of this sequence.
   ///
   /// The closure `merge` is passed two elements, `previous` and `current` and may
   /// return either (1) `Ok(merged)` to merge the two values or
@@ -296,7 +296,7 @@ pub trait SequenceTo<Item> {
   ///
   /// Combinations are generated based on element positions, not values.
   /// Therefore, if this sequence contains duplicate elements, the resulting combinations will too.
-  /// To obtain combination with repetition of unique elements, use [`unique()`]`.multicombinations()`.
+  /// To obtain a combination with repetition of unique elements, use [`unique()`]`.multicombinations()`.
   ///
   /// The order or combination values is preserved.
   ///
@@ -340,10 +340,10 @@ pub trait SequenceTo<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new sequence by omitting an element at specified index
+  /// Creates a new sequence by omitting an element at the specified index
   /// in this sequence.
   ///
-  /// if the specified index exceeds this sequence size, no elements are deleted.
+  /// If the specified index exceeds this sequence size, no elements are deleted.
   ///
   /// # Panics
   ///
@@ -369,7 +369,7 @@ pub trait SequenceTo<Item> {
   /// Creates a new sequence by omitting elements at specified indices
   /// in this sequence.
   ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
+  /// If the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Panics
   ///
@@ -397,9 +397,9 @@ pub trait SequenceTo<Item> {
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
-  /// Creates a new sequence by splitting this sequence into sub-sequences separated
+  /// Creates a new sequence by splitting this sequence into subsequences separated
   /// by elements equal to the specified `separator` value.
-  /// Matched elements are not contained in the sub-sequences.
+  /// Matched elements are not contained in the subsequences.
   ///
   /// # Examples
   ///
@@ -446,9 +446,9 @@ pub trait SequenceTo<Item> {
     self.divide_by(|x| x == separator)
   }
 
-  /// Creates a new sequence by splitting this sequence into sub-sequences separated
+  /// Creates a new sequence by splitting this sequence into subsequences separated
   /// by elements that match the `separator` predicate.
-  /// Matched elements are not contained in the sub-sequences.
+  /// Matched elements are not contained in the subsequences.
   ///
   /// # Examples
   ///
@@ -512,7 +512,7 @@ pub trait SequenceTo<Item> {
   /// Creates a new collection by including only the elements of this collection
   /// that appear more than once.
   ///
-  /// Duplicates are detected using hash and equality and each duplicate is included exactly once.
+  /// Duplicates are detected using hash and equality, and each duplicate is included exactly once.
   ///
   /// The order or duplicate values is preserved.
   ///
@@ -550,7 +550,7 @@ pub trait SequenceTo<Item> {
   /// that appear more than once.
   ///
   /// Duplicates are detected by comparing the key they map to with the keying function
-  /// `to_key` using hash and equality and each duplicate is included exactly once.
+  /// `to_key` using hash and equality, and each duplicate is included exactly once.
   ///
   /// The order or duplicate values is preserved.
   ///
@@ -601,7 +601,7 @@ pub trait SequenceTo<Item> {
   ///
   /// # Overflow Behavior
   ///
-  /// The method does no guarding against overflows, so enumerating more than
+  /// The method does no guarding against overflows, so traversing more than
   /// [`usize::MAX`] elements either produces the wrong result or panics. If
   /// debug assertions are enabled, a panic is guaranteed.
   ///
@@ -829,7 +829,7 @@ pub trait SequenceTo<Item> {
   /// and a map the retained elements function.
   ///
   /// `map_while()` takes a closure as an argument. It will call this
-  /// closure on each element of the sequence, and include elements
+  /// closure on each element of the sequence and include elements
   /// while it returns [`Some(_)`][`Some`].
   ///
   /// # Examples
@@ -925,7 +925,7 @@ pub trait SequenceTo<Item> {
     .collect()
   }
 
-  /// Creates a new sequence by moving an element at an index into specified index
+  /// Creates a new sequence by moving an element at an index into the specified index
   /// in this sequence.
   ///
   /// If the target index exceeds this sequence size, the element is only removed.
@@ -1095,7 +1095,7 @@ pub trait SequenceTo<Item> {
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
   ///
-  /// Folding is useful whenever you have a collection of something, and want
+  /// Folding is useful whenever you have a collection of something and want
   /// to produce a single value from it.
   ///
   /// This is a consuming variant of [`rfold_ref()`].
@@ -1117,7 +1117,7 @@ pub trait SequenceTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // the sum of all the elements of a
+  /// // the sum of all the elements in a
   /// assert_eq!(a.rfold_ref(0, |acc, &x| acc + x), 6);
   /// ```
   ///
@@ -1146,7 +1146,7 @@ pub trait SequenceTo<Item> {
     self.into_iter().rfold(initial_value, function)
   }
 
-  /// A sequence adapter which, like [`fold()`], holds internal state, but
+  /// A sequence adapter which, like [`fold()`], holds an internal state, but
   /// unlike [`fold()`], produces a new sequence.
   ///
   /// `scan()` takes two arguments: an initial value which seeds the internal
@@ -1156,7 +1156,7 @@ pub trait SequenceTo<Item> {
   /// iterations.
   ///
   /// On iteration, the closure will be applied to each element of this
-  /// sequence and the return value from the closure, an [`Option`], is
+  /// sequence, and the return value from the closure, an [`Option`], is
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
@@ -1173,7 +1173,7 @@ pub trait SequenceTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let mut scan = a.scan(1, |state, x| {
-  ///   // each iteration, we'll multiply the state by the element ...
+  ///   // in each iteration, we'll multiply the state by the element ...
   ///   *state = *state * x;
   ///
   ///   // ... and terminate if the state exceeds 6
@@ -1195,7 +1195,7 @@ pub trait SequenceTo<Item> {
     self.into_iter().scan(initial_state, function).collect()
   }
 
-  /// A sequence adapter which, like [`fold_ref()`], holds internal state, but
+  /// A sequence adapter which, like [`fold_ref()`], holds an internal state, but
   /// unlike [`fold_ref()`], produces a new sequence.
   ///
   /// `scan_ref()` takes two arguments: an initial value which seeds the internal
@@ -1205,7 +1205,7 @@ pub trait SequenceTo<Item> {
   /// iterations.
   ///
   /// On iteration, the closure will be applied to each element of this
-  /// sequence and the return value from the closure, an [`Option`], is
+  /// sequence, and the return value from the closure, an [`Option`], is
   /// returned by the `next` method. The closure can return
   /// `Some(value)` to yield `value`, or `None` to end the iteration.
   ///
@@ -1222,7 +1222,7 @@ pub trait SequenceTo<Item> {
   /// let a = vec![1, 2, 3];
   ///
   /// let mut scan = a.scan(1, |state, x| {
-  ///   // each iteration, we'll multiply the state by the element ...
+  ///   // in each iteration, we'll multiply the state by the element ...
   ///   *state = *state * x;
   ///
   ///   // ... and terminate if the state exceeds 6
@@ -1272,7 +1272,7 @@ pub trait SequenceTo<Item> {
   /// [`skip`]: Collectible::skip
   ///
   /// `skip_while()` takes a closure as an argument. It will call this
-  /// closure on each element of this sequence, and ignore elements
+  /// closure on each element of this sequence and ignore elements
   /// until it returns `false`.
   ///
   /// After `false` is returned, `skip_while()`'s job is over, and the
@@ -1298,7 +1298,7 @@ pub trait SequenceTo<Item> {
 
   /// Creates a new sequence by only including elements in the specified range.
   ///
-  /// if the specified index exceeds this sequence size, no elements are inserted.
+  /// If the specified index exceeds this sequence size, no elements are inserted.
   ///
   /// # Example
   ///
@@ -1367,7 +1367,7 @@ pub trait SequenceTo<Item> {
     result.into_iter().collect()
   }
 
-  /// Creates a new sequence by sorting this sequence with comparator function.
+  /// Creates a new sequence by sorting this sequence with a comparator function.
   ///
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*n* \* log(*n*)) worst-case.
   ///
@@ -1430,7 +1430,7 @@ pub trait SequenceTo<Item> {
   /// The order of calls to the key function is unspecified and may change in future versions
   /// of the standard library.
   ///
-  /// This sort is stable (i.e., does not reorder equal elements) and *O*(*m* \* *n* + *n* \* log(*n*))
+  /// This sort is stable (i.e., does not reorder equal elements), and *O*(*m* \* *n* + *n* \* log(*n*))
   /// worst-case, where the key function is *O*(*m*).
   ///
   /// For simple key functions (e.g., functions that are property accesses or
@@ -1475,7 +1475,7 @@ pub trait SequenceTo<Item> {
   /// This sort is stable (i.e., does not reorder equal elements) and *O*(*m* \* *n* \* log(*n*))
   /// worst-case, where the key function is *O*(*m*).
   ///
-  /// For expensive key functions (e.g. functions that are not simple property accesses or
+  /// For expensive key functions (e.g., functions that are not simple property accesses or
   /// basic operations), [`sorted_by_cached_key()`](SequenceTo::sorted_by_cached_key) is likely to be
   /// significantly faster, as it does not recompute element keys.
   ///
@@ -1683,10 +1683,10 @@ pub trait SequenceTo<Item> {
     self.into_iter().step_by(step).collect()
   }
 
-  /// Creates a new sequence by replacing an element at specified index
+  /// Creates a new sequence by replacing an element at the specified index
   /// in this sequence.
   ///
-  /// if the specified index exceeds this sequence size, no elements are replaced.
+  /// If the specified index exceeds this sequence size, no elements are replaced.
   ///
   /// # Panics
   ///
@@ -1708,7 +1708,7 @@ pub trait SequenceTo<Item> {
   /// Creates a new sequence by replacing all elements at specified indices in this sequence
   /// by elements from another collection.
   ///
-  /// if the specified index exceeds this sequence size, no elements are replaced.
+  /// If the specified index exceeds this sequence size, no elements are replaced.
   ///
   /// # Panics
   ///
@@ -1733,11 +1733,11 @@ pub trait SequenceTo<Item> {
     self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self;
 
-  /// Creates a new sequence by swapping an elements at specified indices
+  /// Creates a new sequence by swapping elements at specified indices
   /// in this sequence.
   ///
   /// If one of the indices exceeds this sequence size, the element is only removed.
-  /// If both indices index exceed this sequence size, no elements are swapped.
+  /// If both indices exceed this sequence size, no elements are swapped.
   ///
   /// # Panics
   ///
@@ -1824,7 +1824,7 @@ pub trait SequenceTo<Item> {
   /// Creates a new sequence without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
-  /// closure on each element of this sequence, and yield elements
+  /// closure on each element of this sequence and yield elements
   /// while it returns `true`.
   ///
   /// After `false` is returned, `take_while()`'s job is over, and the
@@ -1999,7 +1999,7 @@ pub trait SequenceTo<Item> {
     Item: Clone,
     Self: Sized;
 
-  /// Creates a new sequence consisting of overlapping windows of `N` elements
+  /// Creates a new sequence consisting of overlapping `N` element windows
   /// of this sequence, starting at the beginning of this sequence.
   ///
   /// The step parameter determines the distance between the first elements of
@@ -2036,7 +2036,7 @@ pub trait SequenceTo<Item> {
     Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>;
 
-  /// Creates a new sequence consisting of overlapping windows of `N` elements
+  /// Creates a new sequence consisting of overlapping `N` element windows
   /// of this sequence, starting at the beginning of this sequence and wrapping
   /// back to the first elements when the window would otherwise exceed this sequence length.
   ///
@@ -2111,11 +2111,11 @@ pub trait SequenceTo<Item> {
   /// this sequence, and the second element comes from the other collection.
   ///
   /// If this sequence contains fewer elements than the other one, additional elements
-  /// are created by calling the `to_left_value` closure and the resulting sequence length
+  /// are created by calling the `to_left_value` closure, and the resulting sequence length
   /// is the length of the other sequence.
   ///
   /// If this sequence contains more elements than the other one, additional elements
-  /// are created by calling the `to_right_value` closure and the resulting sequence length
+  /// are created by calling the `to_right_value` closure, and the resulting sequence length
   /// is the length of this sequence.
   ///
   /// To 'undo' the result of zipping up two sequences, see [`unzip()`].

@@ -70,7 +70,7 @@ pub trait Collection<Item> {
   /// Counts elements of this collection that satisfy a predicate.
   ///
   /// `count_by()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of the collection, and counts those which
+  /// this closure to each element of the collection and counts those which
   /// return `true`, disregarding those which return `false`.
   ///
   /// # Example
@@ -85,7 +85,7 @@ pub trait Collection<Item> {
   /// ```
   fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
 
-  /// Tests this collection and  another collection have no elements in common.
+  /// Tests this collection and another collection have no elements in common.
   ///
   /// Returns `true` if aby of the collections are empty.
   ///
@@ -173,13 +173,13 @@ pub trait Collection<Item> {
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
   ///
-  /// Folding is useful whenever you have a collection of something, and want
+  /// Folding is useful whenever you have a collection of something and want
   /// to produce a single value from it.
   ///
   /// This is a non-consuming variant of [`fold()`].
   ///
   /// Note: [`reduce_ref()`] can be used to use the first element as the initial
-  /// value, if the accumulator type and item type is the same.
+  /// value if the accumulator type and item type are the same.
   ///
   /// Note: `fold_ref()` combines elements in a *left-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
@@ -199,7 +199,7 @@ pub trait Collection<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // the sum of all the elements of the array
+  /// // the sum of all the elements in the array
   /// assert_eq!(a.fold_ref(0, |acc, x| acc + x), 6);
   /// ```
   ///
@@ -349,7 +349,7 @@ pub trait Collection<Item> {
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
   ///
-  /// If several elements are equally maximum, the last element is
+  /// If several elements are equally the maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// # Example
@@ -369,7 +369,7 @@ pub trait Collection<Item> {
   /// Returns the element that gives the maximum value from the
   /// specified key function.
   ///
-  /// If several elements are equally maximum, the last element is
+  /// If several elements are equally the maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// # Example
@@ -390,7 +390,7 @@ pub trait Collection<Item> {
 
   /// Returns the maximum element of this collection.
   ///
-  /// If several elements are equally maximum, the last element is
+  /// If several elements are equally the maximum, the last element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
@@ -445,7 +445,7 @@ pub trait Collection<Item> {
   /// Returns the element that gives the minimum value from the
   /// specified key function.
   ///
-  /// If several elements are equally minimum, the fist element is
+  /// If several elements are equally the minimum, the fist element is
   /// returned. If the collection is empty, [`None`] is returned.
   ///
   /// # Example
@@ -466,7 +466,7 @@ pub trait Collection<Item> {
 
   /// Returns the minimum element of this collection.
   ///
-  /// If several elements are equally minimum, the first element is returned.
+  /// If several elements are equally the minimum, the first element is returned.
   /// If the collection is empty, [`None`] is returned.
   ///
   /// Note that [`f32`]/[`f64`] doesn't implement [`Ord`] due to NaN being
@@ -567,7 +567,7 @@ pub trait Collection<Item> {
     self.minmax_by(Ord::cmp)
   }
 
-  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// Reduces the elements to a single one by repeatedly applying a reducing
   /// operation.
   ///
   /// If the collection is empty, returns [`None`]; otherwise, returns the
@@ -601,7 +601,7 @@ pub trait Collection<Item> {
   fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
 
   /// Tests if another collection contains all elements of this collection
-  /// at least as many times as their appear in this collection.
+  /// at least as many times as they appear in this collection.
   ///
   /// To obtain set-like semantics for sequences which only considers unique elements,
   /// use [`unique()`]`.subset()`.
@@ -630,7 +630,7 @@ pub trait Collection<Item> {
     Item: Eq + Hash + 'a;
 
   /// Tests if this collection contains all elements of another collection
-  /// at least as many times as their appear in the other collection.
+  /// at least as many times as they appear in the other collection.
   ///
   /// To obtain set-like semantics for sequences which only considers unique elements,
   /// use [`unique()`]`.superset()`.

@@ -47,7 +47,7 @@ pub trait Sequence<Item> {
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a;
 
-  /// Counts number of unique elements in this sequence.
+  /// Counts the number of unique elements in this sequence.
   ///
   /// Returns `0` for an empty sequence.
   ///
@@ -68,7 +68,7 @@ pub trait Sequence<Item> {
     Item: Eq + Hash;
 
   /// Tests if this sequence contains all elements of another collection exactly
-  /// as many times as their appear in the other collection and vice versa.
+  /// as many times as they appear in the other collection and vice versa.
   ///
   /// # Example
   ///
@@ -102,7 +102,7 @@ pub trait Sequence<Item> {
   /// ```
   fn find_position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)>;
 
-  /// Compute number of occurrences of each element in this sequence.
+  /// Compute the number of occurrences for each element in this sequence.
   ///
   /// # Example
   ///
@@ -119,8 +119,8 @@ pub trait Sequence<Item> {
   where
     Item: Eq + Hash + 'a;
 
-  /// Compute number of occurrences of each group of elements in this sequence according to
-  /// specified discriminator function.
+  /// Compute the number of occurrences for each group of elements in this sequence according to
+  /// the specified discriminator function.
   ///
   /// The discriminator function takes a reference to an element and returns a group key.
   ///
@@ -195,7 +195,7 @@ pub trait Sequence<Item> {
   /// Searches for an element in this sequence, returning all its indices.
   ///
   /// `position_multi()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each element of this sequence, each time one of them
+  /// this closure to each element of this sequence. Each time one of them
   /// returns `true`, then `position_multi()` adds the element index to its result.
   ///
   /// # Overflow Behavior
@@ -299,9 +299,9 @@ pub trait Sequence<Item> {
     self.position_multi(|x| x == element)
   }
 
-  /// Searches for a sub-sequence in this sequence, returning its index.
+  /// Searches for a subsequence in this sequence, returning its index.
   ///
-  /// After finding a starting element of specified sequence in this sequence,
+  /// After finding a starting element of the specified sequence in this sequence,
   /// `position_sequence()` compares each element of this sequence with the specified value,
   /// and if all of them match, then `position_sequence()` returns [`Some(start_index)`].
   /// If any of the elements do not match, it returns [`None`].
@@ -309,7 +309,7 @@ pub trait Sequence<Item> {
   /// `position_sequence()` is short-circuiting; in other words, it will stop
   /// processing as soon as it finds a matching sequence.
   ///
-  /// Returns `Some(0)` if specified sequence is empty.
+  /// Returns `Some(0)` if the specified sequence is empty.
   ///
   /// # Overflow Behavior
   ///
@@ -388,7 +388,7 @@ pub trait Sequence<Item> {
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
   ///
-  /// Folding is useful whenever you have a collection of something, and want
+  /// Folding is useful whenever you have a collection of something and want
   /// to produce a single value from it.
   ///
   /// This is a non-consuming variant of [`rfold()`].
@@ -410,7 +410,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // the sum of all the elements of a
+  /// // the sum of all the elements in a
   /// assert_eq!(a.rfold_ref(0, |acc, x| acc + x), 6);
   /// ```
   ///

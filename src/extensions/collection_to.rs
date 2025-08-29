@@ -59,9 +59,9 @@ pub trait CollectionTo<Item> {
     self.into_iter().chain(elements).collect()
   }
 
-  /// Transforms this collection into specified collection type.
+  /// Transforms this collection into the specified collection type.
   ///
-  /// `collect()` can take any collection, and turn it into a relevant
+  /// `collect()` can take any collection and turn it into a relevant
   /// collection. This can be used in a variety of contexts.
   ///
   /// `collect()` can also create instances of types that are not typical
@@ -314,7 +314,7 @@ pub trait CollectionTo<Item> {
   /// Creates a new collection by filtering this collection using a
   /// closure to determine if an element should be retained.
   ///
-  /// Given an element the closure must return `true` or `false`. The returned
+  /// Given an element, the closure must return `true` or `false`. The returned
   /// collection will contain only the elements for which the closure returns
   /// true.
   ///
@@ -336,7 +336,7 @@ pub trait CollectionTo<Item> {
   ///
   /// Because the closure passed to `filter()` takes a reference, and some
   /// collections may contain references, this leads to a possibly confusing
-  /// situation, where the type of the closure is a double reference:
+  /// situation where the type of the closure is a double reference:
   ///
   /// ```
   /// use cantrip::*;
@@ -350,8 +350,7 @@ pub trait CollectionTo<Item> {
   /// );
   /// ```
   ///
-  /// It's common to instead use destructuring on the argument to strip away
-  /// one:
+  /// It's common to instead use destructuring on the argument to strip away the reference:
   ///
   /// ```
   /// use cantrip::*;
@@ -365,7 +364,7 @@ pub trait CollectionTo<Item> {
   /// );
   /// ```
   ///
-  /// or both:
+  /// Or both of these layers:
   ///
   /// ```
   /// use cantrip::*;
@@ -378,8 +377,6 @@ pub trait CollectionTo<Item> {
   ///   vec![&2]
   /// );
   /// ```
-  ///
-  /// of these layers.
   #[inline]
   #[must_use]
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
@@ -477,7 +474,7 @@ pub trait CollectionTo<Item> {
   /// Creates a new collection by filtering this collection using a
   /// closure to determine if an element should be retained.
   ///
-  /// Given an element the closure must return `true` or `false`. The returned
+  /// Given an element, the closure must return `true` or `false`. The returned
   /// collection will contain only the elements for which the closure returns
   /// true.
   ///
@@ -499,7 +496,7 @@ pub trait CollectionTo<Item> {
   ///
   /// Because the closure passed to `filter()` takes a reference, and some
   /// collections may contain references, this leads to a possibly confusing
-  /// situation, where the type of the closure is a double reference:
+  /// situation where the type of the closure is a double reference:
   ///
   /// ```
   /// use cantrip::*;
@@ -513,8 +510,7 @@ pub trait CollectionTo<Item> {
   /// );
   /// ```
   ///
-  /// It's common to instead use destructuring on the argument to strip away
-  /// one:
+  /// It's common to instead use destructuring on the argument to strip away the reference:
   ///
   /// ```
   /// use cantrip::*;
@@ -528,7 +524,7 @@ pub trait CollectionTo<Item> {
   /// );
   /// ```
   ///
-  /// or both:
+  /// Or both of these layers:
   ///
   /// ```
   /// use cantrip::*;
@@ -541,8 +537,6 @@ pub trait CollectionTo<Item> {
   ///   vec![&2]
   /// );
   /// ```
-  ///
-  /// of these layers.
   #[must_use]
   fn filter_ref(&self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
@@ -724,7 +718,7 @@ pub trait CollectionTo<Item> {
   /// on its own.
   ///
   /// You can think of `flat_map_ref(f)` as the semantic equivalent
-  /// of mapping, and then flatttening as in [`map_ref(f)`][`.flat()`]`.
+  /// of mapping, and then flattening as in [`map_ref(f)`][`.flat()`]`.
   ///
   /// Another way of thinking about `flat_map_ref()`: [`map_ref()`]'s closure returns
   /// one item for each element, and `flat_map_ref()`'s closure returns an
@@ -770,13 +764,13 @@ pub trait CollectionTo<Item> {
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
   ///
-  /// Folding is useful whenever you have a collection of something, and want
+  /// Folding is useful whenever you have a collection of something and want
   /// to produce a single value from it.
   ///
   /// This is a consuming variant of [`fold_ref()`].
   ///
   /// Note: [`reduce()`] can be used to use the first element as the initial
-  /// value, if the accumulator type and item type is the same.
+  /// value if the accumulator type and item type are the same.
   ///
   /// Note: `fold()` combines elements in a *left-associative* fashion. For associative
   /// operators like `+`, the order the elements are combined in is not important, but for non-associative
@@ -796,7 +790,7 @@ pub trait CollectionTo<Item> {
   ///
   /// let a = vec![1, 2, 3];
   ///
-  /// // the sum of all the elements of the array
+  /// // the sum of all the elements in the array
   /// assert_eq!(a.fold(0, |acc, x| acc + x), 6);
   /// ```
   ///
@@ -860,7 +854,7 @@ pub trait CollectionTo<Item> {
   }
 
   /// Creates a map of keys mapped to collections of elements according to
-  /// specified discriminator function.
+  /// the specified discriminator function.
   ///
   /// The discriminator function takes a reference to an element and returns a group key.
   ///
@@ -967,7 +961,7 @@ pub trait CollectionTo<Item> {
 
   /// Creates a new collection by retaining the values representing the intersection
   /// of this collection with another collection i.e., the values appear in the result
-  /// exactly the same amount of times as they both appear in `self` and `other`.
+  /// exactly the same number of times as they both appear in `self` and `other`.
   ///
   /// To obtain set-like semantics for sequences which only considers unique elements,
   /// use [`unique()`]`.intersect()`.
@@ -1060,7 +1054,7 @@ pub trait CollectionTo<Item> {
   ///
   /// The closure `function` takes a reference to an element of type
   /// `Item` and returns a value of type `R`.
-  /// The resulting other are collected into a new collection of the same type.
+  /// The resulting elements are collected into a new collection of the same type.
   ///
   /// This is a consuming variant of [`map_ref()`].
   ///
@@ -1103,7 +1097,7 @@ pub trait CollectionTo<Item> {
   ///
   /// The closure `function` takes a reference to an element of type
   /// `Item` and returns a value of type `R`.
-  /// The resulting other are collected into a new collection of the same type.
+  /// The resulting elements are collected into a new collection of the same type.
   ///
   /// This is a non-consuming variant of [`map()`].
   ///
@@ -1166,7 +1160,7 @@ pub trait CollectionTo<Item> {
   /// Creates a new collection containing all partitions of this collection.
   ///
   /// Partitions for sequences are generated based on element positions, not values.
-  /// Therefore, if a sequence contains duplicate elements, the resulting partitionss will too.
+  /// Therefore, if a sequence contains duplicate elements, the resulting partitions will too.
   /// To obtain partitions of unique elements for sequences, use [`unique()`]`.partitions()`.
   ///
   /// The order of partition values is preserved for sequences.
@@ -1197,7 +1191,7 @@ pub trait CollectionTo<Item> {
     Self: Sized;
 
   /// Creates two new collections with arbitrary element types from this collection
-  /// by applying specified function.
+  /// by applying the specified function.
   ///
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
   /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
@@ -1236,7 +1230,7 @@ pub trait CollectionTo<Item> {
   }
 
   /// Creates two new collections with arbitrary element types from this collection
-  /// by applying specified function.
+  /// by applying the specified function.
   ///
   /// The function passed to `partition_map_ref()` can return `Ok`, or `Err`.
   /// `partition_map_ref()` returns a pair, all the `Ok` values contained, and all the `Err` values.
@@ -1301,14 +1295,14 @@ pub trait CollectionTo<Item> {
   ///
   /// An empty collection returns the one value of the type.
   ///
-  /// `product()` can be used to multiply any type implementing [`Product`],
+  /// `product()` can be used to multiply any type implementing [`Product`].
   ///
   /// [`Product`]: Product
   ///
   /// # Panics
   ///
   /// When calling `product()` and a primitive integer type is being returned,
-  /// method will panic if the computation overflows and debug assertions are
+  /// this method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
   /// # Example
@@ -1332,7 +1326,7 @@ pub trait CollectionTo<Item> {
     self.into_iter().product()
   }
 
-  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// Reduces the elements to a single one by repeatedly applying a reducing
   /// operation.
   ///
   /// If this collection is empty, returns [`None`]; otherwise, returns the
@@ -1491,7 +1485,7 @@ pub trait CollectionTo<Item> {
   ///
   /// An empty collection returns the zero value of the type.
   ///
-  /// `sum()` can be used to multiply any type implementing [`Sum`],
+  /// `sum()` can be used to multiply any type implementing [`Sum`].
   ///
   /// [`Sum`]: Sum
   ///

@@ -42,7 +42,7 @@ pub trait Slice<Item> {
   /// [`skip`]: Slice::skip_ref
   ///
   /// `skip_while()` takes a closure as an argument. It will call this
-  /// closure on each element of this slice, and ignore elements
+  /// closure on each element of this slice and ignore elements
   /// until it returns `false`.
   ///
   /// After `false` is returned, `skip_while()`'s job is over, and the
@@ -109,7 +109,7 @@ pub trait Slice<Item> {
   /// Creates a new slice without trailing elements based on a predicate.
   ///
   /// `take_while()` takes a closure as an argument. It will call this
-  /// closure on each element of this slice, and yield elements
+  /// closure on each element of this slice and yield elements
   /// while it returns `true`.
   ///
   /// After `false` is returned, `take_while()`'s job is over, and the

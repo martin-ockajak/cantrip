@@ -38,7 +38,7 @@ pub trait List<Item> {
   /// ```
   fn last(&self) -> Option<&Item>;
 
-  /// Creates a new collection by repeating this collection specified number of times.
+  /// Creates a new collection by repeating this collection the specified number of times.
   ///
   /// # Example
   ///

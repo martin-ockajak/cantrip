@@ -139,9 +139,9 @@ pub trait Map<Key, Value> {
   /// ```
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
 
-  /// Transforms this map into specified collection type.
+  /// Transforms this map into the specified collection type.
   ///
-  /// `collect()` can take any map, and turn it into a relevant
+  /// `collect()` can take any map and turn it into a relevant
   /// collection. This can be used in a variety of contexts.
   ///
   /// Because `collect()` is so general, it can cause problems with type
@@ -219,7 +219,7 @@ pub trait Map<Key, Value> {
   /// Counts entries of this map that satisfy a predicate.
   ///
   /// `count_by()` takes a closure that returns `true` or `false`. It applies
-  /// this closure to each entry of the map, and counts those which
+  /// this closure to each entry of the map and counts those which
   /// return `true`, disregarding those which return `false`.
   ///
   /// # Example
@@ -236,7 +236,7 @@ pub trait Map<Key, Value> {
   /// ```
   fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
 
-  /// Counts number of unique elements in this map.
+  /// Counts the number of unique elements in this map.
   ///
   /// Returns `0` for an empty map.
   ///
@@ -363,7 +363,7 @@ pub trait Map<Key, Value> {
   /// Creates a new map by filtering the original map using a
   /// closure to determine if an entry should be retained.
   ///
-  /// Given an entry the closure must return `true` or `false`. The returned
+  /// Given an entry, the closure must return `true` or `false`. The returned
   /// map will contain only the entries for which the closure returns true.
   ///
   /// This is a non-consuming variant of [`filter_ref()`].
@@ -393,7 +393,7 @@ pub trait Map<Key, Value> {
   /// Creates a new map by filtering the original map using a
   /// closure to determine if an entry should be retained.
   ///
-  /// Given an entry the closure must return `true` or `false`. The returned
+  /// Given an entry, the closure must return `true` or `false`. The returned
   /// map will contain only the entries for which the closure returns true.
   ///
   /// This is a non-consuming variant of [`filter()`].
@@ -420,7 +420,7 @@ pub trait Map<Key, Value> {
   /// Creates a new map by filtering the original map using a
   /// closure to determine if a key should be retained.
   ///
-  /// Given an entry the closure must return `true` or `false`. The returned
+  /// Given an entry, the closure must return `true` or `false`. The returned
   /// map will contain only the entries for which the closure returns
   /// true.
   ///
@@ -447,7 +447,7 @@ pub trait Map<Key, Value> {
   /// Creates a new map by filtering the original map using a
   /// closure to determine if a value should be retained.
   ///
-  /// Given an entry the closure must return `true` or `false`. The returned
+  /// Given an entry, the closure must return `true` or `false`. The returned
   /// map will contain only the entries for which the closure returns
   /// true.
   ///
@@ -758,13 +758,13 @@ pub trait Map<Key, Value> {
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
   ///
-  /// Folding is useful whenever you have a map of something, and want
+  /// Folding is useful whenever you have a map of something and want
   /// to produce a single value from it.
   ///
   /// This is a consuming variant of [`fold()`].
   ///
   /// Note: [`reduce()`] can be used to use the first entry as the initial
-  /// value, if the accumulator type and item type is the same.
+  /// value if the accumulator type and item type are the same.
   ///
   /// Note: `fold()` combines entries in a *left-associative* fashion. For associative
   /// operators like `+`, the order the entries are combined in is not important, but for non-associative
@@ -784,7 +784,7 @@ pub trait Map<Key, Value> {
   ///
   /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// // the sum of all the elements of the array
+  /// // the sum of all the elements in the array
   /// assert_eq!(a.fold(0, |acc, (k, v)| acc + k + v), 12);
   /// ```
   ///
@@ -820,13 +820,13 @@ pub trait Map<Key, Value> {
   ///
   /// This operation is sometimes called 'reduce' or 'inject'.
   ///
-  /// Folding is useful whenever you have a map of something, and want
+  /// Folding is useful whenever you have a map of something and want
   /// to produce a single value from it.
   ///
   /// This is a non-consuming variant of [`fold()`].
   ///
   /// Note: [`reduce_ref()`] can be used to use the first entry as the initial
-  /// value, if the accumulator type and item type is the same.
+  /// value if the accumulator type and item type are the same.
   ///
   /// Note: `fold_ref()` combines entries in a *left-associative* fashion. For associative
   /// operators like `+`, the order the entries are combined in is not important, but for non-associative
@@ -846,7 +846,7 @@ pub trait Map<Key, Value> {
   ///
   /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
   ///
-  /// // the sum of all the elements of the array
+  /// // the sum of all the elements in the array
   /// assert_eq!(a.fold_ref(0, |acc, (&k, &v)| acc + k + v), 12);
   /// ```
   ///
@@ -942,9 +942,9 @@ pub trait Map<Key, Value> {
   /// Creates a new map by applying the given closure `function` to each entry in
   /// the original map.
   ///
-  /// The closure `function` takes a reference to an entry of type
+  /// The closure `function` takes a reference to an entry of the type
   /// `(Key, Value)` and returns a value of type `(L, W)`.
-  /// The resulting other are collected into a new map of the same type.
+  /// The resulting entries are collected into a new map of the same type.
   ///
   /// This is a consuming variant of [`map_ref()`].
   ///
@@ -987,9 +987,9 @@ pub trait Map<Key, Value> {
   /// Creates a new map by applying the given closure `function` to each entry in
   /// the original map.
   ///
-  /// The closure `function` takes a reference to an entry of type
+  /// The closure `function` takes a reference to an entry of the type
   /// `(Key, Value)` and returns a value of type `(L, W)`.
-  /// The resulting other are collected into a new map of the same type.
+  /// The resulting entries are collected into a new map of the same type.
   ///
   /// This is a consuming variant of [`map()`].
   ///
@@ -1029,7 +1029,7 @@ pub trait Map<Key, Value> {
   ///
   /// The closure `function` takes a reference to an entry of type
   /// `Key` and returns a value of type `L`.
-  /// The resulting other are collected into a new map of the same type.
+  /// The resulting entries are collected into a new map of the same type.
   ///
   /// # Arguments
   ///
@@ -1071,7 +1071,7 @@ pub trait Map<Key, Value> {
   ///
   /// The closure `function` takes a reference to an entry of type
   /// `Value` and returns a value of type `W`.
-  /// The resulting other are collected into a new map of the same type.
+  /// The resulting entries are collected into a new map of the same type.
   ///
   /// # Arguments
   ///
@@ -1110,7 +1110,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the maximum value with respect to the
   /// specified comparison function.
   ///
-  /// If several entries are equally maximum, the last entry is
+  /// If several entries are equally the maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1132,7 +1132,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the maximum value from the
   /// specified function.
   ///
-  /// If several entries are equally maximum, the last entry is
+  /// If several entries are equally the maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1155,7 +1155,7 @@ pub trait Map<Key, Value> {
 
   /// Returns the maximum entry of this map.
   ///
-  /// If several entries are equally maximum, the last entry is
+  /// If several entries are equally the maximum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1206,7 +1206,7 @@ pub trait Map<Key, Value> {
   /// Returns the entry that gives the minimum value from the
   /// specified function.
   ///
-  /// If several entries are equally minimum, the last entry is
+  /// If several entries are equally the minimum, the last entry is
   /// returned. If the map is empty, [`None`] is returned.
   ///
   /// # Example
@@ -1364,7 +1364,7 @@ pub trait Map<Key, Value> {
   }
 
   /// Creates two new maps with arbitrary entry types from the original map
-  /// by applying specified function.
+  /// by applying the specified function.
   ///
   /// The function passed to `partition_map()` can return `Ok`, or `Err`.
   /// `partition_map()` returns a pair, all the `Ok` values contained, and all the `Err` values.
@@ -1407,7 +1407,7 @@ pub trait Map<Key, Value> {
   }
 
   /// Creates two new maps with arbitrary entry types from the original map
-  /// by applying specified function.
+  /// by applying the specified function.
   ///
   /// The function passed to `partition_map_ref()` can return `Ok`, or `Err`.
   /// `partition_map_ref()` returns a pair, all the `Ok` values contained, and all the `Err` values.
@@ -1442,14 +1442,14 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the one value of the type.
   ///
-  /// `product_keys()` can be used to multiply any type implementing [`Product`],
+  /// `product_keys()` can be used to multiply any type implementing [`Product`]
   ///
   /// [`Product`]: Product
   ///
   /// # Panics
   ///
   /// When calling `product_keys()` and a primitive integer type is being returned,
-  /// method will panic if the computation overflows and debug assertions are
+  /// this method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
   /// # Example
@@ -1478,14 +1478,14 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the one value of the type.
   ///
-  /// `product_values()` can be used to multiply any type implementing [`Product`],
+  /// `product_values()` can be used to multiply any type implementing [`Product`].
   ///
   /// [`Product`]: Product
   ///
   /// # Panics
   ///
   /// When calling `product_values()` and a primitive integer type is being returned,
-  /// method will panic if the computation overflows and debug assertions are
+  /// this method will panic if the computation overflows and debug assertions are
   /// enabled.
   ///
   /// # Example
@@ -1510,7 +1510,7 @@ pub trait Map<Key, Value> {
     self.into_iter().map(|(_, v)| v).product()
   }
 
-  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// Reduces the elements to a single one by repeatedly applying a reducing
   /// operation.
   ///
   /// If the collection is empty, returns [`None`]; otherwise, returns the
@@ -1559,7 +1559,7 @@ pub trait Map<Key, Value> {
     })
   }
 
-  /// Reduces the elements to a single one, by repeatedly applying a reducing
+  /// Reduces the elements to a single one by repeatedly applying a reducing
   /// operation.
   ///
   /// If the collection is empty, returns [`None`]; otherwise, returns the
@@ -1722,7 +1722,7 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the zero value of the type.
   ///
-  /// `sum_keys()` can be used to multiply any type implementing [`Sum`],
+  /// `sum_keys()` can be used to multiply any type implementing [`Sum`].
   ///
   /// [`Sum`]: Sum
   ///
@@ -1760,7 +1760,7 @@ pub trait Map<Key, Value> {
   ///
   /// An empty map returns the zero value of the type.
   ///
-  /// `sum_values()` can be used to multiply any type implementing [`Sum`],
+  /// `sum_values()` can be used to multiply any type implementing [`Sum`].
   ///
   /// [`Sum`]: Sum
   ///
