@@ -28,7 +28,7 @@ where
     assert_eq!(a.to_deque(), VecDeque::from([1, 2, 3]));
   } else {
     assert_set_equal(a.to_deque(), vec![1, 2, 3]);
-  };
+  }
   assert_eq!(e.to_deque(), VecDeque::new());
 
   // to_heap
@@ -44,7 +44,7 @@ where
     assert_eq!(a.to_list(), LinkedList::from([1, 2, 3]));
   } else {
     assert_set_equal(a.to_list(), vec![1, 2, 3]);
-  };
+  }
   assert_eq!(e.to_list(), LinkedList::new());
 
   // to_map

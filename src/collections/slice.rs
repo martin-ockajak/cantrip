@@ -4,6 +4,7 @@ use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::Iterable;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
 impl<Item> Collection<Item> for [Item] {
@@ -47,7 +48,7 @@ impl<Item> Collection<Item> for [Item] {
 
   #[inline]
   fn for_each(&self, function: impl FnMut(&Item)) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]

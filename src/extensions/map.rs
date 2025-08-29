@@ -38,6 +38,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.add(1, 4), HashMap::from([(1, 4), (2, 2), (3, 3),]));
   /// ```
   #[inline]
+  #[must_use]
   fn add(self, key: Key, value: Value) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -70,6 +71,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.add_multi(vec![(1, 4), (5, 5)]), HashMap::from([(1, 4), (2, 2), (3, 3), (5, 5),]));
   /// ```
   #[inline]
+  #[must_use]
   fn add_multi(self, entries: impl IntoIterator<Item = (Key, Value)>) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -275,12 +277,13 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.delete(&2), HashMap::new());
   /// ```
   #[inline]
+  #[must_use]
   fn delete(self, key: &Key) -> Self
   where
     Key: PartialEq,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    self.into_iter().filter_map(|(k, v)| if &k != key { Some((k, v)) } else { None }).collect()
+    self.into_iter().filter_map(|(k, v)| if &k == key { None } else { Some((k, v)) }).collect()
   }
 
   /// Creates a new map from the original map without
@@ -301,12 +304,13 @@ pub trait Map<Key, Value> {
   /// assert_eq!(e.delete_multi(&vec![1]), HashMap::new());
   /// ```
   #[inline]
+  #[must_use]
   fn delete_multi<'a>(self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let removed: HashSet<&Key> = HashSet::from_iter(keys.iterator());
+    let removed = keys.iterator().collect::<HashSet<_>>();
     self.into_iter().filter(|(k, _)| !removed.contains(k)).collect()
   }
 
@@ -378,6 +382,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.filter(|(&k, &v)| k != 2 && v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
+  #[must_use]
   fn filter(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -406,6 +411,7 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(a.filter_ref(|(&k, &v)| k != 2 && v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
+  #[must_use]
   fn filter_ref(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
     Key: Clone,
@@ -430,6 +436,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.filter_keys(|&k| k != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
+  #[must_use]
   fn filter_keys(self, mut predicate: impl FnMut(&Key) -> bool) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -456,6 +463,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.filter_values(|&v| v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
+  #[must_use]
   fn filter_values(self, mut predicate: impl FnMut(&Value) -> bool) -> Self
   where
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -920,13 +928,14 @@ pub trait Map<Key, Value> {
   /// }
   /// ```
   #[inline]
+  #[must_use]
   fn intersect<'a>(self, entries: &'a impl Iterable<Item<'a> = &'a (Key, Value)>) -> Self
   where
     Key: Eq + Hash + 'a,
     Value: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
   {
-    let retained: HashSet<(&Key, &Value)> = HashSet::from_iter(entries.iterator().map(|(k, v)| (k, v)));
+    let retained = entries.iterator().map(|(k, v)| (k, v)).collect::<HashSet<_>>();
     self.into_iter().filter(|(k, v)| retained.contains(&(k, v))).collect()
   }
 
@@ -1388,7 +1397,7 @@ pub trait Map<Key, Value> {
   {
     let mut result_left: Self::This<L1, W1> = Self::This::default();
     let mut result_right: Self::This<L2, W2> = Self::This::default();
-    for item in self.into_iter() {
+    for item in self {
       match function(item) {
         Ok(value) => result_left.extend(iter::once(value)),
         Err(value) => result_right.extend(iter::once(value)),
@@ -1629,6 +1638,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.substitute(&3, 4, 4), HashMap::from([(1, 1), (2, 2), (4, 4),]));
   /// ```
   #[inline]
+  #[must_use]
   fn substitute(self, value: &Key, replacement_key: Key, replacement_value: Value) -> Self
   where
     Key: PartialEq,
@@ -1659,6 +1669,7 @@ pub trait Map<Key, Value> {
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn substitute_multi<'a>(
     self, keys: &'a impl Iterable<Item<'a> = &'a Key>, replacements: impl IntoIterator<Item = (Key, Value)>,
   ) -> Self

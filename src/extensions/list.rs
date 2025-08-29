@@ -54,6 +54,7 @@ pub trait List<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.repeat(0), LinkedList::new());
   /// ```
+  #[must_use]
   fn repeat(self, n: usize) -> Self
   where
     Item: Clone;

@@ -3,8 +3,10 @@ use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
 
 use crate::Iterable;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
+#[allow(clippy::implicit_hasher)]
 impl<Item> Collection<Item> for HashSet<Item> {
   #[inline]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
@@ -46,7 +48,7 @@ impl<Item> Collection<Item> for HashSet<Item> {
 
   #[inline]
   fn for_each(&self, function: impl FnMut(&Item)) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]
@@ -132,6 +134,7 @@ impl<Item> Collection<Item> for HashSet<Item> {
   }
 }
 
+#[allow(clippy::implicit_hasher)]
 impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
   type This<I> = HashSet<I>;
 

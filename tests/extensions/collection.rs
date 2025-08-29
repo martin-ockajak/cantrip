@@ -82,8 +82,8 @@ where
   assert_eq!(e.min_of(), None);
 
   // minmax_by
-  assert_eq!(a.minmax_by(|x, y| x.cmp(y)), Some((&1, &3)));
-  assert_eq!(e.minmax_by(|x, y| x.cmp(y)), None);
+  assert_eq!(a.minmax_by(Ord::cmp), Some((&1, &3)));
+  assert_eq!(e.minmax_by(Ord::cmp), None);
 
   // minmax_by_key
   assert_eq!(a.minmax_by_key(|x| -x), Some((&3, &1)));

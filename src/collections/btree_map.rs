@@ -3,6 +3,7 @@ use std::collections::BTreeMap;
 use std::hash::Hash;
 
 use crate::Iterable;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
 impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
@@ -102,7 +103,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
 
   #[inline]
   fn for_each(&self, function: impl FnMut((&Key, &Value))) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]

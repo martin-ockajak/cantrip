@@ -12,6 +12,7 @@ use crate::extensions::sequence_to::test_sequence_to;
 use crate::extensions::slice::test_slice;
 use crate::extensions::util::{TestCollectible, TestCollection, TestMap, TestSequence};
 
+#[allow(clippy::many_single_char_names)]
 pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
@@ -42,6 +43,7 @@ where
   test_map(a, b, e);
 }
 
+#[allow(clippy::many_single_char_names)]
 pub(crate) fn test_set_traits<'a, C, D, G>(a: &C, b: &C, d: &D, g: &G, e: &C)
 where
   C: Collection<i64> + TestCollectible<'a, i64>,
@@ -55,6 +57,7 @@ where
   test_convert(false, a, g, e);
 }
 
+#[allow(clippy::many_single_char_names)]
 pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,

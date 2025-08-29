@@ -19,8 +19,8 @@ where
   assert_eq!(e.last(), None);
 
   // repeat
-  assert_seq_equal(a.repeat(2), vec![1, 2, 3, 1, 2, 3]);
+  assert_seq_equal(&a.repeat(2), vec![1, 2, 3, 1, 2, 3]);
   let a = a_source.clone();
-  assert_seq_equal(a.repeat(0), vec![]);
-  assert_seq_equal(e.repeat(2), vec![]);
+  assert_seq_equal(&a.repeat(0), vec![]);
+  assert_seq_equal(&e.repeat(2), vec![]);
 }

@@ -4,6 +4,7 @@ use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::Iterable;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
 impl<Item> Collection<Item> for VecDeque<Item> {
@@ -47,7 +48,7 @@ impl<Item> Collection<Item> for VecDeque<Item> {
 
   #[inline]
   fn for_each(&self, function: impl FnMut(&Item)) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]
@@ -363,9 +364,7 @@ impl<Item> SequenceTo<Item> for VecDeque<Item> {
   #[inline]
   fn add_at(mut self, index: usize, element: Item) -> Self {
     let size = self.len();
-    if index > size {
-      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
-    }
+    assert!(index <= size, "index (is {index:?}) should be <= len (is {size:?})");
     self.insert(index, element);
     self
   }
@@ -373,9 +372,7 @@ impl<Item> SequenceTo<Item> for VecDeque<Item> {
   #[inline]
   fn add_at_multi(mut self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self {
     let size = self.len();
-    if index > size {
-      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
-    }
+    assert!(index <= size, "index (is {index:?}) should be <= len (is {size:?})");
     for (offset, element) in elements.into_iter().enumerate() {
       self.insert(index + offset, element);
     }
@@ -404,8 +401,8 @@ impl<Item> SequenceTo<Item> for VecDeque<Item> {
   fn delete_at(mut self, index: usize) -> Self {
     if self.remove(index).is_none() {
       let size = self.len();
-      panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
-    };
+      panic!("index (is {index:?}) should be < len (is {size:?})")
+    }
     self
   }
 
@@ -417,8 +414,8 @@ impl<Item> SequenceTo<Item> for VecDeque<Item> {
       if index != last {
         if self.remove(index).is_none() {
           let size = self.len();
-          panic!(r#"index (is {index:?}) should be < len (is {size:?})"#)
-        };
+          panic!("index (is {index:?}) should be < len (is {size:?})")
+        }
         last = index;
       }
     }
@@ -441,12 +438,10 @@ impl<Item> SequenceTo<Item> for VecDeque<Item> {
   fn move_at(mut self, source_index: usize, target_index: usize) -> Self {
     if source_index == target_index {
       let size = self.len();
-      if source_index >= size {
-        panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
-      }
+      assert!(source_index < size, "source index (is {source_index:?}) should be < len (is {size:?})");
     } else if let Some(item) = self.remove(source_index) {
       self.insert(target_index, item);
-    };
+    }
     self
   }
 

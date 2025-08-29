@@ -6,6 +6,7 @@ use std::iter;
 
 use crate::Iterable;
 use crate::core::unfold::unfold;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
 impl<Item> Collection<Item> for LinkedList<Item> {
@@ -49,7 +50,7 @@ impl<Item> Collection<Item> for LinkedList<Item> {
 
   #[inline]
   fn for_each(&self, function: impl FnMut(&Item)) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]
@@ -331,9 +332,7 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
 
   fn add_at_multi(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self {
     let size = self.len();
-    if index > size {
-      panic!(r#"addition index (is {index:?}) should be <= len (is {size:?})"#)
-    }
+    assert!(index <= size, "addition index (is {index:?}) should be <= len (is {size:?})");
     let mut iterator = self.into_iter();
     let mut added = elements.into_iter();
     let mut current_index = 0_usize;
@@ -372,20 +371,19 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   #[inline]
   fn delete_at(self, index: usize) -> Self {
     let size = self.len();
-    if index >= size {
-      panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
-    }
+    assert!(index < size, "removal index (is {index:?}) should be < len (is {size:?})");
     self.into_iter().enumerate().filter_map(|(i, x)| if i == index { None } else { Some(x) }).collect()
   }
 
   #[inline]
   fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self {
     let size = self.len();
-    let positions: BTreeSet<usize> = BTreeSet::from_iter(indices.into_iter().inspect(|&index| {
-      if index >= size {
-        panic!(r#"removal index (is {index:?}) should be < len (is {size:?})"#)
-      };
-    }));
+    let positions = indices
+      .into_iter()
+      .inspect(|&index| {
+        assert!(index < size, "removal index (is {index:?}) should be < len (is {size:?})");
+      })
+      .collect::<BTreeSet<_>>();
     self.into_iter().enumerate().filter_map(|(i, x)| if positions.contains(&i) { None } else { Some(x) }).collect()
   }
 
@@ -402,12 +400,8 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
 
   fn move_at(self, source_index: usize, target_index: usize) -> Self {
     let size = self.len();
-    if source_index >= size {
-      panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
-    }
-    if target_index >= size {
-      panic!(r#"target index (is {target_index:?}) should be < len (is {size:?})"#)
-    }
+    assert!(source_index < size, "source index (is {source_index:?}) should be < len (is {size:?})");
+    assert!(target_index < size, "target index (is {target_index:?}) should be < len (is {size:?})");
     if source_index == target_index {
       return self;
     }
@@ -462,7 +456,7 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.substitute_at_multi(index..(index + 1), iter::once(replacement))
+    self.substitute_at_multi(index..=index, iter::once(replacement))
   }
 
   fn substitute_at_multi(
@@ -471,7 +465,7 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    let mut index_replacements: BTreeMap<usize, Item> = BTreeMap::from_iter(indices.into_iter().zip(replacements));
+    let mut index_replacements = indices.into_iter().zip(replacements).collect::<BTreeMap<_, _>>();
     let mut index = 0_usize;
     let result = self
       .into_iter()
@@ -482,19 +476,15 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
       })
       .collect();
     if let Some(unused_index) = index_replacements.keys().next() {
-      panic!(r#"index (is {unused_index:?}) should be < len (is {index:?})"#);
-    };
+      panic!("index (is {unused_index:?}) should be < len (is {index:?})");
+    }
     result
   }
 
   fn swap_at(self, source_index: usize, target_index: usize) -> Self {
     let size = self.len();
-    if source_index >= size {
-      panic!(r#"source index (is {source_index:?}) should be < len (is {size:?})"#)
-    }
-    if target_index >= size {
-      panic!(r#"target index (is {target_index:?}) should be < len (is {size:?})"#)
-    }
+    assert!(source_index < size, "source index (is {source_index:?}) should be < len (is {size:?})");
+    assert!(target_index < size, "target index (is {target_index:?}) should be < len (is {size:?})");
     if source_index == target_index {
       return self;
     }

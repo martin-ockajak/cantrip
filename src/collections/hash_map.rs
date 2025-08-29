@@ -3,8 +3,10 @@ use std::collections::HashMap;
 use std::hash::Hash;
 
 use crate::Iterable;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
+#[allow(clippy::implicit_hasher)]
 impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   type This<X, V> = HashMap<X, V>;
 
@@ -124,7 +126,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
 
   #[inline]
   fn for_each(&self, function: impl FnMut((&Key, &Value))) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]

@@ -66,8 +66,8 @@ impl<Item: PartialEq> Equal for BTreeSet<Item> {
 
 impl<Item: Eq + Hash + Clone> Equal for BinaryHeap<Item> {
   fn equal(&self, other: &Self) -> bool {
-    let self_values: HashSet<&Item> = HashSet::from_iter(self.iter());
-    let other_values: HashSet<&Item> = HashSet::from_iter(other.iter());
+    let self_values: HashSet<&Item> = self.iter().collect();
+    let other_values: HashSet<&Item> = other.iter().collect();
     self_values == other_values
   }
 }
@@ -158,8 +158,8 @@ impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C where
 }
 
 // noinspection RsUnresolvedPath
-pub(crate) fn assert_seq_equal<T, C: FromIterator<T> + Equal + Debug>(values: C, expected: Vec<T>) {
-  assert_equal!(values, C::from_iter(expected))
+pub(crate) fn assert_seq_equal<T, C: FromIterator<T> + Equal + Debug>(values: &C, expected: Vec<T>) {
+  assert_equal!(values, &C::from_iter(expected));
 }
 
 // noinspection RsUnresolvedPath
@@ -168,41 +168,47 @@ pub(crate) fn assert_set_equal<T: Equal + Eq + Hash + Clone + Debug, C: IntoIter
 ) {
   let values_set = HashSet::from_iter(values);
   let expected_set = HashSet::from_iter(expected);
-  assert_equal!(values_set, expected_set)
+  assert_equal!(values_set, expected_set);
 }
 
 // noinspection RsUnresolvedPath
 pub(crate) fn assert_map_equal<K: Debug, V: Debug, C: FromIterator<(K, V)> + Equal + Debug>(
-  values: C, expected: HashMap<K, V>,
+  values: &C, expected: HashMap<K, V>,
 ) {
-  assert_equal!(values, C::from_iter(expected))
+  assert_equal!(values, &C::from_iter(expected));
 }
 
 // noinspection RsUnresolvedPath
 pub(crate) fn assert_vec_seq_equal<T: Ord + Debug, C: IntoIterator<Item = T> + Debug>(
-  values: Vec<C>, expected: Vec<Vec<T>>,
+  values: Vec<C>, expected: &Vec<Vec<T>>,
 ) {
-  let values_vec = Vec::from_iter(values.into_iter().map(|x| Vec::from_iter(x)));
-  assert_eq!(values_vec, expected)
+  let values_vec = values.into_iter().map(|x| Vec::from_iter(x)).collect::<Vec<_>>();
+  assert_eq!(&values_vec, expected);
 }
 
 // noinspection RsUnresolvedPath
 pub(crate) fn assert_vec_seq_equivalent<T: Equal + Ord + Clone + Debug, C: IntoIterator<Item = T> + Equal + Debug>(
   values: Vec<C>, expected: Vec<Vec<T>>,
 ) {
-  let mut values_sorted = Vec::from_iter(values.into_iter().map(|x| {
-    let mut items = Vec::from_iter(x);
-    items.sort();
-    items
-  }));
+  let mut values_sorted = values
+    .into_iter()
+    .map(|x| {
+      let mut items = Vec::from_iter(x);
+      items.sort();
+      items
+    })
+    .collect::<Vec<_>>();
   values_sorted.sort();
-  let mut expected_sorted = Vec::from_iter(expected.into_iter().map(|x| {
-    let mut items = Vec::from_iter(x);
-    items.sort();
-    items
-  }));
+  let mut expected_sorted = expected
+    .into_iter()
+    .map(|x| {
+      let mut items = Vec::from_iter(x);
+      items.sort();
+      items
+    })
+    .collect::<Vec<_>>();
   expected_sorted.sort();
-  assert_seq_equal(values_sorted, expected_sorted)
+  assert_seq_equal(&values_sorted, expected_sorted);
 }
 
 // noinspection RsUnresolvedPath
@@ -213,17 +219,23 @@ pub(crate) fn assert_map_vec_equivalent<
 >(
   values: HashMap<K, C>, expected: HashMap<K, Vec<V>>,
 ) {
-  let values_sorted = HashMap::from_iter(values.into_iter().map(|(k, v)| {
-    let mut items = Vec::from_iter(v);
-    items.sort();
-    (k, items)
-  }));
-  let expected_sorted = HashMap::from_iter(expected.into_iter().map(|(k, v)| {
-    let mut items = Vec::from_iter(v);
-    items.sort();
-    (k, items)
-  }));
-  assert_map_equal(values_sorted, expected_sorted);
+  let values_sorted = values
+    .into_iter()
+    .map(|(k, v)| {
+      let mut items = Vec::from_iter(v);
+      items.sort();
+      (k, items)
+    })
+    .collect::<HashMap<_, _>>();
+  let expected_sorted = expected
+    .into_iter()
+    .map(|(k, v)| {
+      let mut items = Vec::from_iter(v);
+      items.sort();
+      (k, items)
+    })
+    .collect::<HashMap<_, _>>();
+  assert_map_equal(&values_sorted, expected_sorted);
 }
 
 #[macro_export]
@@ -232,11 +244,7 @@ macro_rules! assert_equal {
     match (&$left, &$right) {
       (left_value, right_value) => {
         if !(left_value.equal(right_value)) {
-          panic!(
-            r#"
-assertion failed: {left_value:?} == {right_value:?}
-"#
-          )
+          panic!("assertion failed: {left_value:?} == {right_value:?}")
         }
       }
     }

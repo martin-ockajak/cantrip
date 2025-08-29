@@ -30,6 +30,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(a.add(3), vec![1, 2, 3, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn add(self, element: Item) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -50,6 +51,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(a.add_multi(vec![3, 4]), vec![1, 2, 3, 3, 4]);
   /// ```
   #[inline]
+  #[must_use]
   fn add_multi(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -228,6 +230,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(e.delete(&2), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn delete(self, element: &Item) -> Self
   where
     Item: PartialEq,
@@ -267,6 +270,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(a.delete_multi(&vec![4]), vec![1, 2, 2, 3]);
   /// assert_eq!(e.delete_multi(&vec![1]), vec![]);
   /// ```
+  #[must_use]
   fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
@@ -377,6 +381,7 @@ pub trait CollectionTo<Item> {
   ///
   /// of these layers.
   #[inline]
+  #[must_use]
   fn filter(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -538,6 +543,7 @@ pub trait CollectionTo<Item> {
   /// ```
   ///
   /// of these layers.
+  #[must_use]
   fn filter_ref(&self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Item: Clone;
@@ -992,6 +998,7 @@ pub trait CollectionTo<Item> {
   /// }
   /// ```
   #[inline]
+  #[must_use]
   fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
@@ -1000,7 +1007,7 @@ pub trait CollectionTo<Item> {
     let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
       .into_iter()
-      .flat_map(|item| {
+      .filter_map(|item| {
         if let Some(count) = retained.get_mut(&item)
           && *count > 0
         {
@@ -1029,6 +1036,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(a.largest(4), vec![3, 2, 1]);
   /// assert_eq!(e.largest(3), vec![]);
   /// ```
+  #[must_use]
   fn largest(self, n: usize) -> Self
   where
     Item: Ord,
@@ -1218,7 +1226,7 @@ pub trait CollectionTo<Item> {
   {
     let mut result_left: Self::This<A> = Self::This::default();
     let mut result_right: Self::This<B> = Self::This::default();
-    for item in self.into_iter() {
+    for item in self {
       match function(item) {
         Ok(value) => result_left.extend(iter::once(value)),
         Err(value) => result_right.extend(iter::once(value)),
@@ -1383,6 +1391,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(a.smallest(4), vec![1, 2, 3]);
   /// assert_eq!(e.smallest(3), vec![]);
   /// ```
+  #[must_use]
   fn smallest(self, n: usize) -> Self
   where
     Item: Ord,
@@ -1422,6 +1431,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(e.substitute(&1, 2), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn substitute(self, element: &Item, replacement: Item) -> Self
   where
     Item: PartialEq,
@@ -1456,6 +1466,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(a.substitute_multi(&vec![4, 5], vec![1, 1]), vec![1, 2, 2, 3]);
   /// assert_eq!(e.substitute_multi(&vec![1], vec![2]), vec![]);
   /// ```
+  #[must_use]
   fn substitute_multi<'a>(
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
@@ -1532,17 +1543,18 @@ pub trait CollectionTo<Item> {
 pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
-  let values = Vec::from_iter(iterator);
+  let values = iterator.collect::<Vec<_>>();
   compute_combinations(&values, k)
 }
 
+#[allow(clippy::cast_possible_wrap)]
 pub(crate) fn compute_combinations<'a, Item, Collection>(values: &[&Item], k: usize) -> Vec<Collection>
 where
   Item: Clone + 'a,
   Collection: FromIterator<Item>,
 {
   let size = values.len();
-  let mut combination = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
+  let mut combination = iter::once(i64::MIN).chain(0..(k as i64)).collect::<Vec<_>>();
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
@@ -1577,11 +1589,12 @@ pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right
   (result_left, result_right)
 }
 
+#[allow(clippy::cast_possible_wrap)]
 #[inline]
 pub(crate) fn partitions<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> Vec<Vec<Collection>> {
-  let values = Vec::from_iter(iterator);
+  let values = iterator.collect::<Vec<_>>();
   if values.is_empty() {
     return vec![];
   }
@@ -1609,9 +1622,9 @@ pub(crate) fn partitions<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
 pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> Vec<Collection> {
-  let values = Vec::from_iter(iterator);
+  let values = iterator.collect::<Vec<_>>();
   let sizes = 1..=values.len();
-  iter::once(Collection::from_iter(iter::empty()))
+  iter::once(iter::empty().collect())
     .chain(sizes.flat_map(|size| compute_combinations::<Item, Collection>(&values, size)))
     .collect()
 }

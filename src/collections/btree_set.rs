@@ -3,6 +3,7 @@ use std::collections::{BTreeSet, HashMap, LinkedList};
 use std::hash::Hash;
 
 use crate::Iterable;
+#[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
 impl<Item> Collection<Item> for BTreeSet<Item> {
@@ -46,7 +47,7 @@ impl<Item> Collection<Item> for BTreeSet<Item> {
 
   #[inline]
   fn for_each(&self, function: impl FnMut(&Item)) {
-    self.iter().for_each(function)
+    self.iter().for_each(function);
   }
 
   #[inline]

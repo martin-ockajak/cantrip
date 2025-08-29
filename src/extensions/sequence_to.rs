@@ -42,6 +42,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.add_at(0, 1), vec![1]);
   /// ```
+  #[must_use]
   fn add_at(self, index: usize, element: Item) -> Self;
 
   /// Creates a new sequence by inserting all elements of another collection
@@ -66,6 +67,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.add_at_multi(0, vec![1, 2]), vec![1, 2]);
   /// ```
+  #[must_use]
   fn add_at_multi(self, index: usize, elements: impl IntoIterator<Item = Item>) -> Self;
 
   /// Creates a new sequence containing tuples of k-fold cartesian product of specified size
@@ -187,7 +189,7 @@ pub trait SequenceTo<Item> {
           }
           chunk_empty = false;
           return Some(previous);
-        };
+        }
         None
       })
       .collect();
@@ -260,6 +262,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(coalesced, vec![4, 1, 4, 3]);
   /// ```
+  #[must_use]
   fn coalesce(self, mut function: impl FnMut(Item, Item) -> Result<Item, (Item, Item)>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -360,6 +363,7 @@ pub trait SequenceTo<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.delete_at(2), vec![1, 2]);
   /// ```
+  #[must_use]
   fn delete_at(self, index: usize) -> Self;
 
   /// Creates a new sequence by omitting elements at specified indices
@@ -384,6 +388,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.delete_at_multi(vec![0, 1, 2]), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn delete_at_multi(self, indices: impl IntoIterator<Item = usize>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -518,6 +523,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.duplicates(), vec![2]);
   /// ```
+  #[must_use]
   fn duplicates(self) -> Self
   where
     Item: Eq + Hash,
@@ -527,14 +533,13 @@ pub trait SequenceTo<Item> {
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     let mut duplicated = HashSet::with_capacity(iterator.size_hint().0);
     iterator
-      .flat_map(|item| {
+      .filter_map(|item| {
         if !duplicated.contains(&item) {
           if let Some(result) = occurred.take(&item) {
             let _ = duplicated.insert(item);
             return Some(result);
-          } else {
-            let _ = occurred.insert(item);
           }
+          let _ = occurred.insert(item);
         }
         None
       })
@@ -556,6 +561,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.duplicates_by(|x| x % 2), vec![1, 3]);
   /// ```
+  #[must_use]
   fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
@@ -572,9 +578,8 @@ pub trait SequenceTo<Item> {
             if let Some(value) = occurred.get_mut(&key) {
               stored = Some(item);
               return value.take();
-            } else {
-              let _unused = occurred.insert(key, Some(item));
             }
+            let _unused = occurred.insert(key, Some(item));
           } else {
             return None;
           }
@@ -655,6 +660,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.init(), vec![]);
   /// ```
+  #[must_use]
   fn init(self) -> Self;
 
   /// Create a new sequence by interleaving the elements of this sequence with
@@ -681,6 +687,7 @@ pub trait SequenceTo<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.interleave(vec![]), vec![1, 2, 3]);
   /// ```
+  #[must_use]
   fn interleave(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -725,6 +732,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.interleave_exact(vec![]), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn interleave_exact(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -757,6 +765,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.intersperse(3, 0), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn intersperse(self, interval: usize, element: Item) -> Self
   where
     Item: Clone,
@@ -789,6 +798,7 @@ pub trait SequenceTo<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.intersperse_with(3, || 0), vec![1, 2, 3]);
   /// ```
+  #[must_use]
   fn intersperse_with(self, interval: usize, mut to_value: impl FnMut() -> Item) -> Self
   where
     Item: Clone,
@@ -862,12 +872,13 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.merge(vec![0, 4, 5]), vec![0, 1, 2, 3, 4, 5]);
   /// ```
+  #[must_use]
   fn merge(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
     Item: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    self.merge_by(elements, |l, r| l.cmp(r))
+    self.merge_by(elements, Ord::cmp)
   }
 
   /// Create a new sequence by merging it with another sequence in ascending order
@@ -880,6 +891,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.merge_by(vec![0, 4, 5], |l, r| l.cmp(r)), vec![0, 1, 2, 3, 4, 5]);
   /// ```
+  #[must_use]
   fn merge_by(self, elements: impl IntoIterator<Item = Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -938,6 +950,7 @@ pub trait SequenceTo<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.move_at(1, 1), vec![1, 2, 3]);
   /// ```
+  #[must_use]
   fn move_at(self, source_index: usize, target_index: usize) -> Self;
 
   /// Creates a new sequence by padding this sequence to a minimum length of `size`
@@ -953,6 +966,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.pad_left(5, 4), vec![4, 4, 1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn pad_left<I>(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
@@ -975,6 +989,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.pad_left_with(5, |i| 2 * i), vec![0, 2, 1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
@@ -1005,6 +1020,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.pad_right(5, 4), vec![1, 2, 3, 4, 4]);
   /// ```
   #[inline]
+  #[must_use]
   fn pad_right(self, size: usize, element: Item) -> Self
   where
     Item: Clone,
@@ -1025,6 +1041,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.pad_right_with(5, |x| 2 * x), vec![1, 2, 3, 6, 8]);
   /// ```
+  #[must_use]
   fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
     Item: Clone,
@@ -1052,6 +1069,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.rev(), vec![3, 2, 1]);
   /// ```
   #[inline]
+  #[must_use]
   fn rev<I>(self) -> Self
   where
     I: DoubleEndedIterator<Item = Item>,
@@ -1241,6 +1259,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.skip(5), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn skip(self, n: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1269,6 +1288,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.skip_while(|&x| x < 3), vec![3]);
   /// ```
   #[inline]
+  #[must_use]
   fn skip_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1295,6 +1315,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.slice(1, 1), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn slice<I>(self, start_index: usize, end_index: usize) -> Self
   where
     I: ExactSizeIterator<Item = Item>,
@@ -1302,12 +1323,8 @@ pub trait SequenceTo<Item> {
   {
     let iterator = self.into_iter();
     let size = iterator.len();
-    if start_index > size {
-      panic!(r#"start index (is {start_index:?}) should be <= len (is {size:?})"#)
-    }
-    if end_index > size {
-      panic!(r#"end index (is {end_index:?}) should be <= len (is {size:?})"#)
-    }
+    assert!(start_index <= size, "start index (is {start_index:?}) should be <= len (is {size:?})");
+    assert!(end_index <= size, "end index (is {end_index:?}) should be <= len (is {size:?})");
     iterator.enumerate().filter(|(index, _)| *index >= start_index && *index < end_index).map(|(_, x)| x).collect()
   }
 
@@ -1339,6 +1356,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted(), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted(self) -> Self
   where
     Item: Ord,
@@ -1395,6 +1413,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted_by(|a, b| a.cmp(b)), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1441,6 +1460,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted_by_cached_key(|k| k.to_string()), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted_by_cached_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1483,6 +1503,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted_by_key(|&k| -k), vec![3, 2, 1]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1520,6 +1541,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted_unstable(), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted_unstable(self) -> Self
   where
     Item: Ord,
@@ -1577,6 +1599,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted_unstable_by(|a, b| a.cmp(b)), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted_unstable_by(self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1617,6 +1640,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.sorted_unstable_by_key(|&k| -k), vec![3, 2, 1]);
   /// ```
   #[inline]
+  #[must_use]
   fn sorted_unstable_by_key<K: Ord>(self, to_key: impl FnMut(&Item) -> K) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1651,6 +1675,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.step_by(1), vec![1, 2, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn step_by(self, step: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1677,6 +1702,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.substitute_at(1, 4), vec![1, 4, 3]);
   /// ```
+  #[must_use]
   fn substitute_at(self, index: usize, replacement: Item) -> Self;
 
   /// Creates a new sequence by replacing all elements at specified indices in this sequence
@@ -1702,6 +1728,7 @@ pub trait SequenceTo<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.substitute_at_multi(vec![0, 2], vec![4, 5, 6]), vec![4, 2, 5]);
   /// ```
+  #[must_use]
   fn substitute_at_multi(
     self, indices: impl IntoIterator<Item = usize>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self;
@@ -1729,6 +1756,7 @@ pub trait SequenceTo<Item> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.swap_at(1, 1), vec![1, 2, 3]);
   /// ```
+  #[must_use]
   fn swap_at(self, source_index: usize, target_index: usize) -> Self;
 
   /// Creates a new sequence from this sequence without
@@ -1746,6 +1774,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.tail(), vec![]);
   /// ```
+  #[must_use]
   fn tail(self) -> Self;
 
   /// Creates a new sequence that yields the first `n` elements, or fewer
@@ -1784,6 +1813,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.take(5), vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn take(self, n: usize) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1810,6 +1840,7 @@ pub trait SequenceTo<Item> {
   /// assert_eq!(a.take_while(|&x| x < 3), vec![1, 2]);
   /// ```
   #[inline]
+  #[must_use]
   fn take_while(self, predicate: impl FnMut(&Item) -> bool) -> Self
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1832,6 +1863,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.unique(), vec![1, 2, 3]);
   /// ```
+  #[must_use]
   fn unique(self) -> Self
   where
     Item: Eq + Hash + Clone,
@@ -1840,12 +1872,12 @@ pub trait SequenceTo<Item> {
     let iterator = self.into_iter();
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
     iterator
-      .flat_map(|item| {
-        if !occurred.contains(&item) {
-          let _unused = occurred.insert(item.clone());
-          Some(item)
-        } else {
+      .filter_map(|item| {
+        if occurred.contains(&item) {
           None
+        } else {
+          let _ = occurred.insert(item.clone());
+          Some(item)
         }
       })
       .collect()
@@ -1867,6 +1899,7 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(a.unique_by(|x| x % 2), vec![1, 2]);
   /// ```
+  #[must_use]
   fn unique_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
     K: Eq + Hash,
@@ -2124,12 +2157,13 @@ pub trait SequenceTo<Item> {
   }
 }
 
+#[allow(clippy::cast_possible_wrap)]
 pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
-  let values = Vec::from_iter(iterator);
+  let values = iterator.collect::<Vec<_>>();
   let size = values.len();
-  let mut product = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat_n(0, k)));
+  let mut product = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
@@ -2149,13 +2183,15 @@ pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<I
   .collect()
 }
 
+#[allow(clippy::cast_sign_loss)]
+#[allow(clippy::cast_possible_truncation)]
 #[inline]
 pub(crate) fn collect_by_index<Item, Result>(values: &[&Item], indices: &[i64]) -> Result
 where
   Item: Clone,
   Result: FromIterator<Item>,
 {
-  Result::from_iter(indices.iter().map(|index| values[*index as usize].clone()))
+  indices.iter().map(|index| values[*index as usize].clone()).collect::<Result>()
 }
 
 pub(crate) fn chunked<Item, Collection>(collection: Collection, size: usize, exact: bool) -> Vec<Collection>
@@ -2181,12 +2217,13 @@ where
   .collect()
 }
 
+#[allow(clippy::cast_possible_wrap)]
 pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
-  let values = Vec::from_iter(iterator);
+  let values = iterator.collect::<Vec<_>>();
   let size = values.len();
-  let mut multi_combination = Vec::from_iter(iter::once(i64::MIN).chain(iter::repeat_n(0, k)));
+  let mut multi_combination = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
@@ -2206,13 +2243,17 @@ pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<
   .collect()
 }
 
+#[allow(clippy::cast_sign_loss)]
+#[allow(clippy::cast_possible_truncation)]
+#[allow(clippy::cast_possible_wrap)]
 pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   iterator: impl Iterator<Item = &'a Item>, k: usize,
 ) -> Vec<Collection> {
-  let values = Vec::from_iter(iterator);
+  let values = iterator.collect::<Vec<_>>();
   let size = values.len();
-  let mut variation = Vec::from_iter(iter::once(i64::MIN).chain(0..(k as i64)));
-  let mut used_indices = Vec::from_iter(iter::repeat_n(true, k).chain(iter::repeat_n(false, size.saturating_sub(k))));
+  let mut variation = iter::once(i64::MIN).chain(0..(k as i64)).collect::<Vec<_>>();
+  let mut used_indices =
+    iter::repeat_n(true, k).chain(iter::repeat_n(false, size.saturating_sub(k))).collect::<Vec<_>>();
   let mut current_slot = (size + 1).saturating_sub(k);
   unfold(|| {
     if current_slot == 0 {
@@ -2247,7 +2288,7 @@ pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
   assert_ne!(step, 0, "step must be non-zero");
   let mut window = VecDeque::<Item>::with_capacity(size);
   iterator
-    .flat_map(|item| {
+    .filter_map(|item| {
       window.push_back(item.clone());
       if window.len() >= size {
         let tuple = Some(Collection::from_iter(window.clone()));

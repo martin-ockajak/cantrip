@@ -43,6 +43,7 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 ///   collection.iterator().map(|item| format!("{item:?}")).collect()
 /// }
 /// ```
+#[allow(clippy::elidable_lifetime_names)]
 pub trait Iterable {
   /// The type of the elements being iterated over.
   type Item<'collection>
@@ -89,6 +90,7 @@ impl<'c, T> Iterator for OptionIterator<'c, T> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for Option<Item> {
   type Item<'c>
     = &'c Item
@@ -119,6 +121,7 @@ impl<'c, T> Iterator for ResultIterator<'c, T> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
 impl<Item, E> Iterable for Result<Item, E> {
   type Item<'c>
     = &'c Item
@@ -137,6 +140,7 @@ impl<Item, E> Iterable for Result<Item, E> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for [Item] {
   type Item<'c>
     = &'c Item
@@ -168,6 +172,7 @@ impl<'c, T> Iterator for SliceIterator<'c, T> {
 }
 
 #[allow(single_use_lifetimes)]
+#[allow(clippy::elidable_lifetime_names)]
 impl<'c, T> DoubleEndedIterator for SliceIterator<'c, T> {
   fn next_back(&mut self) -> Option<Self::Item> {
     self.iterator.next_back()
@@ -185,6 +190,7 @@ impl<Item> Iterable for Vec<Item> {
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
+  #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     SliceIterator { iterator: self.iter() }
   }
@@ -205,6 +211,7 @@ impl<'c, T> Iterator for LinkedListIterator<'c, T> {
 }
 
 #[allow(single_use_lifetimes)]
+#[allow(clippy::elidable_lifetime_names)]
 impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
   fn next_back(&mut self) -> Option<Self::Item> {
     self.iterator.next_back()
@@ -222,6 +229,7 @@ impl<Item> Iterable for LinkedList<Item> {
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
+  #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     LinkedListIterator { iterator: self.iter() }
   }
@@ -242,6 +250,7 @@ impl<'c, T> Iterator for VecDequeIterator<'c, T> {
 }
 
 #[allow(single_use_lifetimes)]
+#[allow(clippy::elidable_lifetime_names)]
 impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
   fn next_back(&mut self) -> Option<Self::Item> {
     self.iterator.next_back()
@@ -259,6 +268,7 @@ impl<Item> Iterable for VecDeque<Item> {
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
+  #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     VecDequeIterator { iterator: self.iter() }
   }
@@ -278,6 +288,8 @@ impl<'c, T> Iterator for HashSetIterator<'c, T> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
+#[allow(clippy::implicit_hasher)]
 impl<Item> Iterable for HashSet<Item> {
   type Item<'c>
     = &'c Item
@@ -308,6 +320,7 @@ impl<'c, T> Iterator for BTreeSetIterator<'c, T> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for BTreeSet<Item> {
   type Item<'c>
     = &'c Item
@@ -338,6 +351,7 @@ impl<'c, T> Iterator for BinaryHeapIterator<'c, T> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for BinaryHeap<Item> {
   type Item<'c>
     = &'c Item
@@ -368,6 +382,8 @@ impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
+#[allow(clippy::implicit_hasher)]
 impl<Key, Value> Iterable for HashMap<Key, Value> {
   type Item<'c>
     = (&'c Key, &'c Value)
@@ -400,6 +416,7 @@ impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
   }
 }
 
+#[allow(clippy::elidable_lifetime_names)]
 impl<Key, Value> Iterable for BTreeMap<Key, Value> {
   type Item<'c>
     = (&'c Key, &'c Value)

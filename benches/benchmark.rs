@@ -3,6 +3,7 @@
 
 use std::hint::black_box;
 
+#[allow(clippy::wildcard_imports)]
 use cantrip::*;
 use criterion::{Criterion, criterion_group, criterion_main};
 
@@ -18,7 +19,7 @@ pub fn cartesian_product(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.cartesian_product(TUPLE_SIZE)
-    })
+    });
   });
 }
 
@@ -28,7 +29,7 @@ pub fn combinations(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.combinations(TUPLE_SIZE)
-    })
+    });
   });
 }
 
@@ -38,7 +39,7 @@ pub fn combinations_multi(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.combinations_multi(TUPLE_SIZE)
-    })
+    });
   });
 }
 
@@ -48,6 +49,7 @@ pub fn delete_at_multi(c: &mut Criterion) {
   c.bench_function("delete_at_multi", |b| b.iter(|| black_box(data.clone()).delete_at_multi(indices.clone())));
 }
 
+#[allow(clippy::cast_possible_wrap)]
 pub fn intersect(c: &mut Criterion) {
   let data = collection_input();
   let other = (0..SELECTION_SIZE as i64).map(|x| x + SELECTION_OFFSET as i64).collect::<Vec<_>>();
@@ -65,15 +67,16 @@ pub fn powerset(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.powerset()
-    })
+    });
   });
 }
 
+#[allow(clippy::cast_possible_wrap)]
 pub fn substitute_multi(c: &mut Criterion) {
   let data = collection_input();
   let elements = (0..SELECTION_SIZE as i64).map(|x| x + SELECTION_OFFSET as i64).collect::<Vec<_>>();
   c.bench_function("substitute_multi", |b| {
-    b.iter(|| black_box(data.clone()).substitute_multi(&elements, elements.clone()))
+    b.iter(|| black_box(data.clone()).substitute_multi(&elements, elements.clone()));
   });
 }
 
@@ -83,7 +86,7 @@ pub fn variations(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.variations(TUPLE_SIZE)
-    })
+    });
   });
 }
 
@@ -93,7 +96,7 @@ pub fn windowed(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.windowed(SELECTION_SIZE, 1)
-    })
+    });
   });
 }
 
@@ -103,16 +106,18 @@ pub fn windowed_circular(c: &mut Criterion) {
     b.iter(|| {
       black_box(());
       data.windowed_circular(SELECTION_SIZE, 1)
-    })
+    });
   });
 }
 
+#[allow(clippy::cast_possible_wrap)]
 fn collection_input() -> Vec<i64> {
-  Vec::from_iter(0..LARGE_COLLECTION_SIZE as i64)
+  (0..LARGE_COLLECTION_SIZE as i64).collect()
 }
 
+#[allow(clippy::cast_possible_wrap)]
 fn combinations_input() -> Vec<i64> {
-  Vec::from_iter(0..SMALL_COLLECTION_SIZE as i64)
+  (0..SMALL_COLLECTION_SIZE as i64).collect()
 }
 
 criterion_group!(

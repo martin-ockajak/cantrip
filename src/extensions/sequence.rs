@@ -499,7 +499,7 @@ pub(crate) fn common_suffix_length<'a, Item: PartialEq + 'a, I: DoubleEndedItera
 
 #[inline]
 pub(crate) fn count_unique<'a, Item: Eq + Hash + 'a>(iterator: impl Iterator<Item = &'a Item>) -> usize {
-  let items: HashSet<&Item> = HashSet::from_iter(iterator);
+  let items = iterator.collect::<HashSet<_>>();
   items.len()
 }
 
@@ -539,10 +539,10 @@ pub(crate) fn frequencies_by<'a, Item: 'a, K: Eq + Hash>(
 pub(crate) fn joined<'a, Item: Display + 'a>(mut iterator: impl Iterator<Item = &'a Item>, separator: &str) -> String {
   if let Some(item) = iterator.next() {
     let mut result = String::with_capacity((separator.len() + 1) * iterator.size_hint().0);
-    let _unused = write!(&mut result, "{}", item);
+    let _unused = write!(&mut result, "{item}");
     for item in iterator {
       result.push_str(separator);
-      let _unused = write!(&mut result, "{}", item);
+      let _unused = write!(&mut result, "{item}");
     }
     result
   } else {
