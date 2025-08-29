@@ -7,7 +7,7 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 /// collection of some kind.
 ///
 /// This is a reference-based equivalent of standard [`IntoIterator`] providing
-/// the `iterator()` method which is a generic equivalent of various `iter()`
+/// the `iterator()` method, which is a generic equivalent of various `iter()`
 /// methods for various standard collection types.
 ///
 /// See also: [`FromIterator`].
@@ -288,8 +288,8 @@ impl<'c, T> Iterator for HashSetIterator<'c, T> {
   }
 }
 
-#[allow(clippy::elidable_lifetime_names)]
 #[allow(clippy::implicit_hasher)]
+#[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for HashSet<Item> {
   type Item<'c>
     = &'c Item
@@ -382,8 +382,8 @@ impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
   }
 }
 
-#[allow(clippy::elidable_lifetime_names)]
 #[allow(clippy::implicit_hasher)]
+#[allow(clippy::elidable_lifetime_names)]
 impl<Key, Value> Iterable for HashMap<Key, Value> {
   type Item<'c>
     = (&'c Key, &'c Value)
