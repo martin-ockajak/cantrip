@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
-A Swiss Army Knife for Rust standard library collections.
+A Swiss Army Knife for Rust standard library collection types.
 
 Enables direct functional-style collection manipulation without the usual
 iterator boilerplate and provides many additional operations.
@@ -25,11 +25,10 @@ iterator boilerplate and provides many additional operations.
 
 ## Functionality
 
-- [Searching](#searching) - [Modifying](#modifying) - [Filtering](#filtering) -
-  [Mapping](#mapping) - [Inspecting](#inspecting) - [Aggregating](#aggregating)
-
-- [Selecting](#selecting) - [Converting](#converting) - [Partitioning](#partitioning) -
-  [Merging](#merging) - [Sorting](#sorting) - [Miscellaneous](#miscellaneous)
+- [Searching](#searching) - [Modifying](#modifying) - [Filtering](#filtering)
+- [Mapping](#mapping) - [Inspecting](#inspecting) - [Aggregating](#aggregating)
+- [Selecting](#selecting) - [Converting](#converting) - [Partitioning](#partitioning)
+- [Merging](#merging) - [Sorting](#sorting) - [Miscellaneous](#miscellaneous)
 
 
 ## Examples
@@ -39,23 +38,23 @@ use cantrip::*;
 
 let a = vec![1, 2, 3];
 
-a.fold(0, |r, x| r + x);                    // 6
+a.fold(0, |r, x| r + x);                 // 6
 
-a.map_ref(|&x| (x, x)).to_map();            // HashMap::from([(1, 1), (2, 2), (3, 3)])
+a.map_ref(|&x| (x, x)).to_map();         // HashMap::from([(1, 1), (2, 2), (3, 3)])
 
-a.flat_map(|x| [x, -x]).sorted();           // vec![-3, -2, -1, 1, 2, 3]
+a.flat_map(|x| [x, -x]).sorted();        // vec![-3, -2, -1, 1, 2, 3]
 
-a.filter(|&x| x > 1).to_set();              // HashSet::from([2, 3])
+a.filter(|&x| x > 1).to_set();           // HashSet::from([2, 3])
 
-a.group_by(|x| x % 2);                      // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
+a.group_by(|x| x % 2);                   // HashMap::from([(0, vec![2]), (1, vec![1, 3])])
 
-a.delete(&1).add(2).unique();               // vec![2, 3]
+a.delete(&1).add(2).unique();            // vec![2, 3]
 
-a.substitute_at(0, 4).to_list();            // LinkedList::from([4, 2, 3])
+a.substitute_at(0, 4).to_list();         // LinkedList::from([4, 2, 3])
 
-a.position_multi(|&x| x % 2 == 1);          // vec![0, 2]
+a.position_multi(|&x| x % 2 == 1);       // vec![0, 2]
 
-a.rev().into_iter().to_deque();             // VecDeque::from([3, 2, 1])
+a.rev().into_iter().to_deque();          // VecDeque::from([3, 2, 1])
 ```
 
 
