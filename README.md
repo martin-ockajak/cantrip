@@ -9,7 +9,7 @@ Enables direct functional-style collection manipulation without the usual
 iterator boilerplate and provides many additional operations.
 
 - Enjoy cleaner code with less `.into_iter()`, `.collect()` and `.clone()`.
-- Feel free to treat standard collections is immutable values to be reused at will.
+- Feel free to treat standard collections as immutable values to be reused at will.
 - No learning required, just keep using code completion to likely find a method you need.
 
 
