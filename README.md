@@ -9,8 +9,8 @@ Enables direct functional-style collection manipulation without the usual
 iterator boilerplate and provides many additional operations.
 
 - Enjoy cleaner code with less `.into_iter()`, `.collect()` and `.clone()`.
-- Feel free to treat standard collections as immutable values to be reused at will.
-- No learning required, just keep using code completion to quickly find a method you need.
+- Leverage non-consuming operations and many convenient utility methods.
+- No learning required, use code completion to quickly find a method you need.
 
 
 ## Overview
@@ -18,7 +18,7 @@ iterator boilerplate and provides many additional operations.
 - Existing standard library collections are extended with equivalents of iterator methods
 - Additional utility methods commonly found in collection libraries are also included
 - Methods which modify a collection return a new collection instead of an iterator
-- All methods treat collection instances as immutable although some consume them
+- All methods treat collection instances as immutable, although some consume them
 - Standard library method naming conventions are followed as closely as possible
 - Performance is near optimal with overhead limited to new collection creation
 
