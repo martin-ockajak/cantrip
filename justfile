@@ -1,5 +1,6 @@
 # Set global environment variables. These apply to all tasks.
 export RUST_BACKTRACE := "1"
+export RUSTFLAGS := "-C target-cpu=native"
 
 # --- Common Development Tasks ---
 
