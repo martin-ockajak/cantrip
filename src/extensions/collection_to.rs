@@ -718,7 +718,7 @@ pub trait CollectionTo<Item> {
   /// on its own.
   ///
   /// You can think of `flat_map_ref(f)` as the semantic equivalent
-  /// of mapping, and then flattening as in [`map_ref(f)`][`.flat()`]`.
+  /// of mapping, and then flattening as in [`map_ref(f)`][`.flat()`].
   ///
   /// Another way of thinking about `flat_map_ref()`: [`map_ref()`]'s closure returns
   /// one item for each element, and `flat_map_ref()`'s closure returns an
