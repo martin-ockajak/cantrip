@@ -41,7 +41,7 @@ where
   /// assert!(!a.all(|&x| x > 2));
   /// ```
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
-    all(self.into_iter(), predicate)
+    self.into_iter().all(predicate)
   }
 
   /// Tests if any element of the collection matches a predicate.
@@ -71,7 +71,7 @@ where
   /// assert!(!e.any(|&x| x > 0));
   /// ```
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
-    any(self.into_iter(), predicate)
+    self.into_iter().any(predicate)
   }
 
   /// Counts elements of this collection that satisfy a predicate.
@@ -90,8 +90,8 @@ where
   /// assert_eq!(a.count_by(|&x| x == 2), 1);
   /// assert_eq!(a.count_by(|&x| x == 5), 0);
   /// ```
-  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize {
-    count_by(self.into_iter(), predicate)
+  fn count_by(&self, mut predicate: impl FnMut(&Item) -> bool) -> usize {
+    self.into_iter().filter(|&x| predicate(x)).count()
   }
 
   /// Tests this collection and another collection have no elements in common.
@@ -334,13 +334,23 @@ where
   /// assert_eq!(a.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
   fn group_fold_ref<K, B>(
-    &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
+    &self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>
   where
     K: Eq + Hash,
     B: Clone,
   {
-    group_fold(self.into_iter(), to_key, initial_value, function)
+    let iterator = self.into_iter();
+    let mut result = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      let key = to_key(item);
+      let new_value = match result.remove(&key) {
+        Some(value) => function(value, item),
+        None => function(initial_value.clone(), item),
+      };
+      let _unused = result.insert(key, new_value);
+    }
+    result
   }
 
   /// Creates `HashMap` of keys mapped and reduced to values according to
@@ -364,13 +374,23 @@ where
   /// assert_eq!(a.group_reduce_ref(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
   fn group_reduce_ref<K>(
-    &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
+    &self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(&Item, &Item) -> Item,
   ) -> HashMap<K, Item>
   where
     K: Eq + Hash,
     Item: Clone,
   {
-    group_reduce(self.into_iter(), to_key, function)
+    let iterator = self.into_iter();
+    let mut result = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      let key = to_key(item);
+      let new_value = match result.remove(&key) {
+        Some(value) => function(&value, item),
+        None => item.clone(),
+      };
+      let _unused = result.insert(key, new_value);
+    }
+    result
   }
 
   /// Returns the element that gives the maximum value with respect to the
@@ -577,11 +597,11 @@ where
   /// assert_eq!(a.minmax_by_key(|x| -x), Some((&3, &1)));
   /// assert_eq!(e.minmax_by_key(|x| -x), None);
   /// ```
-  fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
+  fn minmax_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
   where
     K: Ord,
   {
-    minmax_by_key(self.into_iter(), to_key)
+    minmax_by(self.into_iter(), |x, y| to_key(x).cmp(&to_key(y)))
   }
 
   /// Return the minimum and maximum element of this collection.
@@ -640,8 +660,11 @@ where
   ///
   /// assert_eq!(a.reduce_ref(|&acc, &e| acc + e).unwrap(), folded);
   /// ```
-  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
-    reduce(self.into_iter(), function)
+  fn reduce_ref(&self, mut function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
+    let mut iterator = self.into_iter();
+    iterator
+      .next()
+      .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
   }
 
   /// Tests if another collection contains all elements of this collection
@@ -709,27 +732,6 @@ where
   }
 }
 
-#[inline]
-pub(crate) fn all<'a, Item: 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, predicate: impl FnMut(&Item) -> bool,
-) -> bool {
-  iterator.all(predicate)
-}
-
-#[inline]
-pub(crate) fn any<'a, Item: 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, predicate: impl FnMut(&Item) -> bool,
-) -> bool {
-  iterator.any(predicate)
-}
-
-#[inline]
-pub(crate) fn count_by<'a, Item: 'a>(
-  iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
-) -> usize {
-  iterator.filter(|&x| predicate(x)).count()
-}
-
 pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> HashMap<&'a Item, usize> {
@@ -760,38 +762,6 @@ where
   true
 }
 
-pub(crate) fn group_fold<'a, Item: 'a, K: Eq + Hash, B: Clone>(
-  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K, initial_value: B,
-  mut function: impl FnMut(B, &Item) -> B,
-) -> HashMap<K, B> {
-  let mut result = HashMap::with_capacity(iterator.size_hint().0);
-  for item in iterator {
-    let key = to_key(item);
-    let new_value = match result.remove(&key) {
-      Some(value) => function(value, item),
-      None => function(initial_value.clone(), item),
-    };
-    let _unused = result.insert(key, new_value);
-  }
-  result
-}
-
-pub(crate) fn group_reduce<'a, Item: Clone + 'a, K: Eq + Hash>(
-  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
-  mut function: impl FnMut(&Item, &Item) -> Item,
-) -> HashMap<K, Item> {
-  let mut result = HashMap::with_capacity(iterator.size_hint().0);
-  for item in iterator {
-    let key = to_key(item);
-    let new_value = match result.remove(&key) {
-      Some(value) => function(&value, item),
-      None => item.clone(),
-    };
-    let _unused = result.insert(key, new_value);
-  }
-  result
-}
-
 pub(crate) fn minmax_by<'a, Item: 'a>(
   mut iterator: impl Iterator<Item = &'a Item>, mut compare: impl FnMut(&Item, &Item) -> Ordering,
 ) -> Option<(&'a Item, &'a Item)> {
@@ -811,22 +781,6 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
     }
     None => None,
   }
-}
-
-#[inline]
-pub(crate) fn minmax_by_key<'a, Item: 'a, K: Ord>(
-  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
-) -> Option<(&'a Item, &'a Item)> {
-  minmax_by(iterator, |x, y| to_key(x).cmp(&to_key(y)))
-}
-
-#[inline]
-pub(crate) fn reduce<'a, Item: 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, mut function: impl FnMut(&Item, &Item) -> Item,
-) -> Option<Item> {
-  iterator
-    .next()
-    .and_then(|value1| iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function(&r, x))))
 }
 
 pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
