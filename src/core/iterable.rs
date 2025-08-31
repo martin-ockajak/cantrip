@@ -50,7 +50,7 @@ pub trait Iterable {
   where
     Self: 'collection;
 
-  /// Which kind of iterator are we turning this into?
+  /// The resulting iterator type.
   type Iterator<'collection>: Iterator<Item = Self::Item<'collection>>
   where
     Self: 'collection;
