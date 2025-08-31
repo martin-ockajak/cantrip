@@ -67,6 +67,10 @@ where
   let a = a_source.clone();
   let e = e_source.clone();
   assert_map_equal(&a.delete_multi(&vec![1, 3]), HashMap::from([(2, 2)]));
+  let a = a_source.clone();
+  assert_map_equal(&a.delete_multi(&HashMap::from([(1, 1), (3, 3)]).keys()), HashMap::from([(2, 2)]));
+  let a = a_source.clone();
+  assert_map_equal(&a.delete_multi(&HashMap::from([(1, 1), (3, 3)]).values()), HashMap::from([(2, 2)]));
   assert_map_equal(&e.delete_multi(&vec![1]), HashMap::new());
 
   // disjoint

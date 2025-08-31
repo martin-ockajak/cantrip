@@ -403,6 +403,68 @@ impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
+impl<Key, Value> Iterable for std::collections::hash_map::Keys<'_, Key, Value> {
+  type Item<'c>
+    = &'c Key
+  where
+    Self: 'c;
+  type Iterator<'c>
+    = HashMapKeysIterator<'c, Key, Value>
+  where
+    Self: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    HashMapKeysIterator { iterator: self.clone() }
+  }
+}
+
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct HashMapKeysIterator<'c, Key, Value> {
+  pub(crate) iterator: std::collections::hash_map::Keys<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for HashMapKeysIterator<'c, Key, Value> {
+  type Item = &'c Key;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+#[allow(clippy::elidable_lifetime_names)]
+impl<Key, Value> Iterable for std::collections::hash_map::Values<'_, Key, Value> {
+  type Item<'c>
+    = &'c Value
+  where
+    Self: 'c;
+  type Iterator<'c>
+    = HashMapValuesIterator<'c, Key, Value>
+  where
+    Self: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    HashMapValuesIterator { iterator: self.clone() }
+  }
+}
+
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct HashMapValuesIterator<'c, Key, Value> {
+  pub(crate) iterator: std::collections::hash_map::Values<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for HashMapValuesIterator<'c, Key, Value> {
+  type Item = &'c Value;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+#[allow(clippy::elidable_lifetime_names)]
 impl<Key, Value> Iterable for BTreeMap<Key, Value> {
   type Item<'c>
     = (&'c Key, &'c Value)
@@ -429,6 +491,68 @@ pub struct BTreeMapIterator<'c, Key, Value> {
 
 impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
   type Item = (&'c Key, &'c Value);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+#[allow(clippy::elidable_lifetime_names)]
+impl<Key, Value> Iterable for std::collections::btree_map::Keys<'_, Key, Value> {
+  type Item<'c>
+    = &'c Key
+  where
+    Self: 'c;
+  type Iterator<'c>
+    = BTreeMapKeysIterator<'c, Key, Value>
+  where
+    Self: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    BTreeMapKeysIterator { iterator: self.clone() }
+  }
+}
+
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct BTreeMapKeysIterator<'c, Key, Value> {
+  pub(crate) iterator: std::collections::btree_map::Keys<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for BTreeMapKeysIterator<'c, Key, Value> {
+  type Item = &'c Key;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
+  }
+}
+
+#[allow(clippy::elidable_lifetime_names)]
+impl<Key, Value> Iterable for std::collections::btree_map::Values<'_, Key, Value> {
+  type Item<'c>
+    = &'c Value
+  where
+    Self: 'c;
+  type Iterator<'c>
+    = BTreeMapValuesIterator<'c, Key, Value>
+  where
+    Self: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    BTreeMapValuesIterator { iterator: self.clone() }
+  }
+}
+
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct BTreeMapValuesIterator<'c, Key, Value> {
+  pub(crate) iterator: std::collections::btree_map::Values<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for BTreeMapValuesIterator<'c, Key, Value> {
+  type Item = &'c Value;
 
   fn next(&mut self) -> Option<Self::Item> {
     self.iterator.next()

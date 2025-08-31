@@ -77,9 +77,15 @@ where
   if sequence {
     assert_seq_equal(&b.delete_multi(&vec![1, 2]), vec![2, 3]);
     let b = b_source.clone();
+    assert_seq_equal(&b.delete_multi(&HashMap::from([(1, 1), (2, 2)]).keys()), vec![2, 3]);
+    let b = b_source.clone();
     assert_seq_equal(&b.delete_multi(&vec![4]), vec![1, 2, 2, 3]);
   } else {
     assert_seq_equal(&a.delete_multi(&vec![1, 2]), vec![3]);
+    let a = a_source.clone();
+    assert_seq_equal(&a.delete_multi(&HashMap::from([(1, 1), (2, 2)]).keys()), vec![3]);
+    let a = a_source.clone();
+    assert_seq_equal(&a.delete_multi(&HashMap::from([(1, 1), (2, 2)]).values()), vec![3]);
     let a = a_source.clone();
     assert_seq_equal(&a.delete_multi(&vec![4]), vec![1, 2, 3]);
   }
