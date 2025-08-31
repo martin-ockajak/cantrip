@@ -39,7 +39,7 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 /// use crate::cantrip::*;
 ///
 /// fn collect_as_strings<'a, T>(collection: &'a impl Iterable<Item<'a> = &'a T>) -> Vec<String>
-/// where T: IntoIterator + 'a + std::fmt::Debug {
+/// where T: 'a + std::fmt::Debug {
 ///   collection.iterator().map(|item| format!("{item:?}")).collect()
 /// }
 /// ```
