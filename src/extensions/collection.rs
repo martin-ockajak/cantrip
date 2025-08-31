@@ -87,7 +87,7 @@ pub trait Collection<Item> {
 
   /// Tests this collection and another collection have no elements in common.
   ///
-  /// Returns `true` if aby of the collections are empty.
+  /// Returns `true` if any of the collections are empty.
   ///
   /// # Example
   ///
