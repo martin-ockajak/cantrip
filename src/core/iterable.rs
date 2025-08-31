@@ -29,7 +29,7 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 /// assert_eq!(Some(&3), iter.next());
 /// assert_eq!(None, iter.next());
 /// ```
-/// Implementing `IntoIterator` for your type:
+/// Implementing `Iterable` for your type:
 ///
 /// It is common to use `Iterable` as a trait bound. This allows the input collection type
 /// to change, so long as it is still an iterator. Additional bounds can be specified by
