@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::U;
 
 /// Non-consuming collection operations.
 ///
@@ -10,7 +10,10 @@ use crate::Iterable;
 ///
 /// - Does not consume the collection or its elements
 /// - Does not create a new collection
-pub trait Collection<Item> {
+pub trait Collection<Item>
+where
+  for<'i> &'i Self: IntoIterator<Item = &'i Item>,
+{
   /// Tests if every element of the collection matches a predicate.
   ///
   /// `all()` takes a closure that returns `true` or `false`. It applies
@@ -37,7 +40,9 @@ pub trait Collection<Item> {
   ///
   /// assert!(!a.all(|&x| x > 2));
   /// ```
-  fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
+  fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
+    all(self.into_iter(), predicate)
+  }
 
   /// Tests if any element of the collection matches a predicate.
   ///
@@ -65,7 +70,9 @@ pub trait Collection<Item> {
   /// assert!(!a.any(|&x| x > 5));
   /// assert!(!e.any(|&x| x > 0));
   /// ```
-  fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool;
+  fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
+    any(self.into_iter(), predicate)
+  }
 
   /// Counts elements of this collection that satisfy a predicate.
   ///
@@ -83,7 +90,9 @@ pub trait Collection<Item> {
   /// assert_eq!(a.count_by(|&x| x == 2), 1);
   /// assert_eq!(a.count_by(|&x| x == 5), 0);
   /// ```
-  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize;
+  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize {
+    count_by(self.into_iter(), predicate)
+  }
 
   /// Tests this collection and another collection have no elements in common.
   ///
@@ -103,9 +112,13 @@ pub trait Collection<Item> {
   ///
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
-  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn disjoint<RefIterable>(&self, elements: &RefIterable) -> bool
   where
-    Item: Eq + Hash + 'a;
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Item>,
+    Item: Eq + Hash,
+  {
+    disjoint(self.into_iter(), elements)
+  }
 
   /// Searches for an element of this collection that satisfies a predicate.
   ///
@@ -132,7 +145,9 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(a.find(|&x| x == 5), None);
   /// ```
-  fn find(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
+  fn find(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
+    self.into_iter().find(|&x| predicate(x))
+  }
 
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
@@ -156,7 +171,9 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(a.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   /// ```
-  fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B>;
+  fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
+    self.into_iter().find_map(function)
+  }
 
   /// Folds every element into an accumulator by applying an operation,
   /// returning the final result.
@@ -253,7 +270,9 @@ pub trait Collection<Item> {
   /// // they're the same
   /// assert_eq!(result, result2);
   /// ```
-  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
+    self.into_iter().fold(initial_value, function)
+  }
 
   /// Calls a closure on each element of this collection.
   ///
@@ -290,7 +309,9 @@ pub trait Collection<Item> {
   ///   .filter(|&(i, x)| (i + x) % 3 == 0)
   ///   .for_each(|(i, x)| println!("{i}:{x}"));
   /// ```
-  fn for_each(&self, function: impl FnMut(&Item));
+  fn for_each(&self, function: impl FnMut(&Item)) {
+    self.into_iter().for_each(function);
+  }
 
   /// Creates `HashMap` of keys mapped and folded to values according to
   /// specified discriminator and folding operation functions.
@@ -317,7 +338,10 @@ pub trait Collection<Item> {
   ) -> HashMap<K, B>
   where
     K: Eq + Hash,
-    B: Clone;
+    B: Clone,
+  {
+    group_fold(self.into_iter(), to_key, initial_value, function)
+  }
 
   /// Creates `HashMap` of keys mapped and reduced to values according to
   /// specified discriminator and reducing operation functions.
@@ -344,7 +368,10 @@ pub trait Collection<Item> {
   ) -> HashMap<K, Item>
   where
     K: Eq + Hash,
-    Item: Clone;
+    Item: Clone,
+  {
+    group_reduce(self.into_iter(), to_key, function)
+  }
 
   /// Returns the element that gives the maximum value with respect to the
   /// specified comparison function.
@@ -364,7 +391,9 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(e.max_by(|x, y| x.cmp(y)), None);
   /// ```
-  fn max_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
+  fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
+    self.into_iter().max_by(|&x, &y| compare(x, y))
+  }
 
   /// Returns the element that gives the maximum value from the
   /// specified key function.
@@ -384,9 +413,12 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(e.max_by_key(|x| -x), None);
   /// ```
-  fn max_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
+  fn max_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
   where
-    K: Ord;
+    K: Ord,
+  {
+    self.into_iter().max_by_key(|&x| to_key(x))
+  }
 
   /// Returns the maximum element of this collection.
   ///
@@ -440,7 +472,9 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(e.min_by(|x, y| x.cmp(y)), None);
   /// ```
-  fn min_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item>;
+  fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
+    self.into_iter().min_by(|&x, &y| compare(x, y))
+  }
 
   /// Returns the element that gives the minimum value from the
   /// specified key function.
@@ -460,9 +494,12 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(e.min_by_key(|x| -x), None);
   /// ```
-  fn min_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<&Item>
+  fn min_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
   where
-    K: Ord;
+    K: Ord,
+  {
+    self.into_iter().min_by_key(|&x| to_key(x))
+  }
 
   /// Returns the minimum element of this collection.
   ///
@@ -518,7 +555,9 @@ pub trait Collection<Item> {
   /// assert_eq!(a.minmax_by(|x, y| x.cmp(y)), Some((&1, &3)));
   /// assert_eq!(e.minmax_by(|x, y| x.cmp(y)), None);
   /// ```
-  fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)>;
+  fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)> {
+    minmax_by(self.into_iter(), compare)
+  }
 
   /// Returns the minimum and maximum element of this collection from the
   /// specified key function.
@@ -540,7 +579,10 @@ pub trait Collection<Item> {
   /// ```
   fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
   where
-    K: Ord;
+    K: Ord,
+  {
+    minmax_by_key(self.into_iter(), to_key)
+  }
 
   /// Return the minimum and maximum element of this collection.
   ///
@@ -598,7 +640,9 @@ pub trait Collection<Item> {
   ///
   /// assert_eq!(a.reduce_ref(|&acc, &e| acc + e).unwrap(), folded);
   /// ```
-  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item>;
+  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
+    reduce(self.into_iter(), function)
+  }
 
   /// Tests if another collection contains all elements of this collection
   /// at least as many times as they appear in this collection.
@@ -625,9 +669,12 @@ pub trait Collection<Item> {
   /// assert!(!a.subset(&vec![1, 2, 3]));
   /// assert!(!a.subset(&vec![3, 4]));
   /// ```
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn subset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> bool
   where
-    Item: Eq + Hash + 'a;
+    Item: Eq + Hash + 'a,
+  {
+    subset(self.into_iter(), elements)
+  }
 
   /// Tests if this collection contains all elements of another collection
   /// at least as many times as they appear in the other collection.
@@ -654,9 +701,12 @@ pub trait Collection<Item> {
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn superset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> bool
   where
-    Item: Eq + Hash + 'a;
+    Item: Eq + Hash + 'a,
+  {
+    superset(self.into_iter(), elements)
+  }
 }
 
 #[inline]
@@ -680,24 +730,6 @@ pub(crate) fn count_by<'a, Item: 'a>(
   iterator.filter(|&x| predicate(x)).count()
 }
 
-pub(crate) fn disjoint<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool {
-  let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
-  for item in iterator {
-    let _ = occurred.insert(item);
-  }
-  if occurred.is_empty() {
-    return true;
-  }
-  for item in elements.iterator() {
-    if occurred.contains(&item) {
-      return false;
-    }
-  }
-  true
-}
-
 pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
   iterator: impl Iterator<Item = &'a Item>,
 ) -> HashMap<&'a Item, usize> {
@@ -706,6 +738,26 @@ pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
     *result.entry(item).or_default() += 1;
   }
   result
+}
+
+pub(crate) fn disjoint<'a, Item, I>(iterator: impl Iterator<Item = &'a Item>, elements: &I) -> bool
+where
+  for<'b> &'b I: IntoIterator<Item = &'b Item>,
+  Item: Eq + Hash + 'a,
+{
+  let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    let _ = occurred.insert(item);
+  }
+  if occurred.is_empty() {
+    return true;
+  }
+  for item in elements {
+    if occurred.contains(&item) {
+      return false;
+    }
+  }
+  true
 }
 
 pub(crate) fn group_fold<'a, Item: 'a, K: Eq + Hash, B: Clone>(
@@ -778,7 +830,7 @@ pub(crate) fn reduce<'a, Item: 'a>(
 }
 
 pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
 ) -> bool {
   let mut counts = frequencies(iterator);
   if counts.is_empty() {
@@ -799,7 +851,7 @@ pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
 }
 
 pub(crate) fn superset<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
 ) -> bool {
   let mut counts = frequencies(elements.iterator());
   if counts.is_empty() {

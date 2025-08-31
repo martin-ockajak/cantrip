@@ -1,11 +1,12 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use cantrip::{Collection, Iterable};
+use cantrip::{Collection, U};
 
 pub(crate) fn test_collection<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
 where
-  C: Collection<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
+  C: Collection<i64> + U<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
 {
   // all
   assert!(a.all(|&x| x > 0));
@@ -23,11 +24,11 @@ where
   assert_eq!(e.count_by(|&x| x == 5), 0);
 
   // disjoint
-  assert!(a.disjoint(&vec![4, 5]));
-  assert!(a.disjoint(&vec![]));
-  assert!(e.disjoint(&vec![]));
-  assert!(!a.disjoint(&vec![3, 4]));
-  assert!(e.disjoint(&vec![3, 4]));
+  assert!(a.disjoint::<Vec<i64>>(&vec![4, 5]));
+  assert!(a.disjoint::<Vec<i64>>(&vec![]));
+  assert!(e.disjoint::<Vec<i64>>(&vec![]));
+  assert!(!a.disjoint::<Vec<i64>>(&vec![3, 4]));
+  assert!(e.disjoint::<Vec<i64>>(&vec![3, 4]));
 
   // find
   assert_eq!(a.find(|&x| x == 2), Some(&2));

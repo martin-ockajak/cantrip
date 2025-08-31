@@ -2,6 +2,7 @@
 #![allow(missing_docs)]
 #![allow(unused_crate_dependencies)]
 use crate::extensions::traits::*;
+use cantrip::Collection;
 use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedList, VecDeque};
 
 mod extensions;
@@ -64,4 +65,10 @@ fn maps() {
   let e_btree_map = BTreeMap::from_iter(e_hash_map.clone());
   test_map_traits(&a_hash_map, &b_hash_map, &e_hash_map);
   test_map_traits(&a_btree_map, &b_btree_map, &e_btree_map);
+}
+
+#[test]
+fn x() {
+  let a = vec![1, 2, 3];
+  let _unused = a.disjoint(&vec![1, 2, 4]);
 }

@@ -4,7 +4,7 @@ use std::hash::Hash;
 use std::iter;
 use std::iter::{Product, Sum};
 
-use crate::Iterable;
+use crate::U;
 use crate::core::unfold::unfold;
 use crate::extensions::{MAX_SIZE, collect_by_index, frequencies};
 
@@ -271,7 +271,7 @@ pub trait CollectionTo<Item> {
   /// assert_eq!(e.delete_multi(&vec![1]), vec![]);
   /// ```
   #[must_use]
-  fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn delete_multi<'a>(self, elements: &'a impl U<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -993,7 +993,7 @@ pub trait CollectionTo<Item> {
   /// ```
   #[inline]
   #[must_use]
-  fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
+  fn intersect<'a>(self, elements: &'a impl U<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -1462,7 +1462,7 @@ pub trait CollectionTo<Item> {
   /// ```
   #[must_use]
   fn substitute_multi<'a>(
-    self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
+    self, elements: &'a impl U<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where
     Item: Eq + Hash + 'a,

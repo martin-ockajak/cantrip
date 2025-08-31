@@ -12,6 +12,7 @@ pub(crate) fn test_sequence_to<'a, C, G, I>(a_source: &C, b_source: &C, c_source
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: TestSequence<'a, i64, I> + UnwindSafe,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
   <C as SequenceTo<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,

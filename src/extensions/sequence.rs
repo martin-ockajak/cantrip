@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Write};
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::U;
 
 /// Ordered collection operations.
 ///
@@ -24,7 +24,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.common_prefix_length(&vec![]), 0);
   /// ```
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> usize
   where
     Item: PartialEq + 'a;
 
@@ -42,7 +42,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.common_suffix_length(&vec![]), 0);
   /// ```
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl U<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a;
@@ -83,7 +83,7 @@ pub trait Sequence<Item> {
   /// assert!(!a.equivalent(&vec![1, 1, 2, 2, 3]));
   /// assert!(!a.equivalent(&vec![]));
   /// ```
-  fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn equivalent<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
 
@@ -337,7 +337,7 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.position_sequence(&vec![1, 3]), None);
   /// ```
-  fn position_sequence<'a>(&'a self, sequence: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  fn position_sequence<'a>(&'a self, sequence: &'a impl U<Item<'a> = &'a Item>) -> Option<usize>
   where
     Item: PartialEq + 'a;
 
@@ -472,7 +472,7 @@ pub trait Sequence<Item> {
 }
 
 pub(crate) fn common_prefix_length<'a, Item: PartialEq + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
 ) -> usize {
   let mut result = 0_usize;
   for (item, element) in iterator.zip(elements.iterator()) {
@@ -485,7 +485,7 @@ pub(crate) fn common_prefix_length<'a, Item: PartialEq + 'a>(
 }
 
 pub(crate) fn common_suffix_length<'a, Item: PartialEq + 'a, I: DoubleEndedIterator<Item = &'a Item>>(
-  reversed_iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>,
+  reversed_iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item, Iterator<'a> = I>,
 ) -> usize {
   let mut result = 0_usize;
   for (item, element) in reversed_iterator.zip(elements.iterator().rev()) {
@@ -504,7 +504,7 @@ pub(crate) fn count_unique<'a, Item: Eq + Hash + 'a>(iterator: impl Iterator<Ite
 }
 
 pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
 ) -> bool {
   let elements_iterator = elements.iterator();
   let mut excluded = HashMap::<&Item, usize>::with_capacity(iterator.size_hint().0);
@@ -558,7 +558,7 @@ pub(crate) fn positions<'a, Item: 'a>(
 }
 
 pub(crate) fn position_sequence<'a, Item: PartialEq + 'a>(
-  mut iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+  mut iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
 ) -> Option<usize> {
   let mut elements_iterator = elements.iterator();
   if let Some(first_element) = elements_iterator.next() {

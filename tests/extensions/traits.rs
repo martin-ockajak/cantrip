@@ -17,6 +17,7 @@ pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: List<i64> + TestSequence<'a, i64, I> + TestCollectible<'a, i64> + UnwindSafe,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
@@ -47,6 +48,7 @@ where
 pub(crate) fn test_set_traits<'a, C, D, G>(a: &C, b: &C, d: &D, g: &G, e: &C)
 where
   C: Collection<i64> + TestCollectible<'a, i64>,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
@@ -62,6 +64,7 @@ pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g
 where
   I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: TestSequence<'a, i64, I> + TestCollectible<'a, i64> + UnwindSafe,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,

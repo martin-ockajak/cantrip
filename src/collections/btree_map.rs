@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::BTreeMap;
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::U;
 #[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
@@ -53,9 +53,10 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn disjoint<RefIterable>(&self, elements: &RefIterable) -> bool
   where
-    Key: Eq + Hash + 'a,
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
+    Key: Eq + Hash,
   {
     disjoint(self.keys(), elements)
   }
@@ -172,7 +173,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn subset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
   {
@@ -180,7 +181,7 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn superset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
   {

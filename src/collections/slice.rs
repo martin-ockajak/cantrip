@@ -1,142 +1,17 @@
-use std::cmp::{Ordering, min};
+use std::cmp::min;
 use std::collections::HashMap;
 use std::fmt::Display;
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::U;
 #[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
-impl<Item> Collection<Item> for [Item] {
-  #[inline]
-  fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
-    all(self.iter(), predicate)
-  }
-
-  #[inline]
-  fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
-    any(self.iter(), predicate)
-  }
-
-  #[inline]
-  fn count_by(&self, predicate: impl FnMut(&Item) -> bool) -> usize {
-    count_by(self.iter(), predicate)
-  }
-
-  #[inline]
-  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    disjoint(self.iter(), elements)
-  }
-
-  #[inline]
-  fn find(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
-    self.iter().find(|&x| predicate(x))
-  }
-
-  #[inline]
-  fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
-    self.iter().find_map(function)
-  }
-
-  #[inline]
-  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
-    self.iter().fold(initial_value, function)
-  }
-
-  #[inline]
-  fn for_each(&self, function: impl FnMut(&Item)) {
-    self.iter().for_each(function);
-  }
-
-  #[inline]
-  fn group_fold_ref<K, B>(
-    &self, to_key: impl FnMut(&Item) -> K, initial_value: B, function: impl FnMut(B, &Item) -> B,
-  ) -> HashMap<K, B>
-  where
-    K: Eq + Hash,
-    B: Clone,
-  {
-    group_fold(self.iter(), to_key, initial_value, function)
-  }
-
-  #[inline]
-  fn group_reduce_ref<K>(
-    &self, to_key: impl FnMut(&Item) -> K, function: impl FnMut(&Item, &Item) -> Item,
-  ) -> HashMap<K, Item>
-  where
-    K: Eq + Hash,
-    Item: Clone,
-  {
-    group_reduce(self.iter(), to_key, function)
-  }
-
-  #[inline]
-  fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
-    self.iter().max_by(|&x, &y| compare(x, y))
-  }
-
-  #[inline]
-  fn max_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where
-    K: Ord,
-  {
-    self.iter().max_by_key(|&x| to_key(x))
-  }
-
-  #[inline]
-  fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
-    self.iter().min_by(|&x, &y| compare(x, y))
-  }
-
-  #[inline]
-  fn min_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
-  where
-    K: Ord,
-  {
-    self.iter().min_by_key(|&x| to_key(x))
-  }
-
-  #[inline]
-  fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)> {
-    minmax_by(self.iter(), compare)
-  }
-
-  #[inline]
-  fn minmax_by_key<K>(&self, to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
-  where
-    K: Ord,
-  {
-    minmax_by_key(self.iter(), to_key)
-  }
-
-  #[inline]
-  fn reduce_ref(&self, function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
-    reduce(self.iter(), function)
-  }
-
-  #[inline]
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    subset(self.iter(), elements)
-  }
-
-  #[inline]
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
-  where
-    Item: Eq + Hash + 'a,
-  {
-    superset(self.iter(), elements)
-  }
-}
+impl<Item> Collection<Item> for [Item] {}
 
 impl<Item> Sequence<Item> for [Item] {
   #[inline]
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> usize
   where
     Item: PartialEq + 'a,
   {
@@ -144,7 +19,7 @@ impl<Item> Sequence<Item> for [Item] {
   }
 
   #[inline]
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl U<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a,
@@ -161,7 +36,7 @@ impl<Item> Sequence<Item> for [Item] {
   }
 
   #[inline]
-  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn equivalent<'a>(&'a self, iterable: &'a impl U<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
   {
@@ -205,7 +80,7 @@ impl<Item> Sequence<Item> for [Item] {
   }
 
   #[inline]
-  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
+  fn position_sequence<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> Option<usize>
   where
     Item: PartialEq + 'a,
   {

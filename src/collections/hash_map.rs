@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::hash::Hash;
 
-use crate::Iterable;
+use crate::U;
 #[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
@@ -64,7 +64,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn delete_multi<'a>(mut self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
+  fn delete_multi<'a>(mut self, keys: &'a impl U<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -76,9 +76,10 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn disjoint<RefIterable>(&self, elements: &RefIterable) -> bool
   where
-    Key: Eq + Hash + 'a,
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
+    Key: Eq + Hash,
   {
     disjoint(self.keys(), elements)
   }
@@ -195,7 +196,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn subset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
   {
@@ -203,7 +204,7 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn superset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
   {
