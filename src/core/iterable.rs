@@ -76,20 +76,6 @@ pub trait Iterable {
   fn iterator<'c>(&'c self) -> Self::Iterator<'c>;
 }
 
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct OptionIterator<'c, T> {
-  pub(crate) iterator: core::option::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for OptionIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
-  }
-}
-
 #[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for Option<Item> {
   type Item<'c>
@@ -109,11 +95,11 @@ impl<Item> Iterable for Option<Item> {
 
 #[doc(hidden)]
 #[derive(Debug, Clone)]
-pub struct ResultIterator<'c, T> {
-  pub(crate) iterator: core::result::Iter<'c, T>,
+pub struct OptionIterator<'c, T> {
+  pub(crate) iterator: core::option::Iter<'c, T>,
 }
 
-impl<'c, T> Iterator for ResultIterator<'c, T> {
+impl<'c, T> Iterator for OptionIterator<'c, T> {
   type Item = &'c T;
 
   fn next(&mut self) -> Option<Self::Item> {
@@ -137,6 +123,20 @@ impl<Item, E> Iterable for Result<Item, E> {
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     ResultIterator { iterator: self.iter() }
+  }
+}
+
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct ResultIterator<'c, T> {
+  pub(crate) iterator: core::result::Iter<'c, T>,
+}
+
+impl<'c, T> Iterator for ResultIterator<'c, T> {
+  type Item = &'c T;
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
   }
 }
 
@@ -196,6 +196,23 @@ impl<Item> Iterable for Vec<Item> {
   }
 }
 
+impl<Item> Iterable for LinkedList<Item> {
+  type Item<'c>
+    = &'c Item
+  where
+    Item: 'c;
+  type Iterator<'c>
+    = LinkedListIterator<'c, Item>
+  where
+    Item: 'c;
+
+  #[allow(clippy::needless_lifetimes)]
+  #[allow(clippy::elidable_lifetime_names)]
+  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
+    LinkedListIterator { iterator: self.iter() }
+  }
+}
+
 #[doc(hidden)]
 #[derive(Debug, Clone)]
 pub struct LinkedListIterator<'c, T> {
@@ -218,20 +235,20 @@ impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
   }
 }
 
-impl<Item> Iterable for LinkedList<Item> {
+impl<Item> Iterable for VecDeque<Item> {
   type Item<'c>
     = &'c Item
   where
     Item: 'c;
   type Iterator<'c>
-    = LinkedListIterator<'c, Item>
+    = VecDequeIterator<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    LinkedListIterator { iterator: self.iter() }
+    VecDequeIterator { iterator: self.iter() }
   }
 }
 
@@ -257,37 +274,6 @@ impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
   }
 }
 
-impl<Item> Iterable for VecDeque<Item> {
-  type Item<'c>
-    = &'c Item
-  where
-    Item: 'c;
-  type Iterator<'c>
-    = VecDequeIterator<'c, Item>
-  where
-    Item: 'c;
-
-  #[allow(clippy::needless_lifetimes)]
-  #[allow(clippy::elidable_lifetime_names)]
-  fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    VecDequeIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct HashSetIterator<'c, T> {
-  pub(crate) iterator: std::collections::hash_set::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for HashSetIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
-  }
-}
-
 #[allow(clippy::implicit_hasher)]
 #[allow(clippy::elidable_lifetime_names)]
 impl<Item> Iterable for HashSet<Item> {
@@ -308,11 +294,11 @@ impl<Item> Iterable for HashSet<Item> {
 
 #[doc(hidden)]
 #[derive(Debug, Clone)]
-pub struct BTreeSetIterator<'c, T> {
-  pub(crate) iterator: std::collections::btree_set::Iter<'c, T>,
+pub struct HashSetIterator<'c, T> {
+  pub(crate) iterator: std::collections::hash_set::Iter<'c, T>,
 }
 
-impl<'c, T> Iterator for BTreeSetIterator<'c, T> {
+impl<'c, T> Iterator for HashSetIterator<'c, T> {
   type Item = &'c T;
 
   fn next(&mut self) -> Option<Self::Item> {
@@ -339,11 +325,11 @@ impl<Item> Iterable for BTreeSet<Item> {
 
 #[doc(hidden)]
 #[derive(Debug, Clone)]
-pub struct BinaryHeapIterator<'c, T> {
-  pub(crate) iterator: std::collections::binary_heap::Iter<'c, T>,
+pub struct BTreeSetIterator<'c, T> {
+  pub(crate) iterator: std::collections::btree_set::Iter<'c, T>,
 }
 
-impl<'c, T> Iterator for BinaryHeapIterator<'c, T> {
+impl<'c, T> Iterator for BTreeSetIterator<'c, T> {
   type Item = &'c T;
 
   fn next(&mut self) -> Option<Self::Item> {
@@ -370,12 +356,12 @@ impl<Item> Iterable for BinaryHeap<Item> {
 
 #[doc(hidden)]
 #[derive(Debug, Clone)]
-pub struct HashMapIterator<'c, Key, Value> {
-  pub(crate) iterator: std::collections::hash_map::Iter<'c, Key, Value>,
+pub struct BinaryHeapIterator<'c, T> {
+  pub(crate) iterator: std::collections::binary_heap::Iter<'c, T>,
 }
 
-impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
-  type Item = (&'c Key, &'c Value);
+impl<'c, T> Iterator for BinaryHeapIterator<'c, T> {
+  type Item = &'c T;
 
   fn next(&mut self) -> Option<Self::Item> {
     self.iterator.next()
@@ -404,11 +390,11 @@ impl<Key, Value> Iterable for HashMap<Key, Value> {
 
 #[doc(hidden)]
 #[derive(Debug, Clone)]
-pub struct BTreeMapIterator<'c, Key, Value> {
-  pub(crate) iterator: std::collections::btree_map::Iter<'c, Key, Value>,
+pub struct HashMapIterator<'c, Key, Value> {
+  pub(crate) iterator: std::collections::hash_map::Iter<'c, Key, Value>,
 }
 
-impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
+impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
   type Item = (&'c Key, &'c Value);
 
   fn next(&mut self) -> Option<Self::Item> {
@@ -432,5 +418,19 @@ impl<Key, Value> Iterable for BTreeMap<Key, Value> {
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
     BTreeMapIterator { iterator: self.iter() }
+  }
+}
+
+#[doc(hidden)]
+#[derive(Debug, Clone)]
+pub struct BTreeMapIterator<'c, Key, Value> {
+  pub(crate) iterator: std::collections::btree_map::Iter<'c, Key, Value>,
+}
+
+impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
+  type Item = (&'c Key, &'c Value);
+
+  fn next(&mut self) -> Option<Self::Item> {
+    self.iterator.next()
   }
 }
