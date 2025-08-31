@@ -38,13 +38,13 @@ use std::collections::{BTreeMap, BTreeSet, BinaryHeap, HashMap, HashSet, LinkedL
 /// ```
 /// use crate::cantrip::*;
 ///
-/// fn collect_as_strings<'a, T>(collection: &'a impl U<Item<'a> = &'a T>) -> Vec<String>
+/// fn collect_as_strings<'a, T>(collection: &'a impl Iterable<Item<'a> = &'a T>) -> Vec<String>
 /// where T: 'a + std::fmt::Debug {
 ///   collection.iterator().map(|item| format!("{item:?}")).collect()
 /// }
 /// ```
 #[allow(clippy::elidable_lifetime_names)]
-pub trait U {
+pub trait Iterable {
   /// The type of the elements being iterated over.
   type Item<'collection>
   where
@@ -57,7 +57,7 @@ pub trait U {
 
   /// Creates an iterator from a value.
   ///
-  /// See the [`U`] documentation for more.
+  /// See the [`Iterable`] documentation for more.
   ///
   /// # Examples
   ///
@@ -77,7 +77,7 @@ pub trait U {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Item> U for Option<Item> {
+impl<Item> Iterable for Option<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -108,7 +108,7 @@ impl<'c, T> Iterator for OptionIterator<'c, T> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Item, E> U for Result<Item, E> {
+impl<Item, E> Iterable for Result<Item, E> {
   type Item<'c>
     = &'c Item
   where
@@ -141,7 +141,7 @@ impl<'c, T> Iterator for ResultIterator<'c, T> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Item> U for [Item] {
+impl<Item> Iterable for [Item] {
   type Item<'c>
     = &'c Item
   where
@@ -179,7 +179,7 @@ impl<'c, T> DoubleEndedIterator for SliceIterator<'c, T> {
   }
 }
 
-impl<Item> U for Vec<Item> {
+impl<Item> Iterable for Vec<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -196,7 +196,7 @@ impl<Item> U for Vec<Item> {
   }
 }
 
-impl<Item> U for LinkedList<Item> {
+impl<Item> Iterable for LinkedList<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -235,7 +235,7 @@ impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
   }
 }
 
-impl<Item> U for VecDeque<Item> {
+impl<Item> Iterable for VecDeque<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -276,7 +276,7 @@ impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
 
 #[allow(clippy::implicit_hasher)]
 #[allow(clippy::elidable_lifetime_names)]
-impl<Item> U for HashSet<Item> {
+impl<Item> Iterable for HashSet<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -307,7 +307,7 @@ impl<'c, T> Iterator for HashSetIterator<'c, T> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Item> U for BTreeSet<Item> {
+impl<Item> Iterable for BTreeSet<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -338,7 +338,7 @@ impl<'c, T> Iterator for BTreeSetIterator<'c, T> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Item> U for BinaryHeap<Item> {
+impl<Item> Iterable for BinaryHeap<Item> {
   type Item<'c>
     = &'c Item
   where
@@ -370,7 +370,7 @@ impl<'c, T> Iterator for BinaryHeapIterator<'c, T> {
 
 #[allow(clippy::implicit_hasher)]
 #[allow(clippy::elidable_lifetime_names)]
-impl<Key, Value> U for HashMap<Key, Value> {
+impl<Key, Value> Iterable for HashMap<Key, Value> {
   type Item<'c>
     = (&'c Key, &'c Value)
   where
@@ -403,7 +403,7 @@ impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Key, Value> U for std::collections::hash_map::Keys<'_, Key, Value> {
+impl<Key, Value> Iterable for std::collections::hash_map::Keys<'_, Key, Value> {
   type Item<'c>
     = &'c Key
   where
@@ -434,7 +434,7 @@ impl<'c, Key, Value> Iterator for HashMapKeysIterator<'c, Key, Value> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Key, Value> U for std::collections::hash_map::Values<'_, Key, Value> {
+impl<Key, Value> Iterable for std::collections::hash_map::Values<'_, Key, Value> {
   type Item<'c>
     = &'c Value
   where
@@ -465,7 +465,7 @@ impl<'c, Key, Value> Iterator for HashMapValuesIterator<'c, Key, Value> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Key, Value> U for BTreeMap<Key, Value> {
+impl<Key, Value> Iterable for BTreeMap<Key, Value> {
   type Item<'c>
     = (&'c Key, &'c Value)
   where
@@ -498,7 +498,7 @@ impl<'c, Key, Value> Iterator for BTreeMapIterator<'c, Key, Value> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Key, Value> U for std::collections::btree_map::Keys<'_, Key, Value> {
+impl<Key, Value> Iterable for std::collections::btree_map::Keys<'_, Key, Value> {
   type Item<'c>
     = &'c Key
   where
@@ -529,7 +529,7 @@ impl<'c, Key, Value> Iterator for BTreeMapKeysIterator<'c, Key, Value> {
 }
 
 #[allow(clippy::elidable_lifetime_names)]
-impl<Key, Value> U for std::collections::btree_map::Values<'_, Key, Value> {
+impl<Key, Value> Iterable for std::collections::btree_map::Values<'_, Key, Value> {
   type Item<'c>
     = &'c Value
   where

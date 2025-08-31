@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 use std::fmt::Debug;
 
-use cantrip::{Collection, U};
+use cantrip::{Collection, Iterable};
 
 pub(crate) fn test_collection<'a, C>(sequence: bool, a: &C, b: &C, e: &C)
 where
-  C: Collection<i64> + U<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
+  C: Collection<i64> + Iterable<Item<'a> = &'a i64> + Debug + ?Sized + 'a,
   for<'i> &'i C: IntoIterator<Item = &'i i64>,
 {
   // all

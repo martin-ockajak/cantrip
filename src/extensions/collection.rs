@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
-use crate::U;
+use crate::Iterable;
 
 /// Non-consuming collection operations.
 ///
@@ -692,7 +692,7 @@ where
   /// assert!(!a.subset(&vec![1, 2, 3]));
   /// assert!(!a.subset(&vec![3, 4]));
   /// ```
-  fn subset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> bool
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
   {
@@ -724,7 +724,7 @@ where
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
-  fn superset<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> bool
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
   {
@@ -784,7 +784,7 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
 }
 
 pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool {
   let mut counts = frequencies(iterator);
   if counts.is_empty() {
@@ -805,7 +805,7 @@ pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
 }
 
 pub(crate) fn superset<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl U<Item<'a> = &'a Item>,
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
 ) -> bool {
   let mut counts = frequencies(elements.iterator());
   if counts.is_empty() {

@@ -1,7 +1,7 @@
 use std::collections::{HashSet, LinkedList};
 use std::hash::Hash;
 
-use crate::U;
+use crate::Iterable;
 #[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
@@ -51,7 +51,7 @@ impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
   }
 
   #[inline]
-  fn delete_multi<'a>(mut self, elements: &'a impl U<Item<'a> = &'a Item>) -> Self
+  fn delete_multi<'a>(mut self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
@@ -135,7 +135,7 @@ impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
   }
 
   fn substitute_multi<'a>(
-    mut self, elements: &'a impl U<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
+    mut self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where
     Item: Eq + Hash + 'a,

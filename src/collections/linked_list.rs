@@ -4,7 +4,7 @@ use std::fmt::Display;
 use std::hash::Hash;
 use std::iter;
 
-use crate::U;
+use crate::Iterable;
 use crate::core::unfold::unfold;
 #[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
@@ -105,7 +105,7 @@ impl<Item> CollectionTo<Item> for LinkedList<Item> {
 
 impl<Item> Sequence<Item> for LinkedList<Item> {
   #[inline]
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> usize
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
   where
     Item: PartialEq + 'a,
   {
@@ -113,7 +113,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl U<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a,
@@ -130,7 +130,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn equivalent<'a>(&'a self, iterable: &'a impl U<Item<'a> = &'a Item>) -> bool
+  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
   {
@@ -174,7 +174,7 @@ impl<Item> Sequence<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn position_sequence<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> Option<usize>
+  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
   where
     Item: PartialEq + 'a,
   {

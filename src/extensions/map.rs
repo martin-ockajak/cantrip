@@ -1,4 +1,4 @@
-use crate::U;
+use crate::Iterable;
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
@@ -304,7 +304,7 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   #[must_use]
-  fn delete_multi<'a>(self, keys: &'a impl U<Item<'a> = &'a Key>) -> Self
+  fn delete_multi<'a>(self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> Self
   where
     Key: Eq + Hash + 'a,
     Self: IntoIterator<Item = (Key, Value)> + FromIterator<(Key, Value)>,
@@ -929,7 +929,7 @@ pub trait Map<Key, Value> {
   /// ```
   #[inline]
   #[must_use]
-  fn intersect<'a>(self, entries: &'a impl U<Item<'a> = &'a (Key, Value)>) -> Self
+  fn intersect<'a>(self, entries: &'a impl Iterable<Item<'a> = &'a (Key, Value)>) -> Self
   where
     Key: Eq + Hash + 'a,
     Value: Eq + Hash + 'a,
@@ -1619,7 +1619,7 @@ pub trait Map<Key, Value> {
   /// assert!(!a.subset(&vec![1, 2]));
   /// assert!(!a.subset(&vec![]));
   /// ```
-  fn subset<'a>(&'a self, keys: &'a impl U<Item<'a> = &'a Key>) -> bool
+  fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a;
 
@@ -1671,7 +1671,7 @@ pub trait Map<Key, Value> {
   #[inline]
   #[must_use]
   fn substitute_multi<'a>(
-    self, keys: &'a impl U<Item<'a> = &'a Key>, replacements: impl IntoIterator<Item = (Key, Value)>,
+    self, keys: &'a impl Iterable<Item<'a> = &'a Key>, replacements: impl IntoIterator<Item = (Key, Value)>,
   ) -> Self
   where
     Key: Eq + Hash + 'a,
@@ -1712,7 +1712,7 @@ pub trait Map<Key, Value> {
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
-  fn superset<'a>(&'a self, keys: &'a impl U<Item<'a> = &'a Key>) -> bool
+  fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a;
 

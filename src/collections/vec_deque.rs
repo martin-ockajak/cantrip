@@ -2,7 +2,7 @@ use std::collections::{HashMap, VecDeque};
 use std::fmt::Display;
 use std::hash::Hash;
 
-use crate::U;
+use crate::Iterable;
 #[allow(clippy::wildcard_imports)]
 use crate::extensions::*;
 
@@ -52,7 +52,7 @@ impl<Item> CollectionTo<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn delete_multi<'a>(mut self, elements: &'a impl U<Item<'a> = &'a Item>) -> Self
+  fn delete_multi<'a>(mut self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
     Item: Eq + Hash + 'a,
     Self: FromIterator<Item>,
@@ -140,7 +140,7 @@ impl<Item> CollectionTo<Item> for VecDeque<Item> {
 
 impl<Item> Sequence<Item> for VecDeque<Item> {
   #[inline]
-  fn common_prefix_length<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> usize
+  fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
   where
     Item: PartialEq + 'a,
   {
@@ -148,7 +148,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl U<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
+  fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
     Item: PartialEq + 'a,
@@ -165,7 +165,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn equivalent<'a>(&'a self, iterable: &'a impl U<Item<'a> = &'a Item>) -> bool
+  fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
   {
@@ -209,7 +209,7 @@ impl<Item> Sequence<Item> for VecDeque<Item> {
   }
 
   #[inline]
-  fn position_sequence<'a>(&'a self, elements: &'a impl U<Item<'a> = &'a Item>) -> Option<usize>
+  fn position_sequence<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
   where
     Item: PartialEq + 'a,
   {
