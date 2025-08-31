@@ -8,29 +8,30 @@ use crate::extensions::util::Equal;
 pub(crate) fn test_sequence<'a, C>(a: &C, b: &C, e: &C)
 where
   C: Sequence<i64> + Iterable<Item<'a> = &'a i64> + Equal + Debug + ?Sized + 'a,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
 {
   // common_prefix_length
-  assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
-  assert_eq!(a.common_prefix_length(&vec![1, 2]), 2);
-  assert_eq!(a.common_prefix_length(&vec![]), 0);
-  assert_eq!(e.common_prefix_length(&vec![]), 0);
+  assert_eq!(a.common_prefix_length::<Vec<i64>>(&vec![1, 2, 3, 4]), 3);
+  assert_eq!(a.common_prefix_length::<Vec<i64>>(&vec![1, 2]), 2);
+  assert_eq!(a.common_prefix_length::<Vec<i64>>(&vec![]), 0);
+  assert_eq!(e.common_prefix_length::<Vec<i64>>(&vec![]), 0);
 
   // common_suffix_length
   assert_eq!(a.common_suffix_length(&vec![0, 1, 2, 3]), 3);
   assert_eq!(a.common_suffix_length(&vec![2, 3]), 2);
   assert_eq!(a.common_suffix_length(&vec![]), 0);
-  assert_eq!(e.common_prefix_length(&vec![]), 0);
+  assert_eq!(e.common_suffix_length(&vec![]), 0);
 
   // count_unique
   assert_eq!(b.count_unique(), 3);
   assert_eq!(e.count_unique(), 0);
 
   // equivalent
-  assert!(b.equivalent(&vec![3, 2, 1, 2]));
-  assert!(!b.equivalent(&vec![1, 3, 3]));
-  assert!(!b.equivalent(&vec![1, 1, 2, 2, 3]));
-  assert!(!b.equivalent(&vec![]));
-  assert!(e.equivalent(&vec![]));
+  assert!(b.equivalent::<Vec<i64>>(&vec![3, 2, 1, 2]));
+  assert!(!b.equivalent::<Vec<i64>>(&vec![1, 3, 3]));
+  assert!(!b.equivalent::<Vec<i64>>(&vec![1, 1, 2, 2, 3]));
+  assert!(!b.equivalent::<Vec<i64>>(&vec![]));
+  assert!(e.equivalent::<Vec<i64>>(&vec![]));
 
   // find_position
   assert_eq!(a.find_position(|&x| x == 2), Some((1, &2)));
@@ -74,10 +75,10 @@ where
   assert_eq!(e.position_of_multi(&5), vec![]);
 
   // position_of_sequence
-  assert_eq!(b.position_sequence(&vec![2, 2]), Some(1));
-  assert_eq!(b.position_sequence(&vec![]), Some(0));
-  assert_eq!(b.position_sequence(&vec![1, 3]), None);
-  assert_eq!(e.position_sequence(&vec![1, 3]), None);
+  assert_eq!(b.position_sequence::<Vec<i64>>(&vec![2, 2]), Some(1));
+  assert_eq!(b.position_sequence::<Vec<i64>>(&vec![]), Some(0));
+  assert_eq!(b.position_sequence::<Vec<i64>>(&vec![1, 3]), None);
+  assert_eq!(e.position_sequence::<Vec<i64>>(&vec![1, 3]), None);
 
   // rfind
   assert_eq!(a.rfind(|&x| x % 2 == 1), Some(&3));
