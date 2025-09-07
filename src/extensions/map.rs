@@ -1619,10 +1619,9 @@ pub trait Map<Key, Value> {
   /// assert!(!a.subset(&vec![1, 2]));
   /// assert!(!a.subset(&vec![]));
   /// ```
-  fn subset<RefIterable>(&self, keys: &RefIterable) -> bool
+  fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
-    Key: Eq + Hash;
+    Key: Eq + Hash + 'a;
 
   /// Creates a new map from the original map by replacing the specified key
   /// and its value with a different entry.
@@ -1713,10 +1712,9 @@ pub trait Map<Key, Value> {
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
-  fn superset<RefIterable>(&self, keys: &RefIterable) -> bool
+  fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
-    Key: Eq + Hash;
+    Key: Eq + Hash + 'a;
 
   /// Sums keys of this map.
   ///

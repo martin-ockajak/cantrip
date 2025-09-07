@@ -62,20 +62,20 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
+  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.iter().filter_map(function).collect()
+  }
+
+  #[inline]
   fn filter_ref(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
     Key: Clone,
     Value: Clone,
   {
     self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
-  }
-
-  #[inline]
-  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iter().filter_map(function).collect()
   }
 
   #[inline]
@@ -173,21 +173,19 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn subset<RefIterable>(&self, keys: &RefIterable) -> bool
+  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
-    Key: Eq + Hash,
+    Key: Eq + Hash + 'a,
   {
-    subset(self.keys(), keys)
+    subset(self.keys(), elements)
   }
 
   #[inline]
-  fn superset<RefIterable>(&self, keys: &RefIterable) -> bool
+  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
-    Key: Eq + Hash,
+    Key: Eq + Hash + 'a,
   {
-    superset(self.keys(), keys)
+    superset(self.keys(), elements)
   }
 
   #[inline]

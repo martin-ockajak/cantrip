@@ -13,22 +13,22 @@ use crate::extensions::slice::test_slice;
 use crate::extensions::util::{TestCollectible, TestCollection, TestMap, TestSequence};
 
 #[allow(clippy::many_single_char_names)]
-pub(crate) fn test_list_traits<'a, C, D, G>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
+pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
-  C: List<i64> + TestSequence<'a, i64> + TestCollectible<'a, i64> + UnwindSafe,
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
+  C: List<i64> + TestSequence<'a, i64, I> + TestCollectible<'a, i64> + UnwindSafe,
   for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
   <C as SequenceTo<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
-  <C as IntoIterator>::IntoIter: DoubleEndedIterator + ExactSizeIterator,
-  for<'c> &'c C: UnwindSafe,
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   G: SequenceTo<(i64, i64)> + CollectionTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
+  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   for<'i> &'i G: IntoIterator<Item = &'i (i64, i64)>,
+  for<'c> &'c C: UnwindSafe,
 {
   test_collection(true, a, b, e);
   test_collection_to(true, a, b, d, e);
@@ -50,12 +50,12 @@ where
 pub(crate) fn test_set_traits<'a, C, D, G>(a: &C, b: &C, d: &D, g: &G, e: &C)
 where
   C: Collection<i64> + TestCollectible<'a, i64>,
-  <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   for<'i> &'i C: IntoIterator<Item = &'i i64>,
+  <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   G: TestCollectible<'a, (i64, i64)>,
+  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   for<'i> &'i G: IntoIterator<Item = &'i (i64, i64)>,
 {
   test_collection(false, a, b, e);
@@ -64,22 +64,22 @@ where
 }
 
 #[allow(clippy::many_single_char_names)]
-pub(crate) fn test_sequence_traits<'a, C, D, G>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
+pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
-  C: TestSequence<'a, i64> + TestCollectible<'a, i64> + UnwindSafe,
+  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
+  C: TestSequence<'a, i64, I> + TestCollectible<'a, i64> + UnwindSafe,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,
   <C as SequenceTo<i64>>::This<(usize, i64)>: TestCollection<(usize, i64)>,
-  for<'i> &'i C: IntoIterator<Item = &'i i64>,
-  <C as IntoIterator>::IntoIter: DoubleEndedIterator + ExactSizeIterator,
-  for<'c> &'c C: UnwindSafe,
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   G: SequenceTo<(i64, i64)> + CollectionTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
+  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
   for<'i> &'i G: IntoIterator<Item = &'i (i64, i64)>,
+  for<'c> &'c C: UnwindSafe,
 {
   test_collection(true, a, b, e);
   test_collection_to(true, a, b, d, e);
