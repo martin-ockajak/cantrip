@@ -1025,10 +1025,10 @@ where
   /// ```
   #[inline]
   #[must_use]
-  fn pad_left<I>(self, size: usize, element: Item) -> Self
+  fn pad_left(self, size: usize, element: Item) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
-    I: ExactSizeIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    <Self as IntoIterator>::IntoIter: ExactSizeIterator<Item = Item>,
     Item: Clone,
   {
     self.pad_left_with(size, |_| element.clone())
@@ -1048,10 +1048,10 @@ where
   /// ```
   #[inline]
   #[must_use]
-  fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
+  fn pad_left_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
-    I: ExactSizeIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    <Self as IntoIterator>::IntoIter: ExactSizeIterator<Item = Item>,
     Item: Clone,
   {
     let mut iterator = self.into_iter();
@@ -1128,10 +1128,10 @@ where
   /// ```
   #[inline]
   #[must_use]
-  fn rev<I>(self) -> Self
+  fn rev(self) -> Self
   where
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
-    I: DoubleEndedIterator<Item = Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    <Self as IntoIterator>::IntoIter: DoubleEndedIterator<Item = Item>,
   {
     self.into_iter().rev().collect()
   }
@@ -1377,10 +1377,10 @@ where
   /// ```
   #[inline]
   #[must_use]
-  fn slice<I>(self, start_index: usize, end_index: usize) -> Self
+  fn slice(self, start_index: usize, end_index: usize) -> Self
   where
-    I: ExactSizeIterator<Item = Item>,
-    Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    <Self as IntoIterator>::IntoIter: ExactSizeIterator<Item = Item>,
   {
     let iterator = self.into_iter();
     let size = iterator.len();
