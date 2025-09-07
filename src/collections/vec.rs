@@ -31,14 +31,6 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn combinations(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-  {
-    combinations(self.iter(), k)
-  }
-
-  #[inline]
   fn delete(mut self, element: &Item) -> Self
   where
     Item: PartialEq,
@@ -62,66 +54,6 @@ impl<Item> CollectionTo<Item> for Vec<Item> {
       }
     }
     self
-  }
-
-  #[inline]
-  fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().filter_map(function).collect()
-  }
-
-  #[inline]
-  fn filter_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> Self
-  where
-    Item: Clone,
-  {
-    self.iter().filter(|&x| predicate(x)).cloned().collect()
-  }
-
-  #[inline]
-  fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
-  where
-    R: IntoIterator<Item = B>,
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().flat_map(function).collect()
-  }
-
-  #[inline]
-  fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().map(function).collect()
-  }
-
-  #[inline]
-  fn partitions(&self) -> Vec<Vec<Self>>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    partitions(self.iter())
-  }
-
-  #[inline]
-  fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
-  where
-    Self::This<A>: Default + Extend<A>,
-    Self::This<B>: Default + Extend<B>,
-  {
-    partition_map(self.iter(), function)
-  }
-
-  #[inline]
-  fn powerset(&self) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    powerset(self.iter())
   }
 
   #[inline]

@@ -26,6 +26,8 @@ where
   D::This<i64>: TestCollection<i64>,
   G: SequenceTo<(i64, i64)> + CollectionTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
+  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
+  for<'i> &'i G: IntoIterator<Item = &'i (i64, i64)>,
   for<'c> &'c C: UnwindSafe,
 {
   test_collection(true, a, b, e);
@@ -53,6 +55,8 @@ where
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
   G: TestCollectible<'a, (i64, i64)>,
+  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
+  for<'i> &'i G: IntoIterator<Item = &'i (i64, i64)>,
 {
   test_collection(false, a, b, e);
   test_collection_to(false, a, b, d, e);
@@ -72,7 +76,9 @@ where
   D: TestCollectible<'a, Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
   G: SequenceTo<(i64, i64)> + CollectionTo<(i64, i64)> + TestCollectible<'a, (i64, i64)>,
+  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
   <G as SequenceTo<(i64, i64)>>::This<i64>: TestCollection<i64>,
+  for<'i> &'i G: IntoIterator<Item = &'i (i64, i64)>,
   for<'c> &'c C: UnwindSafe,
 {
   test_collection(true, a, b, e);
