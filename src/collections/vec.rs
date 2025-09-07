@@ -1,6 +1,4 @@
 use std::cmp::Ordering;
-use std::collections::HashMap;
-use std::fmt::Display;
 use std::hash::Hash;
 
 use crate::Iterable;
@@ -88,55 +86,11 @@ impl<Item> Sequence<Item> for Vec<Item> {
   }
 
   #[inline]
-  fn count_unique(&self) -> usize
-  where
-    Item: Eq + Hash,
-  {
-    count_unique(self.iter())
-  }
-
-  #[inline]
   fn equivalent<'a>(&'a self, iterable: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
   {
     equivalent(self.iter(), iterable)
-  }
-
-  #[inline]
-  fn find_position(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)> {
-    self.iter().enumerate().find(|(_, x)| predicate(x))
-  }
-
-  #[inline]
-  fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
-  where
-    Item: Eq + Hash + 'a,
-  {
-    frequencies(self.iter())
-  }
-
-  #[inline]
-  fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize> {
-    frequencies_by(self.iter(), to_key)
-  }
-
-  #[inline]
-  fn joined(&self, separator: &str) -> String
-  where
-    Item: Display,
-  {
-    joined(self.iter(), separator)
-  }
-
-  #[inline]
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
-    self.iter().position(predicate)
-  }
-
-  #[inline]
-  fn position_multi(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
-    positions(self.iter(), predicate)
   }
 
   #[inline]

@@ -1,15 +1,18 @@
+use crate::Iterable;
+use crate::extensions::frequencies;
 use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Write};
 use std::hash::Hash;
-
-use crate::Iterable;
 
 /// Ordered collection operations.
 ///
 /// Methods have the following properties:
 ///
 /// - Requires the collection to represent an ordered collection
-pub trait Sequence<Item> {
+pub trait Sequence<Item>
+where
+  for<'i> &'i Self: IntoIterator<Item = &'i Item>,
+{
   /// Computes the length of the longest common prefix shared by this sequence and another collection.
   ///
   /// # Example
@@ -65,7 +68,11 @@ pub trait Sequence<Item> {
   /// ```
   fn count_unique(&self) -> usize
   where
-    Item: Eq + Hash;
+    Item: Eq + Hash,
+  {
+    let items = self.into_iter().collect::<HashSet<_>>();
+    items.len()
+  }
 
   /// Tests if this sequence contains all elements of another collection exactly
   /// as many times as they appear in the other collection and vice versa.
@@ -100,7 +107,9 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.find_position(|&x| x == 5), None);
   /// ```
-  fn find_position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)>;
+  fn find_position(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)> {
+    self.into_iter().enumerate().find(|(_, x)| predicate(x))
+  }
 
   /// Compute the number of occurrences for each element in this sequence.
   ///
@@ -117,7 +126,10 @@ pub trait Sequence<Item> {
   /// ```
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
-    Item: Eq + Hash + 'a;
+    Item: Eq + Hash + 'a,
+  {
+    frequencies(self.into_iter())
+  }
 
   /// Compute the number of occurrences for each group of elements in this sequence according to
   /// the specified discriminator function.
@@ -135,7 +147,14 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([(0, 2), (1, 2)]));
   /// ```
-  fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize>;
+  fn frequencies_by<K: Eq + Hash>(&self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize> {
+    let iterator = self.into_iter();
+    let mut result = HashMap::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      *result.entry(to_key(item)).or_default() += 1;
+    }
+    result
+  }
 
   /// Combine all elements of this sequence into one `String`, separated by `sep`.
   ///
@@ -154,7 +173,21 @@ pub trait Sequence<Item> {
   /// ```
   fn joined(&self, separator: &str) -> String
   where
-    Item: Display;
+    Item: Display,
+  {
+    let mut iterator = self.into_iter();
+    if let Some(item) = iterator.next() {
+      let mut result = String::with_capacity((separator.len() + 1) * iterator.size_hint().0);
+      let _unused = write!(&mut result, "{item}");
+      for item in iterator {
+        result.push_str(separator);
+        let _unused = write!(&mut result, "{item}");
+      }
+      result
+    } else {
+      String::new()
+    }
+  }
 
   /// Searches for an element in this sequence, returning its index.
   ///
@@ -190,7 +223,9 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.position(|&x| x == 5), None);
   /// ```
-  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
+  fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
+    self.into_iter().position(predicate)
+  }
 
   /// Searches for an element in this sequence, returning all its indices.
   ///
@@ -220,7 +255,9 @@ pub trait Sequence<Item> {
   ///
   /// assert_eq!(a.position_multi(|&x| x > 3), vec![]);
   /// ```
-  fn position_multi(&self, predicate: impl FnMut(&Item) -> bool) -> Vec<usize>;
+  fn position_multi(&self, mut predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
+    self.into_iter().enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
+  }
 
   /// Searches for an element in this sequence, returning its index.
   ///
@@ -524,37 +561,6 @@ pub(crate) fn equivalent<'a, Item: Eq + Hash + 'a>(
     return false;
   }
   remaining == 0
-}
-
-pub(crate) fn frequencies_by<'a, Item: 'a, K: Eq + Hash>(
-  iterator: impl Iterator<Item = &'a Item>, mut to_key: impl FnMut(&Item) -> K,
-) -> HashMap<K, usize> {
-  let mut result = HashMap::with_capacity(iterator.size_hint().0);
-  for item in iterator {
-    *result.entry(to_key(item)).or_default() += 1;
-  }
-  result
-}
-
-pub(crate) fn joined<'a, Item: Display + 'a>(mut iterator: impl Iterator<Item = &'a Item>, separator: &str) -> String {
-  if let Some(item) = iterator.next() {
-    let mut result = String::with_capacity((separator.len() + 1) * iterator.size_hint().0);
-    let _unused = write!(&mut result, "{item}");
-    for item in iterator {
-      result.push_str(separator);
-      let _unused = write!(&mut result, "{item}");
-    }
-    result
-  } else {
-    String::new()
-  }
-}
-
-#[inline]
-pub(crate) fn positions<'a, Item: 'a>(
-  iterator: impl Iterator<Item = &'a Item>, mut predicate: impl FnMut(&Item) -> bool,
-) -> Vec<usize> {
-  iterator.enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
 }
 
 pub(crate) fn position_sequence<'a, Item: PartialEq + 'a>(

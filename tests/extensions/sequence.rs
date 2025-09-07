@@ -8,6 +8,7 @@ use crate::extensions::util::Equal;
 pub(crate) fn test_sequence<'a, C>(a: &C, b: &C, e: &C)
 where
   C: Sequence<i64> + Iterable<Item<'a> = &'a i64> + Equal + Debug + ?Sized + 'a,
+  for<'i> &'i C: IntoIterator<Item = &'i i64>,
 {
   // common_prefix_length
   assert_eq!(a.common_prefix_length(&vec![1, 2, 3, 4]), 3);
