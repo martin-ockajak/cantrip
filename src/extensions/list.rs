@@ -21,6 +21,7 @@ pub trait List<Item> {
   ///
   /// assert_eq!(a.first(), Some(&1));
   /// ```
+  #[must_use]
   fn first(&self) -> Option<&Item>;
 
   /// Returns the last element of this sequence, or `None` if it is empty.
@@ -36,6 +37,7 @@ pub trait List<Item> {
   ///
   /// assert_eq!(a.last(), Some(&3));
   /// ```
+  #[must_use]
   fn last(&self) -> Option<&Item>;
 
   /// Creates a new collection by repeating this collection the specified number of times.

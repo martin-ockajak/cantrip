@@ -172,6 +172,7 @@ where
   /// [`String`]: ../../std/string/struct.String.html
   /// [`char`]: type@char
   #[inline]
+  #[must_use]
   fn collect<B>(self) -> B
   where
     B: FromIterator<Item>,
@@ -207,6 +208,7 @@ where
   /// assert_eq!(a.combinations(4), Vec::<Vec<i32>>::new());
   /// assert_eq!(e.combinations(1), Vec::<Vec<i32>>::new());
   /// ```
+  #[must_use]
   fn combinations(&self, k: usize) -> Vec<Self>
   where
     Self: FromIterator<Item> + Sized,
@@ -311,6 +313,7 @@ where
   /// assert_eq!(Vec::fill_with(|| 1, 0), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn fill_with(mut element: impl FnMut() -> Item, size: usize) -> Self
   where
     Self: FromIterator<Item>,
@@ -431,6 +434,7 @@ where
   /// assert_eq!(a.filter(|&x| x % 2 == 0).map(|x| x + 1), vec![3]);
   /// ```
   #[inline]
+  #[must_use]
   fn filter_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -476,6 +480,7 @@ where
   /// assert_eq!(a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1), vec![3]);
   /// ```
   #[inline]
+  #[must_use]
   fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -582,6 +587,7 @@ where
   /// assert_eq!(a.find_map(|x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   /// ```
   #[inline]
+  #[must_use]
   fn find_map<B>(self, function: impl FnMut(Item) -> Option<B>) -> Option<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -672,6 +678,7 @@ where
   ///
   /// [`flat_map()`]: CollectionTo::flat_map_ref
   #[inline]
+  #[must_use]
   fn flat<B>(self) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -717,6 +724,7 @@ where
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn flat_map<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -762,6 +770,7 @@ where
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -867,6 +876,7 @@ where
   /// assert_eq!(result, result2);
   /// ```
   #[inline]
+  #[must_use]
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -888,6 +898,7 @@ where
   ///
   /// assert_eq!(a.group_by(|x| x % 2), HashMap::from([(0, vec![2]), (1, vec![1, 3])]));
   /// ```
+  #[must_use]
   fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
@@ -921,6 +932,7 @@ where
   ///
   /// assert_eq!(a.group_fold(|x| x % 2, 0, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
+  #[must_use]
   fn group_fold<K, B>(
     self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
   ) -> HashMap<K, B>
@@ -963,6 +975,7 @@ where
   ///
   /// assert_eq!(a.group_reduce(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
+  #[must_use]
   fn group_reduce<K>(
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>
@@ -1105,6 +1118,7 @@ where
   /// assert_eq!(a.map(|x| x + 1), vec![2, 3, 4]);
   /// ```
   #[inline]
+  #[must_use]
   fn map<B>(self, function: impl FnMut(Item) -> B) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1148,6 +1162,7 @@ where
   /// assert_eq!(a.map_ref(|&x| x + 1), vec![2, 3, 4]);
   /// ```
   #[inline]
+  #[must_use]
   fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -1175,6 +1190,7 @@ where
   /// assert_eq!(odd, vec![1, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn partition(self, predicate: impl FnMut(&Item) -> bool) -> (Self, Self)
   where
     Self: Default + Extend<Item> + IntoIterator<Item = Item>,
@@ -1211,6 +1227,7 @@ where
   /// assert_eq!(e.partitions(), Vec::<Vec<Vec<i32>>>::new());
   /// ```
   #[allow(clippy::cast_possible_wrap)]
+  #[must_use]
   fn partitions(&self) -> Vec<Vec<Self>>
   where
     Self: FromIterator<Item> + Sized,
@@ -1266,6 +1283,7 @@ where
   /// assert_eq!(even, vec![5]);
   /// assert_eq!(odd, vec![1, 3]);
   /// ```
+  #[must_use]
   fn partition_map<A, B>(self, mut function: impl FnMut(Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1306,6 +1324,7 @@ where
   /// assert_eq!(odd, vec![1, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,
@@ -1344,6 +1363,7 @@ where
   /// ]);
   /// assert_eq!(e.powerset(), vec![vec![]]);
   /// ```
+  #[must_use]
   fn powerset(&self) -> Vec<Self>
   where
     Self: FromIterator<Item> + Sized,
@@ -1386,6 +1406,7 @@ where
   /// assert_eq!(e.product(), 1);
   /// ```
   #[inline]
+  #[must_use]
   fn product(self) -> Item
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1428,6 +1449,7 @@ where
   /// assert_eq!(a.reduce(|acc, e| acc + e).unwrap(), folded);
   /// ```
   #[inline]
+  #[must_use]
   fn reduce(self, function: impl FnMut(Item, Item) -> Item) -> Option<Item>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1576,6 +1598,7 @@ where
   /// assert_eq!(e.sum(), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn sum(self) -> Item
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1593,6 +1616,7 @@ where
   ///
   /// assert_eq!(Vec::unit(1), vec![1]);
   #[inline]
+  #[must_use]
   fn unit(element: Item) -> Self
   where
     Self: FromIterator<Item>,

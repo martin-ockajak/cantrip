@@ -41,6 +41,7 @@ where
   /// assert!(!a.all(|&x| x > 2));
   /// ```
   #[inline]
+  #[must_use]
   fn all(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     self.into_iter().all(predicate)
   }
@@ -72,6 +73,7 @@ where
   /// assert!(!e.any(|&x| x > 0));
   /// ```
   #[inline]
+  #[must_use]
   fn any(&self, predicate: impl FnMut(&Item) -> bool) -> bool {
     self.into_iter().any(predicate)
   }
@@ -93,6 +95,7 @@ where
   /// assert_eq!(a.count_by(|&x| x == 5), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn count_by(&self, mut predicate: impl FnMut(&Item) -> bool) -> usize {
     self.into_iter().filter(|&x| predicate(x)).count()
   }
@@ -116,6 +119,7 @@ where
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
   #[inline]
+  #[must_use]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
@@ -149,6 +153,7 @@ where
   /// assert_eq!(a.find(|&x| x == 5), None);
   /// ```
   #[inline]
+  #[must_use]
   fn find(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<&Item> {
     self.into_iter().find(|&x| predicate(x))
   }
@@ -176,6 +181,7 @@ where
   /// assert_eq!(a.find_map_ref(|&x| if x % 2 == 0 { Some(x) } else { None }), Some(2));
   /// ```
   #[inline]
+  #[must_use]
   fn find_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Option<B> {
     self.into_iter().find_map(function)
   }
@@ -276,6 +282,7 @@ where
   /// assert_eq!(result, result2);
   /// ```
   #[inline]
+  #[must_use]
   fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B {
     self.into_iter().fold(initial_value, function)
   }
@@ -340,6 +347,7 @@ where
   ///
   /// assert_eq!(a.group_fold_ref(|x| x % 2, 0, |acc, &x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
+  #[must_use]
   fn group_fold_ref<K, B>(
     &self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, &Item) -> B,
   ) -> HashMap<K, B>
@@ -380,6 +388,7 @@ where
   ///
   /// assert_eq!(a.group_reduce_ref(|x| x % 2, |acc, x| acc + x), HashMap::from([(0, 2), (1, 4),]));
   /// ```
+  #[must_use]
   fn group_reduce_ref<K>(
     &self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(&Item, &Item) -> Item,
   ) -> HashMap<K, Item>
@@ -419,6 +428,7 @@ where
   /// assert_eq!(e.max_by(|x, y| x.cmp(y)), None);
   /// ```
   #[inline]
+  #[must_use]
   fn max_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.into_iter().max_by(|&x, &y| compare(x, y))
   }
@@ -442,6 +452,7 @@ where
   /// assert_eq!(e.max_by_key(|x| -x), None);
   /// ```
   #[inline]
+  #[must_use]
   fn max_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
   where
     K: Ord,
@@ -476,6 +487,7 @@ where
   /// assert_eq!(e.max_of(), None);
   /// ```
   #[inline]
+  #[must_use]
   fn max_of(&self) -> Option<&Item>
   where
     Item: Ord,
@@ -502,6 +514,7 @@ where
   /// assert_eq!(e.min_by(|x, y| x.cmp(y)), None);
   /// ```
   #[inline]
+  #[must_use]
   fn min_by(&self, mut compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<&Item> {
     self.into_iter().min_by(|&x, &y| compare(x, y))
   }
@@ -525,6 +538,7 @@ where
   /// assert_eq!(e.min_by_key(|x| -x), None);
   /// ```
   #[inline]
+  #[must_use]
   fn min_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<&Item>
   where
     K: Ord,
@@ -561,6 +575,7 @@ where
   /// assert_eq!(e.min_of(), None);
   /// ```
   #[inline]
+  #[must_use]
   fn min_of(&self) -> Option<&Item>
   where
     Item: Ord,
@@ -587,6 +602,7 @@ where
   /// assert_eq!(e.minmax_by(|x, y| x.cmp(y)), None);
   /// ```
   #[inline]
+  #[must_use]
   fn minmax_by(&self, compare: impl FnMut(&Item, &Item) -> Ordering) -> Option<(&Item, &Item)> {
     minmax_by(self.into_iter(), compare)
   }
@@ -610,6 +626,7 @@ where
   /// assert_eq!(e.minmax_by_key(|x| -x), None);
   /// ```
   #[inline]
+  #[must_use]
   fn minmax_by_key<K>(&self, mut to_key: impl FnMut(&Item) -> K) -> Option<(&Item, &Item)>
   where
     K: Ord,
@@ -635,6 +652,7 @@ where
   /// assert_eq!(e.minmax_of(), None);
   /// ```
   #[inline]
+  #[must_use]
   fn minmax_of(&self) -> Option<(&Item, &Item)>
   where
     Item: Ord,
@@ -674,6 +692,7 @@ where
   /// assert_eq!(a.reduce_ref(|&acc, &e| acc + e).unwrap(), folded);
   /// ```
   #[inline]
+  #[must_use]
   fn reduce_ref(&self, mut function: impl FnMut(&Item, &Item) -> Item) -> Option<Item> {
     let mut iterator = self.into_iter();
     iterator
@@ -707,6 +726,7 @@ where
   /// assert!(!a.subset(&vec![3, 4]));
   /// ```
   #[inline]
+  #[must_use]
   fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,
@@ -740,6 +760,7 @@ where
   /// assert!(!e.superset(&vec![1]));
   /// ```
   #[inline]
+  #[must_use]
   fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a,

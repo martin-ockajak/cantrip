@@ -111,6 +111,7 @@ where
   /// assert!(!a.all(|(&k, _)| k > 2));
   /// ```
   #[inline]
+  #[must_use]
   fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
     self.into_iter().all(predicate)
   }
@@ -144,6 +145,7 @@ where
   /// assert!(!e.any(|(&k, _)| k > 0));
   /// ```
   #[inline]
+  #[must_use]
   fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
     self.into_iter().any(predicate)
   }
@@ -245,6 +247,7 @@ where
   /// assert_eq!(a.count_by(|(&k, _)| k == 5), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
     self.into_iter().filter(|&x| predicate(x)).count()
   }
@@ -270,6 +273,7 @@ where
   /// assert_eq!(e.count_unique(), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn count_unique(&self) -> usize
   where
     Value: Eq + Hash,
@@ -349,6 +353,7 @@ where
   ///
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
+  #[must_use]
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
@@ -522,6 +527,7 @@ where
   /// assert_eq!(a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)), HashMap::from([(1, 2),]));
   /// ```
   #[inline]
+  #[must_use]
   fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,
@@ -639,6 +645,7 @@ where
   /// assert_eq!(a.find(|(&k, _)| k == 5), None);
   /// ```
   #[inline]
+  #[must_use]
   fn find(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)> {
     self.into_iter().find(|&x| predicate(x))
   }
@@ -668,6 +675,7 @@ where
   /// assert_eq!(a.find_map(|(k, v)| if k == 2 { Some(v) } else { None }), Some(2));
   /// ```
   #[inline]
+  #[must_use]
   fn find_map<B>(self, function: impl FnMut((Key, Value)) -> Option<B>) -> Option<B>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -701,6 +709,7 @@ where
   /// assert_eq!(a.find_map_ref(|(&k, &v)| if k == 2 { Some(v) } else { None }), Some(2));
   /// ```
   #[inline]
+  #[must_use]
   fn find_map_ref<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
     self.into_iter().find_map(function)
   }
@@ -743,6 +752,7 @@ where
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn flat_map<L, W, R>(self, function: impl FnMut((Key, Value)) -> R) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -790,6 +800,7 @@ where
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,
@@ -854,6 +865,7 @@ where
   ///
   /// And so, our final result, `9`.
   #[inline]
+  #[must_use]
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -917,6 +929,7 @@ where
   ///
   /// And so, our final result, `9`.
   #[inline]
+  #[must_use]
   fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
     self.into_iter().fold(initial_value, function)
   }
@@ -1038,6 +1051,7 @@ where
   /// assert_eq!(a.map(|(k, v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6),]));
   /// ```
   #[inline]
+  #[must_use]
   fn map<L, W>(self, function: impl FnMut((Key, Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1083,6 +1097,7 @@ where
   /// assert_eq!(a.map_ref(|(&k, &v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6),]));
   /// ```
   #[inline]
+  #[must_use]
   fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,
@@ -1123,6 +1138,7 @@ where
   /// assert_eq!(a.map_keys(|&k| k + 1), HashMap::from([(2, 1), (3, 2), (4, 3),]));
   /// ```
   #[inline]
+  #[must_use]
   fn map_keys<L>(self, mut function: impl FnMut(&Key) -> L) -> Self::This<L, Value>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1165,6 +1181,7 @@ where
   /// assert_eq!(a.map_values(|&v| v + 1), HashMap::from([(1, 2), (2, 3), (3, 4),]));
   /// ```
   #[inline]
+  #[must_use]
   fn map_values<W>(self, mut function: impl FnMut(&Value) -> W) -> Self::This<Key, W>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1194,6 +1211,7 @@ where
   /// assert_eq!(e.max_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
   #[inline]
+  #[must_use]
   fn max_by(&self, mut compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)> {
     self.into_iter().max_by(|&x, &y| compare(x, y))
   }
@@ -1219,6 +1237,7 @@ where
   /// assert_eq!(e.max_by_key(|(k, _)| -k), None);
   /// ```
   #[inline]
+  #[must_use]
   fn max_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
   where
     K: Ord,
@@ -1246,6 +1265,7 @@ where
   /// assert_eq!(e.max_of(), None);
   /// ```
   #[inline]
+  #[must_use]
   fn max_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
@@ -1275,6 +1295,7 @@ where
   /// assert_eq!(e.min_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
   #[inline]
+  #[must_use]
   fn min_by(&self, mut compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)> {
     self.into_iter().min_by(|&x, &y| compare(x, y))
   }
@@ -1300,6 +1321,7 @@ where
   /// assert_eq!(e.min_by_key(|(k, _)| -k), None);
   /// ```
   #[inline]
+  #[must_use]
   fn min_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
   where
     K: Ord,
@@ -1327,6 +1349,7 @@ where
   /// assert_eq!(e.min_of(), None);
   /// ```
   #[inline]
+  #[must_use]
   fn min_of(&self) -> Option<(&Key, &Value)>
   where
     Key: Ord,
@@ -1357,6 +1380,7 @@ where
   /// assert_eq!(e.minmax_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
   #[inline]
+  #[must_use]
   fn minmax_by(
     &self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering,
   ) -> Option<((&Key, &Value), (&Key, &Value))> {
@@ -1385,6 +1409,7 @@ where
   /// assert_eq!(e.minmax_by_key(|(k, _)| -k), None);
   /// ```
   #[inline]
+  #[must_use]
   fn minmax_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
   where
     K: Ord,
@@ -1413,6 +1438,7 @@ where
   /// assert_eq!(e.minmax_of(), None);
   /// ```
   #[inline]
+  #[must_use]
   fn minmax_of(&self) -> Option<((&Key, &Value), (&Key, &Value))>
   where
     Key: Ord,
@@ -1443,6 +1469,7 @@ where
   /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
   #[inline]
+  #[must_use]
   fn partition(self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> (Self, Self)
   where
     Self: IntoIterator<Item = (Key, Value)> + Default + Extend<(Key, Value)>,
@@ -1474,6 +1501,7 @@ where
   /// assert_eq!(even, HashMap::from([(5, 2),]));
   /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
+  #[must_use]
   fn partition_map<L1, W1, L2, W2>(
     self, mut function: impl FnMut((Key, Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
@@ -1518,6 +1546,7 @@ where
   /// assert_eq!(even, HashMap::from([(5, 2),]));
   /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
+  #[must_use]
   fn partition_map_ref<L1, W1, L2, W2>(
     &self, mut function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
@@ -1564,6 +1593,7 @@ where
   /// assert_eq!(e.product_keys(), 1);
   /// ```
   #[inline]
+  #[must_use]
   fn product_keys(self) -> Key
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1600,6 +1630,7 @@ where
   /// assert_eq!(e.product_values(), 1);
   /// ```
   #[inline]
+  #[must_use]
   fn product_values(self) -> Value
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1648,6 +1679,7 @@ where
   /// assert_eq!(a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap(), folded);
   /// ```
   #[inline]
+  #[must_use]
   fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1697,6 +1729,7 @@ where
   /// assert_eq!(a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(), folded);
   /// ```
   #[inline]
+  #[must_use]
   fn reduce_ref(
     &self, mut function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value),
   ) -> Option<(Key, Value)> {
@@ -1727,6 +1760,7 @@ where
   /// assert!(!a.subset(&vec![]));
   /// ```
   #[inline]
+  #[must_use]
   fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
@@ -1824,6 +1858,7 @@ where
   /// assert!(!e.superset(&vec![1]));
   /// ```
   #[inline]
+  #[must_use]
   fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
     Key: Eq + Hash + 'a,
@@ -1861,6 +1896,7 @@ where
   /// assert_eq!(e.sum_keys(), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn sum_keys(self) -> Key
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1899,6 +1935,7 @@ where
   /// assert_eq!(e.sum_values(), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn sum_values(self) -> Value
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1921,6 +1958,7 @@ where
   /// assert_eq!(a.to_keys().to_set(), vec![1, 2, 3].to_set());
   /// ```
   #[inline]
+  #[must_use]
   fn to_keys(&self) -> Vec<Key>
   where
     Key: Clone,
@@ -1944,6 +1982,7 @@ where
   /// assert_eq!(a.to_values().to_set(), vec![1, 2, 3].to_set());
   /// ```
   #[inline]
+  #[must_use]
   fn to_values(&self) -> Vec<Value>
   where
     Value: Clone,
@@ -1965,6 +2004,7 @@ where
   ///     (1, 1),
   /// ]));
   #[inline]
+  #[must_use]
   fn unit(key: Key, value: Value) -> Self
   where
     Self: FromIterator<(Key, Value)>,

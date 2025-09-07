@@ -111,6 +111,7 @@ where
   /// assert_eq!(e.cartesian_product(2), Vec::<Vec<i32>>::new());
   /// ```
   #[allow(clippy::cast_possible_wrap)]
+  #[must_use]
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
     Self: FromIterator<Item> + Sized,
@@ -169,6 +170,7 @@ where
   /// assert_eq!(a.chunked(1), vec![vec![1], vec![2], vec![3]]);
   /// ```
   #[inline]
+  #[must_use]
   fn chunked(self, size: usize) -> Vec<Self>
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -201,6 +203,7 @@ where
   ///
   /// assert_eq!(e.chunked_by(|_, _| true), Vec::<Vec<i32>>::new());
   /// ```
+  #[must_use]
   fn chunked_by(self, mut split: impl FnMut(&Item, &Item) -> bool) -> Vec<Self>
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -264,6 +267,7 @@ where
   /// assert_eq!(a.chunked_exact(1), vec![vec![1], vec![2], vec![3]]);
   /// ```
   #[inline]
+  #[must_use]
   fn chunked_exact(self, size: usize) -> Vec<Self>
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -365,6 +369,7 @@ where
   /// assert_eq!(e.combinations_multi(1), Vec::<Vec<i32>>::new());
   /// ```
   #[allow(clippy::cast_possible_wrap)]
+  #[must_use]
   fn combinations_multi(&self, k: usize) -> Vec<Self>
   where
     Self: FromIterator<Item> + Sized,
@@ -491,6 +496,7 @@ where
   /// assert_eq!(a.divide(&2), vec![vec![1], vec![], vec![3]]);
   /// ```
   #[inline]
+  #[must_use]
   fn divide(self, separator: &Item) -> Vec<Self>
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -536,6 +542,7 @@ where
   /// assert_eq!(a.divide_by(|x| x % 2 == 0), vec![vec![1], vec![], vec![3]]);
   /// ```
   #[inline]
+  #[must_use]
   fn divide_by(self, mut separator: impl FnMut(&Item) -> bool) -> Vec<Self>
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
@@ -670,6 +677,7 @@ where
   /// assert_eq!(a.enumerate(), vec![(0, 1), (1, 2), (2, 3)]);
   /// ```
   #[inline]
+  #[must_use]
   fn enumerate(self) -> Self::This<(usize, Item)>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -690,6 +698,7 @@ where
   /// assert_eq!(Vec::fill(1, 0), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn fill(element: Item, size: usize) -> Self
   where
     Self: FromIterator<Item>,
@@ -915,6 +924,7 @@ where
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -1197,6 +1207,7 @@ where
   /// );
   /// ```
   #[inline]
+  #[must_use]
   fn rfold<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
     Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
@@ -1246,6 +1257,7 @@ where
   /// assert_eq!(scan, vec![-1, -2]);
   /// ```
   #[inline]
+  #[must_use]
   fn scan<S, B>(self, initial_state: S, function: impl FnMut(&mut S, Item) -> Option<B>) -> Self::This<B>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -1295,6 +1307,7 @@ where
   /// assert_eq!(scan, vec![-1, -2]);
   /// ```
   #[inline]
+  #[must_use]
   fn scan_ref<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -2004,6 +2017,7 @@ where
   /// assert_eq!(right, vec![1, 2, 3]);
   /// ```
   #[inline]
+  #[must_use]
   fn unzip<A, B>(self) -> (Self::This<A>, Self::This<B>)
   where
     Self: IntoIterator<Item = (A, B)> + Sized,
@@ -2059,6 +2073,7 @@ where
   #[allow(clippy::cast_sign_loss)]
   #[allow(clippy::cast_possible_truncation)]
   #[allow(clippy::cast_possible_wrap)]
+  #[must_use]
   fn variations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
@@ -2130,6 +2145,7 @@ where
   ///
   /// assert_eq!(e.windowed(1, 1), Vec::<Vec<i32>>::new());
   /// ```
+  #[must_use]
   fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
@@ -2184,6 +2200,7 @@ where
   ///
   /// assert_eq!(e.windowed_circular(1, 1), Vec::<Vec<i32>>::new());
   /// ```
+  #[must_use]
   fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
@@ -2243,6 +2260,7 @@ where
   /// assert_eq!(a.zip(vec![4, 5]), vec![(1, 4), (2, 5)]);
   /// ```
   #[inline]
+  #[must_use]
   fn zip<T>(self, elements: impl IntoIterator<Item = T>) -> Self::This<(Item, T)>
   where
     Self: IntoIterator<Item = Item> + Sized,
@@ -2283,6 +2301,7 @@ where
   /// assert_eq!(a.zip_padded(vec![4, 5], || 1, || 2), vec![(1, 4), (2, 5), (3, 2)],);
   /// ```
   #[inline]
+  #[must_use]
   fn zip_padded<T>(
     self, elements: impl IntoIterator<Item = T>, mut to_left_value: impl FnMut() -> Item,
     mut to_right_value: impl FnMut() -> T,

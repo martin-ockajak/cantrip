@@ -27,6 +27,7 @@ where
   ///
   /// assert_eq!(a.common_prefix_length(&vec![]), 0);
   /// ```
+  #[must_use]
   fn common_prefix_length<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> usize
   where
     Item: PartialEq + 'a;
@@ -45,6 +46,7 @@ where
   ///
   /// assert_eq!(a.common_suffix_length(&vec![]), 0);
   /// ```
+  #[must_use]
   fn common_suffix_length<'a, I>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item, Iterator<'a> = I>) -> usize
   where
     I: DoubleEndedIterator<Item = &'a Item>,
@@ -67,6 +69,7 @@ where
   /// assert_eq!(e.count_unique(), 0);
   /// ```
   #[inline]
+  #[must_use]
   fn count_unique(&self) -> usize
   where
     Item: Eq + Hash,
@@ -91,6 +94,7 @@ where
   /// assert!(!a.equivalent(&vec![1, 1, 2, 2, 3]));
   /// assert!(!a.equivalent(&vec![]));
   /// ```
+  #[must_use]
   fn equivalent<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
     Item: Eq + Hash + 'a;
@@ -109,6 +113,7 @@ where
   /// assert_eq!(a.find_position(|&x| x == 5), None);
   /// ```
   #[inline]
+  #[must_use]
   fn find_position(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)> {
     self.into_iter().enumerate().find(|(_, x)| predicate(x))
   }
@@ -127,6 +132,7 @@ where
   /// assert_eq!(a.frequencies(), HashMap::from([(&1, 1), (&2, 2), (&3, 1)]));
   /// ```
   #[inline]
+  #[must_use]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
     Item: Eq + Hash + 'a,
@@ -150,6 +156,7 @@ where
   ///
   /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([(0, 2), (1, 2)]));
   /// ```
+  #[must_use]
   fn frequencies_by<K: Eq + Hash>(&self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize> {
     let iterator = self.into_iter();
     let mut result = HashMap::with_capacity(iterator.size_hint().0);
@@ -174,6 +181,7 @@ where
   /// assert_eq!(a.joined(", "), "1, 2, 3");
   /// assert_eq!(e.joined(", "), "");
   /// ```
+  #[must_use]
   fn joined(&self, separator: &str) -> String
   where
     Item: Display,
@@ -227,6 +235,7 @@ where
   /// assert_eq!(a.position(|&x| x == 5), None);
   /// ```
   #[inline]
+  #[must_use]
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.into_iter().position(predicate)
   }
@@ -260,6 +269,7 @@ where
   /// assert_eq!(a.position_multi(|&x| x > 3), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn position_multi(&self, mut predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
     self.into_iter().enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
   }
@@ -298,6 +308,7 @@ where
   /// assert_eq!(a.position_of(&5), None);
   /// ```
   #[inline]
+  #[must_use]
   fn position_of(&self, element: &Item) -> Option<usize>
   where
     Item: PartialEq,
@@ -334,6 +345,7 @@ where
   /// assert_eq!(a.position_of_multi(&5), vec![]);
   /// ```
   #[inline]
+  #[must_use]
   fn position_of_multi(&self, element: &Item) -> Vec<usize>
   where
     Item: PartialEq,
@@ -379,6 +391,7 @@ where
   ///
   /// assert_eq!(a.position_sequence(&vec![1, 3]), None);
   /// ```
+  #[must_use]
   fn position_sequence<'a>(&'a self, sequence: &'a impl Iterable<Item<'a> = &'a Item>) -> Option<usize>
   where
     Item: PartialEq + 'a;
@@ -411,6 +424,7 @@ where
   ///
   /// assert_eq!(a.rfind(|&x| x == 5), None);
   /// ```
+  #[must_use]
   fn rfind(&self, predicate: impl FnMut(&Item) -> bool) -> Option<&Item>;
 
   /// Reduces this sequence's elements to a single, final value, starting from the back.
@@ -472,6 +486,7 @@ where
   ///   "(1 + (2 + (3 + (4 + (5 + 0)))))"
   /// );
   /// ```
+  #[must_use]
   fn rfold_ref<B>(&self, initial_value: B, function: impl FnMut(B, &Item) -> B) -> B;
 
   /// Searches for an element in this sequence from the right, returning its index.
@@ -510,6 +525,7 @@ where
   ///
   /// assert_eq!(a.rposition(|&x| x == 5), None);
   /// ```
+  #[must_use]
   fn rposition(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize>;
 }
 
