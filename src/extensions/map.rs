@@ -1,4 +1,5 @@
 use crate::Iterable;
+use crate::extensions::{count_unique, subset, superset};
 use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet, LinkedList};
 use std::hash::Hash;
@@ -12,7 +13,10 @@ use std::iter::{Product, Sum};
 /// - Requires the collection to represent a map
 /// - May consume the map and its entries
 /// - May create a new map
-pub trait Map<Key, Value> {
+pub trait Map<Key, Value>
+where
+  for<'i> &'i Self: IntoIterator<Item = (&'i Key, &'i Value)>,
+{
   /// This map type constructor
   type This<K, V>;
 
@@ -106,7 +110,10 @@ pub trait Map<Key, Value> {
   ///
   /// assert!(!a.all(|(&k, _)| k > 2));
   /// ```
-  fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
+  #[inline]
+  fn all(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
+    self.into_iter().all(predicate)
+  }
 
   /// Tests if any entry of the map matches a predicate.
   ///
@@ -136,7 +143,10 @@ pub trait Map<Key, Value> {
   /// assert!(!a.any(|(&k, _)| k > 5));
   /// assert!(!e.any(|(&k, _)| k > 0));
   /// ```
-  fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool;
+  #[inline]
+  fn any(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> bool {
+    self.into_iter().any(predicate)
+  }
 
   /// Transforms this map into the specified collection type.
   ///
@@ -207,6 +217,7 @@ pub trait Map<Key, Value> {
   ///
   /// [`BTreeSet<T>`]: ../../std/collections/struct.BTreeSet.html
   #[inline]
+  #[must_use]
   fn collect<B>(self) -> B
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -233,7 +244,10 @@ pub trait Map<Key, Value> {
   /// assert_eq!(a.count_by(|(&k, &v)| k == 2 && v == 2), 1);
   /// assert_eq!(a.count_by(|(&k, _)| k == 5), 0);
   /// ```
-  fn count_by(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> usize;
+  #[inline]
+  fn count_by(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> usize {
+    self.into_iter().filter(|&x| predicate(x)).count()
+  }
 
   /// Counts the number of unique elements in this map.
   ///
@@ -255,9 +269,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.count_unique(), 0);
   /// ```
+  #[inline]
   fn count_unique(&self) -> usize
   where
-    Value: Eq + Hash;
+    Value: Eq + Hash,
+  {
+    count_unique(self.into_iter().map(|(_, x)| x))
+  }
 
   /// Creates a new map from the original map without
   /// the entry specified by a key.
@@ -333,7 +351,24 @@ pub trait Map<Key, Value> {
   /// ```
   fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    Key: Eq + Hash + 'a;
+    Key: Eq + Hash + 'a,
+    Value: Eq + Hash + 'a,
+  {
+    let iterator = self.into_iter().map(|(k, _)| k);
+    let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
+    for item in iterator {
+      let _ = occurred.insert(item);
+    }
+    if occurred.is_empty() {
+      return true;
+    }
+    for item in elements.iterator() {
+      if occurred.contains(item) {
+        return false;
+      }
+    }
+    true
+  }
 
   /// Creates a new map containing a result of a function
   /// specified number of times.
@@ -350,6 +385,7 @@ pub trait Map<Key, Value> {
   /// assert_eq!(HashMap::fill_with(|| (1, 1), 0), HashMap::new());
   /// ```
   #[inline]
+  #[must_use]
   fn fill_with(mut value: impl FnMut() -> (Key, Value), size: usize) -> Self
   where
     Self: FromIterator<(Key, Value)>,
@@ -389,6 +425,110 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(k, v)| predicate((k, v))).collect()
   }
 
+  /// Creates a new map by filtering and mapping the original map.
+  ///
+  /// The returned map contains only the `entries` for which the supplied
+  /// closure returns `Some(value)`.
+  ///
+  /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
+  /// concise. The example below shows how a `map().filter().map()` can be
+  /// shortened to a single call to `filter_map()`.
+  ///
+  /// This is a consuming variant of [`filter_map_ref()`].
+  ///
+  /// [`filter()`]: Map::filter
+  /// [`map()`]: Map::map_ref
+  /// [`filter_map_ref()`]: Map::filter_map_ref
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(
+  ///   a.filter_map(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }),
+  ///   HashMap::from([(1, 2),])
+  /// );
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter()`] and [`map()`]:
+  ///
+  /// ```
+  /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter(|(&k, _)| k < 2).map(|(k, v)| (k, v + 1)), HashMap::from([(1, 2),]));
+  /// ```
+  #[inline]
+  #[must_use]
+  fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self: IntoIterator<Item = (Key, Value)> + Sized,
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
+
+  /// Creates a new map by filtering and mapping the original map.
+  ///
+  /// The returned map contains only the `entries` for which the supplied
+  /// closure returns `Some(entry)`.
+  ///
+  /// `filter_map_ref()` can be used to make chains of [`filter()`] and [`map_ref()`] more
+  /// concise. The example below shows how a `filter().map_ref()` can be
+  /// shortened to a single call to `filter_map()`.
+  ///
+  /// This is a non-consuming variant of [`filter_map_to()`].
+  ///
+  /// [`filter()`]: Map::filter
+  /// [`map_ref()`]: Map::map_ref
+  /// [`filter_map_to()`]: Map::filter_map
+  ///
+  /// # Examples
+  ///
+  /// Basic usage:
+  ///
+  /// ```
+  /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(
+  ///   a.filter_map_ref(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }),
+  ///   HashMap::from([(1, 2),])
+  /// );
+  /// ```
+  ///
+  /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
+  ///
+  /// ```
+  /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)), HashMap::from([(1, 2),]));
+  /// ```
+  #[inline]
+  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
+
   /// Creates a new map by filtering the original map using a
   /// closure to determine if an entry should be retained.
   ///
@@ -410,11 +550,16 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(a.filter_ref(|(&k, &v)| k != 2 && v != 2), HashMap::from([(1, 1), (3, 3),]));
   /// ```
+  #[inline]
   #[must_use]
-  fn filter_ref(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
+  fn filter_ref(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
+    Self: FromIterator<(Key, Value)>,
     Key: Clone,
-    Value: Clone;
+    Value: Clone,
+  {
+    self.into_iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
+  }
 
   /// Creates a new map by filtering the original map using a
   /// closure to determine if a key should be retained.
@@ -470,105 +615,6 @@ pub trait Map<Key, Value> {
     self.into_iter().filter(|(_, v)| predicate(v)).collect()
   }
 
-  /// Creates a new map by filtering and mapping the original map.
-  ///
-  /// The returned map contains only the `entries` for which the supplied
-  /// closure returns `Some(value)`.
-  ///
-  /// `filter_map()` can be used to make chains of [`filter()`] and [`map()`] more
-  /// concise. The example below shows how a `map().filter().map()` can be
-  /// shortened to a single call to `filter_map()`.
-  ///
-  /// This is a consuming variant of [`filter_map_ref()`].
-  ///
-  /// [`filter()`]: Map::filter
-  /// [`map()`]: Map::map_ref
-  /// [`filter_map_ref()`]: Map::filter_map_ref
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  ///
-  /// use cantrip::*;
-  ///
-  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
-  ///
-  /// assert_eq!(
-  ///   a.filter_map(|(k, v)| if k < 2 { Some((k, v + 1)) } else { None }),
-  ///   HashMap::from([(1, 2),])
-  /// );
-  /// ```
-  ///
-  /// Here's the same example, but with [`filter()`] and [`map()`]:
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  ///
-  /// use cantrip::*;
-  ///
-  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
-  ///
-  /// assert_eq!(a.filter(|(&k, _)| k < 2).map(|(k, v)| (k, v + 1)), HashMap::from([(1, 2),]));
-  /// ```
-  #[inline]
-  fn filter_map<L, W>(self, function: impl FnMut((Key, Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self: IntoIterator<Item = (Key, Value)> + Sized,
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.into_iter().filter_map(function).collect()
-  }
-
-  /// Creates a new map by filtering and mapping the original map.
-  ///
-  /// The returned map contains only the `entries` for which the supplied
-  /// closure returns `Some(entry)`.
-  ///
-  /// `filter_map_ref()` can be used to make chains of [`filter()`] and [`map_ref()`] more
-  /// concise. The example below shows how a `filter().map_ref()` can be
-  /// shortened to a single call to `filter_map()`.
-  ///
-  /// This is a non-consuming variant of [`filter_map_to()`].
-  ///
-  /// [`filter()`]: Map::filter
-  /// [`map_ref()`]: Map::map_ref
-  /// [`filter_map_to()`]: Map::filter_map
-  ///
-  /// # Examples
-  ///
-  /// Basic usage:
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  ///
-  /// use cantrip::*;
-  ///
-  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
-  ///
-  /// assert_eq!(
-  ///   a.filter_map_ref(|(&k, &v)| if k < 2 { Some((k, v + 1)) } else { None }),
-  ///   HashMap::from([(1, 2),])
-  /// );
-  /// ```
-  ///
-  /// Here's the same example, but with [`filter()`] and [`map_ref()`]:
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  ///
-  /// use cantrip::*;
-  ///
-  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
-  ///
-  /// assert_eq!(a.filter(|(&k, _)| k < 2).map_ref(|(&k, &v)| (k, v + 1)), HashMap::from([(1, 2),]));
-  /// ```
-  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>;
-
   /// Searches for an entry of this map that satisfies a predicate.
   ///
   /// `find()` takes a closure that returns `true` or `false`. It applies
@@ -592,34 +638,10 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(a.find(|(&k, _)| k == 5), None);
   /// ```
-  fn find(&self, predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)>;
-
-  /// Applies function to the entries of this map and returns
-  /// the first non-none result.
-  ///
-  /// `find_map()` can be used to make chains of [`find()`] and [`map_ref()`] more
-  /// concise.
-  ///
-  /// `find_map_ref(f)` is equivalent to `find().map_ref()`.
-  ///
-  /// This is a non-consuming variant of [`find_map()`].
-  ///
-  /// [`find()`]: Map::find
-  /// [`map_ref()`]: Map::map_ref
-  /// [`find_map()`]: Map::find_map
-  ///
-  /// # Example
-  ///
-  /// ```
-  /// use std::collections::HashMap;
-  ///
-  /// use cantrip::*;
-  ///
-  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
-  ///
-  /// assert_eq!(a.find_map_ref(|(&k, &v)| if k == 2 { Some(v) } else { None }), Some(2));
-  /// ```
-  fn find_map_ref<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B>;
+  #[inline]
+  fn find(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Option<(&Key, &Value)> {
+    self.into_iter().find(|&x| predicate(x))
+  }
 
   /// Applies function to the entries of this map and returns
   /// the first non-none result.
@@ -650,6 +672,36 @@ pub trait Map<Key, Value> {
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
   {
+    self.into_iter().find_map(function)
+  }
+
+  /// Applies function to the entries of this map and returns
+  /// the first non-none result.
+  ///
+  /// `find_map()` can be used to make chains of [`find()`] and [`map_ref()`] more
+  /// concise.
+  ///
+  /// `find_map_ref(f)` is equivalent to `find().map_ref()`.
+  ///
+  /// This is a non-consuming variant of [`find_map()`].
+  ///
+  /// [`find()`]: Map::find
+  /// [`map_ref()`]: Map::map_ref
+  /// [`find_map()`]: Map::find_map
+  ///
+  /// # Example
+  ///
+  /// ```
+  /// use std::collections::HashMap;
+  ///
+  /// use cantrip::*;
+  ///
+  /// let a = HashMap::from([(1, 1), (2, 2), (3, 3)]);
+  ///
+  /// assert_eq!(a.find_map_ref(|(&k, &v)| if k == 2 { Some(v) } else { None }), Some(2));
+  /// ```
+  #[inline]
+  fn find_map_ref<B>(&self, function: impl FnMut((&Key, &Value)) -> Option<B>) -> Option<B> {
     self.into_iter().find_map(function)
   }
 
@@ -737,10 +789,14 @@ pub trait Map<Key, Value> {
   ///   HashMap::from([(-1, 1), (-2, 2), (-3, 3), (1, 1), (2, 2), (3, 3),])
   /// );
   /// ```
+  #[inline]
   fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
     Self::This<L, W>: FromIterator<(L, W)>,
-    R: IntoIterator<Item = (L, W)>;
+    R: IntoIterator<Item = (L, W)>,
+  {
+    self.into_iter().flat_map(function).collect()
+  }
 
   /// Folds every entry into an accumulator by applying an operation,
   /// returning the final result.
@@ -797,6 +853,7 @@ pub trait Map<Key, Value> {
   /// | 3       | 5   | 3 | c | 9      |
   ///
   /// And so, our final result, `9`.
+  #[inline]
   fn fold<B>(self, initial_value: B, function: impl FnMut(B, (Key, Value)) -> B) -> B
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -859,7 +916,10 @@ pub trait Map<Key, Value> {
   /// | 3       | 5   | 3 | c | 9      |
   ///
   /// And so, our final result, `9`.
-  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B;
+  #[inline]
+  fn fold_ref<B>(&self, initial_value: B, function: impl FnMut(B, (&Key, &Value)) -> B) -> B {
+    self.into_iter().fold(initial_value, function)
+  }
 
   /// Calls a closure on each entry of this map.
   ///
@@ -898,7 +958,10 @@ pub trait Map<Key, Value> {
   ///   .filter(|&(i, x)| (i + x) % 3 == 0)
   ///   .for_each(|(i, x)| println!("{i}:{x}"));
   /// ```
-  fn for_each(&self, function: impl FnMut((&Key, &Value)));
+  #[inline]
+  fn for_each(&self, function: impl FnMut((&Key, &Value))) {
+    self.into_iter().for_each(function);
+  }
 
   /// Creates a new map by retaining the values representing the intersection
   /// of the original map with another map i.e., the values that are
@@ -1019,9 +1082,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(a.map_ref(|(&k, &v)| (k, k + v)), HashMap::from([(1, 2), (2, 4), (3, 6),]));
   /// ```
+  #[inline]
   fn map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> (L, W)) -> Self::This<L, W>
   where
-    Self::This<L, W>: FromIterator<(L, W)>;
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.into_iter().map(function).collect()
+  }
 
   /// Creates a new map by applying the given closure `function` to each key in
   /// the original map.
@@ -1126,7 +1193,10 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.max_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
-  fn max_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+  #[inline]
+  fn max_by(&self, mut compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)> {
+    self.into_iter().max_by(|&x, &y| compare(x, y))
+  }
 
   /// Returns the entry that gives the maximum value from the
   /// specified function.
@@ -1148,9 +1218,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.max_by_key(|(k, _)| -k), None);
   /// ```
-  fn max_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
+  #[inline]
+  fn max_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
   where
-    K: Ord;
+    K: Ord,
+  {
+    self.into_iter().max_by_key(|&x| to_key(x))
+  }
 
   /// Returns the maximum entry of this map.
   ///
@@ -1200,7 +1274,10 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.min_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
-  fn min_by(&self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)>;
+  #[inline]
+  fn min_by(&self, mut compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering) -> Option<(&Key, &Value)> {
+    self.into_iter().min_by(|&x, &y| compare(x, y))
+  }
 
   /// Returns the entry that gives the minimum value from the
   /// specified function.
@@ -1222,9 +1299,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.min_by_key(|(k, _)| -k), None);
   /// ```
-  fn min_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
+  #[inline]
+  fn min_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<(&Key, &Value)>
   where
-    K: Ord;
+    K: Ord,
+  {
+    self.into_iter().min_by_key(|&x| to_key(x))
+  }
 
   /// Returns the minimum entry of this map.
   ///
@@ -1275,9 +1356,12 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.minmax_by(|x, y| x.0.cmp(y.0)), None);
   /// ```
+  #[inline]
   fn minmax_by(
     &self, compare: impl FnMut((&Key, &Value), (&Key, &Value)) -> Ordering,
-  ) -> Option<((&Key, &Value), (&Key, &Value))>;
+  ) -> Option<((&Key, &Value), (&Key, &Value))> {
+    minmax_by_pairs(self.into_iter(), compare)
+  }
 
   /// Returns the minimum and maximum entry of this map from the
   /// specified function.
@@ -1300,9 +1384,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(e.minmax_by_key(|(k, _)| -k), None);
   /// ```
-  fn minmax_by_key<K>(&self, to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
+  #[inline]
+  fn minmax_by_key<K>(&self, mut to_key: impl FnMut((&Key, &Value)) -> K) -> Option<((&Key, &Value), (&Key, &Value))>
   where
-    K: Ord;
+    K: Ord,
+  {
+    minmax_by_pairs(self.into_iter(), |x, y| to_key(x).cmp(&to_key(y)))
+  }
 
   /// Return the minimum and maximum entry of this map.
   ///
@@ -1431,11 +1519,22 @@ pub trait Map<Key, Value> {
   /// assert_eq!(odd, HashMap::from([(1, 1), (3, 3),]));
   /// ```
   fn partition_map_ref<L1, W1, L2, W2>(
-    &self, function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
+    &self, mut function: impl FnMut((&Key, &Value)) -> Result<(L1, W1), (L2, W2)>,
   ) -> (Self::This<L1, W1>, Self::This<L2, W2>)
   where
     Self::This<L1, W1>: Default + Extend<(L1, W1)>,
-    Self::This<L2, W2>: Default + Extend<(L2, W2)>;
+    Self::This<L2, W2>: Default + Extend<(L2, W2)>,
+  {
+    let mut result_left: Self::This<L1, W1> = Self::This::default();
+    let mut result_right: Self::This<L2, W2> = Self::This::default();
+    for item in self {
+      match function(item) {
+        Ok(value) => result_left.extend(iter::once(value)),
+        Err(value) => result_right.extend(iter::once(value)),
+      }
+    }
+    (result_left, result_right)
+  }
 
   /// Iterates over the entire map, multiplying all the keys
   ///
@@ -1548,6 +1647,7 @@ pub trait Map<Key, Value> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.reduce(|(a, b), (k, v)| (a + k, b + v)).unwrap(), folded);
   /// ```
+  #[inline]
   fn reduce(self, mut function: impl FnMut((Key, Value), (Key, Value)) -> (Key, Value)) -> Option<(Key, Value)>
   where
     Self: IntoIterator<Item = (Key, Value)> + Sized,
@@ -1596,7 +1696,15 @@ pub trait Map<Key, Value> {
   /// # let a = a_source.clone();
   /// assert_eq!(a.reduce_ref(|(&a, &b), (&k, &v)| (a + k, b + v)).unwrap(), folded);
   /// ```
-  fn reduce_ref(&self, function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value)) -> Option<(Key, Value)>;
+  #[inline]
+  fn reduce_ref(
+    &self, mut function: impl FnMut((&Key, &Value), (&Key, &Value)) -> (Key, Value),
+  ) -> Option<(Key, Value)> {
+    let mut iterator = self.into_iter();
+    iterator.next().and_then(|value1| {
+      iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x)))
+    })
+  }
 
   /// Tests if all keys of this map can be found in another collection.
   ///
@@ -1618,9 +1726,13 @@ pub trait Map<Key, Value> {
   /// assert!(!a.subset(&vec![1, 2]));
   /// assert!(!a.subset(&vec![]));
   /// ```
+  #[inline]
   fn subset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    Key: Eq + Hash + 'a;
+    Key: Eq + Hash + 'a,
+  {
+    subset(self.into_iter().map(|(k, _)| k), keys)
+  }
 
   /// Creates a new map from the original map by replacing the specified key
   /// and its value with a different entry.
@@ -1711,9 +1823,13 @@ pub trait Map<Key, Value> {
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
+  #[inline]
   fn superset<'a>(&'a self, keys: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    Key: Eq + Hash + 'a;
+    Key: Eq + Hash + 'a,
+  {
+    superset(self.into_iter().map(|(k, _)| k), keys)
+  }
 
   /// Sums keys of this map.
   ///
@@ -1804,9 +1920,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(a.to_keys().to_set(), vec![1, 2, 3].to_set());
   /// ```
+  #[inline]
   fn to_keys(&self) -> Vec<Key>
   where
-    Key: Clone;
+    Key: Clone,
+  {
+    self.into_iter().map(|(k, _)| k).cloned().collect()
+  }
 
   /// Creates a new vector from the values of this map in arbitrary order.
   ///
@@ -1823,9 +1943,13 @@ pub trait Map<Key, Value> {
   ///
   /// assert_eq!(a.to_values().to_set(), vec![1, 2, 3].to_set());
   /// ```
+  #[inline]
   fn to_values(&self) -> Vec<Value>
   where
-    Value: Clone;
+    Value: Clone,
+  {
+    self.into_iter().map(|(_, v)| v).cloned().collect()
+  }
 
   /// Creates a new map containing a single element.
   ///
@@ -1864,39 +1988,5 @@ pub(crate) fn minmax_by_pairs<'a, K: 'a, V: 'a>(
       }
     }
     (min, max)
-  })
-}
-
-#[inline]
-pub(crate) fn minmax_by_key_pairs<'a, K: 'a, V: 'a, E: Ord>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut to_key: impl FnMut((&K, &V)) -> E,
-) -> Option<((&'a K, &'a V), (&'a K, &'a V))> {
-  minmax_by_pairs(iterator, |x, y| to_key(x).cmp(&to_key(y)))
-}
-
-pub(crate) fn partition_map_pairs<'a, K: 'a, V: 'a, L1, W1, L2, W2, Left, Right>(
-  iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V)) -> Result<(L1, W1), (L2, W2)>,
-) -> (Left, Right)
-where
-  Left: Default + Extend<(L1, W1)>,
-  Right: Default + Extend<(L2, W2)>,
-{
-  let mut result_left = Left::default();
-  let mut result_right = Right::default();
-  for item in iterator {
-    match function(item) {
-      Ok(value) => result_left.extend(iter::once(value)),
-      Err(value) => result_right.extend(iter::once(value)),
-    }
-  }
-  (result_left, result_right)
-}
-
-#[inline]
-pub(crate) fn reduce_pairs<'a, K: 'a, V: 'a>(
-  mut iterator: impl Iterator<Item = (&'a K, &'a V)>, mut function: impl FnMut((&K, &V), (&K, &V)) -> (K, V),
-) -> Option<(K, V)> {
-  iterator.next().and_then(|value1| {
-    iterator.next().map(|value2| iterator.fold(function(value1, value2), |r, x| function((&r.0, &r.1), x)))
   })
 }

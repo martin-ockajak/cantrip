@@ -914,6 +914,7 @@ where
   ///   vec![2, 3]
   /// );
   /// ```
+  #[inline]
   fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -930,6 +931,7 @@ where
   ///
   /// assert_eq!(a.merge(vec![0, 4, 5]), vec![0, 1, 2, 3, 4, 5]);
   /// ```
+  #[inline]
   #[must_use]
   fn merge(self, elements: impl IntoIterator<Item = Item>) -> Self
   where
@@ -1046,7 +1048,6 @@ where
   ///
   /// assert_eq!(a.pad_left_with(5, |i| 2 * i), vec![0, 2, 1, 2, 3]);
   /// ```
-  #[inline]
   #[must_use]
   fn pad_left_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
@@ -1293,6 +1294,7 @@ where
   ///
   /// assert_eq!(scan, vec![-1, -2]);
   /// ```
+  #[inline]
   fn scan_ref<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -1375,7 +1377,6 @@ where
   /// # let a = a_source.clone();
   /// assert_eq!(a.slice(1, 1), vec![]);
   /// ```
-  #[inline]
   #[must_use]
   fn slice(self, start_index: usize, end_index: usize) -> Self
   where

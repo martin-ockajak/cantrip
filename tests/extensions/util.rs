@@ -120,6 +120,7 @@ pub(crate) trait TestMap<'a, K: 'a, V: 'a>:
   + IntoIterator<Item = (K, V)>
   + Iterable<Item<'a> = (&'a K, &'a V)>
 where
+  for<'i> &'i Self: IntoIterator<Item = (&'i K, &'i V)>,
   Self: 'a,
 {
 }
@@ -148,7 +149,8 @@ where
 {
 }
 
-impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C where
+impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C
+where
   C: Map<K, V>
     + FromIterator<(K, V)>
     + Default
@@ -158,7 +160,8 @@ impl<'a, K: 'a, V: 'a, C> TestMap<'a, K, V> for C where
     + Debug
     + IntoIterator<Item = (K, V)>
     + Iterable<Item<'a> = (&'a K, &'a V)>
-    + 'a
+    + 'a,
+  for<'i> &'i C: IntoIterator<Item = (&'i K, &'i V)>,
 {
 }
 

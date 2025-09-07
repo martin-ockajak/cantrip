@@ -238,7 +238,6 @@ where
   /// assert_eq!(a.delete(&4), vec![1, 2, 2, 3]);
   /// assert_eq!(e.delete(&2), vec![]);
   /// ```
-  #[inline]
   #[must_use]
   fn delete(self, element: &Item) -> Self
   where
@@ -476,6 +475,7 @@ where
   ///
   /// assert_eq!(a.filter(|&x| x % 2 == 0).map_ref(|x| x + 1), vec![3]);
   /// ```
+  #[inline]
   fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -549,6 +549,7 @@ where
   ///   vec![&2]
   /// );
   /// ```
+  #[inline]
   #[must_use]
   fn filter_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> Self
   where
@@ -760,6 +761,7 @@ where
   ///   vec![1, -1, 2, -2, 3, -3]
   /// );
   /// ```
+  #[inline]
   fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -1145,6 +1147,7 @@ where
   ///
   /// assert_eq!(a.map_ref(|&x| x + 1), vec![2, 3, 4]);
   /// ```
+  #[inline]
   fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
     Self::This<B>: FromIterator<B>,
@@ -1302,6 +1305,7 @@ where
   /// assert_eq!(even, vec![5]);
   /// assert_eq!(odd, vec![1, 3]);
   /// ```
+  #[inline]
   fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,

@@ -66,6 +66,7 @@ where
   ///
   /// assert_eq!(e.count_unique(), 0);
   /// ```
+  #[inline]
   fn count_unique(&self) -> usize
   where
     Item: Eq + Hash,
@@ -107,6 +108,7 @@ where
   ///
   /// assert_eq!(a.find_position(|&x| x == 5), None);
   /// ```
+  #[inline]
   fn find_position(&self, mut predicate: impl FnMut(&Item) -> bool) -> Option<(usize, &Item)> {
     self.into_iter().enumerate().find(|(_, x)| predicate(x))
   }
@@ -124,6 +126,7 @@ where
   ///
   /// assert_eq!(a.frequencies(), HashMap::from([(&1, 1), (&2, 2), (&3, 1)]));
   /// ```
+  #[inline]
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
     Item: Eq + Hash + 'a,
@@ -223,6 +226,7 @@ where
   ///
   /// assert_eq!(a.position(|&x| x == 5), None);
   /// ```
+  #[inline]
   fn position(&self, predicate: impl FnMut(&Item) -> bool) -> Option<usize> {
     self.into_iter().position(predicate)
   }
@@ -255,6 +259,7 @@ where
   ///
   /// assert_eq!(a.position_multi(|&x| x > 3), vec![]);
   /// ```
+  #[inline]
   fn position_multi(&self, mut predicate: impl FnMut(&Item) -> bool) -> Vec<usize> {
     self.into_iter().enumerate().filter(|(_, item)| predicate(item)).map(|(index, _)| index).collect()
   }

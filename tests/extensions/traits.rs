@@ -42,6 +42,7 @@ pub(crate) fn test_map_traits<'a, C>(a: &C, b: &C, e: &C)
 where
   C: TestMap<'a, i64, i64> + Convert<(i64, i64)>,
   <C as Map<i64, i64>>::This<i64, i64>: TestCollection<(i64, i64)>,
+  for<'i> &'i C: IntoIterator<Item = (&'i i64, &'i i64)>,
 {
   test_map(a, b, e);
 }
