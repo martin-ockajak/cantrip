@@ -113,7 +113,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.frequencies(), HashMap::from([(&1, 1), (&2, 2), (&3, 1),]));
+  /// assert_eq!(a.frequencies(), HashMap::from([(&1, 1), (&2, 2), (&3, 1)]));
   /// ```
   fn frequencies<'a>(&'a self) -> HashMap<&'a Item, usize>
   where
@@ -133,7 +133,7 @@ pub trait Sequence<Item> {
   ///
   /// let a = vec![1, 2, 2, 3];
   ///
-  /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([(0, 2), (1, 2),]));
+  /// assert_eq!(a.frequencies_by(|x| x % 2), HashMap::from([(0, 2), (1, 2)]));
   /// ```
   fn frequencies_by<K: Eq + Hash>(&self, to_key: impl FnMut(&Item) -> K) -> HashMap<K, usize>;
 
