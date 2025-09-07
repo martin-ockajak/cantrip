@@ -90,6 +90,7 @@ pub(crate) trait TestCollectible<'a, T: 'a>:
   CollectionTo<T> + TestCollection<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T>
 where
   Self: 'a,
+  for<'i> &'i Self: IntoIterator<Item = &'i T>,
 {
 }
 
@@ -125,8 +126,10 @@ where
 
 impl<T, C> TestCollection<T> for C where C: FromIterator<T> + Default + Extend<T> + Clone + Equal + Debug {}
 
-impl<'a, T: 'a, C> TestCollectible<'a, T> for C where
-  C: TestCollection<T> + CollectionTo<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> + 'a
+impl<'a, T: 'a, C> TestCollectible<'a, T> for C
+where
+  C: TestCollection<T> + CollectionTo<T> + IntoIterator<Item = T> + Iterable<Item<'a> = &'a T> + 'a,
+  for<'i> &'i C: IntoIterator<Item = &'i T>,
 {
 }
 

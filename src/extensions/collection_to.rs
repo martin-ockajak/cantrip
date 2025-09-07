@@ -14,7 +14,10 @@ use crate::extensions::{MAX_SIZE, collect_by_index, frequencies};
 ///
 /// - Consumes the collection and its elements
 /// - May create a new collection
-pub trait CollectionTo<Item> {
+pub trait CollectionTo<Item>
+where
+  for<'i> &'i Self: IntoIterator<Item = &'i Item>,
+{
   /// This collection type constructor
   type This<I>;
 
@@ -206,8 +209,14 @@ pub trait CollectionTo<Item> {
   /// ```
   fn combinations(&self, k: usize) -> Vec<Self>
   where
+    Self: FromIterator<Item> + Sized,
     Item: Clone,
-    Self: Sized;
+  {
+    assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
+    let iterator = self.into_iter();
+    let values = iterator.collect::<Vec<_>>();
+    compute_combinations(&values, k)
+  }
 
   /// Creates a new collection from this collection without
   /// the first occurrence of an element.
@@ -469,7 +478,10 @@ pub trait CollectionTo<Item> {
   /// ```
   fn filter_map_ref<B>(&self, function: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().filter_map(function).collect()
+  }
 
   /// Creates a new collection by filtering this collection using a
   /// closure to determine if an element should be retained.
@@ -538,9 +550,13 @@ pub trait CollectionTo<Item> {
   /// );
   /// ```
   #[must_use]
-  fn filter_ref(&self, predicate: impl FnMut(&Item) -> bool) -> Self
+  fn filter_ref(&self, mut predicate: impl FnMut(&Item) -> bool) -> Self
   where
-    Item: Clone;
+    Self: FromIterator<Item>,
+    Item: Clone,
+  {
+    self.into_iter().filter(|&x| predicate(x)).cloned().collect()
+  }
 
   /// Applies function to the elements of this collection and returns
   /// the first non-none result.
@@ -747,7 +763,10 @@ pub trait CollectionTo<Item> {
   fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
     R: IntoIterator<Item = B>,
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().flat_map(function).collect()
+  }
 
   /// Folds every element into an accumulator by applying an operation,
   /// returning the final result.
@@ -1128,7 +1147,10 @@ pub trait CollectionTo<Item> {
   /// ```
   fn map_ref<B>(&self, function: impl FnMut(&Item) -> B) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().map(function).collect()
+  }
 
   /// Creates two new collections from this collection by applying
   /// specified predicate.
@@ -1185,10 +1207,39 @@ pub trait CollectionTo<Item> {
   ///
   /// assert_eq!(e.partitions(), Vec::<Vec<Vec<i32>>>::new());
   /// ```
+  #[allow(clippy::cast_possible_wrap)]
   fn partitions(&self) -> Vec<Vec<Self>>
   where
     Item: Clone,
-    Self: Sized;
+    Self: FromIterator<Item> + Sized,
+  {
+    let iterator = self.into_iter();
+    let values = iterator.collect::<Vec<_>>();
+    let length = values.len();
+    assert!(length <= MAX_SIZE, "len (is {length:?}) should be <= {MAX_SIZE:?})");
+    if values.is_empty() {
+      return vec![];
+    }
+    let size = values.len() as i64;
+    let mut result = Vec::new();
+    let mut stack = VecDeque::<(i64, Vec<Vec<i64>>)>::with_capacity(values.len());
+    stack.push_back((0, vec![]));
+
+    while let Some((current_index, mut partition)) = stack.pop_back() {
+      if current_index == size {
+        result.push(partition.iter().map(|tuple| collect_by_index(&values, tuple)).collect());
+        continue;
+      }
+      for index in 0..partition.len() {
+        let mut new_partition = partition.clone();
+        new_partition[index].push(current_index);
+        stack.push_front((current_index + 1, new_partition));
+      }
+      partition.push([current_index].to_vec());
+      stack.push_front((current_index + 1, partition));
+    }
+    result
+  }
 
   /// Creates two new collections with arbitrary element types from this collection
   /// by applying the specified function.
@@ -1254,7 +1305,10 @@ pub trait CollectionTo<Item> {
   fn partition_map_ref<A, B>(&self, function: impl FnMut(&Item) -> Result<A, B>) -> (Self::This<A>, Self::This<B>)
   where
     Self::This<A>: Default + Extend<A>,
-    Self::This<B>: Default + Extend<B>;
+    Self::This<B>: Default + Extend<B>,
+  {
+    partition_map_ref(self.into_iter(), function)
+  }
 
   /// Creates a new collection containing all sub-collections of this collection.
   ///
@@ -1288,8 +1342,18 @@ pub trait CollectionTo<Item> {
   /// ```
   fn powerset(&self) -> Vec<Self>
   where
+    Self: FromIterator<Item> + Sized,
     Item: Clone,
-    Self: Sized;
+  {
+    let iterator = self.into_iter();
+    let values = iterator.collect::<Vec<_>>();
+    let length = values.len();
+    assert!(length <= MAX_SIZE, "len (is {length:?}) should be <= {MAX_SIZE:?})");
+    let sizes = 1..=values.len();
+    iter::once(iter::empty().collect())
+      .chain(sizes.flat_map(|size| compute_combinations::<Item, Self>(&values, size)))
+      .collect()
+  }
 
   /// Iterates over the entire collection, multiplying all the elements
   ///
@@ -1533,15 +1597,6 @@ pub trait CollectionTo<Item> {
   }
 }
 
-#[inline]
-pub(crate) fn combinations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection> {
-  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
-  let values = iterator.collect::<Vec<_>>();
-  compute_combinations(&values, k)
-}
-
 #[allow(clippy::cast_possible_wrap)]
 pub(crate) fn compute_combinations<'a, Item, Collection>(values: &[&Item], k: usize) -> Vec<Collection>
 where
@@ -1570,7 +1625,7 @@ where
   .collect()
 }
 
-pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right: Default + Extend<B>>(
+pub(crate) fn partition_map_ref<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right: Default + Extend<B>>(
   iterator: impl Iterator<Item = &'a Item>, mut function: impl FnMut(&Item) -> Result<A, B>,
 ) -> (Left, Right) {
   let mut result_left = Left::default();
@@ -1582,48 +1637,4 @@ pub(crate) fn partition_map<'a, Item: 'a, A, B, Left: Default + Extend<A>, Right
     }
   }
   (result_left, result_right)
-}
-
-#[allow(clippy::cast_possible_wrap)]
-#[inline]
-pub(crate) fn partitions<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  iterator: impl Iterator<Item = &'a Item>,
-) -> Vec<Vec<Collection>> {
-  let values = iterator.collect::<Vec<_>>();
-  let length = values.len();
-  assert!(length <= MAX_SIZE, "len (is {length:?}) should be <= {MAX_SIZE:?})");
-  if values.is_empty() {
-    return vec![];
-  }
-  let size = values.len() as i64;
-  let mut result = Vec::new();
-  let mut stack = VecDeque::<(i64, Vec<Vec<i64>>)>::with_capacity(values.len());
-  stack.push_back((0, vec![]));
-
-  while let Some((current_index, mut partition)) = stack.pop_back() {
-    if current_index == size {
-      result.push(partition.iter().map(|tuple| collect_by_index(&values, tuple)).collect());
-      continue;
-    }
-    for index in 0..partition.len() {
-      let mut new_partition = partition.clone();
-      new_partition[index].push(current_index);
-      stack.push_front((current_index + 1, new_partition));
-    }
-    partition.push([current_index].to_vec());
-    stack.push_front((current_index + 1, partition));
-  }
-  result
-}
-
-pub(crate) fn powerset<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  iterator: impl Iterator<Item = &'a Item>,
-) -> Vec<Collection> {
-  let values = iterator.collect::<Vec<_>>();
-  let length = values.len();
-  assert!(length <= MAX_SIZE, "len (is {length:?}) should be <= {MAX_SIZE:?})");
-  let sizes = 1..=values.len();
-  iter::once(iter::empty().collect())
-    .chain(sizes.flat_map(|size| compute_combinations::<Item, Collection>(&values, size)))
-    .collect()
 }
