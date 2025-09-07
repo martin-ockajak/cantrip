@@ -44,7 +44,7 @@ where
 
   // frequencies_by
   assert_eq!(b.frequencies_by(|x| x % 2), HashMap::from([(0, 2), (1, 2),]));
-  assert_eq!(e.frequencies(), HashMap::new());
+  assert_eq!(e.frequencies_by(|x| x % 2), HashMap::new());
 
   // joined
   assert_eq!(a.joined(", "), "1, 2, 3");
