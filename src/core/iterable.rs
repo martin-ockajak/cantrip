@@ -83,27 +83,13 @@ impl<Item> Iterable for Option<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = OptionIterator<'c, Item>
+    = core::option::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    OptionIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct OptionIterator<'c, T> {
-  pub(crate) iterator: core::option::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for OptionIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
+    self.iter()
   }
 }
 
@@ -115,28 +101,14 @@ impl<Item, E> Iterable for Result<Item, E> {
     E: 'c,
     Item: 'c;
   type Iterator<'c>
-    = ResultIterator<'c, Item>
+    = core::result::Iter<'c, Item>
   where
     E: 'c,
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    ResultIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct ResultIterator<'c, T> {
-  pub(crate) iterator: core::result::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for ResultIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
+    self.iter()
   }
 }
 
@@ -147,35 +119,13 @@ impl<Item> Iterable for [Item] {
   where
     Item: 'c;
   type Iterator<'c>
-    = SliceIterator<'c, Item>
+    = core::slice::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    SliceIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct SliceIterator<'c, T> {
-  pub(crate) iterator: core::slice::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for SliceIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
-  }
-}
-
-#[allow(single_use_lifetimes)]
-#[allow(clippy::elidable_lifetime_names)]
-impl<'c, T> DoubleEndedIterator for SliceIterator<'c, T> {
-  fn next_back(&mut self) -> Option<Self::Item> {
-    self.iterator.next_back()
+    self.iter()
   }
 }
 
@@ -185,14 +135,14 @@ impl<Item> Iterable for Vec<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = SliceIterator<'c, Item>
+    = core::slice::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    SliceIterator { iterator: self.iter() }
+    self.iter()
   }
 }
 
@@ -202,36 +152,14 @@ impl<Item> Iterable for LinkedList<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = LinkedListIterator<'c, Item>
+    = std::collections::linked_list::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    LinkedListIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct LinkedListIterator<'c, T> {
-  pub(crate) iterator: std::collections::linked_list::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for LinkedListIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
-  }
-}
-
-#[allow(single_use_lifetimes)]
-#[allow(clippy::elidable_lifetime_names)]
-impl<'c, T> DoubleEndedIterator for LinkedListIterator<'c, T> {
-  fn next_back(&mut self) -> Option<Self::Item> {
-    self.iterator.next_back()
+    self.iter()
   }
 }
 
@@ -241,36 +169,14 @@ impl<Item> Iterable for VecDeque<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = VecDequeIterator<'c, Item>
+    = std::collections::vec_deque::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   #[allow(clippy::elidable_lifetime_names)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    VecDequeIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct VecDequeIterator<'c, T> {
-  pub(crate) iterator: std::collections::vec_deque::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for VecDequeIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
-  }
-}
-
-#[allow(single_use_lifetimes)]
-#[allow(clippy::elidable_lifetime_names)]
-impl<'c, T> DoubleEndedIterator for VecDequeIterator<'c, T> {
-  fn next_back(&mut self) -> Option<Self::Item> {
-    self.iterator.next_back()
+    self.iter()
   }
 }
 
@@ -282,27 +188,13 @@ impl<Item> Iterable for HashSet<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = HashSetIterator<'c, Item>
+    = std::collections::hash_set::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    HashSetIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct HashSetIterator<'c, T> {
-  pub(crate) iterator: std::collections::hash_set::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for HashSetIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
+    self.iter()
   }
 }
 
@@ -313,27 +205,13 @@ impl<Item> Iterable for BTreeSet<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = BTreeSetIterator<'c, Item>
+    = std::collections::btree_set::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    BTreeSetIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct BTreeSetIterator<'c, T> {
-  pub(crate) iterator: std::collections::btree_set::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for BTreeSetIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
+    self.iter()
   }
 }
 
@@ -344,27 +222,13 @@ impl<Item> Iterable for BinaryHeap<Item> {
   where
     Item: 'c;
   type Iterator<'c>
-    = BinaryHeapIterator<'c, Item>
+    = std::collections::binary_heap::Iter<'c, Item>
   where
     Item: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    BinaryHeapIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct BinaryHeapIterator<'c, T> {
-  pub(crate) iterator: std::collections::binary_heap::Iter<'c, T>,
-}
-
-impl<'c, T> Iterator for BinaryHeapIterator<'c, T> {
-  type Item = &'c T;
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
+    self.iter()
   }
 }
 
@@ -377,28 +241,14 @@ impl<Key, Value> Iterable for HashMap<Key, Value> {
     Key: 'c,
     Value: 'c;
   type Iterator<'c>
-    = HashMapIterator<'c, Key, Value>
+    = std::collections::hash_map::Iter<'c, Key, Value>
   where
     Key: 'c,
     Value: 'c;
 
   #[allow(clippy::needless_lifetimes)]
   fn iterator<'c>(&'c self) -> Self::Iterator<'c> {
-    HashMapIterator { iterator: self.iter() }
-  }
-}
-
-#[doc(hidden)]
-#[derive(Debug, Clone)]
-pub struct HashMapIterator<'c, Key, Value> {
-  pub(crate) iterator: std::collections::hash_map::Iter<'c, Key, Value>,
-}
-
-impl<'c, Key, Value> Iterator for HashMapIterator<'c, Key, Value> {
-  type Item = (&'c Key, &'c Value);
-
-  fn next(&mut self) -> Option<Self::Item> {
-    self.iterator.next()
+    self.iter()
   }
 }
 
