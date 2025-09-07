@@ -94,17 +94,17 @@ where
 {
 }
 
-pub(crate) trait TestSequence<'a, T: 'a, I>:
+pub(crate) trait TestSequence<'a, T: 'a>:
   Collection<T>
   + CollectionTo<T>
   + Sequence<T>
   + SequenceTo<T>
   + TestCollection<T>
-  + IntoIterator<Item = i64, IntoIter = I>
+  + IntoIterator<Item = i64>
   + Iterable<Item<'a> = &'a T>
 where
   for<'i> &'i Self: IntoIterator<Item = &'i T>,
-  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
+  <Self as IntoIterator>::IntoIter: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   Self: 'a,
 {
 }
@@ -133,16 +133,16 @@ where
 {
 }
 
-impl<'a, T: 'a, C, I> TestSequence<'a, T, I> for C
+impl<'a, T: 'a, C> TestSequence<'a, T> for C
 where
   for<'i> &'i Self: IntoIterator<Item = &'i T>,
-  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
+  <Self as IntoIterator>::IntoIter: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   C: Collection<T>
     + CollectionTo<T>
     + Sequence<T>
     + SequenceTo<T>
     + TestCollection<T>
-    + IntoIterator<Item = i64, IntoIter = I>
+    + IntoIterator<Item = i64>
     + Iterable<Item<'a> = &'a T>
     + 'a,
 {

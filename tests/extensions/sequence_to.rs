@@ -8,10 +8,10 @@ use crate::extensions::util::{TestCollectible, TestCollection, TestSequence, ass
 #[allow(clippy::cast_possible_wrap)]
 #[allow(clippy::many_single_char_names)]
 #[allow(clippy::too_many_lines)]
-pub(crate) fn test_sequence_to<'a, C, G, I>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
+pub(crate) fn test_sequence_to<'a, C, G>(a_source: &C, b_source: &C, c_source: &C, g_source: &G, e_source: &C)
 where
-  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<'a, i64, I> + UnwindSafe,
+  C: TestSequence<'a, i64> + UnwindSafe,
+  <C as IntoIterator>::IntoIter: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<(i64, i64)>: TestCollection<(i64, i64)>,

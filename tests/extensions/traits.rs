@@ -13,10 +13,10 @@ use crate::extensions::slice::test_slice;
 use crate::extensions::util::{TestCollectible, TestCollection, TestMap, TestSequence};
 
 #[allow(clippy::many_single_char_names)]
-pub(crate) fn test_list_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
+pub(crate) fn test_list_traits<'a, C, D, G>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
-  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: List<i64> + TestSequence<'a, i64, I> + TestCollectible<'a, i64> + UnwindSafe,
+  C: List<i64> + TestSequence<'a, i64> + TestCollectible<'a, i64> + UnwindSafe,
+  <C as IntoIterator>::IntoIter: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
@@ -64,10 +64,10 @@ where
 }
 
 #[allow(clippy::many_single_char_names)]
-pub(crate) fn test_sequence_traits<'a, C, D, G, I>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
+pub(crate) fn test_sequence_traits<'a, C, D, G>(a: &C, b: &C, c: &C, d: &D, g: &G, e: &C)
 where
-  I: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
-  C: TestSequence<'a, i64, I> + TestCollectible<'a, i64> + UnwindSafe,
+  C: TestSequence<'a, i64> + TestCollectible<'a, i64> + UnwindSafe,
+  <C as IntoIterator>::IntoIter: DoubleEndedIterator<Item = i64> + ExactSizeIterator<Item = i64>,
   for<'i> &'i C: IntoIterator<Item = &'i i64>,
   <C as CollectionTo<i64>>::This<i64>: TestCollection<i64>,
   <C as SequenceTo<i64>>::This<i64>: TestCollection<i64>,
