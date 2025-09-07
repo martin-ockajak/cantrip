@@ -14,8 +14,6 @@ where
   C::This<i64>: TestCollection<i64>,
   D: CollectionTo<Vec<i64>> + TestCollection<Vec<i64>> + IntoIterator<Item = Vec<i64>>,
   D::This<i64>: TestCollection<i64>,
-  for<'i> &'i C: IntoIterator<Item = &'i i64>,
-  for<'i> &'i D: IntoIterator<Item = &'i Vec<i64>>,
 {
   // add
   let a = a_source.clone();
