@@ -111,24 +111,6 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   }
 
   #[inline]
-  fn cartesian_product(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    cartesian_product(self.iter(), k)
-  }
-
-  #[inline]
-  fn combinations_multi(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    combinations_multi(self.iter(), k)
-  }
-
-  #[inline]
   fn delete_at(self, index: usize) -> Self {
     let size = self.len();
     assert!(index < size, "removal index (is {index:?}) should be < len (is {size:?})");
@@ -151,11 +133,6 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   fn init(mut self) -> Self {
     let _unused = self.pop_back();
     self
-  }
-
-  #[inline]
-  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B> {
-    self.iter().map_while(predicate).collect()
   }
 
   fn move_at(self, source_index: usize, target_index: usize) -> Self {
@@ -201,14 +178,6 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
       })
       .collect()
     }
-  }
-
-  #[inline]
-  fn scan_ref<S, B>(&self, init: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
-  where
-    Self::This<B>: FromIterator<B>,
-  {
-    self.iter().scan(init, function).collect()
   }
 
   #[inline]
@@ -286,33 +255,6 @@ impl<Item> SequenceTo<Item> for LinkedList<Item> {
   fn tail(mut self) -> Self {
     let _unused = self.pop_front();
     self
-  }
-
-  #[inline]
-  fn variations(&self, k: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: Sized,
-  {
-    variations(self.iter(), k)
-  }
-
-  #[inline]
-  fn windowed(&self, size: usize, step: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    windowed(self.iter(), size, step)
-  }
-
-  #[inline]
-  fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
-  where
-    Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>,
-  {
-    windowed_circular(self.iter(), size, step)
   }
 }
 

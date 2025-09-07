@@ -113,8 +113,8 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   #[inline]
   fn flat_map_ref<L, W, R>(&self, function: impl FnMut((&Key, &Value)) -> R) -> Self::This<L, W>
   where
-    R: IntoIterator<Item = (L, W)>,
     Self::This<L, W>: FromIterator<(L, W)>,
+    R: IntoIterator<Item = (L, W)>,
   {
     self.iter().flat_map(function).collect()
   }

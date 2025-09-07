@@ -242,8 +242,8 @@ where
   #[must_use]
   fn delete(self, element: &Item) -> Self
   where
-    Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: PartialEq,
   {
     let mut removed = false;
     self
@@ -282,8 +282,8 @@ where
   #[must_use]
   fn delete_multi<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
-    Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Eq + Hash + 'a,
   {
     let mut deleted: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
@@ -314,8 +314,8 @@ where
   #[inline]
   fn fill_with(mut element: impl FnMut() -> Item, size: usize) -> Self
   where
-    Item: Clone,
     Self: FromIterator<Item>,
+    Item: Clone,
   {
     iter::repeat_n(element(), size).collect()
   }
@@ -673,9 +673,9 @@ where
   #[inline]
   fn flat<B>(self) -> Self::This<B>
   where
-    Item: IntoIterator<Item = B>,
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
+    Item: IntoIterator<Item = B>,
   {
     self.into_iter().flatten().collect()
   }
@@ -718,9 +718,9 @@ where
   #[inline]
   fn flat_map<B, R>(self, function: impl FnMut(Item) -> R) -> Self::This<B>
   where
-    R: IntoIterator<Item = B>,
     Self: IntoIterator<Item = Item> + Sized,
     Self::This<B>: FromIterator<B>,
+    R: IntoIterator<Item = B>,
   {
     self.into_iter().flat_map(function).collect()
   }
@@ -762,8 +762,8 @@ where
   /// ```
   fn flat_map_ref<B, R>(&self, function: impl FnMut(&Item) -> R) -> Self::This<B>
   where
-    R: IntoIterator<Item = B>,
     Self::This<B>: FromIterator<B>,
+    R: IntoIterator<Item = B>,
   {
     self.into_iter().flat_map(function).collect()
   }
@@ -888,8 +888,8 @@ where
   /// ```
   fn group_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> HashMap<K, Self>
   where
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Default + Extend<Item>,
+    K: Eq + Hash,
   {
     let iterator = self.into_iter();
     let mut result = HashMap::<K, Self>::with_capacity(iterator.size_hint().0);
@@ -923,9 +923,9 @@ where
     self, mut to_key: impl FnMut(&Item) -> K, initial_value: B, mut function: impl FnMut(B, Item) -> B,
   ) -> HashMap<K, B>
   where
+    Self: IntoIterator<Item = Item> + Sized,
     K: Eq + Hash,
     B: Clone,
-    Self: IntoIterator<Item = Item> + Sized,
   {
     let iterator = self.into_iter();
     let mut result = HashMap::with_capacity(iterator.size_hint().0);
@@ -965,8 +965,8 @@ where
     self, mut to_key: impl FnMut(&Item) -> K, mut function: impl FnMut(Item, Item) -> Item,
   ) -> HashMap<K, Item>
   where
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + Sized,
+    K: Eq + Hash,
   {
     let iterator = self.into_iter();
     let mut result = HashMap::with_capacity(iterator.size_hint().0);
@@ -1014,8 +1014,8 @@ where
   #[must_use]
   fn intersect<'a>(self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> Self
   where
-    Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Eq + Hash + 'a,
   {
     let mut retained: HashMap<&Item, usize> = frequencies(elements.iterator());
     self
@@ -1052,8 +1052,8 @@ where
   #[must_use]
   fn largest(self, n: usize) -> Self
   where
-    Item: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Ord,
   {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().map(|x| Reverse(x)).take(n).collect::<BinaryHeap<_>>();
@@ -1210,8 +1210,8 @@ where
   #[allow(clippy::cast_possible_wrap)]
   fn partitions(&self) -> Vec<Vec<Self>>
   where
-    Item: Clone,
     Self: FromIterator<Item> + Sized,
+    Item: Clone,
   {
     let iterator = self.into_iter();
     let values = iterator.collect::<Vec<_>>();
@@ -1384,8 +1384,8 @@ where
   #[inline]
   fn product(self) -> Item
   where
-    Item: Product,
     Self: IntoIterator<Item = Item> + Sized,
+    Item: Product,
   {
     self.into_iter().product()
   }
@@ -1452,8 +1452,8 @@ where
   #[must_use]
   fn smallest(self, n: usize) -> Self
   where
-    Item: Ord,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Ord,
   {
     let mut iterator = self.into_iter();
     let mut heap = iterator.by_ref().take(n).collect::<BinaryHeap<_>>();
@@ -1492,8 +1492,8 @@ where
   #[must_use]
   fn substitute(self, element: &Item, replacement: Item) -> Self
   where
-    Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: PartialEq,
   {
     let mut replaced = Some(replacement);
     self.into_iter().map(|item| if &item == element { replaced.take().unwrap_or(item) } else { item }).collect()
@@ -1529,8 +1529,8 @@ where
     self, elements: &'a impl Iterable<Item<'a> = &'a Item>, replacements: impl IntoIterator<Item = Item>,
   ) -> Self
   where
-    Item: Eq + Hash + 'a,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Eq + Hash + 'a,
   {
     let elements_iterator = elements.iterator();
     let mut replaced = HashMap::<&Item, LinkedList<Item>>::with_capacity(elements_iterator.size_hint().0);
@@ -1574,8 +1574,8 @@ where
   #[inline]
   fn sum(self) -> Item
   where
-    Item: Sum,
     Self: IntoIterator<Item = Item> + Sized,
+    Item: Sum,
   {
     self.into_iter().sum()
   }

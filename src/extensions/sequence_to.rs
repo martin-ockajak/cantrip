@@ -14,7 +14,10 @@ pub(crate) const MAX_SIZE: usize = usize::MAX / 2 - 1;
 /// - Requires the collection to represent a sequence
 /// - May consume the sequence and its elements
 /// - May create a new sequence
-pub trait SequenceTo<Item> {
+pub trait SequenceTo<Item>
+where
+  for<'i> &'i Self: IntoIterator<Item = &'i Item>,
+{
   /// This sequence type constructor
   type This<I>;
 
@@ -107,10 +110,34 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.cartesian_product(2), Vec::<Vec<i32>>::new());
   /// ```
+  #[allow(clippy::cast_possible_wrap)]
   fn cartesian_product(&self, k: usize) -> Vec<Self>
   where
+    Self: FromIterator<Item> + Sized,
     Item: Clone,
-    Self: Sized;
+  {
+    assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
+    let values = self.into_iter().collect::<Vec<_>>();
+    let size = values.len();
+    let mut product = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
+    let mut current_slot = (size + 1).saturating_sub(k);
+    unfold(|| {
+      if current_slot == 0 {
+        return None;
+      }
+      current_slot = k;
+      let tuple = Some(collect_by_index(&values, &product[1..]));
+      while product[current_slot] >= (size - 1) as i64 {
+        current_slot -= 1;
+      }
+      product[current_slot] += 1;
+      for index in &mut product[(current_slot + 1)..=k] {
+        *index = 0;
+      }
+      tuple
+    })
+    .collect()
+  }
 
   /// Creates a new sequence by splitting elements of this sequence
   /// into non-overlapping subsequences of specified `size`.
@@ -337,10 +364,34 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.combinations_multi(1), Vec::<Vec<i32>>::new());
   /// ```
+  #[allow(clippy::cast_possible_wrap)]
   fn combinations_multi(&self, k: usize) -> Vec<Self>
   where
+    Self: FromIterator<Item> + Sized,
     Item: Clone,
-    Self: Sized;
+  {
+    assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
+    let values = self.into_iter().collect::<Vec<_>>();
+    let size = values.len();
+    let mut multi_combination = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
+    let mut current_slot = (size + 1).saturating_sub(k);
+    unfold(|| {
+      if current_slot == 0 {
+        return None;
+      }
+      current_slot = k;
+      let tuple = Some(collect_by_index(&values, &multi_combination[1..]));
+      while multi_combination[current_slot] >= (size - 1) as i64 {
+        current_slot -= 1;
+      }
+      let new_index = multi_combination[current_slot] + 1;
+      for index in &mut multi_combination[current_slot..=k] {
+        *index = new_index;
+      }
+      tuple
+    })
+    .collect()
+  }
 
   /// Creates a new sequence by omitting an element at the specified index
   /// in this sequence.
@@ -442,8 +493,8 @@ pub trait SequenceTo<Item> {
   #[inline]
   fn divide(self, separator: &Item) -> Vec<Self>
   where
-    Item: PartialEq,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: PartialEq,
   {
     self.divide_by(|x| x == separator)
   }
@@ -528,8 +579,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn duplicates(self) -> Self
   where
-    Item: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Eq + Hash,
   {
     let iterator = self.into_iter();
     let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
@@ -566,8 +617,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn duplicates_by<K>(self, mut to_key: impl FnMut(&Item) -> K) -> Self
   where
-    K: Eq + Hash,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    K: Eq + Hash,
   {
     let mut iterator = self.into_iter();
     let mut occurred = HashMap::<K, Option<Item>>::with_capacity(iterator.size_hint().0);
@@ -641,8 +692,8 @@ pub trait SequenceTo<Item> {
   #[inline]
   fn fill(element: Item, size: usize) -> Self
   where
-    Item: Clone,
     Self: FromIterator<Item>,
+    Item: Clone,
   {
     iter::repeat_n(element, size).collect()
   }
@@ -770,8 +821,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn intersperse(self, interval: usize, element: Item) -> Self
   where
-    Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Clone,
   {
     self.intersperse_with(interval, || element.clone())
   }
@@ -803,8 +854,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn intersperse_with(self, interval: usize, mut to_value: impl FnMut() -> Item) -> Self
   where
-    Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Clone,
   {
     assert_ne!(interval, 0, "interval must be non-zero");
     let mut iterator = self.into_iter();
@@ -863,7 +914,12 @@ pub trait SequenceTo<Item> {
   ///   vec![2, 3]
   /// );
   /// ```
-  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>;
+  fn map_while<B>(&self, predicate: impl FnMut(&Item) -> Option<B>) -> Self::This<B>
+  where
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().map_while(predicate).collect()
+  }
 
   /// Create a new sequence by merging it with another sequence in ascending order.
   ///
@@ -971,9 +1027,9 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn pad_left<I>(self, size: usize, element: Item) -> Self
   where
-    Item: Clone,
-    I: ExactSizeIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: ExactSizeIterator<Item = Item>,
+    Item: Clone,
   {
     self.pad_left_with(size, |_| element.clone())
   }
@@ -994,9 +1050,9 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn pad_left_with<I>(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
-    Item: Clone,
-    I: ExactSizeIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: ExactSizeIterator<Item = Item>,
+    Item: Clone,
   {
     let mut iterator = self.into_iter();
     let original_start = size - iterator.len();
@@ -1025,8 +1081,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn pad_right(self, size: usize, element: Item) -> Self
   where
-    Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Clone,
   {
     self.pad_right_with(size, |_| element.clone())
   }
@@ -1046,8 +1102,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn pad_right_with(self, size: usize, mut to_element: impl FnMut(usize) -> Item) -> Self
   where
-    Item: Clone,
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
+    Item: Clone,
   {
     let mut iterator = self.into_iter();
     let mut index = 0_usize;
@@ -1074,8 +1130,8 @@ pub trait SequenceTo<Item> {
   #[must_use]
   fn rev<I>(self) -> Self
   where
-    I: DoubleEndedIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + FromIterator<Item>,
+    I: DoubleEndedIterator<Item = Item>,
   {
     self.into_iter().rev().collect()
   }
@@ -1142,8 +1198,8 @@ pub trait SequenceTo<Item> {
   #[inline]
   fn rfold<B, I>(self, initial_value: B, function: impl FnMut(B, Item) -> B) -> B
   where
-    I: DoubleEndedIterator<Item = Item>,
     Self: IntoIterator<Item = Item, IntoIter = I> + Sized,
+    I: DoubleEndedIterator<Item = Item>,
   {
     self.into_iter().rfold(initial_value, function)
   }
@@ -1239,7 +1295,10 @@ pub trait SequenceTo<Item> {
   /// ```
   fn scan_ref<S, B>(&self, initial_state: S, function: impl FnMut(&mut S, &Item) -> Option<B>) -> Self::This<B>
   where
-    Self::This<B>: FromIterator<B>;
+    Self::This<B>: FromIterator<B>,
+  {
+    self.into_iter().scan(initial_state, function).collect()
+  }
 
   /// Creates a new sequence that skips the first `n` elements from this sequence.
   ///
@@ -1996,10 +2055,47 @@ pub trait SequenceTo<Item> {
   ///
   /// assert_eq!(e.variations(1), Vec::<Vec<i32>>::new());
   /// ```
+  #[allow(clippy::cast_sign_loss)]
+  #[allow(clippy::cast_possible_truncation)]
+  #[allow(clippy::cast_possible_wrap)]
   fn variations(&self, k: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: Sized;
+    Self: FromIterator<Item> + Sized,
+  {
+    assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
+    let values = self.into_iter().collect::<Vec<_>>();
+    let size = values.len();
+    let mut variation = iter::once(i64::MIN).chain(0..(k as i64)).collect::<Vec<_>>();
+    let mut used_indices =
+      iter::repeat_n(true, k).chain(iter::repeat_n(false, size.saturating_sub(k))).collect::<Vec<_>>();
+    let mut current_slot = (size + 1).saturating_sub(k);
+    unfold(|| {
+      if current_slot == 0 {
+        return None;
+      }
+      current_slot = k;
+      let tuple = Some(collect_by_index(&values, &variation[1..]));
+      while current_slot > 0 && ((variation[current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
+        used_indices[variation[current_slot] as usize] = false;
+        current_slot -= 1;
+      }
+      if current_slot > 0 {
+        let initial_index =
+          ((variation[current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+        used_indices[variation[current_slot] as usize] = false;
+        used_indices[initial_index as usize] = true;
+        variation[current_slot] = initial_index;
+        for index in &mut variation[(current_slot + 1)..=k] {
+          let new_index = (0..=(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
+          used_indices[new_index as usize] = true;
+          *index = new_index;
+        }
+      }
+      tuple
+    })
+    .collect()
+  }
 
   /// Creates a new sequence consisting of overlapping `N` element windows
   /// of this sequence, starting at the beginning of this sequence.
@@ -2036,7 +2132,27 @@ pub trait SequenceTo<Item> {
   fn windowed(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>;
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    assert_ne!(size, 0, "window size must be non-zero");
+    assert_ne!(step, 0, "step must be non-zero");
+    let mut window = VecDeque::<Item>::with_capacity(size);
+    self
+      .into_iter()
+      .filter_map(|item| {
+        window.push_back(item.clone());
+        if window.len() >= size {
+          let tuple = Some(Self::from_iter(window.clone()));
+          for _ in 0..step {
+            let _unused = window.pop_front();
+          }
+          tuple
+        } else {
+          None
+        }
+      })
+      .collect()
+  }
 
   /// Creates a new sequence consisting of overlapping `N` element windows
   /// of this sequence, starting at the beginning of this sequence and wrapping
@@ -2070,7 +2186,34 @@ pub trait SequenceTo<Item> {
   fn windowed_circular(&self, size: usize, step: usize) -> Vec<Self>
   where
     Item: Clone,
-    Self: IntoIterator<Item = Item> + FromIterator<Item>;
+    Self: IntoIterator<Item = Item> + FromIterator<Item>,
+  {
+    assert_ne!(size, 0, "window size must be non-zero");
+    assert_ne!(step, 0, "step must be non-zero");
+    let mut window = VecDeque::<Item>::with_capacity(size);
+    let mut init = VecDeque::<Item>::with_capacity(size - 1);
+    let mut iterator = self.into_iter();
+    unfold(|| {
+      while window.len() < size {
+        if let Some(item) = iterator.next() {
+          window.push_back(item.clone());
+          if init.len() < size - 1 {
+            init.push_back(item.clone());
+          }
+        } else if let Some(item) = init.pop_front() {
+          window.push_back(item);
+        } else {
+          return None;
+        }
+      }
+      let tuple = Some(Self::from_iter(window.clone()));
+      for _ in 0..step {
+        let _unused = window.pop_front();
+      }
+      tuple
+    })
+    .collect()
+  }
 
   /// 'Zips up' this sequence with another collection into a single sequence of pairs.
   ///
@@ -2159,33 +2302,6 @@ pub trait SequenceTo<Item> {
   }
 }
 
-#[allow(clippy::cast_possible_wrap)]
-pub(crate) fn cartesian_product<'a, Item: Clone + 'a, Collection: FromIterator<Item> + Sized>(
-  iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection> {
-  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
-  let values = iterator.collect::<Vec<_>>();
-  let size = values.len();
-  let mut product = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
-  let mut current_slot = (size + 1).saturating_sub(k);
-  unfold(|| {
-    if current_slot == 0 {
-      return None;
-    }
-    current_slot = k;
-    let tuple = Some(collect_by_index(&values, &product[1..]));
-    while product[current_slot] >= (size - 1) as i64 {
-      current_slot -= 1;
-    }
-    product[current_slot] += 1;
-    for index in &mut product[(current_slot + 1)..=k] {
-      *index = 0;
-    }
-    tuple
-  })
-  .collect()
-}
-
 #[allow(clippy::cast_sign_loss)]
 #[allow(clippy::cast_possible_truncation)]
 #[inline]
@@ -2216,123 +2332,6 @@ where
     })
     .collect();
     if chunk_size == size || (!exact && chunk_size > 0) { Some(chunk) } else { None }
-  })
-  .collect()
-}
-
-#[allow(clippy::cast_possible_wrap)]
-pub(crate) fn combinations_multi<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection> {
-  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
-  let values = iterator.collect::<Vec<_>>();
-  let size = values.len();
-  let mut multi_combination = iter::once(i64::MIN).chain(iter::repeat_n(0, k)).collect::<Vec<_>>();
-  let mut current_slot = (size + 1).saturating_sub(k);
-  unfold(|| {
-    if current_slot == 0 {
-      return None;
-    }
-    current_slot = k;
-    let tuple = Some(collect_by_index(&values, &multi_combination[1..]));
-    while multi_combination[current_slot] >= (size - 1) as i64 {
-      current_slot -= 1;
-    }
-    let new_index = multi_combination[current_slot] + 1;
-    for index in &mut multi_combination[current_slot..=k] {
-      *index = new_index;
-    }
-    tuple
-  })
-  .collect()
-}
-
-#[allow(clippy::cast_sign_loss)]
-#[allow(clippy::cast_possible_truncation)]
-#[allow(clippy::cast_possible_wrap)]
-pub(crate) fn variations<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  iterator: impl Iterator<Item = &'a Item>, k: usize,
-) -> Vec<Collection> {
-  assert!(k <= MAX_SIZE, "k (is {k:?}) should be <= {MAX_SIZE:?})");
-  let values = iterator.collect::<Vec<_>>();
-  let size = values.len();
-  let mut variation = iter::once(i64::MIN).chain(0..(k as i64)).collect::<Vec<_>>();
-  let mut used_indices =
-    iter::repeat_n(true, k).chain(iter::repeat_n(false, size.saturating_sub(k))).collect::<Vec<_>>();
-  let mut current_slot = (size + 1).saturating_sub(k);
-  unfold(|| {
-    if current_slot == 0 {
-      return None;
-    }
-    current_slot = k;
-    let tuple = Some(collect_by_index(&values, &variation[1..]));
-    while current_slot > 0 && ((variation[current_slot] + 1)..(size as i64)).all(|x| used_indices[x as usize]) {
-      used_indices[variation[current_slot] as usize] = false;
-      current_slot -= 1;
-    }
-    if current_slot > 0 {
-      let initial_index = ((variation[current_slot] + 1)..(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
-      used_indices[variation[current_slot] as usize] = false;
-      used_indices[initial_index as usize] = true;
-      variation[current_slot] = initial_index;
-      for index in &mut variation[(current_slot + 1)..=k] {
-        let new_index = (0..=(size as i64)).find(|x| !used_indices[*x as usize]).unwrap();
-        used_indices[new_index as usize] = true;
-        *index = new_index;
-      }
-    }
-    tuple
-  })
-  .collect()
-}
-
-pub(crate) fn windowed<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  iterator: impl Iterator<Item = &'a Item>, size: usize, step: usize,
-) -> Vec<Collection> {
-  assert_ne!(size, 0, "window size must be non-zero");
-  assert_ne!(step, 0, "step must be non-zero");
-  let mut window = VecDeque::<Item>::with_capacity(size);
-  iterator
-    .filter_map(|item| {
-      window.push_back(item.clone());
-      if window.len() >= size {
-        let tuple = Some(Collection::from_iter(window.clone()));
-        for _ in 0..step {
-          let _unused = window.pop_front();
-        }
-        tuple
-      } else {
-        None
-      }
-    })
-    .collect()
-}
-
-pub(crate) fn windowed_circular<'a, Item: Clone + 'a, Collection: FromIterator<Item>>(
-  mut iterator: impl Iterator<Item = &'a Item>, size: usize, step: usize,
-) -> Vec<Collection> {
-  assert_ne!(size, 0, "window size must be non-zero");
-  assert_ne!(step, 0, "step must be non-zero");
-  let mut window = VecDeque::<Item>::with_capacity(size);
-  let mut init = VecDeque::<Item>::with_capacity(size - 1);
-  unfold(|| {
-    while window.len() < size {
-      if let Some(item) = iterator.next() {
-        window.push_back(item.clone());
-        if init.len() < size - 1 {
-          init.push_back(item.clone());
-        }
-      } else if let Some(item) = init.pop_front() {
-        window.push_back(item);
-      } else {
-        return None;
-      }
-    }
-    let tuple = Some(Collection::from_iter(window.clone()));
-    for _ in 0..step {
-      let _unused = window.pop_front();
-    }
-    tuple
   })
   .collect()
 }
