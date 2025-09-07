@@ -26,9 +26,7 @@ impl<Item: Eq + Hash> CollectionTo<Item> for HashSet<Item> {
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
-    for x in elements {
-      let _unused = self.insert(x);
-    }
+    self.extend(elements);
     self
   }
 

@@ -24,9 +24,7 @@ impl<Item: Ord> CollectionTo<Item> for BTreeSet<Item> {
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
-    for x in elements {
-      let _unused = self.insert(x);
-    }
+    self.extend(elements);
     self
   }
 

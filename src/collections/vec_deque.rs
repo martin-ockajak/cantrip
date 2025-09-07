@@ -24,9 +24,7 @@ impl<Item> CollectionTo<Item> for VecDeque<Item> {
   where
     Self: IntoIterator<Item = Item> + FromIterator<Item>,
   {
-    elements.into_iter().for_each(|x| {
-      self.push_back(x);
-    });
+    self.extend(elements);
     self
   }
 

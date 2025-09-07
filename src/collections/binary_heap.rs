@@ -22,9 +22,7 @@ impl<Item: Ord> CollectionTo<Item> for BinaryHeap<Item> {
   where
     Self: IntoIterator<Item = Item> + Sized + FromIterator<Item>,
   {
-    elements.into_iter().for_each(|x| {
-      self.push(x);
-    });
+    self.extend(elements);
     self
   }
 }
