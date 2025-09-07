@@ -2,8 +2,6 @@ use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use std::hash::Hash;
 
-use crate::Iterable;
-
 /// Non-consuming collection operations.
 ///
 /// Methods have the following properties:
@@ -692,9 +690,10 @@ where
   /// assert!(!a.subset(&vec![1, 2, 3]));
   /// assert!(!a.subset(&vec![3, 4]));
   /// ```
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn subset<RefIterable>(&self, elements: &RefIterable) -> bool
   where
-    Item: Eq + Hash + 'a,
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Item>,
+    Item: Eq + Hash,
   {
     subset(self.into_iter(), elements)
   }
@@ -724,22 +723,13 @@ where
   /// assert!(!a.superset(&vec![3, 4]));
   /// assert!(!e.superset(&vec![1]));
   /// ```
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
+  fn superset<RefIterable>(&self, elements: &RefIterable) -> bool
   where
-    Item: Eq + Hash + 'a,
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Item>,
+    Item: Eq + Hash,
   {
     superset(self.into_iter(), elements)
   }
-}
-
-pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>,
-) -> HashMap<&'a Item, usize> {
-  let mut result = HashMap::with_capacity(iterator.size_hint().0);
-  for item in iterator {
-    *result.entry(item).or_default() += 1;
-  }
-  result
 }
 
 pub(crate) fn disjoint<'a, Item, I>(iterator: impl Iterator<Item = &'a Item>, elements: &I) -> bool
@@ -760,6 +750,16 @@ where
     }
   }
   true
+}
+
+pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
+  iterator: impl Iterator<Item = &'a Item>,
+) -> HashMap<&'a Item, usize> {
+  let mut result = HashMap::with_capacity(iterator.size_hint().0);
+  for item in iterator {
+    *result.entry(item).or_default() += 1;
+  }
+  result
 }
 
 pub(crate) fn minmax_by<'a, Item: 'a>(
@@ -783,14 +783,16 @@ pub(crate) fn minmax_by<'a, Item: 'a>(
   }
 }
 
-pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool {
+pub(crate) fn subset<'a, Item, RefIterable>(iterator: impl Iterator<Item = &'a Item>, elements: &RefIterable) -> bool
+where
+  for<'i> &'i RefIterable: IntoIterator<Item = &'i Item>,
+  Item: Eq + Hash + 'a,
+{
   let mut counts = frequencies(iterator);
   if counts.is_empty() {
     return true;
   }
-  for item in elements.iterator() {
+  for item in elements {
     if let Some(count) = counts.get_mut(item) {
       *count -= 1;
       if *count == 0 {
@@ -804,10 +806,12 @@ pub(crate) fn subset<'a, Item: Eq + Hash + 'a>(
   false
 }
 
-pub(crate) fn superset<'a, Item: Eq + Hash + 'a>(
-  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
-) -> bool {
-  let mut counts = frequencies(elements.iterator());
+pub(crate) fn superset<'a, Item, RefIterable>(iterator: impl Iterator<Item = &'a Item>, elements: &RefIterable) -> bool
+where
+  for<'i> &'i RefIterable: IntoIterator<Item = &'i Item>,
+  Item: Eq + Hash + 'a,
+{
+  let mut counts = frequencies(elements.into_iter());
   if counts.is_empty() {
     return true;
   }

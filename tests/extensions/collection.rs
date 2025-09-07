@@ -99,20 +99,20 @@ where
   assert_eq!(e.reduce_ref(|&acc, &e| acc + e), None);
 
   // subset
-  assert!(a.subset(&vec![4, 3, 2, 2, 1]));
-  assert!(e.subset(&vec![1]));
-  assert!(e.subset(&vec![]));
+  assert!(a.subset::<Vec<i64>>(&vec![4, 3, 2, 2, 1]));
+  assert!(e.subset::<Vec<i64>>(&vec![1]));
+  assert!(e.subset::<Vec<i64>>(&vec![]));
   if sequence {
-    assert!(!b.subset(&vec![1, 2, 3]));
+    assert!(!b.subset::<Vec<i64>>(&vec![1, 2, 3]));
   }
-  assert!(!a.subset(&vec![3, 4]));
+  assert!(!a.subset::<Vec<i64>>(&vec![3, 4]));
 
   // superset
-  assert!(a.superset(&vec![2, 1]));
-  assert!(e.superset(&vec![]));
+  assert!(a.superset::<Vec<i64>>(&vec![2, 1]));
+  assert!(e.superset::<Vec<i64>>(&vec![]));
   if sequence {
-    assert!(!b.superset(&vec![1, 1, 2]));
+    assert!(!b.superset::<Vec<i64>>(&vec![1, 1, 2]));
   }
-  assert!(!a.superset(&vec![3, 4]));
-  assert!(!e.superset(&vec![1]));
+  assert!(!a.superset::<Vec<i64>>(&vec![3, 4]));
+  assert!(!e.superset::<Vec<i64>>(&vec![1]));
 }

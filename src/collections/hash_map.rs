@@ -85,20 +85,20 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
-  where
-    Self::This<L, W>: FromIterator<(L, W)>,
-  {
-    self.iter().filter_map(function).collect()
-  }
-
-  #[inline]
   fn filter_ref(&self, mut predicate: impl FnMut((&Key, &Value)) -> bool) -> Self
   where
     Key: Clone,
     Value: Clone,
   {
     self.iter().filter(|&x| predicate(x)).map(|(k, v)| (k.clone(), v.clone())).collect()
+  }
+
+  #[inline]
+  fn filter_map_ref<L, W>(&self, function: impl FnMut((&Key, &Value)) -> Option<(L, W)>) -> Self::This<L, W>
+  where
+    Self::This<L, W>: FromIterator<(L, W)>,
+  {
+    self.iter().filter_map(function).collect()
   }
 
   #[inline]
@@ -196,19 +196,21 @@ impl<Key: Eq + Hash, Value> Map<Key, Value> for HashMap<Key, Value> {
   }
 
   #[inline]
-  fn subset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn subset<RefIterable>(&self, keys: &RefIterable) -> bool
   where
-    Key: Eq + Hash + 'a,
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
+    Key: Eq + Hash,
   {
-    subset(self.keys(), elements)
+    subset(self.keys(), keys)
   }
 
   #[inline]
-  fn superset<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
+  fn superset<RefIterable>(&self, keys: &RefIterable) -> bool
   where
-    Key: Eq + Hash + 'a,
+    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
+    Key: Eq + Hash,
   {
-    superset(self.keys(), elements)
+    superset(self.keys(), keys)
   }
 
   #[inline]
