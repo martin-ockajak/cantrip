@@ -331,10 +331,9 @@ pub trait Map<Key, Value> {
   ///
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
-  fn disjoint<RefIterable>(&self, elements: &RefIterable) -> bool
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
-    Key: Eq + Hash;
+    Key: Eq + Hash + 'a;
 
   /// Creates a new map containing a result of a function
   /// specified number of times.

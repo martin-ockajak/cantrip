@@ -53,10 +53,9 @@ impl<Key: Ord, Value> Map<Key, Value> for BTreeMap<Key, Value> {
   }
 
   #[inline]
-  fn disjoint<RefIterable>(&self, elements: &RefIterable) -> bool
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Key>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Key>,
-    Key: Eq + Hash,
+    Key: Eq + Hash + 'a,
   {
     disjoint(self.keys(), elements)
   }

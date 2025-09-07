@@ -112,10 +112,9 @@ where
   ///
   /// assert!(!a.disjoint(&vec![3, 4]));
   /// ```
-  fn disjoint<RefIterable>(&self, elements: &RefIterable) -> bool
+  fn disjoint<'a>(&'a self, elements: &'a impl Iterable<Item<'a> = &'a Item>) -> bool
   where
-    for<'a> &'a RefIterable: IntoIterator<Item = &'a Item>,
-    Item: Eq + Hash,
+    Item: Eq + Hash + 'a,
   {
     disjoint(self.into_iter(), elements)
   }
@@ -742,11 +741,9 @@ pub(crate) fn frequencies<'a, Item: Eq + Hash + 'a>(
   result
 }
 
-pub(crate) fn disjoint<'a, Item, I>(iterator: impl Iterator<Item = &'a Item>, elements: &I) -> bool
-where
-  for<'b> &'b I: IntoIterator<Item = &'b Item>,
-  Item: Eq + Hash + 'a,
-{
+pub(crate) fn disjoint<'a, Item: Eq + Hash + 'a>(
+  iterator: impl Iterator<Item = &'a Item>, elements: &'a impl Iterable<Item<'a> = &'a Item>,
+) -> bool {
   let mut occurred = HashSet::with_capacity(iterator.size_hint().0);
   for item in iterator {
     let _ = occurred.insert(item);
@@ -754,7 +751,7 @@ where
   if occurred.is_empty() {
     return true;
   }
-  for item in elements {
+  for item in elements.iterator() {
     if occurred.contains(&item) {
       return false;
     }
