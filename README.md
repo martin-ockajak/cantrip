@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/github/license/martin-ockajak/cantrip?label=License&color=teal)](https://github.com/martin-ockajak/cantrip/blob/main/LICENSE)
 [![Build](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml/badge.svg)](https://github.com/martin-ockajak/cantrip/actions/workflows/build.yml)
 
-A Swiss Army Knife for Rust standard library collection types.
+Practical extensions for standard Rust collections.
 
 Enables direct functional-style collection manipulation without the usual
 iterator boilerplate and provides many additional operations.

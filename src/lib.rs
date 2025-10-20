@@ -1,6 +1,6 @@
 #![deny(warnings)]
 #![allow(unused_crate_dependencies)]
-//! A Swiss Army Knife for Rust standard library collection types.
+//! Practical extensions for standard Rust collections.
 //!
 //! Enables direct functional-style collection manipulation without the usual
 //! iterator boilerplate and provides many additional operations.
